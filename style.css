@@ -1068,18 +1068,40 @@ body.has-update-banner .app-main {
 .tab.active { color: var(--accent); }
 .tab.active::before { opacity: 1; }
 
-/* Very narrow screens (320px-class devices): allow the 5th tab to wrap instead of
-   overflowing the viewport. Above this width the tab bar is untouched. */
-@media (max-width: 340px) {
+/* Mobile tab bar: five EQUAL columns.
+   min-width: 0 removes the flex item's min-content floor, which used to hold the 78px
+   "MOTIVATION" tab at 78px and squeeze the other four (a 3.6px imbalance at 375px).
+   Icons are anchored to a fixed top offset instead of being vertically centred as a
+   group, so all five stay on the same line even if a label wraps on a tiny screen.
+   Desktop (>430px) is untouched. */
+@media (max-width: 430px) {
   .tab {
     min-width: 0;
+    justify-content: flex-start;
+    padding: 14px 2px 0;
+    gap: 2px;
     font-size: 10px;
     letter-spacing: 0.02em;
   }
+  /* A label can never grow wider than its own tab, stays centred if it wraps, and
+     wraps as a BLOCK: inside a flex container the text becomes an anonymous flex item
+     whose automatic minimum size ignores overflow-wrap, so it would overflow instead. */
   .tab > span[data-i18n] {
-    white-space: normal;
-    line-height: 1.15;
+    max-width: 100%;
     text-align: center;
+    line-height: 12px;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Extremely narrow (320px-class): reclaim the last pixels so the longest label still
+   fits on one line - and if it ever does not, the wrap support above keeps it inside
+   the tab and the icon on the same line as the others. */
+@media (max-width: 340px) {
+  .tab {
+    padding-left: 0;
+    padding-right: 0;
+    letter-spacing: 0;
   }
 }
 
