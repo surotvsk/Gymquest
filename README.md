@@ -196,6 +196,30 @@ Nothing has to be compiled: the files in the repository are exactly the files th
 
 ---
 
+## Updates and offline use
+
+GymQuest is a progressive web app: a service worker (`sw.js`) precaches the app shell, so after the
+first successful load **it works fully offline**, including from a Home Screen icon.
+
+When a new version is deployed, the app notices the waiting update and offers a small in-app message —
+*A new version of GymQuest is available* / *Je dostupná nová verzia GymQuestu.* — with an **Update now**
+/ **Aktualizovať** button. Nothing is reloaded until you press it, and the message stays hidden while
+you are in the middle of something that would lose input: an active workout, an open plan editor, a
+note, or a settings form.
+
+### Deploying an update
+
+1. Change the app files.
+2. **Bump `CACHE_VERSION` in `sw.js`** (for example `v1` → `v2`).
+3. Push to `main`.
+
+Step 2 matters: the new worker only installs if `sw.js` itself changed, and a new version is what
+re-fetches every asset and deletes the previous cache. Skipping it leaves readers on the old cached
+files. The cache name (`gymquest-v1`, `gymquest-v2`, …) is visible in DevTools →
+Application → Cache Storage, so what is deployed can be inspected directly.
+
+---
+
 ## Technology
 
 Pure **HTML**, **CSS** and **vanilla JavaScript**. No frameworks, no database, no backend, no

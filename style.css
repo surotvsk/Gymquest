@@ -967,6 +967,46 @@ button.cal-cell:hover { border-color: var(--border-strong); }
 }
 .day-ach { font-size: var(--fs-sm); color: var(--text-dim); }
 
+/* ===== Update banner (quiet strip pinned above the tab bar) ===== */
+
+.update-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+  z-index: 15;                       /* below modals (20), above page content */
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--surface-3);
+  border-top: 1px solid var(--accent-line);
+  box-shadow: var(--shadow-2);
+}
+
+.update-banner[hidden] { display: none; }
+
+.update-text {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.update-btn {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: var(--fs-sm);
+}
+
+/* keep the last bit of content reachable while the strip is showing */
+body.has-update-banner .app-main {
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + var(--sp-6) + 68px);
+}
+
 /* ===== Tab bar (premium, safe-area aware) ===== */
 
 .tab-bar {

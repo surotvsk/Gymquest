@@ -267,6 +267,8 @@ const I18N = {
     'settings.resetConfirmAction': 'Resetovať všetky údaje',
     'settings.resetFinalAction': 'Naozaj vymazať',
     'common.cancel': 'Zrušiť', 'common.close': 'Zavrieť', 'common.save': 'Uložiť', 'common.ok': 'OK', 'common.delete': 'Vymazať',
+    'update.available': 'Je dostupná nová verzia GymQuestu.',
+    'update.now': 'Aktualizovať',
     'app.storageError': 'Tento prehliadač odmietol uložiť dáta – zmeny sa po obnovení stránky stratia. Povol v prehliadači ukladanie dát (localStorage) a skús to znova.',
     'common.confirm': 'Potvrdenie',
     'common.confirmTitle': 'Potvrdenie',
@@ -449,6 +451,8 @@ const I18N = {
     'settings.resetConfirmAction': 'Reset all data',
     'settings.resetFinalAction': 'Really delete',
     'common.cancel': 'Cancel', 'common.close': 'Close', 'common.save': 'Save', 'common.ok': 'OK', 'common.delete': 'Delete',
+    'update.available': 'A new version of GymQuest is available.',
+    'update.now': 'Update now',
     'app.storageError': 'This browser refused to save your data — changes will be lost after a refresh. Allow site data (localStorage) in your browser and try again.',
     'common.confirm': 'Confirmation',
     'common.confirmTitle': 'Confirmation',
@@ -1592,6 +1596,7 @@ function renderTrening() {
   const summary = document.getElementById('summary-bar');
   summary.innerHTML = t('trening.setsDone', { done: 0, total: planExerciseCount(plan), msg: t('trening.setsHint') });
   document.getElementById('btn-finish-workout').disabled = true;
+  refreshUpdateBanner();   // otvorenie/zatvorenie editora plánu mení stav "zaneprázdnený"
 }
 
 function updateSummary() {
@@ -1601,6 +1606,7 @@ function updateSummary() {
   const msg = done === 0 ? t('trening.setsHint') : randomSetMessage();
   document.getElementById('summary-bar').innerHTML = t('trening.setsDone', { done, total, msg });
   document.getElementById('btn-finish-workout').disabled = done === 0;
+  refreshUpdateBanner();   // rozbehnutý tréning skrýva ponuku aktualizácie
 }
 
 /* ---------- Editácia plánu ---------- */
@@ -2125,6 +2131,7 @@ function renderAll() {
   // Otvorený detail dňa musí zareagovať na zmenu jazyka aj na zmenu histórie.
   const dayModal = document.getElementById('modal-day');
   if (dayModal && !dayModal.hidden && selectedDayKey) renderDayDetail(selectedDayKey);
+  refreshUpdateBanner();   // aktualizácia sa môže ponúknuť, len ak nič neupravujeme
 }
 
 /* ---------- Prepínanie kariet ---------- */
@@ -2484,6 +2491,7 @@ function showGeneric(title, okLabel, onOk, text) {
 function closeGeneric() {
   document.getElementById('modal-generic').hidden = true;
   genericCallback = null;
+  refreshUpdateBanner();
 }
 
 function confirmGeneric() {
@@ -2604,7 +2612,7 @@ function setupEvents() {
   });
 
   on('btn-finish-workout', finishWorkout);
-  on('btn-confirm-cancel', () => { document.getElementById('modal-confirm').hidden = true; });
+  on('btn-confirm-cancel', () => { document.getElementById('modal-confirm').hidden = true; refreshUpdateBanner(); });
   on('btn-confirm-ok', confirmFinish);
   on('btn-result-close', () => { document.getElementById('modal-result').hidden = true; });
   on('btn-result-undo', requestUndoWorkout);
@@ -2683,7 +2691,7 @@ function setupEvents() {
   on('btn-generic-cancel', closeGeneric);
   on('btn-generic-ok', confirmGeneric);
 
-  on('btn-he-cancel', () => { document.getElementById('modal-history-edit').hidden = true; });
+  on('btn-he-cancel', () => { document.getElementById('modal-history-edit').hidden = true; refreshUpdateBanner(); });
   on('btn-he-save', saveHistoryEdit);
 
   /* --- Kalendár --- */
@@ -2701,6 +2709,8 @@ function setupEvents() {
     const modal = document.getElementById('modal-day');
     if (e.key === 'Escape' && modal && !modal.hidden) closeDay();
   });
+
+  on('btn-update', applyUpdate);
 }
 
 /* ---------- Denný strážca (dátum, ISO týždeň, týždenný progres) ---------- */
@@ -2727,6 +2737,91 @@ function startDayWatcher() {
   document.addEventListener('visibilitychange', refreshDayIfChanged);
 }
 
+/* ---------- Service worker: offline cache a aktualizácie ---------- */
+
+let swRegistration = null;
+let swUpdateReady = false;          // čaká nová verzia
+let reloadingForUpdate = false;     // ochrana proti slučke reloadov
+let pendingUpdateReload = false;    // nová verzia je aktívna, ale používateľ je zaneprázdnený
+/* Pri prvej inštalácii stránku neriadi žiadny service worker; clients.claim()
+   vtedy vyvolá controllerchange, ktorý nesmie spôsobiť reload. */
+const hadServiceWorkerController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
+
+/* Prebieha niečo, pri čom by reload mohol stratiť vstup používateľa? */
+function isBusy() {
+  if (editingPlan !== null) return true;                 // otvorený editor plánu s neuloženými zmenami
+  if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
+  const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic'];
+  for (const id of forms) {
+    const el = document.getElementById(id);
+    if (el && !el.hidden) return true;                   // otvorený formulár / dialóg
+  }
+  return false;
+}
+
+function reloadForUpdate() {
+  if (reloadingForUpdate) return;
+  if (isBusy()) { pendingUpdateReload = true; return; }  // počkaj, kým používateľ dokončí
+  reloadingForUpdate = true;
+  location.reload();
+}
+
+/* Banner sa ukáže len vtedy, keď je aktualizácia pripravená a nič sa neupravuje. */
+function refreshUpdateBanner() {
+  const banner = document.getElementById('update-banner');
+  if (!banner) return;
+  const show = swUpdateReady && !isBusy();
+  banner.hidden = !show;
+  document.body.classList.toggle('has-update-banner', show);
+  if (pendingUpdateReload && !isBusy()) {
+    pendingUpdateReload = false;
+    reloadForUpdate();
+  }
+}
+
+function applyUpdate() {
+  const waiting = swRegistration && swRegistration.waiting;
+  if (!waiting) return;
+  swUpdateReady = false;
+  refreshUpdateBanner();
+  waiting.postMessage({ type: 'SKIP_WAITING' });
+}
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  // file:// nemá service workery – lokálne otvorenie súboru funguje ďalej bez zmeny
+  if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
+    swRegistration = reg;
+    // verzia mohla čakať už z minulej návštevy
+    if (reg.waiting && navigator.serviceWorker.controller) {
+      swUpdateReady = true;
+      refreshUpdateBanner();
+    }
+    reg.addEventListener('updatefound', () => {
+      const incoming = reg.installing;
+      if (!incoming) return;
+      incoming.addEventListener('statechange', () => {
+        // 'installed' + existujúci kontrolór = čaká novšia verzia
+        if (incoming.state === 'installed' && navigator.serviceWorker.controller) {
+          swUpdateReady = true;
+          refreshUpdateBanner();
+        }
+      });
+    });
+  }).catch((err) => {
+    // Bez service workera aplikácia funguje ďalej, ale tichý neúspech by sa ťažko hľadal.
+    console.warn('GymQuest: service worker sa nepodarilo zaregistrovať:', err);
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadServiceWorkerController) return;   // prvá inštalácia – nič sa neobnovuje
+    swUpdateReady = false;
+    reloadForUpdate();
+  });
+}
+
 /* ---------- Štart ---------- */
 
 loadState();
@@ -2737,6 +2832,7 @@ verifyI18n();
 switchTab('dnes');
 renderAll();
 startDayWatcher();
+registerServiceWorker();
 if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
   openSetup();
 }

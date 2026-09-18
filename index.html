@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -27,6 +27,11 @@
   <main class="app-main">
 
     <p class="storage-warning" id="app-storage-warning" data-i18n="app.storageError" hidden></p>
+
+    <div class="update-banner" id="update-banner" hidden>
+      <span class="update-text" data-i18n="update.available">Je dostupná nová verzia GymQuestu.</span>
+      <button class="btn btn-primary update-btn" id="btn-update" data-i18n="update.now">Aktualizovať</button>
+    </div>
 
     <!-- ============ DNES ============ -->
     <section class="screen" id="screen-dnes">
@@ -317,6 +322,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
