@@ -731,6 +731,18 @@ body {
   margin-top: var(--sp-1);
 }
 
+.achievement-xp {
+  display: block;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-black);
+  letter-spacing: var(--track-wide);
+  font-variant-numeric: tabular-nums;
+  color: var(--blue);
+}
+
+.achievement.unlocked .achievement-xp { color: var(--accent); }
+
 /* ===== Tab bar (premium, safe-area aware) ===== */
 
 .tab-bar {
