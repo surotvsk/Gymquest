@@ -190,6 +190,15 @@ body {
   margin-bottom: var(--sp-5);
 }
 
+/* ===== Today date + ISO week (compact subtitle under the screen title) ===== */
+
+.today-date {
+  margin: calc(-1 * var(--sp-3)) 0 var(--sp-4);
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+
 /* ===== Cards ===== */
 
 .card {

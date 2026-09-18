@@ -154,6 +154,7 @@ const I18N = {
     'dnes.excuseNote': 'Tento týždeň je ospravedlnený – séria sa nepreruší.',
     'dnes.start': 'Začať tréning',
     'dnes.nextPlan': 'Odporúčaný: {plan}',
+    'dnes.weekOf': 'Týždeň {n}',
     'trening.finish': 'Dokončiť tréning',
     'trening.finishTitle': 'Dokončiť tréning?',
     'trening.doneTitle': '🏆 Tréning dokončený!',
@@ -320,6 +321,7 @@ const I18N = {
     'dnes.excuseNote': 'This week is excused — the streak is kept.',
     'dnes.start': 'Start workout',
     'dnes.nextPlan': 'Recommended: {plan}',
+    'dnes.weekOf': 'Week {n}',
     'trening.finish': 'Finish workout',
     'trening.finishTitle': 'Finish workout?',
     'trening.doneTitle': '🏆 Workout complete!',
@@ -475,15 +477,43 @@ function tPlural(base, n) {
   return t(base + suffix, { n });
 }
 
+/* Názvy dní a mesiacov pre dátum v hlavičke obrazovky Dnes.
+   Zámerne vlastné polia namiesto Intl.DateTimeFormat – výstup je tak rovnaký
+   vo všetkých prehliadačoch, funguje offline a zodpovedá presnému formátu aplikácie. */
+const WEEKDAYS = {
+  en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  sk: ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'],
+};
+const MONTHS_EN_LONG = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+const MONTHS_SK_GEN = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna',
+  'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
+
 function formatDate(iso) {
   const d = parseDate(iso);
   if (state.settings.lang === 'en') {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   }
-  const months = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna',
-    'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
-  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}`;
+  return `${d.getDate()}. ${MONTHS_SK_GEN[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/* Číslo aktuálneho ISO týždňa – odvodené z toho istého pomocníka, aký používa
+   týždenný cieľ, progres aj séria (weekKey/currentWeekKey). */
+function currentIsoWeekNumber() {
+  return Number(currentWeekKey().split('-W')[1]);
+}
+
+/* Dnešný dátum a ISO týždeň z lokálneho času zariadenia. */
+function todayLabel() {
+  const d = new Date();
+  const lang = WEEKDAYS[state.settings.lang] ? state.settings.lang : 'en';
+  const weekday = WEEKDAYS[lang][d.getDay()];
+  const week = t('dnes.weekOf', { n: currentIsoWeekNumber() });
+  if (lang === 'en') {
+    return `${weekday}, ${MONTHS_EN_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} · ${week}`;
+  }
+  return `${weekday}, ${d.getDate()}. ${MONTHS_SK_GEN[d.getMonth()]} ${d.getFullYear()} · ${week}`;
 }
 
 /* ---------- Konstanty ---------- */
@@ -512,6 +542,8 @@ let pendingImport = null;    // naimportované dáta čakajúce na potvrdenie
 let pendingDeleteWorkout = null; // id tréningu čakajúceho na vymazanie
 let timerInterval = null;
 let timerEnd = 0;
+let dayWatchInterval = null;   // jediný interval pre zmenu dňa (nikdy sa neduplikuje)
+let lastRenderedDay = null;    // naposledy vykreslený lokálny deň "YYYY-MM-DD"
 
 /* ---------- Pomocné funkcie ---------- */
 
@@ -1356,6 +1388,10 @@ function renderDnes() {
   const weekCount = workoutsInWeek(currentWeekKey());
   const streak = computeStreak();
   const excused = state.excusedWeeks.includes(currentWeekKey());
+
+  const dateEl = document.getElementById('today-date');
+  dateEl.textContent = todayLabel();
+  dateEl.setAttribute('datetime', todayISO());
 
   document.getElementById('week-count').textContent = t('dnes.weekDone', { n: weekCount, g: goal });
   document.getElementById('week-progress').style.width = `${Math.min(100, (weekCount / goal) * 100)}%`;
@@ -2387,6 +2423,29 @@ function setupEvents() {
   on('btn-he-save', saveHistoryEdit);
 }
 
+/* ---------- Denný strážca (dátum, ISO týždeň, týždenný progres) ---------- */
+
+/* Ak sa zmenil lokálny deň, prekreslí dátum a týždenné ukazovatele.
+   Zámerne nevolá renderAll(): renderTrening() maže currentSets, takže by to
+   počas tréningu zmazalo označené série. Nič sa neukladá ani nemaže. */
+function refreshDayIfChanged() {
+  const today = todayISO();
+  if (today === lastRenderedDay) return false;
+  lastRenderedDay = today;
+  renderDnes();
+  renderPokrok();
+  return true;
+}
+
+/* Vytvorí práve jeden interval. Opakované volanie nič nerobí,
+   takže po prekreslení nevzniknú duplicitné časovače. */
+function startDayWatcher() {
+  if (dayWatchInterval !== null) return;
+  lastRenderedDay = todayISO();
+  dayWatchInterval = setInterval(refreshDayIfChanged, 60000);
+  document.addEventListener('visibilitychange', refreshDayIfChanged);
+}
+
 /* ---------- Štart ---------- */
 
 loadState();
@@ -2396,6 +2455,7 @@ applyStaticI18n();
 verifyI18n();
 switchTab('dnes');
 renderAll();
+startDayWatcher();
 if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
   openSetup();
 }
