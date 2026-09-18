@@ -1,81 +1,197 @@
 # GymQuest 🏋️
 
-Osobná webová aplikácia na motiváciu k pravidelnému tréningu. Ukáže ti dnešný tréning, sleduje tvoje výkony a odmeňuje ťa za pravidelnosť.
-A personal web app that motivates you to train regularly — it shows today's workout, tracks performance and rewards consistency.
+**A free, offline personal workout tracker for planning workouts, tracking progress, building
+streaks, earning XP, and staying consistent.**
 
-## Ako aplikáciu spustiť / How to run
+GymQuest is a small static web app — no account, no sign-up, no server. Open it and train. It shows
+you today's workout, remembers what you lifted last time, rewards you for showing up, and keeps
+everything on your own device.
 
-Žiadna inštalácia nie je potrebná. Stačí otvoriť súbor `index.html` v prehliadači (dvakrát klikni na súbor, prípadne ho presuň do okna prehliadača). Aplikácia funguje úplne offline.
-No installation needed — open `index.html` in a browser (double-click or drag it into the window). The app works fully offline.
+**Live version:** https://surotvsk.github.io/Gymquest/
 
-## Súbory / Files
+---
 
-| Súbor / File   | Obsah / Purpose                                             |
-|----------------|-------------------------------------------------------------|
-| `index.html`   | Štruktúra stránky – obrazovky, lišta, dialógy / Page structure – screens, tab bar, dialogs |
-| `style.css`    | Tmavý dizajn, farby, veľké tlačidlá / Dark design, colors, big buttons |
-| `script.js`    | Celá logika – stav, tréningy, súdržnosť, XP, úspechy / All logic – state, workouts, streak, XP, achievements |
-| `README.md`    | Táto dokumentácia / This documentation                      |
+## Features
 
-## Obrazovky / Screens
+- **Custom workout plans** — start from the built-in Push / Pull / Legs plans, rename them, reorder
+  them, delete them, or add as many of your own as you like.
+- **Editable weekly goal** — choose how many workouts you want to complete per week (1–7) and change
+  it whenever you want; every counter, streak and reward recalculates immediately.
+- **Workout rotation** — the next recommended workout follows the order of your own plan list, based
+  on the last workout you completed.
+- **Progress tracking** — full workout history with dates, exercises, sets, reps, weights, XP and
+  notes. Edit or delete any past workout.
+- **Personal records and milestones** — best weight per exercise plus an automatic 5 kg milestone
+  badge for every personal record you set.
+- **XP, levels and achievements** — earn XP for finishing workouts and completing sets, level up,
+  and unlock achievements automatically.
+- **Weekly streaks** — consistency is measured in weeks. Reach your goal and the streak grows.
+- **Rest timer** — 60 / 90 / 120 second countdown during a workout.
+- **Comparison with last time** — every exercise shows whether you went heavier or lighter than your
+  previous session.
+- **Two languages** — full Slovak and English interface with an instant `SK | EN` toggle.
+- **Export and import** — back up or restore all of your data as a JSON file.
+- **Installable** — add it to your phone's home screen and it opens like a native app.
 
-- **Dnes / Today** – koľko tréningov si už absolvoval tento týždeň (cieľ nastavíš pri prvom spustení), aktuálna séria pravidelnosti, motivačný odkaz a veľké tlačidlo **Začať tréning / Start workout**.
-- **Tréning / Workout** – hore vidíš názov zvoleného plánu a tlačidlo **✏️ Upraviť plán**, ktorým ho premenuješ. Predvolené sú **Push**, **Pull** a **Nohy**; môžeš ich premenovať, pridať ďalšie tlačidlom **Pridať tréning**, zmeniť ich poradie (‹ ›) alebo plán vymazať (🗑️). Pre každý cvik vidíš názov, počet sérií, opakovaní a váhu v kg. Série označuješ ako hotové a na konci klikneš na **Dokončiť tréning / Finish workout**.
-- **Pokrok / Progress** – história dokončených tréningov (s dátumom, cvikmi, váhami, XP a poznámkou), osobné rekordy a počty tréningov za týždeň a mesiac. Každý tréning v histórii môžeš upraviť ✏️ alebo vymazať 🗑️.
-- **Motivácia / Motivation** – XP body, úroveň s postupovým pruhom a úspechy (vrátane osobných 5 kg míľnikov pre každý cvik).
+---
 
-## Ako to funguje / How it works
+## How to run it
 
-- **Odporúčaný tréning** sa strieda v poradí, v akom máš plány zoradené (napr. Push → Pull → Nohy → Ďalší plán), podľa posledného dokončeného tréningu. Poradie si upravíš tlačidlami ‹ › v editore plánu a odporúčanie vidíš na obrazovke Dnes.
-- **Týždenný cieľ** nastavíš pri prvom spustení (1–7 tréningov, predvolene 3). Kedykoľvek ho zmeníš v ⚙️ Nastavenia: vidíš aktuálnu hodnotu, klikneš na číslo 1–7 a potvrdíš tlačidlom **Uložiť cieľ / Save goal** – ukazovatele sa prepočítajú okamžite.
-- **Súdržnosť (streak)** sa počíta v týždňoch: dosiahnutie týždenného cieľa predĺži sériu o jeden týždeň.
-- **Škola / choroba** – označ vyťažený týždeň tlačidlom na obrazovke Dnes a séria sa nepreruší.
-- **XP a úroveň** – každý tréning dáva **20 XP** + **2 XP** za každú dokončenú sériu. Na ďalšiu úroveň potrebuješ 100 XP.
-- **Úspechy** sa odomykajú automaticky a ukladajú sa s dátumom odomknutia. Pri každom cviku sa odomykajú 5 kg míľniky pri novom osobnom rekorde (napr. prvých 50 kg, potom 55 kg, 60 kg…).
-## Jazyk / Language
+**Online:** open https://surotvsk.github.io/Gymquest/
 
-- Prepínač **SK | EN** v hlavičke okamžite preloží celé rozhranie a voľba sa uloží.
-- **Zabudované plány a cviky** (Push/Pull/Nohy, Drepy, Zhyby, Bicepsové zdvihy atď.) sú obsahom aplikácie, a preto sa v angličtine zobrazujú po anglicky (Squats, Pull-ups, Bicep curls…).
-- **Vlastné cviky**, ktoré si vytvoríš alebo premenuješ, sa nikdy neprekladajú – zobrazujú sa presne tak, ako si ich zadal.
-- **Premenovaný plán** sa stáva vlastným názvom a tiež sa nikdy neprekladá. Ak premenuješ Nohy na „Nohy + Core“, zostane to tak aj v angličtine. Nedotknuté zabudované plány sa prekladajú ďalej.
-- Zmazaný plán nemá vplyv na históriu: staršie tréningy si zachovajú názov plánu, ktorý platil v čase tréningu.
-- História tréningov si zachováva názvy cvikov zaznamenané v čase tréningu.
+**Locally:** no installation, no build step and no dependencies. Just open `index.html` in a
+browser — double-click the file or drag it into a browser window. The app works completely offline.
 
-- The **SK | EN** toggle in the header instantly translates the whole UI and the choice is saved.
-- **Built-in plans and exercises** (Push/Pull/Legs, Drepy, Zhyby, Bicepsové zdvihy…) are app content, so they display in English in EN mode (Squats, Pull-ups, Bicep curls…).
-- **Custom exercises** you create or rename are never translated — they show exactly as you typed them.
-- A **renamed plan** becomes a custom name and is never translated either. If you rename Nohy to “Nohy + Core”, it stays that way in English too. Untouched built-in plans keep translating.
-- A deleted plan does not affect history: older workouts keep the plan name that was valid when they were logged.
-- Workout history keeps the exercise names recorded at the time of each workout.
-- **Oddychový timer** – v tréningu si môžeš spustiť oddych 60, 90 alebo 120 sekúnd.
-- **Porovnanie** – pri každom cviku vidíš, či si zdvihol viac/menej ako minule.
+> Your data is stored per browser and per address, so the local copy and the online copy keep
+> separate data. Use **Export data** / **Import data** to move your history between them.
 
-## História: undo, úprava, vymazanie / History: undo, edit, delete
+---
 
-- Po dokončení tréningu môžeš v dialógu stlačiť **Vrátiť tento tréning späť / Undo this workout** – tréning aj jeho XP sa odoberú.
-- V **Pokrok / Progress** má každý tréning tlačidlá ✏️ (úprava dátumu, poznámky, sérií a váh) a 🗑️ (vymazanie). Po každej zmene sa prepočítajú počty, streak, XP, úroveň, rekordy aj úspechy.
-- **Resetovať tréning** na obrazovke Tréning vymaže len aktuálne označené série – história zostane zachovaná.
+## Files
 
-## Export / Import / Reset
+| File | Purpose |
+|---|---|
+| `index.html` | Page structure — screens, tab bar, dialogs, meta tags |
+| `style.css` | Dark theme, colours, layout, responsive rules |
+| `script.js` | All application logic — state, workouts, rotation, streaks, XP, achievements, translations |
+| `manifest.json` | Web app manifest so the app can be installed to a home screen |
+| `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` | Home screen and app icons |
+| `README.md` | This documentation |
 
-- **Exportovať dáta / Export data** (⚙️ Nastavenia) stiahne celé tvoje dáta ako JSON súbor.
-- **Importovať dáta / Import data** obnoví dáta z JSON zálohy (s overením a potvrdením).
-- **Resetovať dáta / Reset data** vymaže všetko po dvojitom potvrdení.
+---
 
-## Ukladanie dát / Data storage
+## Screens
 
-Všetky dáta sa ukladajú do `localStorage` prehliadača pod kľúčom `gymquest`. Dáta zostanú uložené aj po obnovení stránky a po zatvorení prehliadača.
-All data is stored in browser `localStorage` under the key `gymquest` and survives refresh and browser restarts.
+### Today
+How many workouts you have completed this week, your current consistency streak, a motivational
+line, the recommended next workout, and the big **Start workout** button. You can also mark a week
+as excused if you are busy or ill.
 
-Pri prvom spustení sa po potvrdení týždenného cieľa **neukladajú žiadne ukážkové dáta** – začneš s čistou históriou (0 tréningov, 0 XP, žiadne úspechy). Ukážkové dáta si môžeš kedykoľvek načítať v ⚙️ Nastavenia tlačidlom **Načítať ukážkové dáta** a odstrániť tlačidlom **Odstrániť ukážkové dáta**.
-On first launch, after confirming your weekly goal, **no demo data is created** — you start with a clean history (0 workouts, 0 XP, no achievements). You can load demo data anytime via ⚙️ Settings with **Load demo data**, and remove it with **Remove demo data**.
+### Workout
+The selected plan name with a **✏️ Edit plan** button, and a row of plan chips for switching between
+plans. Editing a plan lets you rename it, reorder it with the ‹ › buttons, delete it with 🗑️, and
+change its exercises — each with sets, reps and target weight in kilograms.
 
-### Vymazanie dát / Clearing data
+Mark each set as done while you train, then press **Finish workout**. You can also run a rest timer
+or reset the current workout without touching your history.
 
-Dáta vymažeš v prehliadači: **Vývojárske nástroje (F12) → Application → Local Storage → gymquest → vymaž hodnotu**, alebo tlačidlom **Resetovať dáta** v nastaveniach.
-Clear data in the browser via **DevTools (F12) → Application → Local Storage → gymquest**, or use **Reset data** in settings.
+### Progress
+Totals for this week, this month and all time, your personal records, and the full history of
+completed workouts. Every workout in the history can be edited ✏️ or deleted 🗑️.
 
-## Technológie / Technology
+### Motivation
+Your XP total, your level with a progress bar, and every achievement — including the 5 kg milestone
+badges earned for personal records.
 
-Iba čisté **HTML**, **CSS** a **vanilla JavaScript**. Žiadne frameworky, žiadna databáza, žiadny backend, žiadne externé služby ani knižnice.
-Only pure **HTML**, **CSS** and **vanilla JavaScript**. No frameworks, no database, no backend, no external services or libraries.
+---
+
+## How it works
+
+- **Recommended workout** — GymQuest rotates through your plans in the order you arranged them
+  (for example Push → Pull → Legs → your own plan), based on the last completed workout. You can
+  always pick a different plan manually. The recommendation is shown on the Today screen and marked
+  with ✦ on the plan chips.
+- **Weekly goal** — set on first launch and changeable any time in ⚙️ Settings. Pick a number from
+  1 to 7 and confirm with **Save goal**. Doctor's-note weeks can be marked as excused in Settings so
+  the streak stays intact.
+- **Streak** — counted in weeks: hitting your weekly goal extends the streak by one week.
+- **Excused weeks** — mark a heavy week with the button on the Today screen and your streak is not
+  broken.
+- **XP and levels** — every workout gives **20 XP** plus **2 XP** for each completed set. You need
+  100 XP to reach the next level.
+- **Achievements** — unlocked automatically and stored with the date they were earned. Each exercise
+  unlocks 5 kg milestones as you set new personal records (for example 50 kg, then 55 kg, then
+  60 kg…).
+
+---
+
+## Languages
+
+GymQuest ships with a full **Slovak** and **English** interface:
+
+- The **`SK | EN`** toggle in the header translates the entire interface instantly, and your choice
+  is saved.
+- **Built-in plans and exercises** are app content and are translated, so the Slovak plan *Nohy*
+  appears as *Legs* in English.
+- **Custom exercises** you create or rename are never translated — they appear exactly as you typed
+  them.
+- A **renamed plan** becomes a custom name and is never translated. Rename *Nohy* to *Nohy + Core*
+  and it stays *Nohy + Core* in English too. Untouched built-in plans keep translating.
+- **Workout history is an immutable record**: it keeps the exercise and plan names that were in use
+  when the workout was logged, so a later rename or deletion never rewrites the past.
+
+---
+
+## History: undo, edit, delete
+
+- After finishing a workout you can press **Undo this workout** in the dialog — the workout and its
+  XP are removed.
+- In **Progress**, every workout has ✏️ (edit date, note, sets, reps and weights) and 🗑️ (delete)
+  buttons. After any change, counts, streak, XP, level, records and achievements are recalculated.
+- **Reset workout** on the Workout screen clears only the sets you have marked in the current
+  session — your history is never touched.
+
+---
+
+## Export, import and reset
+
+- **Export data** (⚙️ Settings) downloads all of your data as a JSON file.
+- **Import data** restores your data from a JSON backup, with validation and a confirmation prompt.
+- **Reset data** erases everything after a double confirmation.
+
+---
+
+## Data storage and privacy
+
+Everything is stored in your browser's `localStorage` under the key `gymquest`, and survives page
+refreshes and browser restarts.
+
+- **There is no backend, no database, no account system, no analytics and no tracking.**
+- Your workouts, plans, XP, streaks and settings **never leave your device** — nothing is uploaded
+  anywhere, because there is no server to receive it.
+- When several people use the same link, **each person's data is private to their own browser.**
+  Nobody can see anybody else's workouts.
+- On first launch, after confirming your weekly goal, **no demo data is created** — you start with a
+  clean history (0 workouts, 0 XP, no achievements). You can load demo data at any time from
+  ⚙️ Settings with **Load demo data**, and remove it with **Remove demo data**.
+
+### Clearing your data
+
+Open **DevTools (F12) → Application → Local Storage → `gymquest`** and delete the value, or use
+**Reset data** in Settings.
+
+### A note for iPhone users
+
+Safari removes script-writable storage (including `localStorage`) after roughly **7 days without
+visiting the site**. Adding GymQuest to your **Home Screen** avoids that limit, which is the
+recommended way to use it on iOS. Regardless: **export a backup occasionally** — a browser is not a
+durable database.
+
+---
+
+## Deployment
+
+GymQuest is a purely static site, so it is published with **GitHub Pages** and needs no build step,
+no CI pipeline and no server.
+
+- **Source:** the `main` branch, `/ (root)` folder.
+- **To deploy your own copy:** create a public repository, push these files to `main`, then open
+  **Settings → Pages**, choose **Deploy from a branch**, select `main` and `/ (root)`, and save.
+- **Resulting URL:** `https://<your-user>.github.io/<your-repo>/`
+
+Nothing has to be compiled: the files in the repository are exactly the files the browser runs.
+
+---
+
+## Technology
+
+Pure **HTML**, **CSS** and **vanilla JavaScript**. No frameworks, no database, no backend, no
+external services, no CDN and no third-party libraries. There is nothing to install and nothing to
+build.
+
+---
+
+## Licence
+
+This is a personal project and no licence file is included, so no reuse rights are granted beyond
+viewing the source.
