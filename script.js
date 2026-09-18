@@ -601,7 +601,7 @@ function defaultState() {
     planOrder: DEFAULT_PLAN_ORDER.slice(),
     history: [],
     excusedWeeks: [],
-    settings: { weeklyGoal: 3, lang: 'sk' },
+    settings: { weeklyGoal: 3, lang: 'en' },
     achievements: {},
     demo: false,
   };
