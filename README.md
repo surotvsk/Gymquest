@@ -67,6 +67,19 @@ How many workouts you have completed this week, your current consistency streak,
 line, the recommended next workout, and the big **Start workout** button. You can also mark a week
 as excused if you are busy or ill.
 
+The current date, weekday and ISO week number are shown under the heading.
+
+### Calendar
+A monthly grid with Monday as the first day of the week, previous/next month navigation and a
+**Today** button. Each day shows its status at a glance: **green** means a workout was completed
+that day (with a small badge when you trained more than once), a **muted red** day is a past day
+with no workout recorded, a **neutral** day is in the future, and **today** always carries an
+orange outline. The legend repeats the same meaning in words.
+
+Tap any day in the month to see its full date and status, plus the plan name, exercises, sets,
+reps, weight, completed sets, XP, note and any achievements unlocked that day. Days are matched to
+your history by local calendar date, so a workout always appears on the day you recorded it.
+
 ### Workout
 The selected plan name with a **✏️ Edit plan** button, and a row of plan chips for switching between
 plans. Editing a plan lets you rename it, reorder it with the ‹ › buttons, delete it with 🗑️, and

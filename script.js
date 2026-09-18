@@ -118,7 +118,22 @@ function recordedNameToDisplay(name) {
 
 const I18N = {
   sk: {
-    'tab.dnes': 'Dnes', 'tab.trening': 'Tréning', 'tab.pokrok': 'Pokrok', 'tab.motivacia': 'Motivácia',
+    'tab.dnes': 'Dnes', 'tab.trening': 'Tréning', 'tab.pokrok': 'Pokrok', 'tab.motivacia': 'Motivácia', 'tab.kalendar': 'Kalendár',
+    'kalendar.prevMonth': 'Predchádzajúci mesiac',
+    'kalendar.nextMonth': 'Nasledujúci mesiac',
+    'kalendar.goToday': 'Dnes',
+    'kalendar.legendTitle': 'Legenda',
+    'kalendar.legendWorkout': 'Zelená — Dokončený tréning',
+    'kalendar.legendMissed': 'Červená — Žiadny zaznamenaný tréning',
+    'kalendar.legendToday': 'Oranžový okraj — Dnes',
+    'kalendar.statusWorkout': 'Dokončený tréning',
+    'kalendar.statusNone': 'Žiadny zaznamenaný tréning',
+    'kalendar.statusTodayNone': 'Dnes — zatiaľ bez zaznamenaného tréningu',
+    'kalendar.statusFuture': 'Tento dátum je v budúcnosti.',
+    'kalendar.emptyPast': 'V tento deň nebol zaznamenaný žiadny tréning.',
+    'kalendar.achievements': 'Odomknuté úspechy',
+    'kalendar.ariaDay': '{date} — {status}',
+    'kalendar.ariaWorkoutCount': '{n} tréningy v tento deň',
     'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Nohy',
     'plan.newName': 'Nový plán',
     'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Tlaky nad hlavou', 'exercise.dips': 'Dipy', 'exercise.lateral-raises': 'Upažovanie',
@@ -285,7 +300,22 @@ const I18N = {
     'motivacia.newAchievement': 'Nový úspech: {names}',
   },
   en: {
-    'tab.dnes': 'Today', 'tab.trening': 'Workout', 'tab.pokrok': 'Progress', 'tab.motivacia': 'Motivation',
+    'tab.dnes': 'Today', 'tab.trening': 'Workout', 'tab.pokrok': 'Progress', 'tab.motivacia': 'Motivation', 'tab.kalendar': 'Calendar',
+    'kalendar.prevMonth': 'Previous month',
+    'kalendar.nextMonth': 'Next month',
+    'kalendar.goToday': 'Today',
+    'kalendar.legendTitle': 'Legend',
+    'kalendar.legendWorkout': 'Green — Workout completed',
+    'kalendar.legendMissed': 'Red — No workout recorded',
+    'kalendar.legendToday': 'Orange outline — Today',
+    'kalendar.statusWorkout': 'Workout completed',
+    'kalendar.statusNone': 'No workout recorded',
+    'kalendar.statusTodayNone': 'Today — no workout recorded yet',
+    'kalendar.statusFuture': 'This date is in the future.',
+    'kalendar.emptyPast': 'No workout was recorded on this day.',
+    'kalendar.achievements': 'Achievements unlocked',
+    'kalendar.ariaDay': '{date} — {status}',
+    'kalendar.ariaWorkoutCount': '{n} workouts on this day',
     'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Legs',
     'plan.newName': 'New workout plan',
     'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Overhead press', 'exercise.dips': 'Dips', 'exercise.lateral-raises': 'Lateral raises',
@@ -488,6 +518,23 @@ const MONTHS_EN_LONG = ['January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
 const MONTHS_SK_GEN = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna',
   'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
+/* Nominatív pre názov mesiaca v kalendári ("September 2026"). */
+const MONTHS_SK_NOM = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún',
+  'Júl', 'August', 'September', 'Október', 'November', 'December'];
+/* Krátke dni v týždni pre hlavičku kalendára – pondelok prvý. */
+const WEEKDAYS_SHORT = {
+  en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  sk: ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'],
+};
+
+/* Pondelok = 0 … nedeľa = 6. Rovnaká konvencia, akú používa weekKey(). */
+function mondayIndex(d) {
+  return (d.getDay() + 6) % 7;
+}
+
+function activeLang() {
+  return WEEKDAYS[state.settings.lang] ? state.settings.lang : 'en';
+}
 
 function formatDate(iso) {
   const d = parseDate(iso);
@@ -504,16 +551,20 @@ function currentIsoWeekNumber() {
   return Number(currentWeekKey().split('-W')[1]);
 }
 
+/* Plný dátum podľa aktuálneho jazyka: "Friday, September 18, 2026" / "Piatok, 18. septembra 2026".
+   Zdieľa ho hlavička Dnes aj detail dňa v kalendári. */
+function formatFullDate(d) {
+  const lang = activeLang();
+  const weekday = WEEKDAYS[lang][d.getDay()];
+  if (lang === 'en') {
+    return `${weekday}, ${MONTHS_EN_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+  return `${weekday}, ${d.getDate()}. ${MONTHS_SK_GEN[d.getMonth()]} ${d.getFullYear()}`;
+}
+
 /* Dnešný dátum a ISO týždeň z lokálneho času zariadenia. */
 function todayLabel() {
-  const d = new Date();
-  const lang = WEEKDAYS[state.settings.lang] ? state.settings.lang : 'en';
-  const weekday = WEEKDAYS[lang][d.getDay()];
-  const week = t('dnes.weekOf', { n: currentIsoWeekNumber() });
-  if (lang === 'en') {
-    return `${weekday}, ${MONTHS_EN_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} · ${week}`;
-  }
-  return `${weekday}, ${d.getDate()}. ${MONTHS_SK_GEN[d.getMonth()]} ${d.getFullYear()} · ${week}`;
+  return formatFullDate(new Date()) + ' · ' + t('dnes.weekOf', { n: currentIsoWeekNumber() });
 }
 
 /* ---------- Konstanty ---------- */
@@ -544,15 +595,24 @@ let timerInterval = null;
 let timerEnd = 0;
 let dayWatchInterval = null;   // jediný interval pre zmenu dňa (nikdy sa neduplikuje)
 let lastRenderedDay = null;    // naposledy vykreslený lokálny deň "YYYY-MM-DD"
+/* Stav kalendára – len v pamäti, zámerne sa neukladá (kalendár sa vždy otvára na aktuálnom mesiaci). */
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
+let selectedDayKey = null;
 
 /* ---------- Pomocné funkcie ---------- */
 
-function todayISO() {
-  const d = new Date();
+/* Lokálny kľúč dňa "YYYY-MM-DD". Zámerne z lokálnych zložiek – toISOString() je UTC
+   a mohol by posunúť dátum o deň. */
+function localDateKey(d) {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
+}
+
+function todayISO() {
+  return localDateKey(new Date());
 }
 
 function parseDate(iso) {
@@ -1855,6 +1915,204 @@ function renderMotivacia() {
   }
 }
 
+/* ---------- Vykreslenie: KALENDÁR ---------- */
+
+/* Jedna O(n) prechádzka históriou na mapu podľa lokálneho dátumu. */
+function historyByDate() {
+  const map = {};
+  for (const w of state.history) {
+    if (!w || !w.date) continue;
+    if (!map[w.date]) map[w.date] = [];
+    map[w.date].push(w);
+  }
+  return map;
+}
+
+/* Jedna O(n) prechádzka úspechmi na mapu podľa dátumu odomknutia. */
+function achievementsByDate() {
+  const map = {};
+  for (const [id, date] of Object.entries(state.achievements || {})) {
+    if (!date) continue;
+    if (!map[date]) map[date] = [];
+    map[date].push(id);
+  }
+  return map;
+}
+
+/* Jednotný čitateľný názov úspechu (statické + 5 kg míľniky). */
+function achievementLabel(id) {
+  if (id.indexOf('ms-') === 0) {
+    const parts = id.split('-');
+    const kg = parts[parts.length - 1];
+    const name = recordedNameToDisplay(parts.slice(1, -1).join('-'));
+    return t('motivacia.ach.5kg', { name, kg });
+  }
+  const def = staticAchievementDefs().find(d => d.id === id);
+  return def ? `${def.icon} ${t(def.nameKey)}` : id;
+}
+
+/* Názov cviku v histórii: podľa stabilného exId, inak podľa zaznamenaného názvu. */
+function historyExerciseName(ex) {
+  if (ex.exId && BUILTIN_EXERCISE_IDS.has(ex.exId)) return t('exercise.' + ex.exId);
+  return recordedNameToDisplay(ex.name);
+}
+
+function monthTitle() {
+  const names = activeLang() === 'sk' ? MONTHS_SK_NOM : MONTHS_EN_LONG;
+  return `${names[viewMonth]} ${viewYear}`;
+}
+
+/* Krátky text stavu dňa – používa ho aria-label aj detail dňa. */
+function dayStatusText(key, count) {
+  if (count > 0) return t('kalendar.statusWorkout');
+  if (key > todayISO()) return t('kalendar.statusFuture');
+  if (key === todayISO()) return t('kalendar.statusTodayNone');
+  return t('kalendar.statusNone');
+}
+
+function renderKalendar() {
+  const byDate = historyByDate();
+  const today = todayISO();
+  const lang = activeLang();
+
+  document.getElementById('calendar-title').textContent = monthTitle();
+
+  const wd = document.getElementById('calendar-weekdays');
+  wd.innerHTML = '';
+  for (const label of WEEKDAYS_SHORT[lang]) {
+    const el = document.createElement('span');
+    el.className = 'calendar-weekday';
+    el.textContent = label;
+    wd.appendChild(el);
+  }
+
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const lead = mondayIndex(new Date(viewYear, viewMonth, 1));
+  const totalCells = Math.ceil((lead + daysInMonth) / 7) * 7;
+
+  const grid = document.getElementById('calendar-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < totalCells; i++) {
+    const dayNum = i - lead + 1;
+    if (dayNum < 1 || dayNum > daysInMonth) {
+      /* Deň z vedľajšieho mesiaca: stlmený, neinteraktívny, bez stavových farieb.
+         Zámerné správanie: kliknutie nič nerobí (nie je to tlačidlo). */
+      const other = dayNum < 1
+        ? new Date(viewYear, viewMonth, dayNum)
+        : new Date(viewYear, viewMonth + 1, dayNum - daysInMonth);
+      const span = document.createElement('span');
+      span.className = 'cal-cell cal-outside';
+      span.setAttribute('aria-hidden', 'true');
+      span.textContent = String(other.getDate());
+      grid.appendChild(span);
+      continue;
+    }
+
+    const date = new Date(viewYear, viewMonth, dayNum);
+    const key = localDateKey(date);
+    const workouts = byDate[key] || [];
+    const isToday = key === today;
+    const isFuture = key > today;
+    const status = dayStatusText(key, workouts.length);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.day = key;
+    btn.className = 'cal-cell'
+      + (workouts.length ? ' cal-done' : (isFuture || isToday ? '' : ' cal-miss'))
+      + (isToday ? ' cal-today' : '')
+      + (isFuture ? ' cal-future' : '')
+      + (key === selectedDayKey ? ' cal-selected' : '');
+    let aria = t('kalendar.ariaDay', { date: formatFullDate(date), status });
+    if (workouts.length > 1) aria += ' · ' + t('kalendar.ariaWorkoutCount', { n: workouts.length });
+    btn.setAttribute('aria-label', aria);
+    btn.innerHTML = `<span class="cal-num">${dayNum}</span>`
+      + (workouts.length > 1 ? `<span class="cal-badge">${workouts.length}</span>` : '');
+    grid.appendChild(btn);
+  }
+}
+
+function shiftMonth(delta) {
+  const d = new Date(viewYear, viewMonth + delta, 1);   // Date vyrieši aj prechod rokov
+  viewYear = d.getFullYear();
+  viewMonth = d.getMonth();
+  renderKalendar();
+}
+
+function goToCurrentMonth() {
+  const n = new Date();
+  viewYear = n.getFullYear();
+  viewMonth = n.getMonth();
+  renderKalendar();
+}
+
+function openDay(key) {
+  selectedDayKey = key;
+  if (activeTab === 'kalendar') renderKalendar();
+  renderDayDetail(key);
+  document.getElementById('modal-day').hidden = false;
+  document.getElementById('btn-day-close').focus();
+}
+
+function closeDay() {
+  document.getElementById('modal-day').hidden = true;
+}
+
+function workoutBlock(w) {
+  const div = document.createElement('div');
+  div.className = 'day-workout';
+  const rows = w.exercises.map(ex => `
+    <div class="day-ex">
+      <span class="day-ex-name">${esc(historyExerciseName(ex))}</span>
+      <span class="day-ex-meta">${ex.sets} × ${ex.reps} · ${ex.weight} ${t('units.kg')} · ${ex.setsDone} ${t('history.setsDoneLabel')}</span>
+    </div>`).join('');
+  div.innerHTML = `
+    <div class="day-workout-head">
+      <span class="day-workout-name">${esc(historyPlanName(w))}</span>
+      <span class="day-workout-xp">+${w.xp} ${t('units.xp')}</span>
+    </div>
+    <div class="day-workout-date">${esc(formatDate(w.date))}</div>
+    ${rows}
+    ${w.note ? `<div class="modal-note">“${esc(w.note)}”</div>` : ''}`;
+  return div;
+}
+
+function renderDayDetail(key) {
+  const date = parseDate(key);
+  const today = todayISO();
+  const isFuture = key > today;
+  const workouts = historyByDate()[key] || [];
+
+  document.getElementById('day-title').textContent = formatFullDate(date);
+
+  const statusEl = document.getElementById('day-status');
+  statusEl.className = 'day-status ' + (workouts.length ? 'day-status-done'
+    : isFuture ? 'day-status-future'
+    : key === today ? 'day-status-today' : 'day-status-miss');
+  statusEl.textContent = dayStatusText(key, workouts.length);
+
+  const body = document.getElementById('day-body');
+  body.innerHTML = '';
+  if (isFuture) {
+    body.innerHTML = `<p class="card-note">${esc(t('kalendar.statusFuture'))}</p>`;
+    return;
+  }
+  if (!workouts.length) {
+    body.innerHTML = `<p class="card-note">${esc(t('kalendar.emptyPast'))}</p>`;
+  } else {
+    for (const w of workouts) body.appendChild(workoutBlock(w));
+  }
+
+  const achIds = achievementsByDate()[key] || [];
+  if (achIds.length) {
+    const box = document.createElement('div');
+    box.className = 'day-achievements';
+    box.innerHTML = `<div class="day-label">${esc(t('kalendar.achievements'))}</div>`
+      + achIds.map(id => `<div class="day-ach">${esc(achievementLabel(id))}</div>`).join('');
+    body.appendChild(box);
+  }
+}
+
 /* ---------- Celkové vykreslenie ---------- */
 
 function renderAll() {
@@ -1862,19 +2120,25 @@ function renderAll() {
   renderTrening();
   renderPokrok();
   renderMotivacia();
+  // Kalendár sa prekresľuje len keď je otvorený – zbytočne nepočítame iné obrazovky.
+  if (activeTab === 'kalendar') renderKalendar();
+  // Otvorený detail dňa musí zareagovať na zmenu jazyka aj na zmenu histórie.
+  const dayModal = document.getElementById('modal-day');
+  if (dayModal && !dayModal.hidden && selectedDayKey) renderDayDetail(selectedDayKey);
 }
 
 /* ---------- Prepínanie kariet ---------- */
 
 function switchTab(tab) {
   activeTab = tab;
-  for (const s of ['dnes', 'trening', 'pokrok', 'motivacia']) {
+  for (const s of ['dnes', 'trening', 'pokrok', 'motivacia', 'kalendar']) {
     document.getElementById(`screen-${s}`).hidden = s !== tab;
   }
   document.querySelectorAll('.tab').forEach(el => {
     el.classList.toggle('active', el.dataset.tab === tab);
   });
   if (tab === 'trening') renderTrening();
+  if (tab === 'kalendar') renderKalendar();
 }
 
 /* ---------- Ukončenie tréningu ---------- */
@@ -2421,6 +2685,22 @@ function setupEvents() {
 
   on('btn-he-cancel', () => { document.getElementById('modal-history-edit').hidden = true; });
   on('btn-he-save', saveHistoryEdit);
+
+  /* --- Kalendár --- */
+  on('btn-cal-prev', () => shiftMonth(-1));
+  on('btn-cal-next', () => shiftMonth(1));
+  on('btn-cal-today', goToCurrentMonth);
+  on('btn-day-close', closeDay);
+  // jediný delegovaný listener na mriežku – nevzniká 42 listenerov pri každom prekreslení
+  on('calendar-grid', (e) => {
+    const btn = e.target.closest ? e.target.closest('[data-day]') : null;
+    if (btn && btn.dataset.day) openDay(btn.dataset.day);
+  });
+  // jeden dokumentový listener pre Esc (modal nie je fokusovateľný kontajner)
+  document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('modal-day');
+    if (e.key === 'Escape' && modal && !modal.hidden) closeDay();
+  });
 }
 
 /* ---------- Denný strážca (dátum, ISO týždeň, týždenný progres) ---------- */
@@ -2434,6 +2714,7 @@ function refreshDayIfChanged() {
   lastRenderedDay = today;
   renderDnes();
   renderPokrok();
+  if (activeTab === 'kalendar') renderKalendar();   // oranžový krúžok "dnes" sa posunie
   return true;
 }
 

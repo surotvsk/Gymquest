@@ -168,6 +168,33 @@
       </div>
     </section>
 
+    <!-- ============ KALENDÁR ============ -->
+    <section class="screen" id="screen-kalendar" hidden>
+      <h2 class="screen-title" data-i18n="tab.kalendar">Kalendár</h2>
+
+      <div class="card">
+        <div class="calendar-head">
+          <button class="btn-icon" id="btn-cal-prev" data-i18n-title="kalendar.prevMonth" data-i18n-aria="kalendar.prevMonth">‹</button>
+          <span class="calendar-title" id="calendar-title">September 2026</span>
+          <button class="btn-icon" id="btn-cal-next" data-i18n-title="kalendar.nextMonth" data-i18n-aria="kalendar.nextMonth">›</button>
+        </div>
+        <div class="calendar-weekdays" id="calendar-weekdays" aria-hidden="true"></div>
+        <div class="calendar-grid" id="calendar-grid" role="grid" data-i18n-aria="tab.kalendar"></div>
+        <div class="row-actions">
+          <button class="btn btn-secondary" id="btn-cal-today" data-i18n="kalendar.goToday">Dnes</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="kalendar.legendTitle">Legenda</h3>
+        <ul class="calendar-legend">
+          <li class="legend-item"><span class="legend-swatch swatch-ok" aria-hidden="true"></span><span data-i18n="kalendar.legendWorkout">Zelená — Dokončený tréning</span></li>
+          <li class="legend-item"><span class="legend-swatch swatch-miss" aria-hidden="true"></span><span data-i18n="kalendar.legendMissed">Červená — Žiadny zaznamenaný tréning</span></li>
+          <li class="legend-item"><span class="legend-swatch swatch-today" aria-hidden="true"></span><span data-i18n="kalendar.legendToday">Oranžový okraj — Dnes</span></li>
+        </ul>
+      </div>
+    </section>
+
   </main>
 
   <nav class="tab-bar">
@@ -175,6 +202,7 @@
     <button class="tab" data-tab="trening"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5 17.5 17.5"/><path d="M7 4 4 7l13 13 3-3L7 4z"/><path d="M11 8 8 11"/><path d="M16 13l-3 3"/></svg></span><span data-i18n="tab.trening">Tréning</span></button>
     <button class="tab" data-tab="pokrok"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg></span><span data-i18n="tab.pokrok">Pokrok</span></button>
     <button class="tab" data-tab="motivacia"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg></span><span data-i18n="tab.motivacia">Motivácia</span></button>
+    <button class="tab" data-tab="kalendar"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg></span><span data-i18n="tab.kalendar">Kalendár</span></button>
   </nav>
 
   <!-- ============ MODAL: potvrdenie dokončenia ============ -->
@@ -273,6 +301,18 @@
       <div class="modal-actions">
         <button class="btn btn-secondary" id="btn-he-cancel" data-i18n="common.cancel">Zrušiť</button>
         <button class="btn btn-primary" id="btn-he-save" data-i18n="common.save">Uložiť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: detail dňa (kalendár) ============ -->
+  <div class="modal-backdrop" id="modal-day" hidden>
+    <div class="modal">
+      <h3 id="day-title"></h3>
+      <p class="day-status" id="day-status"></p>
+      <div class="day-body" id="day-body"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-day-close" data-i18n="common.close">Zavrieť</button>
       </div>
     </div>
   </div>

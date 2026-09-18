@@ -34,6 +34,14 @@
   --danger-soft: rgba(229, 72, 77, 0.12);
   --danger-line: rgba(229, 72, 77, 0.4);
 
+  /* ---- calendar day status (semantic only, never the theme) ---- */
+  --ok:        #4E9F6B;                    /* muted forest green - completed workout */
+  --ok-soft:   rgba(78, 159, 107, 0.14);
+  --ok-line:   rgba(78, 159, 107, 0.45);
+  --miss:      #C77E86;                    /* soft rose - deliberately quieter than --danger */
+  --miss-soft: rgba(199, 126, 134, 0.10);
+  --miss-line: rgba(199, 126, 134, 0.34);
+
   /* ---- elevation ---- */
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-2: 0 6px 20px rgba(0, 0, 0, 0.45);
@@ -752,6 +760,213 @@ body {
 
 .achievement.unlocked .achievement-xp { color: var(--accent); }
 
+/* ===== Calendar ===== */
+
+.calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.calendar-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-black);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  /* minmax(0, 1fr) lets the columns shrink below their content minimum, so the grid
+     can never overflow its card at any viewport width. */
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.calendar-weekdays { margin-bottom: var(--sp-2); }
+
+.calendar-weekday {
+  text-align: center;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.cal-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Square, sized purely by the column width: a fixed min-height would force a minimum
+     WIDTH through aspect-ratio and make the 7-column grid overflow on narrow phones. */
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+button.cal-cell:hover { border-color: var(--border-strong); }
+
+/* completed workout */
+.cal-cell.cal-done {
+  background: var(--ok-soft);
+  border-color: var(--ok-line);
+  color: var(--ok);
+}
+
+/* past day without a workout - quiet, factual, never alarming */
+.cal-cell.cal-miss {
+  background: var(--miss-soft);
+  border-color: var(--miss-line);
+  color: var(--miss);
+}
+
+/* neutral: future days never look missed */
+.cal-cell.cal-future {
+  background: var(--surface);
+  border-color: transparent;
+  color: var(--text-dim);
+}
+
+/* today: accent ring, independent of workout state so both read at once */
+.cal-cell.cal-today {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+  color: var(--accent);
+}
+
+.cal-cell.cal-done.cal-today { color: var(--ok); }
+
+.cal-cell.cal-selected { outline: 2px solid var(--border-strong); outline-offset: 1px; }
+
+.cal-cell.cal-outside {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-faint);
+  cursor: default;
+  opacity: 0.6;
+}
+
+.cal-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 2px;
+  border-radius: var(--r-full);
+  background: var(--ok);
+  color: #0C0D10;
+  font-size: 8px;
+  font-weight: var(--fw-black);
+  line-height: 13px;
+  text-align: center;
+}
+
+.calendar-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.legend-swatch {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+}
+
+.legend-swatch.swatch-ok { background: var(--ok-soft); border-color: var(--ok-line); }
+.legend-swatch.swatch-miss { background: var(--miss-soft); border-color: var(--miss-line); }
+.legend-swatch.swatch-today { background: transparent; border-color: var(--accent); }
+
+/* ===== Day detail modal ===== */
+
+#modal-day .modal {
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.day-status {
+  font-weight: var(--fw-bold);
+  color: var(--text-dim);
+}
+
+.day-status-done { color: var(--ok); }
+.day-status-miss { color: var(--miss); }
+.day-status-today { color: var(--accent); }
+
+.day-body { text-align: left; }
+
+.day-workout {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+
+.day-workout + .day-workout { margin-top: var(--sp-3); }
+
+.day-workout-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.day-workout-name { font-weight: var(--fw-black); font-size: var(--fs-md); }
+.day-workout-xp { color: var(--accent); font-weight: var(--fw-black); font-variant-numeric: tabular-nums; }
+.day-workout-date { color: var(--text-faint); font-size: var(--fs-xs); margin-top: 2px; }
+
+.day-ex {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--sp-2) 0 0;
+}
+
+.day-ex-name { font-size: var(--fs-sm); font-weight: var(--fw-bold); }
+.day-ex-meta { font-size: var(--fs-xs); color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.day-achievements { margin-top: var(--sp-4); }
+.day-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-1);
+}
+.day-ach { font-size: var(--fs-sm); color: var(--text-dim); }
+
 /* ===== Tab bar (premium, safe-area aware) ===== */
 
 .tab-bar {
@@ -812,6 +1027,21 @@ body {
 
 .tab.active { color: var(--accent); }
 .tab.active::before { opacity: 1; }
+
+/* Very narrow screens (320px-class devices): allow the 5th tab to wrap instead of
+   overflowing the viewport. Above this width the tab bar is untouched. */
+@media (max-width: 340px) {
+  .tab {
+    min-width: 0;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+  .tab > span[data-i18n] {
+    white-space: normal;
+    line-height: 1.15;
+    text-align: center;
+  }
+}
 
 .tab-icon {
   font-size: 0;
