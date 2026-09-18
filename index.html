@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f1218">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="GymQuest">
+  <title>GymQuest</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1 class="app-title">GymQuest</h1>
+    <div class="header-actions">
+      <button class="lang-toggle" id="btn-lang" data-i18n-title="header.langTitle"><span class="lang-sk">SK</span>|<span class="lang-en">EN</span></button>
+      <button class="btn-icon" id="btn-settings" data-i18n-title="header.settingsTitle">⚙️</button>
+      <div class="header-level" id="header-level" data-i18n-title="header.levelTitle">Úr. 0</div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <p class="storage-warning" id="app-storage-warning" data-i18n="app.storageError" hidden></p>
+
+    <!-- ============ DNES ============ -->
+    <section class="screen" id="screen-dnes">
+      <h2 class="screen-title" data-i18n="tab.dnes">Dnes</h2>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="dnes.weekTitle">Tréningy tento týždeň</span>
+          <span class="card-value" id="week-count">0 z 3</span>
+        </div>
+        <div class="progress"><div class="progress-fill" id="week-progress"></div></div>
+        <p class="card-sub" id="week-sub">Ešte 3 tréningy do splnenia cieľa.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="dnes.streakTitle">🔥 Súdržnosť</span>
+          <span class="card-value" id="streak-value">0 týždňov</span>
+        </div>
+        <p class="card-sub" id="streak-sub">Absolvuj aspoň 3 tréningy za týždeň.</p>
+        <button class="btn btn-secondary btn-block" id="btn-excuse" data-i18n="dnes.excuse">Škola / choroba</button>
+        <p class="card-note" id="excuse-note" hidden></p>
+      </div>
+
+      <div class="card motivation-card">
+        <p class="motivation-text" id="motivation-text">Každý tréning ťa posúva bližšie k cieľu.</p>
+      </div>
+
+      <p class="card-sub next-plan" id="dnes-next-plan"></p>
+
+      <button class="btn btn-primary btn-big" id="btn-start-workout" data-i18n="dnes.start">Začať tréning</button>
+    </section>
+
+    <!-- ============ TRÉNING ============ -->
+    <section class="screen" id="screen-trening" hidden>
+      <h2 class="screen-title" data-i18n="tab.trening">Tréning</h2>
+
+      <div class="plan-head">
+        <div class="plan-head-text">
+          <span class="plan-head-label" data-i18n="trening.planLabel">Tréningový plán</span>
+          <h3 class="plan-head-name" id="plan-title">Push</h3>
+        </div>
+        <button class="btn btn-secondary plan-edit-btn" id="btn-plan-rename" data-i18n="trening.editPlanButton">✏️ Upraviť plán</button>
+      </div>
+
+      <div class="plan-chips" id="plan-chips"></div>
+
+      <button class="btn btn-secondary btn-block" id="btn-add-plan" data-i18n="trening.addPlan">+ Pridať tréning</button>
+
+      <div class="edit-panel" id="edit-panel" hidden>
+        <label class="modal-label" for="edit-plan-name" data-i18n="trening.planNameLabel">Názov plánu</label>
+        <div class="edit-head">
+          <button class="btn-icon" id="btn-plan-left" data-i18n-title="trening.movePlanLeft" data-i18n-aria="trening.movePlanLeft">‹</button>
+          <input type="text" class="modal-input" id="edit-plan-name" maxlength="40" data-i18n-placeholder="trening.planNamePlaceholder" placeholder="Napr. Horná časť tela">
+          <button class="btn-icon" id="btn-plan-right" data-i18n-title="trening.movePlanRight" data-i18n-aria="trening.movePlanRight">›</button>
+          <button class="btn-icon btn-icon-danger" id="btn-plan-delete" data-i18n-title="trening.deletePlan" data-i18n-aria="trening.deletePlan">🗑️</button>
+        </div>
+        <div class="edit-rows" id="edit-rows"></div>
+        <button class="btn btn-secondary btn-block" id="btn-add-exercise" data-i18n="trening.addExercise">+ Pridať cvik</button>
+        <p class="card-note" id="edit-error" hidden></p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="btn-edit-cancel" data-i18n="common.cancel">Zrušiť</button>
+          <button class="btn btn-primary" id="btn-edit-save" data-i18n="common.save">Uložiť</button>
+        </div>
+      </div>
+
+      <div class="exercise-list" id="exercise-list"></div>
+
+      <div class="summary-bar" id="summary-bar"></div>
+
+      <div class="timer-bar" id="timer-bar" hidden>
+        <span class="timer-label" id="timer-label" data-i18n="trening.timerLabel">Oddych</span>
+        <span class="timer-time" id="timer-time">01:30</span>
+        <button class="btn-icon" id="timer-stop" data-i18n-title="trening.timerStop">✕</button>
+      </div>
+
+      <h3 class="card-title" data-i18n="trening.timerSection">Časovač oddychu</h3>
+      <div class="timer-chips">
+        <button class="chip timer-chip" data-seconds="60" data-i18n-aria="trening.timerStart">60 s</button>
+        <button class="chip timer-chip" data-seconds="90" data-i18n-aria="trening.timerStart">90 s</button>
+        <button class="chip timer-chip" data-seconds="120" data-i18n-aria="trening.timerStart">120 s</button>
+      </div>
+
+      <div class="row-actions">
+        <button class="btn btn-secondary" id="btn-reset-session" data-i18n="trening.resetSession">Resetovať tréning</button>
+      </div>
+
+      <button class="btn btn-primary btn-big" id="btn-finish-workout" disabled data-i18n="trening.finish">Dokončiť tréning</button>
+    </section>
+
+    <!-- ============ POKROK ============ -->
+    <section class="screen" id="screen-pokrok" hidden>
+      <h2 class="screen-title" data-i18n="tab.pokrok">Pokrok</h2>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-week">0</span>
+          <span class="stat-label" data-i18n="pokrok.thisWeek">Tento týždeň</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-month">0</span>
+          <span class="stat-label" data-i18n="pokrok.thisMonth">Tento mesiac</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label" data-i18n="pokrok.total">Celkom</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="pokrok.recordsTitle">🏆 Osobné rekordy</h3>
+        <div id="records-list"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="pokrok.historyTitle">📋 História tréningov</h3>
+        <div id="history-list"></div>
+      </div>
+    </section>
+
+    <!-- ============ MOTIVÁCIA ============ -->
+    <section class="screen" id="screen-motivacia" hidden>
+      <h2 class="screen-title" data-i18n="tab.motivacia">Motivácia</h2>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="motivacia.levelTitle">Úroveň</span>
+          <span class="card-value" id="level-value">0</span>
+        </div>
+        <div class="progress"><div class="progress-fill" id="level-progress"></div></div>
+        <p class="card-sub" id="level-sub">Potrebuješ 100 XP na ďalšiu úroveň.</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" data-i18n="motivacia.achTitle">🎖️ Úspechy</h3>
+        <div class="achievements" id="achievements-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tab-bar">
+    <button class="tab active" data-tab="dnes"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span><span data-i18n="tab.dnes">Dnes</span></button>
+    <button class="tab" data-tab="trening"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5 17.5 17.5"/><path d="M7 4 4 7l13 13 3-3L7 4z"/><path d="M11 8 8 11"/><path d="M16 13l-3 3"/></svg></span><span data-i18n="tab.trening">Tréning</span></button>
+    <button class="tab" data-tab="pokrok"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg></span><span data-i18n="tab.pokrok">Pokrok</span></button>
+    <button class="tab" data-tab="motivacia"><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg></span><span data-i18n="tab.motivacia">Motivácia</span></button>
+  </nav>
+
+  <!-- ============ MODAL: potvrdenie dokončenia ============ -->
+  <div class="modal-backdrop" id="modal-confirm" hidden>
+    <div class="modal">
+      <h3 data-i18n="trening.finishTitle">Dokončiť tréning?</h3>
+      <p id="confirm-text"></p>
+      <label class="modal-label" data-i18n="trening.noteLabel">Poznámka (voliteľná)</label>
+      <input type="text" id="confirm-note" class="modal-input" maxlength="200" placeholder="…">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-confirm-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button class="btn btn-primary" id="btn-confirm-ok" data-i18n="trening.finish">Dokončiť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: výsledok tréningu ============ -->
+  <div class="modal-backdrop" id="modal-result" hidden>
+    <div class="modal">
+      <h3 data-i18n="trening.doneTitle">🏆 Tréning dokončený!</h3>
+      <p class="modal-xp" id="result-xp"></p>
+      <p class="modal-msg" id="result-msg"></p>
+      <p class="modal-achievements" id="result-achievements" hidden></p>
+      <p class="modal-note" id="result-note" hidden></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-result-undo" data-i18n="trening.undo">Vrátiť tento tréning späť</button>
+        <button class="btn btn-primary" id="btn-result-close" data-i18n="trening.super">Super!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: prvý štart / nastavenia ============ -->
+  <div class="modal-backdrop" id="modal-setup" hidden>
+    <div class="modal">
+      <h3 data-i18n="setup.title">Nastavenie tréningu</h3>
+      <p data-i18n="setup.question">Koľko tréningov týždenne chceš stihnúť?</p>
+      <p class="card-sub" data-i18n="setup.explain">Tvoj týždenný cieľ určuje progres, streak a týždenné odmeny.</p>
+      <div class="goal-chips" id="setup-goal-chips"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-setup-ok" data-i18n="setup.continue">Pokračovať</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: nastavenia ============ -->
+  <div class="modal-backdrop" id="modal-settings" hidden>
+    <div class="modal">
+      <h3 data-i18n="settings.title">Nastavenia</h3>
+      <div class="goal-head">
+        <span class="card-title" data-i18n="settings.goalLabel">Týždenný cieľ tréningov</span>
+        <span class="card-value" id="settings-goal-value">3</span>
+      </div>
+      <p class="card-sub" data-i18n="settings.goalHint">Vyber si 1 až 7 tréningov týždenne.</p>
+      <div class="goal-chips" id="settings-goal-chips"></div>
+      <p class="card-note goal-error" id="settings-goal-error" hidden></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-export" data-i18n="settings.export">Exportovať dáta</button>
+        <button class="btn btn-secondary" id="btn-import" data-i18n="settings.import">Importovať dáta</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-load-demo" data-i18n="settings.loadDemo">Načítať ukážkové dáta</button>
+        <button class="btn btn-secondary" id="btn-remove-demo" data-i18n="settings.removeDemo" hidden>Odstrániť ukážkové dáta</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-reset-data" data-i18n="settings.reset">Resetovať dáta</button>
+        <button class="btn btn-secondary" id="btn-settings-close" data-i18n="common.close">Zavrieť</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-settings-save" data-i18n="settings.save">Uložiť</button>
+      </div>
+      <input type="file" id="file-import" accept="application/json,.json" hidden>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: generické potvrdenie ============ -->
+  <div class="modal-backdrop" id="modal-generic" hidden>
+    <div class="modal">
+      <h3 id="generic-title">Potvrdenie</h3>
+      <p id="generic-text"></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-generic-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button class="btn btn-primary" id="btn-generic-ok" data-i18n="common.ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: úprava tréningu z histórie ============ -->
+  <div class="modal-backdrop" id="modal-history-edit" hidden>
+    <div class="modal">
+      <h3 data-i18n="history.editTitle">Upraviť tréning</h3>
+      <label class="modal-label" data-i18n="history.date">Dátum</label>
+      <input type="date" id="he-date" class="modal-input">
+      <label class="modal-label" data-i18n="trening.noteLabel">Poznámka (voliteľná)</label>
+      <textarea id="he-note" class="modal-input" maxlength="200" rows="2"></textarea>
+      <div id="he-exercises"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-he-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button class="btn btn-primary" id="btn-he-save" data-i18n="common.save">Uložiť</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=4"></script>
+</body>
+</html>

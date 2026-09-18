@@ -1,0 +1,32 @@
+# --- Command Code local metadata (contains local paths and the Windows username) ---
+.commandcode/
+
+# --- GymQuest data exports and backups: never publish user data ---
+gymquest-backup-*.json
+*backup*.json
+*.local.json
+
+# --- Secrets (defensive; none exist today) ---
+.env
+.env.*
+*.pem
+*.key
+*secret*
+*token*
+
+# --- OS junk ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+._*
+
+# --- Editors ---
+.vscode/
+.idea/
+*.swp
+*~
+
+# --- Logs and temp ---
+*.log
+*.tmp
+node_modules/

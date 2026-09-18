@@ -1,0 +1,2146 @@
+/* ===== GymQuest v2 — aplikácia ===== */
+'use strict';
+
+/* ---------- Plány (vzory tréningov) ---------- */
+
+const DEFAULT_PLANS = {
+  push: {
+    id: 'push',
+    builtin: true,
+    customName: null,
+    exercises: [
+      { id: 'bench-press', builtin: true, name: 'Bench press', sets: 4, reps: 8, weight: 40 },
+      { id: 'overhead-press', builtin: true, name: 'Tlaky nad hlavou', sets: 3, reps: 10, weight: 25 },
+      { id: 'dips', builtin: true, name: 'Dipy', sets: 3, reps: 10, weight: 0 },
+      { id: 'lateral-raises', builtin: true, name: 'Upažovanie', sets: 3, reps: 12, weight: 8 },
+    ],
+  },
+  pull: {
+    id: 'pull',
+    builtin: true,
+    customName: null,
+    exercises: [
+      { id: 'pull-ups', builtin: true, name: 'Zhyby', sets: 4, reps: 8, weight: 0 },
+      { id: 'bent-over-rows', builtin: true, name: 'Príťahy v predklone', sets: 3, reps: 10, weight: 40 },
+      { id: 'cable-rows', builtin: true, name: 'Veslovanie na kladke', sets: 3, reps: 10, weight: 35 },
+      { id: 'bicep-curls', builtin: true, name: 'Bicepsové zdvihy', sets: 3, reps: 12, weight: 12 },
+    ],
+  },
+  legs: {
+    id: 'legs',
+    builtin: true,
+    customName: null,
+    exercises: [
+      { id: 'squats', builtin: true, name: 'Drepy', sets: 4, reps: 8, weight: 50 },
+      { id: 'leg-press', builtin: true, name: 'Leg press', sets: 3, reps: 12, weight: 80 },
+      { id: 'lunges', builtin: true, name: 'Výpady', sets: 3, reps: 12, weight: 10 },
+      { id: 'leg-curls', builtin: true, name: 'Zakopávanie', sets: 3, reps: 12, weight: 25 },
+      { id: 'calf-raises', builtin: true, name: 'Lýtka', sets: 4, reps: 15, weight: 40 },
+    ],
+  },
+};
+
+/* Zabudované plány sú obsahom aplikácie (prekladajú sa), vlastné plány sú používateľské dáta. */
+const BUILTIN_PLAN_IDS = ['push', 'pull', 'legs'];
+const DEFAULT_PLAN_ORDER = ['push', 'pull', 'legs'];
+// kanonické (zdrojové) názvy zabudovaných plánov – ukladajú sa do histórie ako záznam
+const BUILTIN_PLAN_NAMES = { push: 'Push', pull: 'Pull', legs: 'Nohy' };
+// akékoľvek názvy, ktoré patria zabudovanému plánu (SK aj EN) – rozlíši premenovanie od pôvodného názvu
+const BUILTIN_PLAN_LABELS = { push: ['Push'], pull: ['Pull'], legs: ['Nohy', 'Legs'] };
+
+function isBuiltinPlanLabel(id, value) {
+  return value === id || (BUILTIN_PLAN_LABELS[id] || []).includes(value);
+}
+
+const BUILTIN_EXERCISE_IDS = new Set([
+  'bench-press', 'overhead-press', 'dips', 'lateral-raises',
+  'pull-ups', 'bent-over-rows', 'cable-rows', 'bicep-curls',
+  'squats', 'leg-press', 'lunges', 'leg-curls', 'calf-raises',
+]);
+
+// maps both SK and EN built-in names -> stable id (for migration + milestone display)
+const BUILTIN_NAME_TO_ID = {
+  'Bench press': 'bench-press', 'Tlaky nad hlavou': 'overhead-press', 'Dipy': 'dips', 'Upažovanie': 'lateral-raises',
+  'Zhyby': 'pull-ups', 'Pull-ups': 'pull-ups', 'Príťahy v predklone': 'bent-over-rows', 'Bent-over rows': 'bent-over-rows',
+  'Veslovanie na kladke': 'cable-rows', 'Cable rows': 'cable-rows', 'Bicepsové zdvihy': 'bicep-curls', 'Bicep curls': 'bicep-curls',
+  'Drepy': 'squats', 'Squats': 'squats', 'Leg press': 'leg-press', 'Výpady': 'lunges', 'Lunges': 'lunges',
+  'Zakopávanie': 'leg-curls', 'Leg curls': 'leg-curls', 'Lýtka': 'calf-raises', 'Calf raises': 'calf-raises',
+  'Overhead press': 'overhead-press', 'Lateral raises': 'lateral-raises', 'Dips': 'dips',
+};
+
+/* ---------- Plány: prístup, poradie a zobrazované názvy ---------- */
+
+function getPlan(id) {
+  return (id && state && state.plans && state.plans[id]) || null;
+}
+
+/* Aktívne plány v poradí, ktoré si nastavil používateľ (jediný zdroj pre chipy aj rotáciu). */
+function activePlanIds() {
+  if (!state || !Array.isArray(state.planOrder)) return [];
+  return state.planOrder.filter(id => !!getPlan(id));
+}
+
+/* Názov plánu: ručne zmenený názov sa nikdy neprekladá, nedotknutý zabudovaný plán áno. */
+function planDisplayName(plan) {
+  if (!plan) return t('pokrok.workoutFallback');
+  return plan.customName ? plan.customName : t('plan.' + plan.id);
+}
+
+function planNameOf(id) {
+  return planDisplayName(getPlan(id));
+}
+
+/* Názov zapísaný do histórie v čase tréningu – nemenný záznam pre prípad zmazania plánu. */
+function recordedPlanName(plan) {
+  if (!plan) return '';
+  if (plan.customName) return plan.customName;
+  return BUILTIN_PLAN_NAMES[plan.id] || t('plan.' + plan.id);
+}
+
+/* Názov plánu v histórii: existujúci plán sa prekladá, zmazaný sa berie zo záznamu. */
+function historyPlanName(w) {
+  const plan = getPlan(w.planId);
+  if (plan) return planDisplayName(plan);
+  if (w.planName) return w.planName;
+  return t('pokrok.workoutFallback');
+}
+
+function exerciseDisplayName(ex) {
+  return (ex && ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? t('exercise.' + ex.id) : ex.name;
+}
+
+function recordedNameToDisplay(name) {
+  const id = BUILTIN_NAME_TO_ID[name];
+  return id ? t('exercise.' + id) : name;
+}
+
+/* ---------- Preklady (sk / en) ---------- */
+
+const I18N = {
+  sk: {
+    'tab.dnes': 'Dnes', 'tab.trening': 'Tréning', 'tab.pokrok': 'Pokrok', 'tab.motivacia': 'Motivácia',
+    'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Nohy',
+    'plan.newName': 'Nový plán',
+    'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Tlaky nad hlavou', 'exercise.dips': 'Dipy', 'exercise.lateral-raises': 'Upažovanie',
+    'exercise.pull-ups': 'Zhyby', 'exercise.bent-over-rows': 'Príťahy v predklone', 'exercise.cable-rows': 'Veslovanie na kladke', 'exercise.bicep-curls': 'Bicepsové zdvihy',
+    'exercise.squats': 'Drepy', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Výpady', 'exercise.leg-curls': 'Zakopávanie', 'exercise.calf-raises': 'Lýtka',
+    'header.level': 'Úr.',
+    'header.settingsTitle': 'Nastavenia',
+    'header.levelTitle': 'Úroveň',
+    'header.langTitle': 'Jazyk / Language',
+    'dnes.weekTitle': 'Tréningy tento týždeň',
+    'dnes.weekDone': '{n} z {g}',
+    'dnes.weekDoneShort': '{n} z {g}',
+    'dnes.weekGoalMet': 'Cieľ na tento týždeň splnený!',
+    'dnes.weekRemaining': 'Ešte {n} do splnenia cieľa.',
+    'dnes.weekRemaining1': 'Ešte {n} tréning do splnenia cieľa.',
+    'dnes.weekRemainingFew': 'Ešte {n} tréningy do splnenia cieľa.',
+    'dnes.weekRemainingMany': 'Ešte {n} tréningov do splnenia cieľa.',
+    'dnes.streakTitle': '🔥 Súdržnosť',
+    'dnes.streakNone': 'Žiadna séria',
+    'dnes.streakWeek1': '🔥 {n} týždeň v rade',
+    'dnes.streakWeekFew': '🔥 {n} týždne v rade',
+    'dnes.streakWeekMany': '🔥 {n} týždňov v rade',
+    'dnes.streakStart': 'Absolvuj aspoň {g} tréningy tento týždeň a začni sériu.',
+    'dnes.streakStart1': 'Absolvuj aspoň {g} tréning tento týždeň a začni sériu.',
+    'dnes.streakStartFew': 'Absolvuj aspoň {g} tréningy tento týždeň a začni sériu.',
+    'dnes.streakStartMany': 'Absolvuj aspoň {g} tréningov tento týždeň a začni sériu.',
+    'dnes.streakKeep': 'Absolvuj aspoň {g} tréningy za týždeň, séria pokračuje.',
+    'dnes.streakKeep1': 'Absolvuj aspoň {g} tréning za týždeň, séria pokračuje.',
+    'dnes.streakKeepFew': 'Absolvuj aspoň {g} tréningy za týždeň, séria pokračuje.',
+    'dnes.streakKeepMany': 'Absolvuj aspoň {g} tréningov za týždeň, séria pokračuje.',
+    'dnes.excuse': 'Škola / choroba',
+    'dnes.excuseActive': 'Škola / choroba ✓ (aktívne)',
+    'dnes.excuseNote': 'Tento týždeň je ospravedlnený – séria sa nepreruší.',
+    'dnes.start': 'Začať tréning',
+    'dnes.nextPlan': 'Odporúčaný: {plan}',
+    'trening.finish': 'Dokončiť tréning',
+    'trening.finishTitle': 'Dokončiť tréning?',
+    'trening.doneTitle': '🏆 Tréning dokončený!',
+    'trening.confirmText': '{plan} · {done} z {total} sérií<br>Získaš <b style="color:#a3e635">+{xp} XP</b>',
+    'trening.noteLabel': 'Poznámka (voliteľná)',
+    'trening.super': 'Super!',
+    'trening.undo': 'Vrátiť tento tréning späť',
+    'trening.undoConfirmTitle': 'Vrátiť tréning späť?',
+    'trening.undoConfirm': 'Vráti sa tento tréning a odoberie sa {xp} XP.',
+    'trening.setsDone': 'Dokončené série: <b>{done} z {total}</b> · {msg}',
+    'trening.setsHint': 'Označ série ako hotové.',
+    'trening.firstTime': 'Prvýkrát',
+    'trening.compareUp': '▲ {w} kg · +{r} op oproti minulému',
+    'trening.compareDown': '▼ {w} kg · {r} op oproti minulému',
+    'trening.compareSame': 'Rovnako ako minule ({w} kg)',
+    'trening.compareWeightUp': '▲ {w} kg oproti minulému',
+    'trening.compareWeightDown': '▼ {w} kg oproti minulému',
+    'trening.compareRepsUp': '+{r} op oproti minulému',
+    'trening.compareRepsDown': '{r} op oproti minulému',
+    'trening.edit': 'Upraviť plán',
+    'trening.editTitle': 'Upraviť plán',
+    'trening.planLabel': 'Tréningový plán',
+    'trening.editPlanButton': '✏️ Upraviť plán',
+    'trening.planNameLabel': 'Názov plánu',
+    'trening.planNamePlaceholder': 'Napr. Horná časť tela',
+    'trening.planNameInvalid': 'Zadaj názov plánu (max. 40 znakov).',
+    'trening.addPlan': '+ Pridať tréning',
+    'trening.movePlanLeft': 'Posunúť doľava',
+    'trening.movePlanRight': 'Posunúť doprava',
+    'trening.deletePlan': 'Vymazať plán',
+    'trening.deletePlanTitle': 'Vymazať plán?',
+    'trening.deletePlanConfirm': 'Plán „{name}“ sa odstráni a už sa nebude zobrazovať v rotácii. História tréningov zostane zachovaná.',
+    'trening.deletePlanLast': 'Musí zostať aspoň jeden plán.',
+    'trening.addExercise': '+ Pridať cvik',
+    'trening.exercisePlaceholder': 'Cvik',
+    'trening.editSave': 'Uložiť',
+    'trening.editCancel': 'Zrušiť',
+    'trening.lastExerciseBlock': 'Plán musí mať aspoň jeden cvik. Pridaj si nový cvik.',
+    'trening.deleteExerciseTitle': 'Vymazať cvik?',
+    'trening.deleteExercise': 'Vymaže sa cvik „{name}“ z plánu.',
+    'trening.editInvalid': 'Vyplň názov cviku a čísla (série 1–99, opakovania 1–99, váha 0–999).',
+    'trening.resetSession': 'Resetovať tréning',
+    'trening.resetSessionTitle': 'Resetovať tréning?',
+    'trening.resetSessionConfirm': 'Vymažú sa označené série tohto tréningu. História zostane zachovaná.',
+    'trening.timerLabel': 'Oddych',
+    'trening.timerDone': 'Oddych skončil!',
+    'trening.timerStop': 'Zastaviť časovač',
+    'trening.timerStart': 'Začať oddych',
+    'trening.timerSection': 'Časovač oddychu',
+    'pokrok.thisWeek': 'Tento týždeň', 'pokrok.thisMonth': 'Tento mesiac', 'pokrok.total': 'Celkom',
+    'pokrok.recordsTitle': '🏆 Osobné rekordy',
+    'pokrok.recordsEmpty': 'Zatiaľ žiadne rekordy.',
+    'pokrok.nextMilestone': 'Ďalší míľnik: {kg} kg',
+    'pokrok.historyTitle': '📋 História tréningov',
+    'pokrok.historyEmpty': 'Zatiaľ žiadne tréningy.',
+    'pokrok.workoutName': '{plan}',
+    'pokrok.workoutFallback': 'Tréning',
+    'pokrok.setsCount1': '{n} séria', 'pokrok.setsCountFew': '{n} série', 'pokrok.setsCountMany': '{n} sérií',
+    'history.editTitle': 'Upraviť tréning',
+    'history.deleteTitle': 'Vymazať tréning?',
+    'history.deleteConfirm': 'Vymaže sa tento tréning a jeho {xp} XP.',
+    'history.workoutSummary': '{name} {sets}×{reps} · {w} kg',
+    'history.date': 'Dátum',
+    'history.setsLabel': 'Série', 'history.repsLabel': 'Op.', 'history.setsDoneLabel': 'Hotové',
+    'motivacia.levelTitle': 'Úroveň',
+    'motivacia.levelSub': 'Získal si {xp} XP celkom. Na ďalšiu úroveň potrebuješ ešte {left} XP.',
+    'motivacia.achTitle': '🎖️ Úspechy',
+    'motivacia.unlocked': 'Odomknuté {date}',
+    'motivacia.ach.5kg': '{name} · {kg} kg',
+    'setup.title': 'Nastavenie tréningu',
+    'setup.question': 'Koľko tréningov týždenne chceš stihnúť?',
+    'setup.explain': 'Tvoj týždenný cieľ určuje progres, streak a týždenné odmeny.',
+    'setup.continue': 'Pokračovať',
+    'settings.title': 'Nastavenia',
+    'settings.goalLabel': 'Týždenný cieľ tréningov',
+    'settings.goalHint': 'Vyber si 1 až 7 tréningov týždenne.',
+    'settings.goalInvalid': 'Zadaj celé číslo od {min} do {max}.',
+    'settings.save': 'Uložiť cieľ',
+    'settings.export': 'Exportovať dáta',
+    'settings.import': 'Importovať dáta',
+    'settings.reset': 'Resetovať dáta',
+    'settings.loadDemo': 'Načítať ukážkové dáta',
+    'settings.removeDemo': 'Odstrániť ukážkové dáta',
+    'settings.demoConfirm': 'Nahradí aktuálnu históriu ukážkovými dátami.',
+    'settings.demoRemoveConfirm': 'Odstráni ukážkové dáta a začneš od nuly.',
+    'settings.demoNone': 'Žiadne ukážkové dáta.',
+    'units.kg': 'kg', 'units.xp': 'XP', 'units.sets': 'série', 'units.reps': 'op',
+    'settings.importTitle': 'Importovať dáta?',
+    'settings.importConfirm': 'Nahradí všetky aktuálne dáta ({n} tréningov).',
+    'settings.importError': 'Neplatný súbor zálohy.',
+    'settings.resetTitle': 'Resetovať všetky dáta?',
+    'settings.resetConfirm': 'Vymažú sa všetky tréningy, rekordy a nastavenia. Túto akciu nemožno vrátiť.',
+    'settings.resetFinal': 'Naozaj vymazať všetko?',
+    'settings.resetFinalConfirm': 'Toto vymaže všetky dáta natrvalo.',
+    'settings.resetConfirmAction': 'Resetovať všetky údaje',
+    'settings.resetFinalAction': 'Naozaj vymazať',
+    'common.cancel': 'Zrušiť', 'common.close': 'Zavrieť', 'common.save': 'Uložiť', 'common.ok': 'OK', 'common.delete': 'Vymazať',
+    'app.storageError': 'Tento prehliadač odmietol uložiť dáta – zmeny sa po obnovení stránky stratia. Povol v prehliadači ukladanie dát (localStorage) a skús to znova.',
+    'common.confirm': 'Potvrdenie',
+    'common.confirmTitle': 'Potvrdenie',
+    'achievements.first': 'Prvý tréning', 'achievements.firstDesc': 'Dokonči svoj prvý tréning',
+    'achievements.five': '5 tréningov', 'achievements.fiveDesc': 'Dokonči 5 tréningov',
+    'achievements.ten': '10 tréningov', 'achievements.tenDesc': 'Dokonči 10 tréningov',
+    'achievements.twentyfive': '25 tréningov', 'achievements.twentyfiveDesc': 'Dokonči 25 tréningov',
+    'achievements.fifty': '50 tréningov', 'achievements.fiftyDesc': 'Dokonči 50 tréningov',
+    'achievements.hundred': '100 tréningov', 'achievements.hundredDesc': 'Dokonči 100 tréningov',
+    'achievements.weeklygoal1': 'Prvý splnený týždenný cieľ', 'achievements.weeklygoal1Desc': 'Splň svoj týždenný cieľ',
+    'achievements.consistent2': 'Pravidelnosť 2 týždne', 'achievements.consistent2Desc': 'Trénuj aspoň {g}× týždenne 2 týždne po sebe',
+    'achievements.consistent4': 'Pravidelnosť 4 týždne', 'achievements.consistent4Desc': 'Trénuj aspoň {g}× týždenne 4 týždne po sebe',
+    'achievements.consistent8': 'Pravidelnosť 8 týždňov', 'achievements.consistent8Desc': 'Trénuj aspoň {g}× týždenne 8 týždňov po sebe',
+    'achievements.consistent12': 'Pravidelnosť 12 týždňov', 'achievements.consistent12Desc': 'Trénuj aspoň {g}× týždenne 12 týždňov po sebe',
+    'achievements.xp200': '200 XP', 'achievements.xp200Desc': 'Získaj 200 XP',
+    'achievements.newpr': 'Nový osobný rekord', 'achievements.newprDesc': 'Stanov nový osobný rekord vo váhe',
+    'motivacia.newAchievement': 'Nový úspech: {names}',
+  },
+  en: {
+    'tab.dnes': 'Today', 'tab.trening': 'Workout', 'tab.pokrok': 'Progress', 'tab.motivacia': 'Motivation',
+    'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Legs',
+    'plan.newName': 'New workout plan',
+    'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Overhead press', 'exercise.dips': 'Dips', 'exercise.lateral-raises': 'Lateral raises',
+    'exercise.pull-ups': 'Pull-ups', 'exercise.bent-over-rows': 'Bent-over rows', 'exercise.cable-rows': 'Cable rows', 'exercise.bicep-curls': 'Bicep curls',
+    'exercise.squats': 'Squats', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Lunges', 'exercise.leg-curls': 'Leg curls', 'exercise.calf-raises': 'Calf raises',
+    'header.level': 'Lv.',
+    'header.settingsTitle': 'Settings',
+    'header.levelTitle': 'Level',
+    'header.langTitle': 'Language',
+    'dnes.weekTitle': 'Workouts this week',
+    'dnes.weekDone': '{n} of {g}',
+    'dnes.weekDoneShort': '{n} of {g}',
+    'dnes.weekGoalMet': 'Weekly goal reached!',
+    'dnes.weekRemaining': 'Still {n} to go.',
+    'dnes.weekRemaining1': 'Still {n} workout to go.',
+    'dnes.weekRemainingFew': 'Still {n} workouts to go.',
+    'dnes.weekRemainingMany': 'Still {n} workouts to go.',
+    'dnes.streakTitle': '🔥 Consistency',
+    'dnes.streakNone': 'No streak',
+    'dnes.streakWeek1': '🔥 {n} week in a row',
+    'dnes.streakWeekFew': '🔥 {n} weeks in a row',
+    'dnes.streakWeekMany': '🔥 {n} weeks in a row',
+    'dnes.streakStart': 'Complete at least {g} workouts this week to start a streak.',
+    'dnes.streakStart1': 'Complete at least {g} workout this week to start a streak.',
+    'dnes.streakStartFew': 'Complete at least {g} workouts this week to start a streak.',
+    'dnes.streakStartMany': 'Complete at least {g} workouts this week to start a streak.',
+    'dnes.streakKeep': 'Complete at least {g} workouts per week to keep the streak.',
+    'dnes.streakKeep1': 'Complete at least {g} workout per week to keep the streak.',
+    'dnes.streakKeepFew': 'Complete at least {g} workouts per week to keep the streak.',
+    'dnes.streakKeepMany': 'Complete at least {g} workouts per week to keep the streak.',
+    'dnes.excuse': 'School / sick',
+    'dnes.excuseActive': 'School / sick ✓ (active)',
+    'dnes.excuseNote': 'This week is excused — the streak is kept.',
+    'dnes.start': 'Start workout',
+    'dnes.nextPlan': 'Recommended: {plan}',
+    'trening.finish': 'Finish workout',
+    'trening.finishTitle': 'Finish workout?',
+    'trening.doneTitle': '🏆 Workout complete!',
+    'trening.confirmText': '{plan} · {done} of {total} sets<br>You get <b style="color:#a3e635">+{xp} XP</b>',
+    'trening.noteLabel': 'Note (optional)',
+    'trening.super': 'Awesome!',
+    'trening.undo': 'Undo this workout',
+    'trening.undoConfirmTitle': 'Undo workout?',
+    'trening.undoConfirm': 'This workout and its {xp} XP will be removed.',
+    'trening.setsDone': 'Sets done: <b>{done} of {total}</b> · {msg}',
+    'trening.setsHint': 'Mark sets as done.',
+    'trening.firstTime': 'First time',
+    'trening.compareUp': '▲ {w} kg · +{r} reps vs last time',
+    'trening.compareDown': '▼ {w} kg · {r} reps vs last time',
+    'trening.compareSame': 'Same as last time ({w} kg)',
+    'trening.compareWeightUp': '▲ {w} kg vs last time',
+    'trening.compareWeightDown': '▼ {w} kg vs last time',
+    'trening.compareRepsUp': '+{r} reps vs last time',
+    'trening.compareRepsDown': '{r} reps vs last time',
+    'trening.edit': 'Edit plan',
+    'trening.editTitle': 'Edit plan',
+    'trening.planLabel': 'Workout plan',
+    'trening.editPlanButton': '✏️ Edit plan',
+    'trening.planNameLabel': 'Workout plan name',
+    'trening.planNamePlaceholder': 'e.g. Upper body',
+    'trening.planNameInvalid': 'Enter a workout plan name (max. 40 characters).',
+    'trening.addPlan': '+ Add workout plan',
+    'trening.movePlanLeft': 'Move left',
+    'trening.movePlanRight': 'Move right',
+    'trening.deletePlan': 'Delete workout plan',
+    'trening.deletePlanTitle': 'Delete workout plan?',
+    'trening.deletePlanConfirm': 'Workout plan “{name}” will be removed and will no longer appear in the rotation. Workout history will be kept.',
+    'trening.deletePlanLast': 'At least one workout plan must remain.',
+    'trening.addExercise': '+ Add exercise',
+    'trening.exercisePlaceholder': 'Exercise',
+    'trening.editSave': 'Save',
+    'trening.editCancel': 'Cancel',
+    'trening.lastExerciseBlock': 'A plan needs at least one exercise. Add a new one.',
+    'trening.deleteExerciseTitle': 'Delete exercise?',
+    'trening.deleteExercise': 'Exercise "{name}" will be removed from the plan.',
+    'trening.editInvalid': 'Fill in the exercise name and numbers (sets 1–99, reps 1–99, weight 0–999).',
+    'trening.resetSession': 'Reset workout',
+    'trening.resetSessionTitle': 'Reset workout?',
+    'trening.resetSessionConfirm': 'Marked sets of this workout will be cleared. History stays intact.',
+    'trening.timerLabel': 'Rest',
+    'trening.timerDone': 'Rest over!',
+    'trening.timerStop': 'Stop timer',
+    'trening.timerStart': 'Start rest',
+    'trening.timerSection': 'Rest timer',
+    'pokrok.thisWeek': 'This week', 'pokrok.thisMonth': 'This month', 'pokrok.total': 'Total',
+    'pokrok.recordsTitle': '🏆 Personal records',
+    'pokrok.recordsEmpty': 'No records yet.',
+    'pokrok.nextMilestone': 'Next milestone: {kg} kg',
+    'pokrok.historyTitle': '📋 Workout history',
+    'pokrok.historyEmpty': 'No workouts yet.',
+    'pokrok.workoutName': '{plan}',
+    'pokrok.workoutFallback': 'Workout',
+    'pokrok.setsCount1': '{n} set', 'pokrok.setsCountFew': '{n} sets', 'pokrok.setsCountMany': '{n} sets',
+    'history.editTitle': 'Edit workout',
+    'history.deleteTitle': 'Delete workout?',
+    'history.deleteConfirm': 'This workout and its {xp} XP will be removed.',
+    'history.workoutSummary': '{name} {sets}×{reps} · {w} kg',
+    'history.date': 'Date',
+    'history.setsLabel': 'Sets', 'history.repsLabel': 'Reps', 'history.setsDoneLabel': 'Done',
+    'motivacia.levelTitle': 'Level',
+    'motivacia.levelSub': 'You have {xp} XP total. {left} XP needed for the next level.',
+    'motivacia.achTitle': '🎖️ Achievements',
+    'motivacia.unlocked': 'Unlocked {date}',
+    'motivacia.ach.5kg': '{name} · {kg} kg',
+    'setup.title': 'Workout setup',
+    'setup.question': 'How many workouts per week do you want to complete?',
+    'setup.explain': 'Your weekly goal drives progress, streak and weekly rewards.',
+    'setup.continue': 'Continue',
+    'settings.title': 'Settings',
+    'settings.goalLabel': 'Weekly workout goal',
+    'settings.goalHint': 'Pick between 1 and 7 workouts per week.',
+    'settings.goalInvalid': 'Enter a whole number from {min} to {max}.',
+    'settings.save': 'Save goal',
+    'settings.export': 'Export data',
+    'settings.import': 'Import data',
+    'settings.reset': 'Reset data',
+    'settings.loadDemo': 'Load demo data',
+    'settings.removeDemo': 'Remove demo data',
+    'settings.demoConfirm': 'This will replace the current history with demo data.',
+    'settings.demoRemoveConfirm': 'This will remove demo data and start you fresh.',
+    'settings.demoNone': 'No demo data.',
+    'units.kg': 'kg', 'units.xp': 'XP', 'units.sets': 'sets', 'units.reps': 'reps',
+    'settings.importTitle': 'Import data?',
+    'settings.importConfirm': 'This will replace all current data ({n} workouts).',
+    'settings.importError': 'Invalid backup file.',
+    'settings.resetTitle': 'Reset all data?',
+    'settings.resetConfirm': 'All workouts, records and settings will be deleted. This cannot be undone.',
+    'settings.resetFinal': 'Really delete everything?',
+    'settings.resetFinalConfirm': 'This will permanently erase all data.',
+    'settings.resetConfirmAction': 'Reset all data',
+    'settings.resetFinalAction': 'Really delete',
+    'common.cancel': 'Cancel', 'common.close': 'Close', 'common.save': 'Save', 'common.ok': 'OK', 'common.delete': 'Delete',
+    'app.storageError': 'This browser refused to save your data — changes will be lost after a refresh. Allow site data (localStorage) in your browser and try again.',
+    'common.confirm': 'Confirmation',
+    'common.confirmTitle': 'Confirmation',
+    'achievements.first': 'First Workout', 'achievements.firstDesc': 'Complete your first workout',
+    'achievements.five': '5 Workouts', 'achievements.fiveDesc': 'Complete 5 workouts',
+    'achievements.ten': '10 Workouts', 'achievements.tenDesc': 'Complete 10 workouts',
+    'achievements.twentyfive': '25 Workouts', 'achievements.twentyfiveDesc': 'Complete 25 workouts',
+    'achievements.fifty': '50 Workouts', 'achievements.fiftyDesc': 'Complete 50 workouts',
+    'achievements.hundred': '100 Workouts', 'achievements.hundredDesc': 'Complete 100 workouts',
+    'achievements.weeklygoal1': 'First Weekly Goal', 'achievements.weeklygoal1Desc': 'Reach your weekly goal',
+    'achievements.consistent2': 'Consistency 2 weeks', 'achievements.consistent2Desc': 'Train at least {g}× per week for 2 weeks in a row',
+    'achievements.consistent4': 'Consistency 4 weeks', 'achievements.consistent4Desc': 'Train at least {g}× per week for 4 weeks in a row',
+    'achievements.consistent8': 'Consistency 8 weeks', 'achievements.consistent8Desc': 'Train at least {g}× per week for 8 weeks in a row',
+    'achievements.consistent12': 'Consistency 12 weeks', 'achievements.consistent12Desc': 'Train at least {g}× per week for 12 weeks in a row',
+    'achievements.xp200': '200 XP', 'achievements.xp200Desc': 'Earn 200 XP',
+    'achievements.newpr': 'New Personal Record', 'achievements.newprDesc': 'Set a new personal best weight',
+    'motivacia.newAchievement': 'New achievement: {names}',
+  },
+};
+
+function t(key, vars) {
+  let s = (I18N[state.settings.lang] && I18N[state.settings.lang][key]) || I18N.sk[key] || key;
+  if (vars) {
+    for (const [k, v] of Object.entries(vars)) {
+      s = s.split('{' + k + '}').join(String(v));
+    }
+  }
+  return s;
+}
+
+function plural(n, one, few, other) {
+  if (state.settings.lang === 'sk') {
+    if (n === 1) return one;
+    if (n >= 2 && n <= 4) return few;
+    return other;
+  }
+  return n === 1 ? one : other;
+}
+
+function tPlural(base, n) {
+  const suffix = n === 1 ? '1' : (state.settings.lang === 'sk' && n >= 2 && n <= 4 ? 'Few' : 'Many');
+  return t(base + suffix, { n });
+}
+
+function formatDate(iso) {
+  const d = parseDate(iso);
+  if (state.settings.lang === 'en') {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+  const months = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna',
+    'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
+  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/* ---------- Konstanty ---------- */
+
+const STORAGE_KEY = 'gymquest';
+const BASE_XP = 20;          // XP za tréning
+const XP_PER_SET = 2;        // XP za každú dokončenú sériu
+const XP_PER_LEVEL = 100;    // XP potrebných na ďalšiu úroveň
+const GOAL_MIN = 1;
+const GOAL_MAX = 7;
+
+/* ---------- Stav aplikácie ---------- */
+
+let state = null;
+let activeTab = 'dnes';
+let selectedPlan = 'push';
+let currentSets = {};        // "exerciseName:setIndex" -> true
+let lastXP = 0;
+let lastUnlocked = [];
+let lastWorkoutId = null;    // id posledného dokončeného tréningu (pre Undo)
+let editingPlan = null;      // id plánu v editačnom móde
+let newPlanId = null;        // id práve vytvoreného plánu (zrušenie ho zahodí); neukladá sa
+let editDraft = null;        // kópia cvikov počas editácie
+let pendingImport = null;    // naimportované dáta čakajúce na potvrdenie
+let pendingDeleteWorkout = null; // id tréningu čakajúceho na vymazanie
+let timerInterval = null;
+let timerEnd = 0;
+
+/* ---------- Pomocné funkcie ---------- */
+
+function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function parseDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function addDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+/* ISO rok + týždeň (pondelok = 1. deň), napr. "2026-W34" */
+function weekKey(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const dayNum = (d.getDay() + 6) % 7; // pondelok = 0
+  d.setDate(d.getDate() - dayNum + 3);
+  const firstThursday = new Date(d.getFullYear(), 0, 4);
+  const firstDayNum = (firstThursday.getDay() + 6) % 7;
+  firstThursday.setDate(firstThursday.getDate() - firstDayNum + 3);
+  const week = 1 + Math.round((d - firstThursday) / (7 * 24 * 3600 * 1000));
+  return `${d.getFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+
+function prevWeekKey(key) {
+  const [year, week] = key.split('-W').map(Number);
+  const firstDay = new Date(year, 0, 4);
+  const dayNum = (firstDay.getDay() + 6) % 7;
+  firstDay.setDate(firstDay.getDate() - dayNum + 3);
+  firstDay.setDate(firstDay.getDate() + (week - 1) * 7);
+  return weekKey(addDays(firstDay, -7));
+}
+
+function currentWeekKey() {
+  return weekKey(new Date());
+}
+
+function monthKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
+
+function currentMonthKey() {
+  return monthKey(new Date());
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+/* ---------- Dátumy pre ukážkové dáta ---------- */
+
+function sampleDates() {
+  const dates = [];
+  const cur = parseDate(todayISO());
+  const curWeek = weekKey(cur);
+  // späť, kým nenájdeme pondelok predchádzajúceho týždňa
+  let mon = new Date(cur);
+  while (weekKey(mon) === curWeek) mon = addDays(mon, -1);
+  while (weekKey(addDays(mon, -1)) === weekKey(mon)) mon = addDays(mon, -1);
+  dates.push(mon, addDays(mon, 2), addDays(mon, 4)); // pondelok, streda, piatok
+  return dates;
+}
+
+/* ---------- Ukážkové dáta (len prvý štart) ---------- */
+
+function buildSampleHistory() {
+  const dates = sampleDates();
+  const order = activePlanIds().slice(0, 3);
+  const weights = {
+    'Bench press': 40, 'Tlaky nad hlavou': 25, 'Upažovanie': 8,
+    'Príťahy v predklone': 40, 'Veslovanie na kladke': 35, 'Bicepsové zdvihy': 12,
+    'Drepy': 50, 'Leg press': 80, 'Výpady': 10, 'Zakopávanie': 25, 'Lýtka': 40,
+  };
+  const history = [];
+  order.forEach((planId, i) => {
+    const plan = getPlan(planId);
+    if (!plan) return;
+    const exercises = plan.exercises.map(ex => ({
+      name: ex.name,
+      exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
+      sets: ex.sets,
+      reps: ex.reps,
+      weight: weights[ex.name] !== undefined ? weights[ex.name] : ex.weight,
+    }));
+    history.push({
+      id: uid(),
+      planId: plan.id,
+      planName: recordedPlanName(plan),
+      date: dates[i].toISOString().slice(0, 10),
+      xp: BASE_XP + exercises.reduce((sum, e) => sum + e.sets, 0) * XP_PER_SET,
+      note: '',
+      exercises: exercises.map(e => Object.assign({}, e, { setsDone: e.sets })),
+    });
+  });
+  return history;
+}
+
+/* ---------- Načítanie / ukladanie stavu / migrácia ---------- */
+
+function defaultState() {
+  return {
+    version: 3,
+    plans: JSON.parse(JSON.stringify(DEFAULT_PLANS)),
+    planOrder: DEFAULT_PLAN_ORDER.slice(),
+    history: [],
+    excusedWeeks: [],
+    settings: { weeklyGoal: 3, lang: 'sk' },
+    achievements: {},
+    demo: false,
+  };
+}
+
+function seedSampleData() {
+  if (state.history.length === 0) {
+    state.history = buildSampleHistory();
+    state.demo = true;
+  }
+  reconcileAchievements();
+  saveState();
+}
+
+function removeDemoData() {
+  state.history = [];
+  state.achievements = {};
+  state.demo = false;
+  state.excusedWeeks = [];
+  localStorage.removeItem(STORAGE_KEY + '_seeded');
+  reconcileAchievements();
+  saveState();
+}
+
+/* Zjednotí plány: doplní builtin/customName, zjednotí poradie a odstráni neplatné záznamy.
+   Nikdy nemení používateľské názvy ani históriu. Beží pri každom načítaní (je idempotentná). */
+function normalizePlans() {
+  if (!state.plans || typeof state.plans !== 'object') {
+    state.plans = JSON.parse(JSON.stringify(DEFAULT_PLANS));
+  }
+  for (const id of Object.keys(state.plans)) {
+    if (!state.plans[id] || typeof state.plans[id] !== 'object') delete state.plans[id];
+  }
+  for (const id of Object.keys(state.plans)) {
+    const plan = state.plans[id];
+    plan.id = id;
+    if (typeof plan.builtin !== 'boolean') plan.builtin = BUILTIN_PLAN_IDS.includes(id);
+    if (typeof plan.customName !== 'string' || !plan.customName) {
+      // v2 mal pole name, ktoré sa nikdy nezobrazovalo. Stane sa vlastným názvom, ale len ak
+      // nejde o pôvodný názov zabudovaného plánu – ten sa musí ďalej prekladať.
+      const legacy = typeof plan.name === 'string' ? plan.name.trim() : '';
+      if (plan.builtin) plan.customName = (legacy && !isBuiltinPlanLabel(id, legacy)) ? legacy : null;
+      else plan.customName = legacy || t('plan.newName');
+    }
+    delete plan.name;
+    if (!Array.isArray(plan.exercises)) plan.exercises = [];
+  }
+  const ids = Object.keys(state.plans);
+  const order = Array.isArray(state.planOrder) ? state.planOrder.filter(id => ids.includes(id)) : [];
+  for (const id of ids) if (!order.includes(id)) order.push(id);
+  state.planOrder = order;
+}
+
+/* Doplní id/flagy cvikov v plánoch a exId/planName v histórii. Zapísané názvy nikdy nemení. */
+function backfillState() {
+  normalizePlans();
+  for (const id of Object.keys(state.plans)) {
+    const plan = state.plans[id];
+    plan.exercises = plan.exercises.map(ex => {
+      if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
+        return Object.assign({}, ex, { builtin: true });
+      }
+      const mapped = BUILTIN_NAME_TO_ID[ex.name];
+      if (mapped) {
+        return Object.assign({}, ex, { id: mapped, builtin: true });
+      }
+      return ex;
+    });
+  }
+  if (!Array.isArray(state.history)) return;
+  state.history = state.history.map(w => {
+    let out = w;
+    if (typeof out.planName !== 'string' || !out.planName) {
+      const plan = state.plans[out.planId];
+      const snapshot = plan ? recordedPlanName(plan) : (BUILTIN_PLAN_NAMES[out.planId] || '');
+      if (snapshot) out = Object.assign({}, out, { planName: snapshot });
+    }
+    if (!Array.isArray(out.exercises)) return out;
+    const exercises = out.exercises.map(e => {
+      if (e.exId) return e;
+      const mapped = BUILTIN_NAME_TO_ID[e.name];
+      return mapped ? Object.assign({}, e, { exId: mapped }) : e;
+    });
+    return Object.assign({}, out, { exercises });
+  });
+}
+
+/* v1 -> v2: pôvodné dáta sú reálne používateľské dáta, nikdy nie demo. */
+function migrateV1toV2(parsed) {
+  const base = defaultState();
+  return {
+    version: 2,
+    plans: parsed.plans || base.plans,
+    planOrder: null,
+    history: Array.isArray(parsed.history) ? parsed.history : [],
+    excusedWeeks: Array.isArray(parsed.excusedWeeks) ? parsed.excusedWeeks : [],
+    settings: { weeklyGoal: 3, lang: 'sk' },
+    achievements: {},
+    demo: false,
+  };
+}
+
+/* v2 -> v3 (a zároveň oprava neúplných v3 dát): poradie plánov, builtin/customName a
+   záznam planName v histórii. Historické záznamy sa neprepisujú. */
+function migrateV2toV3(parsed) {
+  const base = (parsed && typeof parsed === 'object') ? parsed : {};
+  const plans = (base.plans && typeof base.plans === 'object')
+    ? base.plans
+    : JSON.parse(JSON.stringify(DEFAULT_PLANS));
+  const out = {
+    version: 3,
+    plans,
+    planOrder: Array.isArray(base.planOrder)
+      ? base.planOrder
+      : DEFAULT_PLAN_ORDER.filter(id => Object.prototype.hasOwnProperty.call(plans, id)),
+    history: Array.isArray(base.history) ? base.history : [],
+    excusedWeeks: Array.isArray(base.excusedWeeks) ? base.excusedWeeks : [],
+    settings: Object.assign({ weeklyGoal: 3, lang: 'sk' }, base.settings || {}),
+    achievements: (base.achievements && typeof base.achievements === 'object') ? base.achievements : {},
+    demo: base.demo === true,
+  };
+  const goal = Math.round(Number(out.settings.weeklyGoal));
+  out.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, Number.isFinite(goal) && goal ? goal : 3));
+  if (out.settings.lang !== 'sk' && out.settings.lang !== 'en') out.settings.lang = 'sk';
+  out.history = out.history.map(w => Object.assign({}, w, {
+    note: typeof w.note === 'string' ? w.note : '',
+    exercises: Array.isArray(w.exercises)
+      ? w.exercises.map(e => Object.assign({}, e, {
+        setsDone: typeof e.setsDone === 'number' ? e.setsDone : e.sets,
+      }))
+      : [],
+  }));
+  state = out;
+  backfillState();
+  return out;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      state = defaultState();
+      saveState();
+      return;
+    }
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') throw new Error('bad data');
+    if (parsed.version === 1) {
+      state = migrateV2toV3(migrateV1toV2(parsed));
+    } else if (parsed.version === 2 || parsed.version === 3) {
+      state = migrateV2toV3(parsed);
+    } else {
+      state = defaultState();
+      saveState();
+      return;
+    }
+    reconcileAchievements();
+    saveState();
+  } catch (e) {
+    state = defaultState();
+    saveState();
+  }
+}
+
+/* Uloženie nikdy nesmie zlyhať potichu – ak prehliadač zápis odmietne,
+   používateľ to musí vidieť, inak si myslí, že premenovanie/ cieľ nefunguje. */
+function showStorageWarning(on) {
+  const el = document.getElementById('app-storage-warning');
+  if (el) el.hidden = !on;
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    showStorageWarning(false);
+  } catch (e) {
+    console.error('Nepodarilo sa uložiť dáta:', e);
+    showStorageWarning(true);
+  }
+}
+
+/* ---------- Počítané údaje ---------- */
+
+function weeklyGoal() {
+  return state.settings.weeklyGoal;
+}
+
+function totalXP() {
+  return state.history.reduce((sum, w) => sum + w.xp, 0);
+}
+
+function workoutsInWeek(key) {
+  return state.history.filter(w => weekKey(parseDate(w.date)) === key).length;
+}
+
+function workoutsInMonth(key) {
+  return state.history.filter(w => monthKey(parseDate(w.date)) === key).length;
+}
+
+function computeStreak() {
+  let streak = 0;
+  let week = currentWeekKey();
+  while (true) {
+    if (workoutsInWeek(week) >= weeklyGoal()) {
+      streak++;
+      week = prevWeekKey(week);
+    } else if (state.excusedWeeks.includes(week)) {
+      week = prevWeekKey(week);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function levelInfo() {
+  const xp = totalXP();
+  let level = 0;
+  let levelXP = xp;
+  while (levelXP >= XP_PER_LEVEL) {
+    levelXP -= XP_PER_LEVEL;
+    level++;
+  }
+  return { level, levelXP, xp, total: XP_PER_LEVEL };
+}
+
+/* Odporúčaný tréning: nasleduje poradie, ktoré si používateľ nastavil (3, 4 alebo viac plánov) */
+function recommendedPlan() {
+  const ids = activePlanIds();
+  if (!ids.length) return null;
+  if (!state.history.length) return ids[0];
+  const last = state.history[state.history.length - 1];
+  const idx = ids.indexOf(last.planId);
+  if (idx === -1) return ids[0];   // posledný tréning patril zmazanému plánu – začni odznova
+  return ids[(idx + 1) % ids.length];
+}
+
+function personalRecords() {
+  const rec = {};
+  for (const w of state.history) {
+    for (const ex of w.exercises) {
+      if (ex.weight <= 0) continue;
+      const key = ex.name;
+      const prev = rec[key];
+      if (!prev || ex.weight > prev.weight) {
+        rec[key] = { name: ex.name, weight: ex.weight, reps: ex.reps, date: w.date };
+      }
+    }
+  }
+  return Object.values(rec).sort((a, b) => b.weight - a.weight);
+}
+
+/* Najnovší výskyt cviku v histórii pred daným dátumom (podľa id, fallback podľa názvu) */
+function previousWorkoutFor(ex, beforeDate) {
+  const sorted = [...state.history]
+    .filter(w => w.date < beforeDate)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  for (const w of sorted) {
+    const found = w.exercises.find(e =>
+      (ex.id && e.exId === ex.id) || (!ex.id && e.name === ex.name)
+    );
+    if (found) return found;
+  }
+  return null;
+}
+
+/* ---------- Úspechy (dynamické, uložené) ---------- */
+
+function staticAchievementDefs() {
+  const g = weeklyGoal();
+  return [
+    { id: 'first', icon: '🎯', nameKey: 'achievements.first', descKey: 'achievements.firstDesc', cond: () => state.history.length >= 1 },
+    { id: 'five', icon: '💪', nameKey: 'achievements.five', descKey: 'achievements.fiveDesc', cond: () => state.history.length >= 5 },
+    { id: 'ten', icon: '🏅', nameKey: 'achievements.ten', descKey: 'achievements.tenDesc', cond: () => state.history.length >= 10 },
+    { id: 'twentyfive', icon: '🚀', nameKey: 'achievements.twentyfive', descKey: 'achievements.twentyfiveDesc', cond: () => state.history.length >= 25 },
+    { id: 'fifty', icon: '💎', nameKey: 'achievements.fifty', descKey: 'achievements.fiftyDesc', cond: () => state.history.length >= 50 },
+    { id: 'hundred', icon: '👑', nameKey: 'achievements.hundred', descKey: 'achievements.hundredDesc', cond: () => state.history.length >= 100 },
+    { id: 'weeklygoal1', icon: '🎯', nameKey: 'achievements.weeklygoal1', descKey: 'achievements.weeklygoal1Desc', cond: () => historyWeeksWithGoalMet().length >= 1 },
+    { id: 'consistent2', icon: '📅', nameKey: 'achievements.consistent2', descKey: 'achievements.consistent2Desc', cond: () => computeStreak() >= 2 },
+    { id: 'consistent4', icon: '🔥', nameKey: 'achievements.consistent4', descKey: 'achievements.consistent4Desc', cond: () => computeStreak() >= 4 },
+    { id: 'consistent8', icon: '⚡', nameKey: 'achievements.consistent8', descKey: 'achievements.consistent8Desc', cond: () => computeStreak() >= 8 },
+    { id: 'consistent12', icon: '🏆', nameKey: 'achievements.consistent12', descKey: 'achievements.consistent12Desc', cond: () => computeStreak() >= 12 },
+    { id: 'xp200', icon: '⭐', nameKey: 'achievements.xp200', descKey: 'achievements.xp200Desc', cond: () => totalXP() >= 200 },
+    { id: 'newpr', icon: '💪', nameKey: 'achievements.newpr', descKey: 'achievements.newprDesc', cond: () => hasAnyPR() },
+  ];
+}
+
+function historyWeeksWithGoalMet() {
+  const weeks = new Set();
+  for (const w of state.history) weeks.add(weekKey(parseDate(w.date)));
+  return [...weeks].filter(k => workoutsInWeek(k) >= weeklyGoal());
+}
+
+function hasAnyPR() {
+  return personalRecords().length > 0;
+}
+
+/* Vyhodnotí všetky úspechy (statické + míľniky) a vráti mapu id -> dátum */
+function evaluateAchievements() {
+  const map = {};
+  const sorted = [...state.history].sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+
+  const statics = staticAchievementDefs();
+  for (const def of statics) {
+    if (def.cond()) map[def.id] = achievementDateFor(def.id, sorted);
+  }
+
+  // osobné rekordy + 5 kg míľniky (chronologicky)
+  const best = {};
+  let prCount = 0;
+  for (const w of sorted) {
+    for (const ex of w.exercises) {
+      if (ex.weight <= 0) continue;
+      const prev = best[ex.name];
+      if (!prev || ex.weight > prev.weight) {
+        best[ex.name] = ex.weight;
+        prCount++;
+        const step = Math.floor(ex.weight / 5) * 5;
+        if (step > 0) {
+          const id = 'ms-' + ex.name + '-' + step;
+          if (!map[id]) map[id] = w.date;
+        }
+      }
+    }
+  }
+  if (prCount > 0 && !map.newpr) map.newpr = achievementDateFor('newpr', sorted);
+
+  return map;
+}
+
+function achievementDateFor(id, sorted) {
+  const count = sorted.length;
+  const idxMap = {
+    first: 0, five: 4, ten: 9, twentyfive: 24, fifty: 49, hundred: 99,
+  };
+  if (idxMap[id] !== undefined && count > idxMap[id]) return sorted[idxMap[id]].date;
+  if (id === 'newpr') {
+    // najstarší tréning s osobným rekordom
+    const best = {};
+    for (const w of sorted) {
+      for (const ex of w.exercises) {
+        if (ex.weight <= 0) continue;
+        const prev = best[ex.name];
+        if (!prev || ex.weight > prev.weight) {
+          best[ex.name] = ex.weight;
+          return w.date;
+        }
+      }
+    }
+  }
+  if (id === 'xp200') {
+    let acc = 0;
+    for (const w of sorted) {
+      acc += w.xp;
+      if (acc >= 200) return w.date;
+    }
+  }
+  if (id === 'weeklygoal1') {
+    const met = historyWeeksWithGoalMet().sort();
+    if (met.length) {
+      const wk = met[0];
+      const ws = sorted.filter(w => weekKey(parseDate(w.date)) === wk);
+      if (ws.length) return ws[ws.length - 1].date;
+    }
+  }
+  if (id.startsWith('consistent')) {
+    const weeks = historyWeeksWithGoalMet().sort();
+    const need = parseInt(id.replace('consistent', ''), 10);
+    if (weeks.length >= need) return sorted[sorted.length - 1].date;
+  }
+  if (id === 'first' && count >= 1) return sorted[0].date;
+  return todayISO();
+}
+
+/* Pridá nové, odstráni neplatné úspechy; uloží stav */
+function reconcileAchievements() {
+  const current = evaluateAchievements();
+  state.achievements = state.achievements || {};
+  const merged = {};
+  for (const [id, date] of Object.entries(current)) merged[id] = date;
+  // zachovaj dátum, ak úspech stále platí (deterministické hodnotenie ho nastaví)
+  state.achievements = merged;
+}
+
+/* ---------- Motivácia ---------- */
+
+function dayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  return Math.floor((date - start) / 86400000);
+}
+
+const MOTIVATION_SK = [
+  'Každý tréning ťa posúva bližšie k cieľu.',
+  'Dnešný deň je skvelý deň na tréning.',
+  'Telo si pamätá tvoju drinu – neprestaň.',
+  'Silu nezískaš odpočinkom, ale pohybom.',
+  'Buď lepší, ako si bol včera.',
+  'Drepuješ dnes? Tvoje budúce ja ti poďakuje.',
+  'Malé kroky, veľké výsledky.',
+  'Súdržnosť poráža motiváciu. Príď znova.',
+  'Tréning je investícia do seba.',
+  'Začni, aj keď sa ti nechce. Potom to pôjde samo.',
+  'Disciplína je tvoja superveľmoc.',
+  'Jeden tréning môže zmeniť celý deň.',
+  'Najťažší krok je ten prvý – sprav ho teraz.',
+  'Tvoja jediná konkurencia si ty sám.',
+  'Buduj svoje telo ako chrám.',
+];
+
+const MOTIVATION_EN = [
+  'Every workout moves you closer to your goal.',
+  'Today is a great day to train.',
+  'Your body remembers the hard work — keep going.',
+  'Strength comes from movement, not rest.',
+  'Be better than you were yesterday.',
+  'Squatting today? Your future self will thank you.',
+  'Small steps, big results.',
+  'Consistency beats motivation. Show up again.',
+  'Training is an investment in yourself.',
+  'Start even when you do not feel like it.',
+  'Discipline is your superpower.',
+  'One workout can change your whole day.',
+  'The hardest step is the first one — take it now.',
+  'Your only competition is yourself.',
+  'Build your body like a temple.',
+];
+
+const MOTIVATION_LONG_STREAK_SK = [
+  '🔥 Si vo veľkej forme! Takto sa to robí!',
+  '🔥 Nezastaviteľný! Pokračuj v tom!',
+  '🔥 Séria, na ktorú môžeš byť hrdý!',
+];
+
+const MOTIVATION_LONG_STREAK_EN = [
+  '🔥 You are on fire! Keep it up!',
+  '🔥 Unstoppable! Keep going!',
+  '🔥 A streak to be proud of!',
+];
+
+const ENCOURAGEMENT_SK = [
+  'Skvelá práca! Zaslúžiš si oddych.',
+  'Výborne! Každý tréning sa počíta.',
+  'Paráda, zvládol si to!',
+  'Takto sa buduje forma!',
+];
+
+const ENCOURAGEMENT_EN = [
+  'Great job! You earned the rest.',
+  'Well done! Every workout counts.',
+  'Nice, you nailed it!',
+  'That is how you build fitness!',
+];
+
+const SET_MESSAGES_SK = [
+  'Séria hotová, pokračuj!',
+  'Ešte jedna séria, dáš to!',
+  'Skoro tam! Tlač ďalej!',
+  'Pekne! Telo pracuje, ty len tlačíš.',
+  'Sila rastie s každou sériou.',
+  'Nepoľavuj, ešte chvíľu!',
+  'Výborne, drž tempo!',
+];
+
+const SET_MESSAGES_EN = [
+  'Set done, keep going!',
+  'One more set, you got this!',
+  'Almost there! Push on!',
+  'Nice! Your body is working.',
+  'Strength grows with every set.',
+  'Do not let up, a little more!',
+  'Great, keep the pace!',
+];
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function motivationText() {
+  const streak = computeStreak();
+  const longSk = MOTIVATION_LONG_STREAK_SK;
+  const longEn = MOTIVATION_LONG_STREAK_EN;
+  const baseSk = MOTIVATION_SK;
+  const baseEn = MOTIVATION_EN;
+  if (streak >= 4) {
+    const arr = state.settings.lang === 'en' ? longEn : longSk;
+    return arr[dayOfYear(new Date()) % arr.length];
+  }
+  const arr = state.settings.lang === 'en' ? baseEn : baseSk;
+  return arr[dayOfYear(new Date()) % arr.length];
+}
+
+function randomEncouragement() {
+  return pick(state.settings.lang === 'en' ? ENCOURAGEMENT_EN : ENCOURAGEMENT_SK);
+}
+
+function randomSetMessage() {
+  return pick(state.settings.lang === 'en' ? SET_MESSAGES_EN : SET_MESSAGES_SK);
+}
+
+/* ---------- Vykreslenie: DNES ---------- */
+
+function renderDnes() {
+  const goal = weeklyGoal();
+  const weekCount = workoutsInWeek(currentWeekKey());
+  const streak = computeStreak();
+  const excused = state.excusedWeeks.includes(currentWeekKey());
+
+  document.getElementById('week-count').textContent = t('dnes.weekDone', { n: weekCount, g: goal });
+  document.getElementById('week-progress').style.width = `${Math.min(100, (weekCount / goal) * 100)}%`;
+  document.getElementById('week-sub').textContent = weekCount >= goal
+    ? t('dnes.weekGoalMet')
+    : tPlural('dnes.weekRemaining', goal - weekCount).replace('{n}', String(goal - weekCount));
+
+  const streakText = streak === 0
+    ? t('dnes.streakNone')
+    : tPlural('dnes.streakWeek', streak).replace('{n}', String(streak));
+  document.getElementById('streak-value').textContent = streakText;
+  document.getElementById('streak-sub').textContent = streak === 0
+    ? tPlural('dnes.streakStart', goal).replace('{g}', String(goal))
+    : tPlural('dnes.streakKeep', goal).replace('{g}', String(goal));
+
+  const btnExcuse = document.getElementById('btn-excuse');
+  btnExcuse.textContent = excused ? t('dnes.excuseActive') : t('dnes.excuse');
+  const note = document.getElementById('excuse-note');
+  note.hidden = !excused;
+  note.textContent = t('dnes.excuseNote');
+
+  document.getElementById('motivation-text').textContent = motivationText();
+
+  document.getElementById('dnes-next-plan').textContent = t('dnes.nextPlan', { plan: planNameOf(recommendedPlan()) });
+}
+
+/* ---------- Vykreslenie: TRÉNING ---------- */
+
+function planExerciseCount(plan) {
+  return plan.exercises.reduce((s, ex) => s + ex.sets, 0);
+}
+
+function totalSetsDone() {
+  return Object.values(currentSets).filter(Boolean).length;
+}
+
+function comparisonHint(ex) {
+  if (ex.weight <= 0) return '';
+  const prev = previousWorkoutFor(ex, todayISO());
+  if (!prev) return t('trening.firstTime');
+  const dw = ex.weight - prev.weight;
+  const dr = ex.reps - prev.reps;
+  const w = (n) => n.toFixed(1).replace(/\.0$/, '');
+  if (dw > 0 && dr > 0) return `<span class="up">${t('trening.compareUp', { w: w(dw), r: dr })}</span>`;
+  if (dw > 0) return `<span class="up">${t('trening.compareWeightUp', { w: w(dw) })}</span>`;
+  if (dw < 0) return `<span class="down">${t('trening.compareWeightDown', { w: w(Math.abs(dw)) })}</span>`;
+  if (dr > 0) return `<span class="up">${t('trening.compareRepsUp', { r: dr })}</span>`;
+  if (dr < 0) return `<span class="down">${t('trening.compareRepsDown', { r: dr })}</span>`;
+  return `<span>${t('trening.compareSame', { w: w(prev.weight) })}</span>`;
+}
+
+function renderTrening() {
+  if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
+
+  const chips = document.getElementById('plan-chips');
+  chips.innerHTML = '';
+  const rec = recommendedPlan();
+  for (const id of activePlanIds()) {
+    const p = getPlan(id);
+    const wrap = document.createElement('div');
+    wrap.className = 'chip-wrap';
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (id === selectedPlan ? ' active' : '') + (id === rec ? ' recommended' : '');
+    btn.textContent = planDisplayName(p);
+    btn.addEventListener('click', () => {
+      // výber iného plánu vždy zatvorí editor, aby meno v poli nepatrilo inému plánu
+      if (editingPlan !== null && editingPlan !== id && closeEditor()) saveState();
+      selectedPlan = id;
+      renderTrening();
+    });
+    wrap.appendChild(btn);
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-icon chip-edit';
+    editBtn.textContent = '✏️';
+    editBtn.title = t('trening.edit');
+    editBtn.addEventListener('click', () => {
+      startEditPlan(id);
+    });
+    wrap.appendChild(editBtn);
+    chips.appendChild(wrap);
+  }
+
+  const editPanel = document.getElementById('edit-panel');
+  editPanel.hidden = editingPlan === null;
+  if (editingPlan !== null && editingPlan === selectedPlan && getPlan(editingPlan)) {
+    renderEditPanel();
+  }
+
+  const plan = getPlan(selectedPlan);
+  document.getElementById('plan-title').textContent = plan ? planDisplayName(plan) : t('pokrok.workoutFallback');
+  const list = document.getElementById('exercise-list');
+  list.innerHTML = '';
+  currentSets = {};
+  if (!plan) {
+    document.getElementById('summary-bar').innerHTML = '';
+    document.getElementById('btn-finish-workout').disabled = true;
+    return;
+  }
+
+  for (const ex of plan.exercises) {
+    const div = document.createElement('div');
+    div.className = 'exercise';
+
+    const head = document.createElement('div');
+    head.className = 'exercise-head';
+    const name = document.createElement('span');
+    name.className = 'exercise-name';
+    name.textContent = exerciseDisplayName(ex);
+    const meta = document.createElement('span');
+    meta.className = 'exercise-meta';
+    meta.innerHTML = `${ex.sets} × ${ex.reps} &nbsp;·&nbsp; <b>${ex.weight} ${t('units.kg')}</b>`;
+    head.append(name, meta);
+
+    const hint = document.createElement('div');
+    hint.className = 'compare-hint';
+    hint.innerHTML = comparisonHint(ex);
+
+    const sets = document.createElement('div');
+    sets.className = 'sets';
+
+    for (let i = 0; i < ex.sets; i++) {
+      const key = `${ex.name}:${i}`;
+      const setBtn = document.createElement('button');
+      setBtn.className = 'set-btn';
+      setBtn.textContent = `${i + 1} ✓`;
+      setBtn.addEventListener('click', () => {
+        currentSets[key] = !currentSets[key];
+        setBtn.classList.toggle('done', currentSets[key]);
+        updateSummary();
+      });
+      sets.appendChild(setBtn);
+    }
+
+    div.append(head, hint, sets);
+    list.appendChild(div);
+  }
+
+  const summary = document.getElementById('summary-bar');
+  summary.innerHTML = t('trening.setsDone', { done: 0, total: planExerciseCount(plan), msg: t('trening.setsHint') });
+  document.getElementById('btn-finish-workout').disabled = true;
+}
+
+function updateSummary() {
+  const plan = getPlan(selectedPlan);
+  const done = totalSetsDone();
+  const total = plan ? planExerciseCount(plan) : 0;
+  const msg = done === 0 ? t('trening.setsHint') : randomSetMessage();
+  document.getElementById('summary-bar').innerHTML = t('trening.setsDone', { done, total, msg });
+  document.getElementById('btn-finish-workout').disabled = done === 0;
+}
+
+/* ---------- Editácia plánu ---------- */
+
+function startEditPlan(id) {
+  const plan = getPlan(id);
+  if (!plan) return;
+  editingPlan = id;
+  selectedPlan = id;
+  editDraft = JSON.parse(JSON.stringify(plan.exercises));
+  document.getElementById('edit-error').hidden = true;
+  // meno sa nastaví LEN tu – žiadné prekreslenie riadkov cvikov ho nesmie prepísať
+  document.getElementById('edit-plan-name').value = planDisplayName(plan);
+  renderTrening();
+}
+
+/* Zatvorí editor. Novo vytvorený a ešte neuložený plán zahodí. Vráti true, ak plán zanikol. */
+function closeEditor() {
+  const id = editingPlan;
+  const discard = id !== null && id === newPlanId;
+  editingPlan = null;
+  editDraft = null;
+  newPlanId = null;
+  if (discard) removePlan(id);
+  return discard;
+}
+
+/* Vytvorí nový vlastný plán a hneď otvorí editor. Zrušenie ho zahodí. */
+function addPlan() {
+  const id = 'p-' + uid();
+  state.plans[id] = {
+    id,
+    builtin: false,
+    customName: t('plan.newName'),
+    exercises: [],
+  };
+  if (!Array.isArray(state.planOrder)) state.planOrder = [];
+  state.planOrder.push(id);
+  newPlanId = id;
+  saveState();
+  startEditPlan(id);
+}
+
+/* Posunie plán v poradí (rotácia aj chipy používajú toto poradie). */
+function movePlan(id, delta) {
+  if (!id || !Array.isArray(state.planOrder)) return;
+  const i = state.planOrder.indexOf(id);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= state.planOrder.length) return;
+  const tmp = state.planOrder[i];
+  state.planOrder[i] = state.planOrder[j];
+  state.planOrder[j] = tmp;
+  saveState();
+  renderTrening();
+}
+
+function removePlan(id) {
+  if (!getPlan(id)) return;
+  delete state.plans[id];
+  if (Array.isArray(state.planOrder)) {
+    state.planOrder = state.planOrder.filter(x => x !== id);
+  }
+  if (editingPlan === id) { editingPlan = null; editDraft = null; }
+  if (newPlanId === id) newPlanId = null;
+}
+
+function requestDeletePlan() {
+  const plan = getPlan(editingPlan);
+  if (!plan) return;
+  if (activePlanIds().length <= 1) {
+    showGeneric(t('trening.deletePlanTitle'), t('common.ok'), null, t('trening.deletePlanLast'));
+    return;
+  }
+  const id = plan.id;
+  showGeneric(t('trening.deletePlanTitle'), t('common.delete'), () => {
+    removePlan(id);
+    if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
+    saveState();
+    renderAll();
+  }, t('trening.deletePlanConfirm', { name: esc(planDisplayName(plan)) }));
+}
+
+function renderEditPanel() {
+  const plan = getPlan(editingPlan);
+  if (!plan) { editingPlan = null; return; }
+
+  const ids = activePlanIds();
+  const idx = ids.indexOf(editingPlan);
+  document.getElementById('btn-plan-left').disabled = idx <= 0;
+  document.getElementById('btn-plan-right').disabled = idx < 0 || idx >= ids.length - 1;
+  document.getElementById('btn-plan-delete').disabled = ids.length <= 1;
+
+  const rows = document.getElementById('edit-rows');
+  rows.innerHTML = '';
+  editDraft.forEach((ex, idx) => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.dataset.idx = idx;
+    row.innerHTML = `
+      <input type="text" class="edit-name" value="${escAttr(exerciseDisplayName(ex))}" placeholder="${t('trening.exercisePlaceholder')}">
+      <input type="number" class="edit-num" min="1" max="99" value="${ex.sets}">
+      <input type="number" class="edit-num" min="1" max="99" value="${ex.reps}">
+      <input type="number" class="edit-num" min="0" max="999" value="${ex.weight}">
+      <button class="btn-icon btn-icon-danger" title="${t('trening.deleteExerciseTitle')}">🗑️</button>`;
+    const inputs = row.querySelectorAll('input');
+    inputs[0].addEventListener('input', () => {
+      // typing converts a built-in row into a custom exercise (keeps typed text as-is)
+      if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
+        delete ex.id;
+        ex.builtin = false;
+      }
+      editDraft[idx].name = inputs[0].value;
+      row.classList.remove('invalid');
+    });
+    inputs[1].addEventListener('input', () => { editDraft[idx].sets = num(inputs[1].value); });
+    inputs[2].addEventListener('input', () => { editDraft[idx].reps = num(inputs[2].value); });
+    inputs[3].addEventListener('input', () => { editDraft[idx].weight = num(inputs[3].value); });
+    row.querySelector('.btn-icon-danger').addEventListener('click', () => {
+      if (editDraft.length <= 1) {
+        showGeneric(t('trening.lastExerciseBlock'), t('common.ok'), null);
+        return;
+      }
+      const name = editDraft[idx].name || '?';
+      showGeneric(t('trening.deleteExercise', { name }), t('common.ok'), () => {
+        editDraft.splice(idx, 1);
+        renderEditPanel();
+      });
+    });
+    rows.appendChild(row);
+  });
+}
+
+function escAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function num(v) {
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function saveEditPlan() {
+  const plan = getPlan(editingPlan);
+  if (!plan) return;
+  const errEl = document.getElementById('edit-error');
+  const typed = document.getElementById('edit-plan-name').value.trim();
+  if (!typed) {
+    errEl.hidden = false;
+    errEl.textContent = t('trening.planNameInvalid');
+    return;
+  }
+  const valid = editDraft.every(ex =>
+    String(ex.name).trim() !== '' &&
+    ex.sets >= 1 && ex.sets <= 99 &&
+    ex.reps >= 1 && ex.reps <= 99 &&
+    ex.weight >= 0 && ex.weight <= 999
+  );
+  if (!valid || editDraft.length === 0) {
+    errEl.hidden = false;
+    errEl.textContent = t('trening.editInvalid');
+    return;
+  }
+  errEl.hidden = true;
+
+  // Nezmenený názov zabudovaného plánu zostáva prekladateľný; každá zmena je vlastný názov.
+  const shown = planDisplayName(plan);
+  plan.customName = (plan.builtin && typed === shown) ? (plan.customName || null) : typed;
+
+  plan.exercises = editDraft.map(ex => {
+    const out = {
+      name: String(ex.name).trim(),
+      sets: Math.round(ex.sets),
+      reps: Math.round(ex.reps),
+      weight: Math.round(ex.weight * 2) / 2,
+    };
+    if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
+      out.id = ex.id;
+      out.builtin = true;
+    }
+    return out;
+  });
+  newPlanId = null;
+  editingPlan = null;
+  editDraft = null;
+  currentSets = {};
+  saveState();
+  renderAll();
+}
+
+function cancelEditPlan() {
+  const discarded = closeEditor();
+  if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
+  if (discarded) saveState();
+  renderAll();
+}
+
+/* ---------- Vykreslenie: POKROK ---------- */
+
+function renderPokrok() {
+  const week = workoutsInWeek(currentWeekKey());
+  const month = workoutsInMonth(currentMonthKey());
+  const total = state.history.length;
+
+  document.getElementById('stat-week').textContent = week;
+  document.getElementById('stat-month').textContent = month;
+  document.getElementById('stat-total').textContent = total;
+
+  const records = document.getElementById('records-list');
+  records.innerHTML = '';
+  const recs = personalRecords();
+  if (!recs.length) {
+    records.innerHTML = `<p class="empty-state">${t('pokrok.recordsEmpty')}</p>`;
+  } else {
+    for (const r of recs) {
+      const next = Math.floor(r.weight / 5) * 5 + 5;
+      const row = document.createElement('div');
+      row.className = 'record-row';
+      row.innerHTML = `
+        <div>
+          <div class="record-name">${esc(r.name)}</div>
+          <div class="record-meta">${tPlural('pokrok.setsCount', r.reps)} · ${formatDate(r.date)}</div>
+          <div class="record-meta">${t('pokrok.nextMilestone', { kg: next })}</div>
+        </div>
+        <div class="record-weight">${r.weight} ${t('units.kg')}</div>`;
+      records.appendChild(row);
+    }
+  }
+
+  const history = document.getElementById('history-list');
+  history.innerHTML = '';
+  if (!state.history.length) {
+    history.innerHTML = `<p class="empty-state">${t('pokrok.historyEmpty')}</p>`;
+  } else {
+    const sorted = [...state.history].sort((a, b) => b.date.localeCompare(a.date));
+    for (const w of sorted) {
+      const setsDone = w.exercises.reduce((s, ex) => s + ex.sets, 0);
+      const row = document.createElement('div');
+      row.className = 'history-row';
+      const detail = w.exercises.map(e => `${esc(e.name)} ${e.sets}×${e.reps} · ${e.weight} ${t('units.kg')}`).join('<br>');
+      row.innerHTML = `
+        <div class="history-main">
+          <div class="history-name">${esc(historyPlanName(w))}</div>
+          <div class="history-detail">${formatDate(w.date)} · ${tPlural('pokrok.setsCount', setsDone)}</div>
+          <div class="history-detail">${detail}</div>
+          ${w.note ? `<div class="history-note">“${esc(w.note)}”</div>` : ''}
+        </div>
+        <div class="history-side">
+          <div class="history-xp">+${w.xp} ${t('units.xp')}</div>
+          <div class="history-actions">
+            <button class="btn-icon-sm" data-action="edit" title="${t('history.editTitle')}">✏️</button>
+            <button class="btn-icon-sm btn-icon-danger" data-action="delete" title="${t('history.deleteTitle')}">🗑️</button>
+          </div>
+        </div>`;
+      row.querySelector('[data-action="edit"]').addEventListener('click', () => openHistoryEdit(w.id));
+      row.querySelector('[data-action="delete"]').addEventListener('click', () => requestDeleteWorkout(w.id));
+      history.appendChild(row);
+    }
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ---------- Vykreslenie: MOTIVÁCIA ---------- */
+
+function renderMotivacia() {
+  const info = levelInfo();
+
+  document.getElementById('level-value').textContent = info.level;
+  document.getElementById('header-level').textContent = `${t('header.level')} ${info.level}`;
+  document.getElementById('level-progress').style.width = `${(info.levelXP / info.total) * 100}%`;
+  document.getElementById('level-sub').textContent = t('motivacia.levelSub', { xp: info.xp, left: info.total - info.levelXP });
+
+  const list = document.getElementById('achievements-list');
+  list.innerHTML = '';
+  const defs = staticAchievementDefs();
+  // míľniky (5 kg) — zoradené podľa názvu cviku
+  const milestones = Object.entries(state.achievements)
+    .filter(([id]) => id.startsWith('ms-'))
+    .sort((a, b) => a[0].localeCompare(b[0]));
+
+  for (const def of defs) {
+    const done = !!state.achievements[def.id];
+    const date = done ? state.achievements[def.id] : null;
+    const div = document.createElement('div');
+    div.className = 'achievement' + (done ? ' unlocked' : '');
+    div.innerHTML = `
+      <span class="achievement-icon">${def.icon}</span>
+      <span class="achievement-name">${t(def.nameKey)}</span>
+      <span class="achievement-desc">${t(def.descKey, { g: weeklyGoal() })}</span>
+      ${done ? `<span class="achievement-date">${t('motivacia.unlocked', { date: formatDate(date) })}</span>` : ''}`;
+    list.appendChild(div);
+  }
+
+  for (const [id, date] of milestones) {
+    const parts = id.split('-');
+    const kg = parts[parts.length - 1];
+    const rawName = parts.slice(1, -1).join('-');
+    const name = recordedNameToDisplay(rawName);
+    const div = document.createElement('div');
+    div.className = 'achievement unlocked';
+    div.innerHTML = `
+      <span class="achievement-icon">🏋️</span>
+      <span class="achievement-name">${esc(name)} · ${kg} ${t('units.kg')}</span>
+      <span class="achievement-desc">${t('motivacia.ach.5kg', { name, kg })}</span>
+      <span class="achievement-date">${t('motivacia.unlocked', { date: formatDate(date) })}</span>`;
+    list.appendChild(div);
+  }
+}
+
+/* ---------- Celkové vykreslenie ---------- */
+
+function renderAll() {
+  renderDnes();
+  renderTrening();
+  renderPokrok();
+  renderMotivacia();
+}
+
+/* ---------- Prepínanie kariet ---------- */
+
+function switchTab(tab) {
+  activeTab = tab;
+  for (const s of ['dnes', 'trening', 'pokrok', 'motivacia']) {
+    document.getElementById(`screen-${s}`).hidden = s !== tab;
+  }
+  document.querySelectorAll('.tab').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  if (tab === 'trening') renderTrening();
+}
+
+/* ---------- Ukončenie tréningu ---------- */
+
+function finishWorkout() {
+  const plan = getPlan(selectedPlan);
+  if (!plan) return;
+  const doneCount = totalSetsDone();
+  const totalSets = planExerciseCount(plan);
+  const xp = BASE_XP + doneCount * XP_PER_SET;
+
+  const confirmText = document.getElementById('confirm-text');
+  confirmText.innerHTML = t('trening.confirmText', { plan: esc(planDisplayName(plan)), done: doneCount, total: totalSets, xp });
+  document.getElementById('confirm-note').value = '';
+  document.getElementById('modal-confirm').hidden = false;
+  document.getElementById('confirm-note').focus();
+}
+
+function confirmFinish() {
+  const plan = getPlan(selectedPlan);
+  if (!plan) return;
+  const prevRecommended = recommendedPlan();
+  const beforeUnlocked = Object.keys(state.achievements);
+
+  const exercises = plan.exercises.map(ex => ({
+    name: ex.name,
+    exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
+    sets: ex.sets,
+    reps: ex.reps,
+    weight: ex.weight,
+  }));
+
+  const doneCount = totalSetsDone();
+  const xp = BASE_XP + doneCount * XP_PER_SET;
+  const note = document.getElementById('confirm-note').value.trim();
+
+  const entry = {
+    id: uid(),
+    planId: plan.id,
+    planName: recordedPlanName(plan),
+    date: todayISO(),
+    xp,
+    note,
+    exercises: exercises.map(e => Object.assign({}, e, { setsDone: 0 })),
+  };
+  // setsDone = počet dokončených sérií podľa aktuálneho session
+  const setsByKey = {};
+  for (const [key, done] of Object.entries(currentSets)) {
+    if (done) {
+      const idx = key.lastIndexOf(':');
+      const name = key.slice(0, idx);
+      setsByKey[name] = (setsByKey[name] || 0) + 1;
+    }
+  }
+  entry.exercises.forEach(e => { e.setsDone = setsByKey[e.name] || 0; });
+
+  state.history.push(entry);
+  lastWorkoutId = entry.id;
+  state.demo = false;  // real workout → data is no longer demo
+  localStorage.setItem(STORAGE_KEY + '_real', '1');
+  reconcileAchievements();
+  saveState();
+
+  lastUnlocked = Object.keys(state.achievements).filter(id => !beforeUnlocked.includes(id));
+
+  lastXP = xp;
+  selectedPlan = prevRecommended || selectedPlan;
+  currentSets = {};
+  stopTimer();
+
+  document.getElementById('modal-confirm').hidden = true;
+
+  showResultModal();
+  renderAll();
+}
+
+function showResultModal() {
+  const info = levelInfo();
+  document.getElementById('result-xp').textContent = `+${lastXP} ${t('units.xp')}`;
+  document.getElementById('result-msg').textContent = randomEncouragement();
+
+  const achEl = document.getElementById('result-achievements');
+  if (lastUnlocked.length) {
+    const names = lastUnlocked.map(id => {
+      if (id.startsWith('ms-')) {
+        const parts = id.split('-');
+        const kg = parts[parts.length - 1];
+        return `${t('motivacia.ach.5kg', { name: recordedNameToDisplay(parts.slice(1, -1).join('-')), kg })}`;
+      }
+      const def = staticAchievementDefs().find(d => d.id === id);
+      return def ? `${def.icon} ${t(def.nameKey)}` : id;
+    }).join(', ');
+    achEl.textContent = t('motivacia.newAchievement', { names });
+    achEl.hidden = false;
+  } else {
+    achEl.hidden = true;
+  }
+
+  const note = document.getElementById('result-note');
+  const entry = state.history.find(w => w.id === lastWorkoutId);
+  if (entry && entry.note) {
+    note.textContent = `“${entry.note}”`;
+    note.hidden = false;
+  } else {
+    note.hidden = true;
+  }
+
+  document.getElementById('modal-result').hidden = false;
+}
+
+/* ---------- Undo / edit / delete tréningu ---------- */
+
+function requestUndoWorkout() {
+  const entry = state.history.find(w => w.id === lastWorkoutId);
+  if (!entry) return;
+  showGeneric(t('trening.undoConfirmTitle'), t('common.cancel'), () => {
+    state.history = state.history.filter(w => w.id !== lastWorkoutId);
+    lastWorkoutId = null;
+    lastUnlocked = [];
+    state.demo = false;
+    localStorage.setItem(STORAGE_KEY + '_real', '1');
+    document.getElementById('modal-result').hidden = true;
+    recalculateAll();
+    saveState();
+    switchTab('trening');
+  }, t('trening.undoConfirm', { xp: entry.xp }));
+}
+
+function requestDeleteWorkout(id) {
+  const entry = state.history.find(w => w.id === id);
+  if (!entry) return;
+  showGeneric(t('history.deleteTitle'), t('common.cancel'), () => {
+    state.history = state.history.filter(w => w.id !== id);
+    if (lastWorkoutId === id) lastWorkoutId = null;
+    recalculateAll();
+    saveState();
+    renderPokrok();
+  }, t('history.deleteConfirm', { xp: entry.xp }));
+}
+
+/* ---------- Úprava tréningu z histórie ---------- */
+
+let heWorkoutId = null;
+
+function openHistoryEdit(id) {
+  const w = state.history.find(x => x.id === id);
+  if (!w) return;
+  heWorkoutId = id;
+  document.getElementById('he-date').value = w.date;
+  document.getElementById('he-note').value = w.note || '';
+  const box = document.getElementById('he-exercises');
+  box.innerHTML = '';
+  w.exercises.forEach((ex, idx) => {
+    const row = document.createElement('div');
+    row.className = 'he-ex-row';
+    row.innerHTML = `
+      <span class="he-name">${esc(ex.name)}</span>
+      <span class="he-label">${t('history.setsLabel')}</span><input type="number" min="1" max="99" value="${ex.sets}" data-f="sets">
+      <span class="he-label">${t('history.repsLabel')}</span><input type="number" min="1" max="99" value="${ex.reps}" data-f="reps">
+      <span class="he-label">${t('units.kg')}</span><input type="number" min="0" max="999" value="${ex.weight}" data-f="weight">
+      <span class="he-label">${t('history.setsDoneLabel')}</span><input type="number" min="0" max="99" value="${ex.setsDone}" data-f="setsDone">`;
+    row.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        w.exercises[idx][inp.dataset.f] = num(inp.value);
+      });
+    });
+    box.appendChild(row);
+  });
+  document.getElementById('modal-history-edit').hidden = false;
+}
+
+function saveHistoryEdit() {
+  const w = state.history.find(x => x.id === heWorkoutId);
+  if (!w) return;
+  w.date = document.getElementById('he-date').value || w.date;
+  w.note = document.getElementById('he-note').value.trim();
+  w.exercises.forEach(e => {
+    e.sets = Math.max(1, Math.min(99, Math.round(e.sets)));
+    e.reps = Math.max(1, Math.min(99, Math.round(e.reps)));
+    e.weight = Math.max(0, Math.min(999, Math.round(e.weight * 2) / 2));
+    e.setsDone = Math.max(0, Math.min(e.sets, Math.round(e.setsDone)));
+  });
+  w.xp = BASE_XP + w.exercises.reduce((s, e) => s + e.setsDone, 0) * XP_PER_SET;
+  document.getElementById('modal-history-edit').hidden = true;
+  recalculateAll();
+  saveState();
+  renderPokrok();
+}
+
+/* ---------- Rekalkulácia ---------- */
+
+function recalculateAll() {
+  reconcileAchievements();
+  renderAll();
+}
+
+/* ---------- Nastavenia / prvý štart / import / export / reset ---------- */
+
+/* Číselný ukazovateľ aktuálneho cieľa v Nastaveniach */
+function setGoalReadout(g) {
+  const el = document.getElementById('settings-goal-value');
+  if (el) el.textContent = g;
+  const err = document.getElementById('settings-goal-error');
+  if (err) err.hidden = true;
+}
+
+function renderGoalChips(containerId, current) {
+  const box = document.getElementById(containerId);
+  box.innerHTML = '';
+  for (let g = GOAL_MIN; g <= GOAL_MAX; g++) {
+    const btn = document.createElement('button');
+    btn.className = 'goal-chip' + (g === current ? ' active' : '');
+    btn.textContent = g;
+    btn.dataset.goal = g;
+    btn.addEventListener('click', () => {
+      box.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      if (containerId === 'settings-goal-chips') setGoalReadout(g);
+    });
+    box.appendChild(btn);
+  }
+}
+
+function activeGoalChip(containerId) {
+  const box = document.getElementById(containerId);
+  const active = box.querySelector('.goal-chip.active');
+  return active ? parseInt(active.dataset.goal, 10) : weeklyGoal();
+}
+
+function openSetup() {
+  renderGoalChips('setup-goal-chips', 3);
+  document.getElementById('modal-setup').hidden = false;
+}
+
+function confirmSetup() {
+  const g = activeGoalChip('setup-goal-chips');
+  state.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, g));
+  saveState();
+  document.getElementById('modal-setup').hidden = true;
+  localStorage.setItem(STORAGE_KEY + '_seeded', '1');
+  renderAll();
+}
+
+function openSettings() {
+  renderGoalChips('settings-goal-chips', weeklyGoal());
+  setGoalReadout(weeklyGoal());
+  const removeBtn = document.getElementById('btn-remove-demo');
+  if (removeBtn) {
+    removeBtn.hidden = !state.demo;
+  }
+  document.getElementById('modal-settings').hidden = false;
+}
+
+/* Vráti true, ak bol cieľ uložený; false, ak bol vstup neplatný. */
+function saveSettingsGoal() {
+  const g = Number(activeGoalChip('settings-goal-chips'));
+  const errEl = document.getElementById('settings-goal-error');
+  if (!Number.isInteger(g) || g < GOAL_MIN || g > GOAL_MAX) {
+    if (errEl) {
+      errEl.hidden = false;
+      errEl.textContent = t('settings.goalInvalid', { min: GOAL_MIN, max: GOAL_MAX });
+    }
+    return false;
+  }
+  if (errEl) errEl.hidden = true;
+  state.settings.weeklyGoal = g;
+  setGoalReadout(g);
+  reconcileAchievements();
+  saveState();
+  renderAll();
+  return true;
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `gymquest-backup-${todayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+function importFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || typeof data !== 'object' || !data.plans || !Array.isArray(data.history)) {
+        showGeneric(t('settings.importError'), t('common.ok'), null);
+        return;
+      }
+      pendingImport = data;
+      showGeneric(t('settings.importTitle'), t('common.cancel'), () => {
+        try {
+          // staršie zálohy (v1/v2) prejdú rovnakou migráciou ako uložené dáta
+          if (data.settings && !data.settings.lang) data.settings.lang = state.settings.lang;
+          const incoming = data.version === 1 ? migrateV1toV2(data) : data;
+          state = migrateV2toV3(incoming);
+          reconcileAchievements();
+          saveState();
+          document.getElementById('modal-settings').hidden = true;
+          renderAll();
+        } catch (err) {
+          showGeneric(t('settings.importError'), t('common.ok'), null);
+        }
+      }, t('settings.importConfirm', { n: data.history.length }));
+    } catch (e) {
+      showGeneric(t('settings.importError'), t('common.ok'), null);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function requestResetData() {
+  showGeneric(t('settings.resetTitle'), t('settings.resetConfirmAction'), () => {
+    showGeneric(t('settings.resetFinal'), t('settings.resetFinalAction'), () => {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_KEY + '_seeded');
+      location.reload();
+    }, t('settings.resetFinalConfirm'));
+  }, t('settings.resetConfirm'));
+}
+
+/* ---------- Generický modal ---------- */
+
+let genericCallback = null;
+
+function showGeneric(title, okLabel, onOk, text) {
+  document.getElementById('generic-title').textContent = title || t('common.confirmTitle');
+  document.getElementById('generic-text').innerHTML = text || '';
+  const okBtn = document.getElementById('btn-generic-ok');
+  okBtn.textContent = okLabel || t('common.ok');
+  genericCallback = onOk || null;
+  document.getElementById('modal-generic').hidden = false;
+}
+
+function closeGeneric() {
+  document.getElementById('modal-generic').hidden = true;
+  genericCallback = null;
+}
+
+function confirmGeneric() {
+  const cb = genericCallback;
+  document.getElementById('modal-generic').hidden = true;
+  genericCallback = null;
+  if (cb) cb();
+}
+
+/* ---------- Timer ---------- */
+
+function startTimer(seconds) {
+  stopTimer();
+  timerEnd = Date.now() + seconds * 1000;
+  const bar = document.getElementById('timer-bar');
+  bar.classList.remove('done');
+  bar.hidden = false;
+  document.getElementById('timer-label').textContent = t('trening.timerLabel');
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    const left = timerEnd - Date.now();
+    if (left <= 0) {
+      stopTimer();
+      document.getElementById('timer-label').textContent = t('trening.timerDone');
+      bar.classList.add('done');
+      bar.hidden = false;
+      document.getElementById('timer-time').textContent = '00:00';
+      return;
+    }
+    updateTimerDisplay();
+  }, 250);
+}
+
+function updateTimerDisplay() {
+  const left = Math.max(0, Math.round((timerEnd - Date.now()) / 1000));
+  const m = String(Math.floor(left / 60)).padStart(2, '0');
+  const s = String(left % 60).padStart(2, '0');
+  document.getElementById('timer-time').textContent = `${m}:${s}`;
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById('timer-bar').hidden = true;
+}
+
+/* ---------- Jazyk ---------- */
+
+function applyStaticI18n() {
+  document.documentElement.lang = state.settings.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.title = t(el.dataset.i18nTitle);
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  const langBtn = document.getElementById('btn-lang');
+  langBtn.innerHTML = `<span class="${state.settings.lang === 'sk' ? 'active-lang' : ''}">SK</span>|<span class="${state.settings.lang === 'en' ? 'active-lang' : ''}">EN</span>`;
+}
+
+function toggleLang() {
+  state.settings.lang = state.settings.lang === 'sk' ? 'en' : 'sk';
+  saveState();
+  applyStaticI18n();
+  renderAll();
+}
+
+/* ---------- Kontrola prekladov ---------- */
+
+function verifyI18n() {
+  const missing = Object.keys(I18N.sk).filter(k => I18N.en[k] === undefined);
+  if (missing.length) {
+    console.warn('GymQuest: chýbajúce EN preklady:', missing);
+  }
+}
+
+/* ---------- Eventy ---------- */
+
+/* Bezpečné pripájanie listenerov: chýbajúci prvok už nikdy nevyhodí výnimku,
+   ktorá by potichu vypnula všetky nasledujúce tlačidlá. */
+function on(id, handler, event) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.warn('GymQuest: chýba prvok #' + id + ' – listener sa nepripojil');
+    return null;
+  }
+  el.addEventListener(event || 'click', handler);
+  return el;
+}
+
+function setupEvents() {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  on('btn-lang', toggleLang);
+  on('btn-settings', openSettings);
+
+  on('btn-start-workout', () => {
+    const rec = recommendedPlan();
+    if (rec) selectedPlan = rec;
+    switchTab('trening');
+  });
+
+  on('btn-excuse', () => {
+    const key = currentWeekKey();
+    const idx = state.excusedWeeks.indexOf(key);
+    if (idx >= 0) state.excusedWeeks.splice(idx, 1);
+    else state.excusedWeeks.push(key);
+    saveState();
+    renderAll();
+  });
+
+  on('btn-finish-workout', finishWorkout);
+  on('btn-confirm-cancel', () => { document.getElementById('modal-confirm').hidden = true; });
+  on('btn-confirm-ok', confirmFinish);
+  on('btn-result-close', () => { document.getElementById('modal-result').hidden = true; });
+  on('btn-result-undo', requestUndoWorkout);
+
+  on('btn-add-exercise', () => {
+    if (editingPlan === null) return;
+    editDraft.push({ name: '', sets: 3, reps: 10, weight: 0 });
+    renderEditPanel();
+  });
+  on('btn-edit-save', saveEditPlan);
+  on('btn-edit-cancel', cancelEditPlan);
+
+  on('btn-add-plan', addPlan);
+  on('btn-plan-rename', () => startEditPlan(selectedPlan));
+  on('btn-plan-left', () => movePlan(editingPlan, -1));
+  on('btn-plan-right', () => movePlan(editingPlan, 1));
+  on('btn-plan-delete', requestDeletePlan);
+  on('edit-plan-name', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveEditPlan();
+    }
+  }, 'keydown');
+
+  on('btn-reset-session', () => {
+    showGeneric(t('trening.resetSessionTitle'), t('common.cancel'), () => {
+      currentSets = {};
+      stopTimer();
+      renderTrening();
+    }, t('trening.resetSessionConfirm'));
+  });
+
+  document.querySelectorAll('.timer-chip').forEach(chip => {
+    chip.addEventListener('click', () => startTimer(parseInt(chip.dataset.seconds, 10)));
+  });
+  on('timer-stop', stopTimer);
+
+  on('btn-setup-ok', confirmSetup);
+  // viditeľné Uložiť aj pôvodné Zavrieť – obe uložia, aby sa zmena nikdy nestratila
+  on('btn-settings-save', () => {
+    if (saveSettingsGoal()) document.getElementById('modal-settings').hidden = true;
+  });
+  on('btn-settings-close', () => {
+    saveSettingsGoal();
+    document.getElementById('modal-settings').hidden = true;
+  });
+  on('btn-export', exportData);
+  on('btn-import', () => { document.getElementById('file-import').click(); });
+  on('file-import', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) importFile(f);
+    e.target.value = '';
+  }, 'change');
+  on('btn-reset-data', requestResetData);
+
+  on('btn-load-demo', () => {
+    if (state.history.length > 0) {
+      showGeneric(t('settings.demoNone'), t('common.ok'), null);
+      return;
+    }
+    showGeneric(t('settings.loadDemo'), t('settings.loadDemo'), () => {
+      seedSampleData();
+      openSettings();
+      renderAll();
+    }, t('settings.demoConfirm'));
+  });
+
+  on('btn-remove-demo', () => {
+    showGeneric(t('settings.removeDemo'), t('settings.removeDemo'), () => {
+      removeDemoData();
+      openSettings();
+      renderAll();
+    }, t('settings.demoRemoveConfirm'));
+  });
+
+  on('btn-generic-cancel', closeGeneric);
+  on('btn-generic-ok', confirmGeneric);
+
+  on('btn-he-cancel', () => { document.getElementById('modal-history-edit').hidden = true; });
+  on('btn-he-save', saveHistoryEdit);
+}
+
+/* ---------- Štart ---------- */
+
+loadState();
+if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
+setupEvents();
+applyStaticI18n();
+verifyI18n();
+switchTab('dnes');
+renderAll();
+if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
+  openSetup();
+}
