@@ -160,10 +160,12 @@ const I18N = {
     'dnes.streakStart1': 'Absolvuj aspoň {g} tréning tento týždeň a začni sériu.',
     'dnes.streakStartFew': 'Absolvuj aspoň {g} tréningy tento týždeň a začni sériu.',
     'dnes.streakStartMany': 'Absolvuj aspoň {g} tréningov tento týždeň a začni sériu.',
-    'dnes.streakKeep': 'Absolvuj aspoň {g} tréningy za týždeň, séria pokračuje.',
-    'dnes.streakKeep1': 'Absolvuj aspoň {g} tréning za týždeň, séria pokračuje.',
-    'dnes.streakKeepFew': 'Absolvuj aspoň {g} tréningy za týždeň, séria pokračuje.',
-    'dnes.streakKeepMany': 'Absolvuj aspoň {g} tréningov za týždeň, séria pokračuje.',
+    'dnes.streakContinue': 'Dokonči tento týždeň {g} tréningy, aby si pokračoval v sérii.',
+    'dnes.streakContinue1': 'Dokonči tento týždeň {g} tréning, aby si pokračoval v sérii.',
+    'dnes.streakContinueFew': 'Dokonči tento týždeň {g} tréningy, aby si pokračoval v sérii.',
+    'dnes.streakContinueMany': 'Dokonči tento týždeň {g} tréningov, aby si pokračoval v sérii.',
+    'dnes.streakGoing': 'Týždenný cieľ je splnený. Tvoja séria pokračuje!',
+    'dnes.streakEnded': 'Tvoja séria sa skončila. Začni novú sériu splnením týždenného cieľa.',
     'dnes.excuse': 'Škola / choroba',
     'dnes.excuseActive': 'Škola / choroba ✓ (aktívne)',
     'dnes.excuseNote': 'Tento týždeň je ospravedlnený – séria sa nepreruší.',
@@ -344,10 +346,12 @@ const I18N = {
     'dnes.streakStart1': 'Complete at least {g} workout this week to start a streak.',
     'dnes.streakStartFew': 'Complete at least {g} workouts this week to start a streak.',
     'dnes.streakStartMany': 'Complete at least {g} workouts this week to start a streak.',
-    'dnes.streakKeep': 'Complete at least {g} workouts per week to keep the streak.',
-    'dnes.streakKeep1': 'Complete at least {g} workout per week to keep the streak.',
-    'dnes.streakKeepFew': 'Complete at least {g} workouts per week to keep the streak.',
-    'dnes.streakKeepMany': 'Complete at least {g} workouts per week to keep the streak.',
+    'dnes.streakContinue': 'Complete {g} workouts this week to continue your streak.',
+    'dnes.streakContinue1': 'Complete {g} workout this week to continue your streak.',
+    'dnes.streakContinueFew': 'Complete {g} workouts this week to continue your streak.',
+    'dnes.streakContinueMany': 'Complete {g} workouts this week to continue your streak.',
+    'dnes.streakGoing': 'Weekly goal completed. Your streak continues!',
+    'dnes.streakEnded': 'Your streak has ended. Start a new streak by completing your weekly goal.',
     'dnes.excuse': 'School / sick',
     'dnes.excuseActive': 'School / sick ✓ (active)',
     'dnes.excuseNote': 'This week is excused — the streak is kept.',
@@ -726,6 +730,8 @@ function defaultState() {
     planOrder: DEFAULT_PLAN_ORDER.slice(),
     history: [],
     excusedWeeks: [],
+    goalHistory: {},     // ISO týždeň -> cieľ platný v tom týždni (snapshot pre vyhodnotenie série)
+    legacyGoal: null,    // cieľ spred zavedenia snapshotov; null = nový používateľ bez histórie
     settings: { weeklyGoal: 3, lang: 'en' },
     achievements: {},
     demo: false,
@@ -783,6 +789,8 @@ function normalizePlans() {
 /* Doplní id/flagy cvikov v plánoch a exId/planName v histórii. Zapísané názvy nikdy nemení. */
 function backfillState() {
   normalizePlans();
+  normalizeGoalHistory();
+  syncGoalSnapshot();
   for (const id of Object.keys(state.plans)) {
     const plan = state.plans[id];
     plan.exercises = plan.exercises.map(ex => {
@@ -844,6 +852,10 @@ function migrateV2toV3(parsed) {
       : DEFAULT_PLAN_ORDER.filter(id => Object.prototype.hasOwnProperty.call(plans, id)),
     history: Array.isArray(base.history) ? base.history : [],
     excusedWeeks: Array.isArray(base.excusedWeeks) ? base.excusedWeeks : [],
+    goalHistory: (base.goalHistory && typeof base.goalHistory === 'object' && !Array.isArray(base.goalHistory))
+      ? base.goalHistory
+      : {},
+    legacyGoal: null,
     settings: Object.assign({ weeklyGoal: 3, lang: 'sk' }, base.settings || {}),
     achievements: (base.achievements && typeof base.achievements === 'object') ? base.achievements : {},
     demo: base.demo === true,
@@ -851,6 +863,12 @@ function migrateV2toV3(parsed) {
   const goal = Math.round(Number(out.settings.weeklyGoal));
   out.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, Number.isFinite(goal) && goal ? goal : 3));
   if (out.settings.lang !== 'sk' && out.settings.lang !== 'en') out.settings.lang = 'sk';
+  /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
+     a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
+     zmena cieľa nemôže prepísať už uzavreté týždne. */
+  out.legacyGoal = (base.legacyGoal === undefined || base.legacyGoal === null)
+    ? out.settings.weeklyGoal
+    : Math.min(GOAL_MAX, Math.max(GOAL_MIN, Math.round(Number(base.legacyGoal)) || out.settings.weeklyGoal));
   out.history = out.history.map(w => Object.assign({}, w, {
     note: typeof w.note === 'string' ? w.note : '',
     exercises: Array.isArray(w.exercises)
@@ -914,6 +932,46 @@ function weeklyGoal() {
   return state.settings.weeklyGoal;
 }
 
+/* Cieľ, ktorý platí pre daný ISO týždeň.
+   Prebiehajúci týždeň používa živé nastavenie (dá sa ešte zmeniť), uzavreté týždne používajú
+   snapshot z toho času – takže zmena cieľa nikdy neprepíše, ako sa vyhodnotili minulé týždne. */
+function goalForWeek(key) {
+  if (key === currentWeekKey()) return weeklyGoal();
+  const snap = state.goalHistory ? state.goalHistory[key] : undefined;
+  if (Number.isInteger(snap)) return snap;
+  // týždeň spred zavedenia snapshotov: zmrazená odvodená hodnota (nikdy sa nemení)
+  if (Number.isInteger(state.legacyGoal)) return state.legacyGoal;
+  return weeklyGoal();
+}
+
+function isWeekExcused(key) {
+  return state.excusedWeeks.includes(key);
+}
+
+/* Zapíše cieľ pre práve bežiaci týždeň. Minulé týždne nikdy neprepisuje. */
+function syncGoalSnapshot() {
+  if (!state.goalHistory) state.goalHistory = {};
+  const key = currentWeekKey();
+  const goal = weeklyGoal();
+  if (state.goalHistory[key] !== goal) state.goalHistory[key] = goal;
+}
+
+/* Opraví tvar goalHistory. Nikdy nedopĺňa vymyslené hodnoty, len zahodí neplatné záznamy. */
+function normalizeGoalHistory() {
+  if (!state.goalHistory || typeof state.goalHistory !== 'object' || Array.isArray(state.goalHistory)) {
+    state.goalHistory = {};
+    return;
+  }
+  for (const key of Object.keys(state.goalHistory)) {
+    const val = Math.round(Number(state.goalHistory[key]));
+    if (!/^\d{4}-W\d{2}$/.test(key) || !Number.isFinite(val) || val < GOAL_MIN || val > GOAL_MAX) {
+      delete state.goalHistory[key];
+    } else {
+      state.goalHistory[key] = val;
+    }
+  }
+}
+
 /* XP získané tréningmi. Zámerne bez XP za úspechy, aby sa úspechy nepočítali samy zo seba. */
 function workoutXP() {
   return state.history.reduce((sum, w) => sum + w.xp, 0);
@@ -941,20 +999,47 @@ function workoutsInMonth(key) {
   return state.history.filter(w => monthKey(parseDate(w.date)) === key).length;
 }
 
+/* Séria = počet po sebe idúcich DOKONČENÝCH ISO týždňov, v ktorých bol splnený cieľ.
+
+   Prebiehajúci týždeň sériu NIKDY nepreruší: ak cieľ ešte nie je splnený, preskočí sa;
+   ak už splnený je, počíta sa hneď. Prerušiť sériu môže len týždeň, ktorý sa už skončil.
+   "Dokončený" vyplýva výhradne z pozície v prechádzaní (všetko pred aktuálnym týždňom),
+   nie z hodín ani z udalosti o polnoci – preto nezáleží na tom, či bola appka otvorená. */
 function computeStreak() {
+  const current = currentWeekKey();
+  let week = current;
   let streak = 0;
-  let week = currentWeekKey();
-  while (true) {
-    if (workoutsInWeek(week) >= weeklyGoal()) {
-      streak++;
-      week = prevWeekKey(week);
-    } else if (state.excusedWeeks.includes(week)) {
-      week = prevWeekKey(week);
+  let activeWeek = true;    // true len pri prvom kroku = prebiehajúci týždeň
+
+  for (let guard = 0; guard < 1040; guard++) {   // 20 rokov; poškodený kľúč nikdy nezacyklí appku
+    const met = workoutsInWeek(week) >= goalForWeek(week);
+
+    if (met) {
+      streak++;                                  // cieľ splnený -> počíta sa (aj prebiehajúci týždeň)
+    } else if (isWeekExcused(week)) {
+      // ospravedlnený týždeň: sériu zachová, ale nikdy ju nepredĺži
+    } else if (activeWeek) {
+      // týždeň ešte len beží -> nikdy nie je neúspech
     } else {
-      break;
+      break;                                     // dokončený týždeň bez splneného cieľa -> séria končí
     }
+
+    activeWeek = false;
+    week = prevWeekKey(week);
   }
   return streak;
+}
+
+/* Existuje aspoň jeden DOKONČENÝ týždeň, ktorý splnil svoj vtedajší cieľ?
+   Rozhoduje medzi textom "séria sa skončila" a "začni sériu". Aktuálny týždeň sa nepočíta. */
+function hasCompletedGoalWeek() {
+  const current = currentWeekKey();
+  const weeks = new Set(state.history.map(w => weekKey(parseDate(w.date))));
+  for (const k of weeks) {
+    if (k === current) continue;
+    if (workoutsInWeek(k) >= goalForWeek(k)) return true;
+  }
+  return false;
 }
 
 function levelInfo() {
@@ -1209,7 +1294,7 @@ function staticAchievementDefs() {
 function historyWeeksWithGoalMet() {
   const weeks = new Set();
   for (const w of state.history) weeks.add(weekKey(parseDate(w.date)));
-  return [...weeks].filter(k => workoutsInWeek(k) >= weeklyGoal());
+  return [...weeks].filter(k => workoutsInWeek(k) >= goalForWeek(k));
 }
 
 function hasAnyPR() {
@@ -1467,9 +1552,15 @@ function renderDnes() {
     ? t('dnes.streakNone')
     : tPlural('dnes.streakWeek', streak).replace('{n}', String(streak));
   document.getElementById('streak-value').textContent = streakText;
+  /* Rozhoduje sa podľa dokončených týždňov: prebiehajúci týždeň nikdy nezobrazí "séria skončila". */
+  const currentMet = weekCount >= goal;
   document.getElementById('streak-sub').textContent = streak === 0
-    ? tPlural('dnes.streakStart', goal).replace('{g}', String(goal))
-    : tPlural('dnes.streakKeep', goal).replace('{g}', String(goal));
+    ? (hasCompletedGoalWeek()
+      ? t('dnes.streakEnded')
+      : tPlural('dnes.streakStart', goal).replace('{g}', String(goal)))
+    : (currentMet
+      ? t('dnes.streakGoing')
+      : tPlural('dnes.streakContinue', goal).replace('{g}', String(goal)));
 
   const btnExcuse = document.getElementById('btn-excuse');
   btnExcuse.textContent = excused ? t('dnes.excuseActive') : t('dnes.excuse');
@@ -2204,6 +2295,7 @@ function confirmFinish() {
   entry.exercises.forEach(e => { e.setsDone = setsByKey[e.name] || 0; });
 
   state.history.push(entry);
+  syncGoalSnapshot();    // tento týždeň je teraz "pozorovaný" so svojím cieľom
   lastWorkoutId = entry.id;
   state.demo = false;  // real workout → data is no longer demo
   localStorage.setItem(STORAGE_KEY + '_real', '1');
@@ -2387,6 +2479,7 @@ function openSetup() {
 function confirmSetup() {
   const g = activeGoalChip('setup-goal-chips');
   state.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, g));
+  syncGoalSnapshot();
   saveState();
   document.getElementById('modal-setup').hidden = true;
   localStorage.setItem(STORAGE_KEY + '_seeded', '1');
@@ -2416,6 +2509,7 @@ function saveSettingsGoal() {
   }
   if (errEl) errEl.hidden = true;
   state.settings.weeklyGoal = g;
+  syncGoalSnapshot();          // prebiehajúci týždeň si drží aktuálny cieľ; minulé sa nemenia
   setGoalReadout(g);
   reconcileAchievements();
   saveState();
@@ -2722,6 +2816,7 @@ function refreshDayIfChanged() {
   const today = todayISO();
   if (today === lastRenderedDay) return false;
   lastRenderedDay = today;
+  syncGoalSnapshot();    // nový deň (napr. pondelok) = nový bežiaci týždeň so svojím cieľom
   renderDnes();
   renderPokrok();
   if (activeTab === 'kalendar') renderKalendar();   // oranžový krúžok "dnes" sa posunie
