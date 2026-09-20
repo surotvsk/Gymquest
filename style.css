@@ -263,6 +263,42 @@ body {
   margin-top: var(--sp-2);
 }
 
+/* ===== Streak card: value + supporting line on narrow phones =====
+   #streak-value is a flex item inside .card-head and was white-space: nowrap, so its
+   automatic minimum size was the FULL width of the string: it could neither shrink nor
+   wrap. On a 320px phone that pushed the text ~120px outside the card and made the whole
+   page scroll sideways ("🔥 1 week in a row" needs ~360px, the card offers 239px).
+   Everything here is scoped to the streak card, so the other .card-value elements
+   (weekly "0 of 3", progress stats) are untouched. */
+.card:has(#streak-value) .card-head {
+  flex-wrap: wrap;          /* the value drops onto its own line instead of overflowing */
+  row-gap: var(--sp-1);
+}
+
+.card:has(#streak-value) .card-title,
+#streak-value {
+  min-width: 0;             /* let the flex item shrink below its content width */
+}
+
+#streak-value {
+  /* 20px floor, ~22px on a 320px phone, the original 32px from ~457px up.
+     Measured: the longest value ("🔥 12 weeks in a row" / "🔥 12 týždňov v rade")
+     stays on one line down to 24.25px at 320px, so this keeps a safety margin. */
+  font-size: clamp(20px, 7vw, var(--fs-2xl));
+  white-space: normal;      /* one line while it fits, wraps cleanly when it cannot */
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+#streak-sub {
+  /* 13px floor: smaller than the value, never tiny; 3.2vw scales it up on wider phones */
+  font-size: clamp(var(--fs-sm), 3.2vw, var(--fs-md));
+  line-height: 1.5;
+  text-wrap: balance;       /* two balanced lines rather than one ragged line */
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
 /* ===== Progress bars ===== */
 
 .progress {
