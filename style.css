@@ -1337,6 +1337,11 @@ body.has-update-banner .app-main {
 @media (max-width: 430px) {
   #modal-generic .modal-actions,
   #modal-fullbody .modal-actions { flex-direction: column; }
+
+  /* Dlhé slovenské popisky ("Importovať dáta", "Načítať ukážkové dáta") sa do dvoch
+     stĺpcov pri 320 px nezmestia – menšie vnútorné odsadenie ich udrží vnútri modálu. */
+  .modal-actions .btn { padding: 0 var(--sp-3); }
+  #modal-settings .modal { padding-left: var(--sp-4); padding-right: var(--sp-4); }
 }
 
 /* ===== Výber typu nového plánu ===== */
@@ -1663,6 +1668,96 @@ textarea.modal-input { resize: vertical; }
 }
 
 .goal-error { color: var(--danger); font-weight: var(--fw-bold); }
+
+/* ===== Nastavenie: zvuk po skončení pauzy ===== */
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+  margin: var(--sp-3) 0;
+  text-align: left;
+}
+
+.setting-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.setting-main .card-title { font-size: var(--fs-sm); }
+.setting-main .card-sub { font-size: var(--fs-xs); line-height: 1.4; overflow-wrap: break-word; }
+
+.setting-control {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.setting-state {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* Prepínač: 60×44 dotyková plocha, viditeľná dráha je 52×32 vykreslená cez ::before. */
+.switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 60px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.switch::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  width: 52px;
+  height: 32px;
+  box-sizing: border-box;
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-full);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.switch-knob {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.switch[aria-checked="true"]::before {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.switch[aria-checked="true"] .switch-knob {
+  transform: translateX(20px);
+  background: var(--accent);
+}
+
+/* Settings je dlhý formulár – na malom displeji sa posúva, aby boli tlačidlá vždy dosiahnuteľné. */
+#modal-settings .modal {
+  max-height: calc(100dvh - var(--sp-5) * 2);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* ===== Rest timer (compact athlete tool) ===== */
 

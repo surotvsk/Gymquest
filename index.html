@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -273,6 +273,22 @@
       <p class="card-sub" data-i18n="settings.goalHint">Vyber si 1 až 7 tréningov týždenne.</p>
       <div class="goal-chips" id="settings-goal-chips"></div>
       <p class="card-note goal-error" id="settings-goal-error" hidden></p>
+
+      <div class="setting-row">
+        <div class="setting-main">
+          <span class="card-title" data-i18n="settings.restSound">Zvuk po skončení pauzy</span>
+          <span class="card-sub" data-i18n="settings.restSoundHint">Prehrať krátky gong, keď časovač oddychu dosiahne nulu.</span>
+        </div>
+        <div class="setting-control">
+          <span class="setting-state" id="rest-sound-state">Vypnuté</span>
+          <button type="button" class="switch" id="btn-rest-sound" role="switch" aria-checked="false"
+                  data-i18n-title="settings.restSound" data-i18n-aria="settings.restSound">
+            <span class="switch-knob" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-block" id="btn-test-sound" data-i18n="settings.testSound">Otestovať zvuk</button>
+
       <div class="modal-actions">
         <button class="btn btn-secondary" id="btn-export" data-i18n="settings.export">Exportovať dáta</button>
         <button class="btn btn-secondary" id="btn-import" data-i18n="settings.import">Importovať dáta</button>
@@ -372,6 +388,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=14"></script>
 </body>
 </html>

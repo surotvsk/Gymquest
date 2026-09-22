@@ -289,6 +289,11 @@ const I18N = {
     'settings.goalHint': 'Vyber si 1 až 7 tréningov týždenne.',
     'settings.goalInvalid': 'Zadaj celé číslo od {min} do {max}.',
     'settings.save': 'Uložiť cieľ',
+    'settings.restSound': 'Zvuk po skončení pauzy',
+    'settings.restSoundHint': 'Prehrať krátky gong, keď časovač oddychu dosiahne nulu.',
+    'settings.testSound': 'Otestovať zvuk',
+    'settings.on': 'Zapnuté',
+    'settings.off': 'Vypnuté',
     'settings.export': 'Exportovať dáta',
     'settings.import': 'Importovať dáta',
     'settings.reset': 'Resetovať dáta',
@@ -514,6 +519,11 @@ const I18N = {
     'settings.goalHint': 'Pick between 1 and 7 workouts per week.',
     'settings.goalInvalid': 'Enter a whole number from {min} to {max}.',
     'settings.save': 'Save goal',
+    'settings.restSound': 'Rest timer sound',
+    'settings.restSoundHint': 'Play a short gong when the rest timer reaches zero.',
+    'settings.testSound': 'Test sound',
+    'settings.on': 'On',
+    'settings.off': 'Off',
     'settings.export': 'Export data',
     'settings.import': 'Import data',
     'settings.reset': 'Reset data',
@@ -681,6 +691,7 @@ let pendingImport = null;    // naimportované dáta čakajúce na potvrdenie
 let pendingDeleteWorkout = null; // id tréningu čakajúceho na vymazanie
 let timerInterval = null;
 let timerEnd = 0;
+let timerRang = false;         // gong za tento odpočet už zaznel (nikdy nezaznie dvakrát)
 let dayWatchInterval = null;   // jediný interval pre zmenu dňa (nikdy sa neduplikuje)
 let lastRenderedDay = null;    // naposledy vykreslený lokálny deň "YYYY-MM-DD"
 /* Stav kalendára – len v pamäti, zámerne sa neukladá (kalendár sa vždy otvára na aktuálnom mesiaci). */
@@ -812,7 +823,7 @@ function defaultState() {
     excusedWeeks: [],
     goalHistory: {},     // ISO týždeň -> cieľ platný v tom týždni (snapshot pre vyhodnotenie série)
     legacyGoal: null,    // cieľ spred zavedenia snapshotov; null = nový používateľ bez histórie
-    settings: { weeklyGoal: 3, lang: 'en' },
+    settings: { weeklyGoal: 3, lang: 'en', restSound: false },
     achievements: {},
     demo: false,
     activeSession: null, // rozbehnutý tréning (trvá iba do dokončenia alebo potvrdeného resetu)
@@ -995,6 +1006,8 @@ function migrateV2toV3(parsed) {
   const goal = Math.round(Number(out.settings.weeklyGoal));
   out.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, Number.isFinite(goal) && goal ? goal : 3));
   if (out.settings.lang !== 'sk' && out.settings.lang !== 'en') out.settings.lang = 'sk';
+  /* Zvuk po skončení pauzy: predvolene VYPNUTÝ; zapnutý je len explicitné true. */
+  if (out.settings.restSound !== true) out.settings.restSound = false;
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -2882,6 +2895,7 @@ function renderAll() {
   // Otvorený Full Body builder musí prekresliť zdroje a preklady (výber zostáva zachovaný).
   const fbModal = document.getElementById('modal-fullbody');
   if (fbModal && !fbModal.hidden) renderFullBodyBuilder();
+  renderRestSoundSetting();   // stav Zapnuté/Vypnuté musí zareagovať na zmenu jazyka
   refreshUpdateBanner();   // aktualizácia sa môže ponúknuť, len ak nič neupravujeme
 }
 
@@ -3170,6 +3184,7 @@ function confirmSetup() {
 function openSettings() {
   renderGoalChips('settings-goal-chips', weeklyGoal());
   setGoalReadout(weeklyGoal());
+  renderRestSoundSetting();
   const removeBtn = document.getElementById('btn-remove-demo');
   if (removeBtn) {
     removeBtn.hidden = !state.demo;
@@ -3284,11 +3299,99 @@ function confirmGeneric() {
   if (cb) cb();
 }
 
+/* ---------- Zvuk po skončení pauzy (voliteľný, predvolene vypnutý) ----------
+   Krátky jemný gong generovaný cez Web Audio API – žiadny externý súbor, žiadne CDN.
+   Jeden AudioContext pre celú aplikáciu, vytvára sa až po skutočnom pokyne používateľa,
+   aby prehliadač nehlásil porušenie autoplay pravidiel. */
+
+let audioCtx = null;
+
+function getAudioContext() {
+  const Ctor = window.AudioContext || window.webkitAudioContext;
+  if (!Ctor) return null;
+  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new Ctor();
+  return audioCtx;
+}
+
+/* Odblokovanie zvuku – iOS aj Chrome ho vyžadujú pri pokyne používateľa. */
+function unlockAudio() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    if (ctx.state === 'suspended' && typeof ctx.resume === 'function') {
+      const p = ctx.resume();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    }
+  } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
+}
+
+/* Dva konsonantné tóny (C5 + kvinta G5) s mäkkým nábehom a dlhým doznením:
+   žiadny klik, žiadny ostrý alarm, len tichý gong. */
+const CHIME_TONES = [
+  { freq: 523.25, peak: 0.18, decay: 1.7 },
+  { freq: 783.99, peak: 0.08, decay: 1.3 },
+];
+
+function playChime() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return false;
+    if (ctx.state === 'suspended' && typeof ctx.resume === 'function') {
+      const p = ctx.resume();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    }
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.value = 0.9;
+    master.connect(ctx.destination);
+    let remaining = CHIME_TONES.length;
+    for (const tone of CHIME_TONES) {
+      const osc = ctx.createOscillator();
+      const env = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(tone.freq, now);
+      env.gain.setValueAtTime(0.0001, now);
+      env.gain.exponentialRampToValueAtTime(tone.peak, now + 0.03);
+      env.gain.exponentialRampToValueAtTime(0.0001, now + tone.decay);
+      osc.connect(env);
+      env.connect(master);
+      osc.start(now);
+      osc.stop(now + tone.decay + 0.05);
+      /* uzly sa po doznení odpoja – žiadne hromadenie v pamäti */
+      osc.onended = () => {
+        try { osc.disconnect(); env.disconnect(); } catch (e) {}
+        remaining -= 1;
+        if (remaining <= 0) { try { master.disconnect(); } catch (e) {} }
+      };
+    }
+    return true;
+  } catch (e) {
+    return false;   // prehliadač zvuk odmietol – ticho a bez chyby v konzole
+  }
+}
+
+function restSoundOn() {
+  return !!(state && state.settings && state.settings.restSound === true);
+}
+
+function renderRestSoundSetting() {
+  const btn = document.getElementById('btn-rest-sound');
+  const stateEl = document.getElementById('rest-sound-state');
+  const on = restSoundOn();
+  if (btn) {
+    btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    btn.classList.toggle('on', on);
+  }
+  if (stateEl) stateEl.textContent = on ? t('settings.on') : t('settings.off');
+}
+
 /* ---------- Timer ---------- */
 
 function startTimer(seconds) {
   stopTimer();
+  unlockAudio();               // štart časovača je pokyn používateľa – odblokuje zvuk
   timerEnd = Date.now() + seconds * 1000;
+  timerRang = false;
   const bar = document.getElementById('timer-bar');
   bar.classList.remove('done');
   bar.hidden = false;
@@ -3302,6 +3405,12 @@ function startTimer(seconds) {
       bar.classList.add('done');
       bar.hidden = false;
       document.getElementById('timer-time').textContent = '00:00';
+      /* Gong zaznie LEN pri prirodzenom dobehnutí do nuly a len raz za odpočet.
+         Nastavenie sa číta až tu, takže zmena počas behu platí presne pre tento časovač. */
+      if (!timerRang) {
+        timerRang = true;
+        if (restSoundOn()) playChime();
+      }
       return;
     }
     updateTimerDisplay();
@@ -3452,6 +3561,17 @@ function setupEvents() {
     saveSettingsGoal();
     document.getElementById('modal-settings').hidden = true;
   });
+  on('btn-rest-sound', () => {
+    state.settings.restSound = !restSoundOn();
+    unlockAudio();               // používateľský pokyn = povolenie prehrávať zvuk
+    renderRestSoundSetting();
+    saveState();
+  });
+  on('btn-test-sound', () => {
+    unlockAudio();
+    playChime();
+  });
+
   on('btn-export', exportData);
   on('btn-import', () => { document.getElementById('file-import').click(); });
   on('file-import', (e) => {

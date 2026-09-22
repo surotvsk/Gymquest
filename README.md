@@ -34,7 +34,8 @@ everything on your own device.
 - **XP, levels and achievements** — earn XP for finishing workouts and completing sets, level up,
   and unlock achievements automatically.
 - **Weekly streaks** — consistency is measured in weeks. Reach your goal and the streak grows.
-- **Rest timer** — 60 / 90 / 120 second countdown during a workout.
+- **Rest timer** — 60 / 90 / 120 second countdown during a workout, with an optional gentle gong
+  when the countdown reaches zero. The sound is **off by default** and toggled in ⚙️ Settings.
 - **Comparison with last time** — every exercise shows whether you went heavier or lighter than your
   previous session.
 - **Two languages** — full Slovak and English interface with an instant `SK | EN` toggle.
@@ -140,6 +141,26 @@ GymQuest ships with a full **Slovak** and **English** interface:
   and it stays *Nohy + Core* in English too. Untouched built-in plans keep translating.
 - **Workout history is an immutable record**: it keeps the exercise and plan names that were in use
   when the workout was logged, so a later rename or deletion never rewrites the past.
+
+---
+
+## Rest timer sound
+
+The rest timer can play a short **gentle gong** when its countdown reaches zero. It is a setting in
+⚙️ Settings (*Rest timer sound* / *Zvuk po skončení pauzy*) with a **Test sound** button, and it is
+**off by default** — nothing plays until you switch it on.
+
+- The gong is generated in the browser with the Web Audio API (two soft sine tones with a slow fade
+  in and a long decay). **No audio file is bundled or downloaded**, and GymQuest stays offline.
+- It plays **once**, only when a countdown reaches zero by itself. Stopping the timer, resetting the
+  workout or picking a different duration stays silent, and it never plays for the workout-duration
+  timer or any other event.
+- Toggling the setting applies immediately to a countdown that is already running.
+- Audio is only started after a real tap (turning the setting on, **Test sound** or starting the
+  rest timer), so browsers never block it; if a browser refuses to play, GymQuest stays silent and
+  the timer keeps working.
+- Your choice is stored with your settings, so it survives refresh, language switching, export and
+  import.
 
 ---
 
