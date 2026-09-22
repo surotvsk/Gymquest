@@ -24,6 +24,9 @@ everything on your own device.
 - **Optional training to failure** — plan which sets you *intend* to take to failure, then confirm
   or change the real result set by set while you train. Nothing is ever assumed, forced or enabled
   by default.
+- **Workout duration** — starting a workout begins a timer that measures the whole session (not just
+  rests). The final duration is saved with the workout and shown in Progress and the Calendar. Your
+  progress survives editing a plan, switching language or tabs, and even a page reload.
 - **Personal records and milestones** — best weight per exercise plus an automatic 5 kg milestone
   badge for every personal record you set.
 - **XP, levels and achievements** — earn XP for finishing workouts and completing sets, level up,
@@ -155,6 +158,32 @@ switches anything on by itself.
   result, and only when there is one. Old workouts without this data simply show no failure line.
 
 It is tracked information only — not a training recommendation, and never medical advice.
+
+---
+
+## Workout duration and your active session
+
+**Duration** — pressing **Start workout** starts a session timer shown as *Workout duration*
+(*Trvanie tréningu*) above the exercise list, in `HH:MM:SS`. It measures the whole workout, not just
+rests, and it keeps running while you move between exercises, mark sets, open dialogs, edit a plan,
+switch tabs or send the app to the background. It is derived from an absolute start timestamp, so it
+stays accurate after backgrounding, screen lock or a reload. It stops only when you confirm
+**Finish workout**; the saved duration then appears as *Duration: 42 min* (*Trvanie: 42 min*) in
+Progress and in the Calendar day detail. The rest timer is completely separate.
+
+**Your progress is kept** — what you have checked off lives in an **active session** saved with your
+data, not in the screen you are looking at. Editing a plan weight, saving a plan, opening the editor,
+switching SK/EN, switching tabs, opening Settings or the Calendar, and a browser refresh all keep
+your completed sets, your failure markers, your timer and your selected plan exactly as they were.
+Changing a plan weight still updates the target weight shown for sets you have not done yet; already
+completed sets are never rewritten. Saving a plan during a workout confirms it with *Plan changes are
+saved. Your current workout progress is preserved.*
+
+The session is created only when you start a workout or mark your first set, and it is cleared only
+when you **confirm** Finish workout, or **confirm** Reset workout — cancelling either dialog changes
+nothing. A partially finished session is never written into your history, is not included in
+**Export data**, and is dropped on import, so a backup can never carry a half-finished workout onto
+another device.
 
 ---
 

@@ -527,6 +527,73 @@ body {
   overflow-wrap: break-word;
 }
 
+/* ===== Trvanie tréningu (aktívny tréning) =====
+   Jeden kompaktný riadok: malý popis vľavo, čas vpravo. Zámerne nie je väčší
+   ani výraznejší než názov aktívneho tréningu a nekoliduje s časovačom oddychu. */
+
+.duration-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-3);
+  text-align: left;
+}
+
+.duration-row[hidden] { display: none; }
+
+.duration-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.duration-value {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-black);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.duration-note {
+  flex: 1 1 100%;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
+  color: var(--text-dim);
+  overflow-wrap: break-word;
+}
+
+.duration-note[hidden] { display: none; }
+
+/* Trvanie v histórii a v detaile dňa */
+
+.history-duration {
+  color: var(--text-faint);
+  font-size: var(--fs-sm);
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.day-workout .history-duration { font-size: var(--fs-xs); color: var(--text-dim); }
+
+.modal .modal-duration {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.modal .modal-duration[hidden] { display: none; }
+
 /* ===== Exercise list (training log) ===== */
 
 .exercise-list {

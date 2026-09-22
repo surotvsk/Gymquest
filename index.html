@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 
@@ -99,6 +99,12 @@
           <button class="btn btn-secondary" id="btn-edit-cancel" data-i18n="common.cancel">Zrušiť</button>
           <button class="btn btn-primary" id="btn-edit-save" data-i18n="common.save">Uložiť</button>
         </div>
+      </div>
+
+      <div class="duration-row" id="duration-row" hidden>
+        <span class="duration-label" data-i18n="trening.durationLabel">Trvanie tréningu</span>
+        <span class="duration-value" id="duration-value">00:00:00</span>
+        <span class="duration-note" id="duration-note" hidden></span>
       </div>
 
       <p class="failure-hint" data-i18n="trening.failureHint">🔥 Zlyhanie — označ iba sériu, ktorú si reálne odcvičil do zlyhania.</p>
@@ -232,6 +238,7 @@
     <div class="modal">
       <h3 data-i18n="trening.doneTitle">🏆 Tréning dokončený!</h3>
       <p class="modal-xp" id="result-xp"></p>
+      <p class="modal-duration" id="result-duration" hidden></p>
       <p class="modal-msg" id="result-msg"></p>
       <p class="modal-achievements" id="result-achievements" hidden></p>
       <p class="modal-note" id="result-note" hidden></p>
@@ -325,6 +332,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=11"></script>
+  <script src="script.js?v=12"></script>
 </body>
 </html>

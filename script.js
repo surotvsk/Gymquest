@@ -231,6 +231,15 @@ const I18N = {
     'failure.removeMarker': 'Odstrániť označenie zlyhania',
     'trening.failureHint': '🔥 Zlyhanie — označ iba sériu, ktorú si reálne odcvičil do zlyhania.',
     'trening.failureHintEdit': 'Voliteľné: vyber série, ktoré plánuješ ísť do zlyhania. Skutočný výsledok môžeš zmeniť počas tréningu.',
+    'trening.durationLabel': 'Trvanie tréningu',
+    'trening.sessionRestored': 'Aktuálny tréning bol obnovený',
+    'trening.planSaved': 'Zmeny plánu boli uložené. Priebeh aktuálneho tréningu zostal zachovaný.',
+    'trening.durationResult': 'Trvanie tréningu: {duration}',
+    'history.duration': 'Trvanie: {duration}',
+    'duration.sec': '{n} s',
+    'duration.min': '{n} min',
+    'duration.hourMin': '{n} h {m} min',
+    'duration.hour': '{n} h',
     'pokrok.thisWeek': 'Tento týždeň', 'pokrok.thisMonth': 'Tento mesiac', 'pokrok.total': 'Celkom',
     'pokrok.recordsTitle': '🏆 Osobné rekordy',
     'pokrok.recordsEmpty': 'Zatiaľ žiadne rekordy.',
@@ -427,6 +436,15 @@ const I18N = {
     'failure.removeMarker': 'Remove failure marker',
     'trening.failureHint': '🔥 Failure — mark a set only if you actually reached failure.',
     'trening.failureHintEdit': 'Optional: choose the sets you plan to take to failure. You can change the actual result during the workout.',
+    'trening.durationLabel': 'Workout duration',
+    'trening.sessionRestored': 'Active workout restored',
+    'trening.planSaved': 'Plan changes are saved. Your current workout progress is preserved.',
+    'trening.durationResult': 'Workout duration: {duration}',
+    'history.duration': 'Duration: {duration}',
+    'duration.sec': '{n} sec',
+    'duration.min': '{n} min',
+    'duration.hourMin': '{n} h {m} min',
+    'duration.hour': '{n} h',
     'pokrok.thisWeek': 'This week', 'pokrok.thisMonth': 'This month', 'pokrok.total': 'Total',
     'pokrok.recordsTitle': '🏆 Personal records',
     'pokrok.recordsEmpty': 'No records yet.',
@@ -609,8 +627,9 @@ const GOAL_MAX = 7;
 let state = null;
 let activeTab = 'dnes';
 let selectedPlan = 'push';
-let currentSets = {};        // "exerciseName:setIndex" -> true
-let currentFailureSets = {}; // "exerciseName:setIndex" -> true (reached failure during this workout)
+let durationInterval = null; // jediný interval pre zobrazenie trvania tréningu
+let sessionNoteKey = null;   // práve zobrazená poznámka k aktívnej session (kľúč prekladu)
+let sessionNoteTimer = null; // skrytie dočasnej poznámky
 let lastXP = 0;
 let lastUnlocked = [];
 let lastAchXP = 0;           // XP získané z úspechov po poslednom tréningu
@@ -756,6 +775,32 @@ function defaultState() {
     settings: { weeklyGoal: 3, lang: 'en' },
     achievements: {},
     demo: false,
+    activeSession: null, // rozbehnutý tréning (trvá iba do dokončenia alebo potvrdeného resetu)
+  };
+}
+
+/* Rozbehnutá session: buď platný objekt, alebo null. Poškodené/neúplné dáta sa zahodia. */
+function normalizeActiveSession(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const startedAt = Number(raw.startedAt);
+  const planId = typeof raw.planId === 'string' ? raw.planId : '';
+  if (!planId || !Number.isFinite(startedAt) || startedAt <= 0) return null;
+  const pickMarks = (src) => {
+    const out = {};
+    if (src && typeof src === 'object' && !Array.isArray(src)) {
+      for (const [key, val] of Object.entries(src)) {
+        if (val === true && /:\d+$/.test(key)) out[key] = true;
+      }
+    }
+    return out;
+  };
+  return {
+    id: typeof raw.id === 'string' && raw.id ? raw.id : uid(),
+    startedAt,
+    planId,
+    planName: typeof raw.planName === 'string' ? raw.planName : '',
+    completedSets: pickMarks(raw.completedSets),
+    actualFailureSets: pickMarks(raw.actualFailureSets),
   };
 }
 
@@ -835,6 +880,17 @@ function backfillState() {
       const snapshot = plan ? recordedPlanName(plan) : (BUILTIN_PLAN_NAMES[out.planId] || '');
       if (snapshot) out = Object.assign({}, out, { planName: snapshot });
     }
+    /* Trvanie: existujúce platné hodnoty sa ponechajú, poškodené sa zahodia.
+       Starým tréningom sa hodnota NIKDY nevymýšľa – ostanú bez trvania. */
+    if (Object.prototype.hasOwnProperty.call(out, 'durationSeconds')) {
+      const seconds = cleanDurationSeconds(out.durationSeconds);
+      if (seconds === null) {
+        out = Object.assign({}, out);
+        delete out.durationSeconds;
+      } else if (seconds !== out.durationSeconds) {
+        out = Object.assign({}, out, { durationSeconds: seconds });
+      }
+    }
     if (!Array.isArray(out.exercises)) return out;
     const exercises = out.exercises.map(e => {
       let next = e;
@@ -894,6 +950,7 @@ function migrateV2toV3(parsed) {
     settings: Object.assign({ weeklyGoal: 3, lang: 'sk' }, base.settings || {}),
     achievements: (base.achievements && typeof base.achievements === 'object') ? base.achievements : {},
     demo: base.demo === true,
+    activeSession: normalizeActiveSession(base.activeSession),
   };
   const goal = Math.round(Number(out.settings.weeklyGoal));
   out.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, Number.isFinite(goal) && goal ? goal : 3));
@@ -1610,12 +1667,149 @@ function renderDnes() {
 
 /* ---------- Vykreslenie: TRÉNING ---------- */
 
+/* ---------- Aktívna tréningová session (jediný zdroj pravdy pre rozbehnutý tréning) ----------
+   Priebeh tréningu NIKDY nežije len v prekreslenom DOM. Žije v state.activeSession, ktorý
+   prežije prekreslenie, zmenu jazyka, prepnutie karty, úpravu plánu aj obnovenie stránky. */
+
+function getSession() {
+  return (state && state.activeSession) || null;
+}
+
+/* Stabilný kľúč cviku v rámci session. Používa stabilné id zabudovaného cviku, inak názov.
+   Zobrazený názov sa pri prepnutí SK/EN prekladá, ale uložený názov cviku sa nemení,
+   takže značky prežijú zmenu jazyka, váhy aj poradia cvikov v pláne. */
+function exerciseSessionKey(ex) {
+  if (!ex) return '';
+  return ex.id ? String(ex.id) : 'c:' + String(ex.name == null ? '' : ex.name);
+}
+
+function setSessionKey(ex, index) {
+  return exerciseSessionKey(ex) + ':' + index;
+}
+
+/* Vytvorí session, ak ešte neexistuje. Volá sa pri "Začať tréning" a pri prvom označení série,
+   aby označené série nikdy nemohli zostať bez trvalého úložiska. */
+function ensureSession(plan) {
+  if (!state) return null;
+  const existing = getSession();
+  if (existing) return existing;
+  const p = plan || getPlan(selectedPlan);
+  if (!p) return null;
+  state.activeSession = {
+    id: uid(),
+    startedAt: Date.now(),
+    planId: p.id,
+    planName: recordedPlanName(p),
+    completedSets: {},
+    actualFailureSets: {},
+  };
+  return state.activeSession;
+}
+
+function clearSession() {
+  if (state) state.activeSession = null;
+  setSessionNote(null, 0);
+}
+
+/* Nastaví značku série (hotová / do zlyhania). Vždy zapisuje do session, nikdy do DOM. */
+function toggleSetMark(kind, ex, index, on) {
+  const sess = ensureSession();
+  if (!sess) return false;
+  const map = kind === 'failure' ? sess.actualFailureSets : sess.completedSets;
+  const key = setSessionKey(ex, index);
+  if (on) map[key] = true;
+  else delete map[key];
+  saveState();
+  return true;
+}
+
+function setMark(kind, ex, index) {
+  const sess = getSession();
+  if (!sess) return false;
+  const map = kind === 'failure' ? sess.actualFailureSets : sess.completedSets;
+  return !!map[setSessionKey(ex, index)];
+}
+
 function planExerciseCount(plan) {
   return plan.exercises.reduce((s, ex) => s + ex.sets, 0);
 }
 
+/* Počet dokončených sérií sa ráta z session, ale VŽDY len pre série, ktoré práve existujú
+   v zobrazenom pláne — takže zníženie počtu sérií nikdy neprinesie duchovské série. */
 function totalSetsDone() {
-  return Object.values(currentSets).filter(Boolean).length;
+  const sess = getSession();
+  const plan = getPlan(selectedPlan);
+  if (!sess || !plan) return 0;
+  let n = 0;
+  for (const ex of plan.exercises) {
+    for (let i = 0; i < ex.sets; i++) {
+      if (sess.completedSets[setSessionKey(ex, i)]) n++;
+    }
+  }
+  return n;
+}
+
+/* ---------- Trvanie tréningu ---------- */
+
+/* Trvanie je vždy odvodené z absolútneho času štartu, nikdy z počítadla tiknutí.
+   Preto zostáva presné po pozadí, zamknutí displeja aj po obnovení stránky. */
+function sessionElapsedSeconds(sess) {
+  const s = sess || getSession();
+  if (!s) return 0;
+  const started = Number(s.startedAt);
+  if (!Number.isFinite(started) || started <= 0) return 0;
+  return Math.max(0, Math.floor((Date.now() - started) / 1000));
+}
+
+function formatDurationClock(seconds) {
+  const total = Math.max(0, Math.floor(Number(seconds) || 0));
+  const h = String(Math.floor(total / 3600)).padStart(2, '0');
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+  const s = String(total % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+/* Prirodzené trvanie: "45 s" / "42 min" / "1 h 12 min". */
+function formatDurationNatural(seconds) {
+  const total = Math.max(0, Math.floor(Number(seconds) || 0));
+  if (total < 60) return t('duration.sec', { n: total });
+  if (total < 3600) return t('duration.min', { n: Math.floor(total / 60) });
+  const hours = Math.floor(total / 3600);
+  const mins = Math.floor((total % 3600) / 60);
+  return mins === 0 ? t('duration.hour', { n: hours }) : t('duration.hourMin', { n: hours, m: mins });
+}
+
+function updateDurationDisplay() {
+  const row = document.getElementById('duration-row');
+  if (!row) return;
+  const sess = getSession();
+  row.hidden = !sess;
+  if (!sess) return;
+  document.getElementById('duration-value').textContent = formatDurationClock(sessionElapsedSeconds(sess));
+}
+
+/* Jeden interval na celý beh aplikácie – po prekreslení nikdy nevznikne druhý. */
+function startDurationTicker() {
+  if (durationInterval !== null) return;
+  durationInterval = setInterval(updateDurationDisplay, 1000);
+  document.addEventListener('visibilitychange', updateDurationDisplay);
+}
+
+function renderSessionNote() {
+  const el = document.getElementById('duration-note');
+  if (!el) return;
+  el.hidden = !sessionNoteKey || !getSession();
+  el.textContent = sessionNoteKey ? t(sessionNoteKey) : '';
+}
+
+/* dočasná nenápadná poznámka v riadku s trvaním; autoHideMs > 0 ju po chvíli skryje */
+function setSessionNote(key, autoHideMs) {
+  sessionNoteKey = key;
+  if (sessionNoteTimer) { clearTimeout(sessionNoteTimer); sessionNoteTimer = null; }
+  if (key && autoHideMs) {
+    sessionNoteTimer = setTimeout(() => { sessionNoteTimer = null; sessionNoteKey = null; renderSessionNote(); }, autoHideMs);
+  }
+  renderSessionNote();
 }
 
 function comparisonHint(ex) {
@@ -1650,6 +1844,9 @@ function renderTrening() {
       // výber iného plánu vždy zatvorí editor, aby meno v poli nepatrilo inému plánu
       if (editingPlan !== null && editingPlan !== id && closeEditor()) saveState();
       selectedPlan = id;
+      // rozbehnutá session sa previaže na novo zvolený plán (značky sérií zostávajú zachované)
+      const s = getSession();
+      if (s) { s.planId = id; s.planName = recordedPlanName(p); saveState(); }
       renderTrening();
     });
     wrap.appendChild(btn);
@@ -1674,8 +1871,10 @@ function renderTrening() {
   document.getElementById('plan-title').textContent = plan ? planDisplayName(plan) : t('pokrok.workoutFallback');
   const list = document.getElementById('exercise-list');
   list.innerHTML = '';
-  currentSets = {};
-  currentFailureSets = {};
+  /* Poznámka: značky sérií sa tu Zámerne NEmažú – žijú v state.activeSession,
+     aby ich prekreslenie (zmena jazyka, úprava plánu, návrat na kartu) nezmazalo. */
+  updateDurationDisplay();
+  renderSessionNote();
   if (!plan) {
     document.getElementById('summary-bar').innerHTML = '';
     document.getElementById('btn-finish-workout').disabled = true;
@@ -1706,7 +1905,6 @@ function renderTrening() {
     const plannedFailure = cleanFailureSets(ex.plannedFailureSets, ex.sets);
 
     for (let i = 0; i < ex.sets; i++) {
-      const key = `${ex.name}:${i}`;
       const item = document.createElement('div');
       item.className = 'set-item';
 
@@ -1714,9 +1912,12 @@ function renderTrening() {
       setBtn.type = 'button';
       setBtn.className = 'set-btn';
       setBtn.textContent = `${i + 1} ✓`;
+      setBtn.classList.toggle('done', setMark('done', ex, i));
       setBtn.addEventListener('click', () => {
-        currentSets[key] = !currentSets[key];
-        setBtn.classList.toggle('done', currentSets[key]);
+        const on = !setMark('done', ex, i);
+        toggleSetMark('done', ex, i, on);
+        setBtn.classList.toggle('done', on);
+        setSessionNote(null, 0);
         updateSummary();
       });
 
@@ -1728,7 +1929,7 @@ function renderTrening() {
       failBtn.className = 'set-fail' + (wasPlanned ? ' planned' : '');
       failBtn.textContent = '🔥';
       const syncFail = () => {
-        const on = !!currentFailureSets[key];
+        const on = setMark('failure', ex, i);
         failBtn.classList.toggle('active', on);
         failBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
         failBtn.setAttribute('aria-label', on ? t('failure.removeMarker') : t('failure.markSet'));
@@ -1736,7 +1937,8 @@ function renderTrening() {
       };
       syncFail();
       failBtn.addEventListener('click', () => {
-        currentFailureSets[key] = !currentFailureSets[key];
+        toggleSetMark('failure', ex, i, !setMark('failure', ex, i));
+        setSessionNote(null, 0);
         syncFail();
       });
 
@@ -1748,9 +1950,7 @@ function renderTrening() {
     list.appendChild(div);
   }
 
-  const summary = document.getElementById('summary-bar');
-  summary.innerHTML = t('trening.setsDone', { done: 0, total: planExerciseCount(plan), msg: t('trening.setsHint') });
-  document.getElementById('btn-finish-workout').disabled = true;
+  updateSummary();         // skutočný počet hotových sérií aj stav tlačidla Dokončiť
   refreshUpdateBanner();   // otvorenie/zatvorenie editora plánu mení stav "zaneprázdnený"
 }
 
@@ -2039,8 +2239,9 @@ function saveEditPlan() {
   newPlanId = null;
   editingPlan = null;
   editDraft = null;
-  currentSets = {};
-  currentFailureSets = {};
+  /* Priebeh rozbehnutého tréningu zostáva nedotknutý – mení sa len plán, nie session.
+     Uložený plán sa hneď prejaví v aktívnom tréningu (váhy, série), značky zůstanú. */
+  if (getSession()) setSessionNote('trening.planSaved', 8000);
   saveState();
   renderAll();
 }
@@ -2106,6 +2307,7 @@ function renderPokrok() {
         <div class="history-main">
           <div class="history-name">${esc(historyPlanName(w))}</div>
           <div class="history-detail">${formatDate(w.date)} · ${tPlural('pokrok.setsCount', setsDone)}</div>
+          ${historyDurationLine(w)}
           <div class="history-detail">${detail}</div>
           ${w.note ? `<div class="history-note">“${esc(w.note)}”</div>` : ''}
         </div>
@@ -2217,6 +2419,20 @@ function achievementLabel(id) {
 function historyExerciseName(ex) {
   if (ex.exId && BUILTIN_EXERCISE_IDS.has(ex.exId)) return t('exercise.' + ex.exId);
   return recordedNameToDisplay(ex.name);
+}
+
+/* Trvanie uložené v histórii: nezáporné celé sekundy, inak null (nikdy nevymýšľame hodnotu).
+   Staré tréningy bez durationSeconds zostávajú bez trvania a zobrazia sa normálne. */
+function cleanDurationSeconds(value) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return null;
+  return Math.round(value);
+}
+
+/* Riadok s trvaním pre históriu aj detail dňa v kalendári – len ak trvanie naozaj existuje. */
+function historyDurationLine(w) {
+  const seconds = cleanDurationSeconds(w && w.durationSeconds);
+  if (seconds === null) return '';
+  return `<div class="history-duration">${esc(t('history.duration', { duration: formatDurationNatural(seconds) }))}</div>`;
 }
 
 function monthTitle() {
@@ -2338,6 +2554,7 @@ function workoutBlock(w) {
       <span class="day-workout-xp">+${w.xp} ${t('units.xp')}</span>
     </div>
     <div class="day-workout-date">${esc(formatDate(w.date))}</div>
+    ${historyDurationLine(w)}
     ${rows}
     ${w.note ? `<div class="modal-note">“${esc(w.note)}”</div>` : ''}`;
   return div;
@@ -2427,19 +2644,31 @@ function finishWorkout() {
 function confirmFinish() {
   const plan = getPlan(selectedPlan);
   if (!plan) return;
+  const sess = getSession();
   const prevRecommended = recommendedPlan();
   const beforeUnlocked = Object.keys(state.achievements);
   const beforeAchXP = achievementXP();
 
-  const exercises = plan.exercises.map(ex => ({
-    name: ex.name,
-    exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
-    sets: ex.sets,
-    reps: ex.reps,
-    weight: ex.weight,
-    plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, ex.sets),
-    actualFailureSets: [],
-  }));
+  /* setsDone aj actualFailureSets sa čítajú zo session cez stabilné kľúče cvikov,
+     takže sa nikdy nemôžu pomiešať dva cviky s rovnakým menom ani stratiť po úprave plánu. */
+  const exercises = plan.exercises.map(ex => {
+    const done = [];
+    const fails = [];
+    for (let i = 0; i < ex.sets; i++) {
+      if (sess && sess.completedSets[setSessionKey(ex, i)]) done.push(i + 1);
+      if (sess && sess.actualFailureSets[setSessionKey(ex, i)]) fails.push(i + 1);
+    }
+    return {
+      name: ex.name,
+      exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
+      sets: ex.sets,
+      reps: ex.reps,
+      weight: ex.weight,
+      setsDone: done.length,
+      plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, ex.sets),
+      actualFailureSets: cleanFailureSets(fails, ex.sets),
+    };
+  });
 
   const doneCount = totalSetsDone();
   const xp = BASE_XP + doneCount * XP_PER_SET;
@@ -2452,31 +2681,10 @@ function confirmFinish() {
     date: todayISO(),
     xp,
     note,
-    exercises: exercises.map(e => Object.assign({}, e, { setsDone: 0 })),
+    exercises,
   };
-  // setsDone = počet dokončených sérií podľa aktuálneho session
-  const setsByKey = {};
-  for (const [key, done] of Object.entries(currentSets)) {
-    if (done) {
-      const idx = key.lastIndexOf(':');
-      const name = key.slice(0, idx);
-      setsByKey[name] = (setsByKey[name] || 0) + 1;
-    }
-  }
-  // actualFailureSets = len to, čo používateľ naozaj označil počas tréningu (nikdy nie plán)
-  const failureByKey = {};
-  for (const [key, on] of Object.entries(currentFailureSets)) {
-    if (!on) continue;
-    const idx = key.lastIndexOf(':');
-    const name = key.slice(0, idx);
-    const setNumber = parseInt(key.slice(idx + 1), 10) + 1;
-    if (!failureByKey[name]) failureByKey[name] = [];
-    failureByKey[name].push(setNumber);
-  }
-  entry.exercises.forEach(e => {
-    e.setsDone = setsByKey[e.name] || 0;
-    e.actualFailureSets = cleanFailureSets(failureByKey[e.name] || [], e.sets);
-  });
+  /* Trvanie sa zapíše len ak naozaj existuje rozbehnutá session – nikdy nevymýšľame nulu. */
+  if (sess) entry.durationSeconds = sessionElapsedSeconds(sess);
 
   state.history.push(entry);
   syncGoalSnapshot();    // tento týždeň je teraz "pozorovaný" so svojím cieľom
@@ -2491,9 +2699,10 @@ function confirmFinish() {
 
   lastXP = xp;
   selectedPlan = prevRecommended || selectedPlan;
-  currentSets = {};
-  currentFailureSets = {};
+  /* Session sa ruší až po uložení histórie – nikdy predtým. */
+  clearSession();
   stopTimer();
+  saveState();
 
   document.getElementById('modal-confirm').hidden = true;
 
@@ -2531,6 +2740,16 @@ function showResultModal() {
     note.hidden = false;
   } else {
     note.hidden = true;
+  }
+
+  /* Trvanie sa zobrazí len ak bolo naozaj zmerané. */
+  const durEl = document.getElementById('result-duration');
+  const savedSeconds = cleanDurationSeconds(entry && entry.durationSeconds);
+  if (savedSeconds !== null) {
+    durEl.textContent = t('trening.durationResult', { duration: formatDurationNatural(savedSeconds) });
+    durEl.hidden = false;
+  } else {
+    durEl.hidden = true;
   }
 
   document.getElementById('modal-result').hidden = false;
@@ -2706,7 +2925,11 @@ function saveSettingsGoal() {
 }
 
 function exportData() {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  /* Rozbehnutá session je len stav tohto zariadenia – do zálohy nepatrí,
+     aby sa cez export/import neprenášal nedokončený tréning. */
+  const snapshot = Object.assign({}, state);
+  delete snapshot.activeSession;
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `gymquest-backup-${todayISO()}.json`;
@@ -2731,6 +2954,9 @@ function importFile(file) {
         try {
           // staršie zálohy (v1/v2) prejdú rovnakou migráciou ako uložené dáta
           if (data.settings && !data.settings.lang) data.settings.lang = state.settings.lang;
+          /* Najbezpečnejšie správanie: rozbehnutá session sa importom vždy vyčistí.
+             Cudzia nedokončená session by inak mohla previazať nové dáta na starý plán. */
+          delete data.activeSession;
           const incoming = data.version === 1 ? migrateV1toV2(data) : data;
           state = migrateV2toV3(incoming);
           reconcileAchievements();
@@ -2882,6 +3108,8 @@ function setupEvents() {
   on('btn-start-workout', () => {
     const rec = recommendedPlan();
     if (rec) selectedPlan = rec;
+    /* Meranie trvania sa spúšťa tu – absolútny čas štartu sa ukladá do session. */
+    if (ensureSession()) saveState();
     switchTab('trening');
   });
 
@@ -2922,9 +3150,10 @@ function setupEvents() {
 
   on('btn-reset-session', () => {
     showGeneric(t('trening.resetSessionTitle'), t('common.cancel'), () => {
-      currentSets = {};
-      currentFailureSets = {};
+      /* Session sa ruší až po potvrdení – nič sa nezapisuje do histórie. */
+      clearSession();
       stopTimer();
+      saveState();
       renderTrening();
     }, t('trening.resetSessionConfirm'));
   });
@@ -3000,8 +3229,8 @@ function setupEvents() {
 /* ---------- Denný strážca (dátum, ISO týždeň, týždenný progres) ---------- */
 
 /* Ak sa zmenil lokálny deň, prekreslí dátum a týždenné ukazovatele.
-   Zámerne nevolá renderAll(): renderTrening() maže currentSets, takže by to
-   počas tréningu zmazalo označené série. Nič sa neukladá ani nemaže. */
+   Zámerne nevolá renderAll(): prekreslenie celej appky je zbytočné pri zmene dňa.
+   Priebeh tréningu medzitým drží state.activeSession, takže sa nič nestratí. */
 function refreshDayIfChanged() {
   const today = todayISO();
   if (today === lastRenderedDay) return false;
@@ -3035,6 +3264,7 @@ const hadServiceWorkerController = !!(navigator.serviceWorker && navigator.servi
 /* Prebieha niečo, pri čom by reload mohol stratiť vstup používateľa? */
 function isBusy() {
   if (editingPlan !== null) return true;                 // otvorený editor plánu s neuloženými zmenami
+  if (getSession()) return true;                         // rozbehnutý aktívny tréning (meria sa jeho trvanie)
   if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic'];
   for (const id of forms) {
@@ -3111,12 +3341,19 @@ function registerServiceWorker() {
 
 loadState();
 if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
+/* Obnovený rozbehnutý tréning: previažeme ho na jeho plán a dáme používateľovi vedieť. */
+const restoredSession = getSession();
+if (restoredSession && getPlan(restoredSession.planId)) {
+  selectedPlan = restoredSession.planId;
+}
 setupEvents();
 applyStaticI18n();
 verifyI18n();
 switchTab('dnes');
 renderAll();
 startDayWatcher();
+startDurationTicker();
+if (restoredSession) setSessionNote('trening.sessionRestored', 10000);
 registerServiceWorker();
 if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
   openSetup();
