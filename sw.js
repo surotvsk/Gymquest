@@ -6,16 +6,16 @@
    so no update would ever be offered.
    Bump it and the new worker installs, re-fetches everything and deletes the old cache. */
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_PREFIX = 'gymquest-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 /* Presne tie URL, ktoré odkazuje index.html – vrátane "?v=".
-   Cache kľúč je celá URL, takže "style.css" a "style.css?v=8" sú dve rôzne položky. */
+   Cache kľúč je celá URL, takže "style.css" a "style.css?v=9" sú dve rôzne položky. */
 const PRECACHE = [
   'index.html',
-  'style.css?v=8',
-  'script.js?v=8',
+  'style.css?v=9',
+  'script.js?v=9',
   'manifest.json',
   'apple-touch-icon.png',
   'icon-192.png',

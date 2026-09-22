@@ -21,6 +21,9 @@ everything on your own device.
   on the last workout you completed.
 - **Progress tracking** — full workout history with dates, exercises, sets, reps, weights, XP and
   notes. Edit or delete any past workout.
+- **Optional training to failure** — plan which sets you *intend* to take to failure, then confirm
+  or change the real result set by set while you train. Nothing is ever assumed, forced or enabled
+  by default.
 - **Personal records and milestones** — best weight per exercise plus an automatic 5 kg milestone
   badge for every personal record you set.
 - **XP, levels and achievements** — earn XP for finishing workouts and completing sets, level up,
@@ -132,6 +135,26 @@ GymQuest ships with a full **Slovak** and **English** interface:
   and it stays *Nohy + Core* in English too. Untouched built-in plans keep translating.
 - **Workout history is an immutable record**: it keeps the exercise and plan names that were in use
   when the workout was logged, so a later rename or deletion never rewrites the past.
+
+---
+
+## Training to failure (optional)
+
+Training to failure is an optional technique — GymQuest only records what you choose, and never
+switches anything on by itself.
+
+- **Planned failure sets** — in the plan editor, every exercise has a **Sets to failure** section
+  (*Série do zlyhania*). Pick any combination of set numbers, or **None**. The choices are stored
+  with the plan and survive refresh, export/import, language switching and updates. Reducing the set
+  count drops any selection above the new maximum; increasing it keeps your existing choices.
+- **Completed failure sets** — during a workout every set has its own small flame toggle. A set that
+  was planned shows a subtle dashed hint but is **never** counted as taken to failure on its own. You
+  can mark any set — planned or not — and unmark a planned one, right up to the moment you finish.
+- **Separate in history** — the finished workout stores the planned configuration *and* the actual
+  result as two different fields. History and the Calendar day detail only ever show the actual
+  result, and only when there is one. Old workouts without this data simply show no failure line.
+
+It is tracked information only — not a training recommendation, and never medical advice.
 
 ---
 

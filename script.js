@@ -221,6 +221,14 @@ const I18N = {
     'trening.timerStop': 'Zastaviť časovač',
     'trening.timerStart': 'Začať oddych',
     'trening.timerSection': 'Časovač oddychu',
+    'failure.plannedLabel': 'Série do zlyhania',
+    'failure.none': 'Žiadna',
+    'failure.failure': 'Zlyhanie',
+    'failure.planned': 'Plánované zlyhanie',
+    'failure.noSets': 'Žiadne série do zlyhania',
+    'failure.sets': 'Série do zlyhania: {sets}',
+    'failure.markSet': 'Označiť sériu ako zlyhanie',
+    'failure.removeMarker': 'Odstrániť označenie zlyhania',
     'pokrok.thisWeek': 'Tento týždeň', 'pokrok.thisMonth': 'Tento mesiac', 'pokrok.total': 'Celkom',
     'pokrok.recordsTitle': '🏆 Osobné rekordy',
     'pokrok.recordsEmpty': 'Zatiaľ žiadne rekordy.',
@@ -407,6 +415,14 @@ const I18N = {
     'trening.timerStop': 'Stop timer',
     'trening.timerStart': 'Start rest',
     'trening.timerSection': 'Rest timer',
+    'failure.plannedLabel': 'Sets to failure',
+    'failure.none': 'None',
+    'failure.failure': 'Failure',
+    'failure.planned': 'Planned failure',
+    'failure.noSets': 'No failure sets',
+    'failure.sets': 'Failure sets: {sets}',
+    'failure.markSet': 'Mark set as failure',
+    'failure.removeMarker': 'Remove failure marker',
     'pokrok.thisWeek': 'This week', 'pokrok.thisMonth': 'This month', 'pokrok.total': 'Total',
     'pokrok.recordsTitle': '🏆 Personal records',
     'pokrok.recordsEmpty': 'No records yet.',
@@ -590,6 +606,7 @@ let state = null;
 let activeTab = 'dnes';
 let selectedPlan = 'push';
 let currentSets = {};        // "exerciseName:setIndex" -> true
+let currentFailureSets = {}; // "exerciseName:setIndex" -> true (reached failure during this workout)
 let lastXP = 0;
 let lastUnlocked = [];
 let lastAchXP = 0;           // XP získané z úspechov po poslednom tréningu
@@ -794,14 +811,16 @@ function backfillState() {
   for (const id of Object.keys(state.plans)) {
     const plan = state.plans[id];
     plan.exercises = plan.exercises.map(ex => {
-      if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
-        return Object.assign({}, ex, { builtin: true });
+      let next = ex;
+      if (next.id && BUILTIN_EXERCISE_IDS.has(next.id)) {
+        next = Object.assign({}, next, { builtin: true });
+      } else {
+        const mapped = BUILTIN_NAME_TO_ID[next.name];
+        if (mapped) next = Object.assign({}, next, { id: mapped, builtin: true });
       }
-      const mapped = BUILTIN_NAME_TO_ID[ex.name];
-      if (mapped) {
-        return Object.assign({}, ex, { id: mapped, builtin: true });
-      }
-      return ex;
+      return Object.assign({}, next, {
+        plannedFailureSets: cleanFailureSets(next.plannedFailureSets, next.sets),
+      });
     });
   }
   if (!Array.isArray(state.history)) return;
@@ -814,9 +833,21 @@ function backfillState() {
     }
     if (!Array.isArray(out.exercises)) return out;
     const exercises = out.exercises.map(e => {
-      if (e.exId) return e;
-      const mapped = BUILTIN_NAME_TO_ID[e.name];
-      return mapped ? Object.assign({}, e, { exId: mapped }) : e;
+      let next = e;
+      if (!next.exId) {
+        const mapped = BUILTIN_NAME_TO_ID[next.name];
+        if (mapped) next = Object.assign({}, next, { exId: mapped });
+      }
+      /* Staré záznamy bez polí do zlyhania sa nechávajú presne tak, ako sú – pridávame
+         polia len tam, kde už existujú, a len normalizujeme ich obsah. */
+      if (Object.prototype.hasOwnProperty.call(next, 'actualFailureSets')
+        || Object.prototype.hasOwnProperty.call(next, 'plannedFailureSets')) {
+        next = Object.assign({}, next, {
+          plannedFailureSets: cleanFailureSets(next.plannedFailureSets, next.sets),
+          actualFailureSets: cleanFailureSets(next.actualFailureSets, next.sets),
+        });
+      }
+      return next;
     });
     return Object.assign({}, out, { exercises });
   });
@@ -1640,6 +1671,7 @@ function renderTrening() {
   const list = document.getElementById('exercise-list');
   list.innerHTML = '';
   currentSets = {};
+  currentFailureSets = {};
   if (!plan) {
     document.getElementById('summary-bar').innerHTML = '';
     document.getElementById('btn-finish-workout').disabled = true;
@@ -1667,9 +1699,15 @@ function renderTrening() {
     const sets = document.createElement('div');
     sets.className = 'sets';
 
+    const plannedFailure = cleanFailureSets(ex.plannedFailureSets, ex.sets);
+
     for (let i = 0; i < ex.sets; i++) {
       const key = `${ex.name}:${i}`;
+      const item = document.createElement('div');
+      item.className = 'set-item';
+
       const setBtn = document.createElement('button');
+      setBtn.type = 'button';
       setBtn.className = 'set-btn';
       setBtn.textContent = `${i + 1} ✓`;
       setBtn.addEventListener('click', () => {
@@ -1677,7 +1715,29 @@ function renderTrening() {
         setBtn.classList.toggle('done', currentSets[key]);
         updateSummary();
       });
-      sets.appendChild(setBtn);
+
+      /* Samostatný ovládač pre každú sériu. Naplánovaná séria je len nenápadný náznak
+         (prerušovaný oranžový okraj) – nikdy sa automaticky nepočíta ako dosiahnuté zlyhanie. */
+      const wasPlanned = plannedFailure.includes(i + 1);
+      const failBtn = document.createElement('button');
+      failBtn.type = 'button';
+      failBtn.className = 'set-fail' + (wasPlanned ? ' planned' : '');
+      failBtn.textContent = '🔥';
+      const syncFail = () => {
+        const on = !!currentFailureSets[key];
+        failBtn.classList.toggle('active', on);
+        failBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        failBtn.setAttribute('aria-label', on ? t('failure.removeMarker') : t('failure.markSet'));
+        failBtn.title = on ? t('failure.failure') : (wasPlanned ? t('failure.planned') : t('failure.markSet'));
+      };
+      syncFail();
+      failBtn.addEventListener('click', () => {
+        currentFailureSets[key] = !currentFailureSets[key];
+        syncFail();
+      });
+
+      item.append(setBtn, failBtn);
+      sets.appendChild(item);
     }
 
     div.append(head, hint, sets);
@@ -1802,6 +1862,29 @@ function renderEditPanel() {
       <input type="number" class="edit-num" min="1" max="99" value="${ex.reps}">
       <input type="number" class="edit-num" min="0" max="999" value="${ex.weight}">
       <button class="btn-icon btn-icon-danger" title="${t('trening.deleteExerciseTitle')}">🗑️</button>`;
+
+    /* Voliteľná sekcia "Série do zlyhania" / "Sets to failure".
+       Počet chipov sa generuje dynamicky z počtu sérií daného cviku. */
+    const failureBox = document.createElement('div');
+    failureBox.className = 'edit-failure';
+    failureBox.addEventListener('click', (e) => {
+      const btn = e.target.closest ? e.target.closest('[data-set]') : null;
+      if (!btn) return;
+      const exctx = editDraft[idx];
+      const n = parseInt(btn.dataset.set, 10);
+      if (n === 0) {
+        exctx.plannedFailureSets = [];
+      } else {
+        const current = cleanFailureSets(exctx.plannedFailureSets, failureSetLimit(exctx.sets));
+        const at = current.indexOf(n);
+        if (at >= 0) current.splice(at, 1);
+        else current.push(n);
+        exctx.plannedFailureSets = current;
+      }
+      renderPlanFailureChips(failureBox, idx);
+    });
+    row.appendChild(failureBox);
+
     const inputs = row.querySelectorAll('input');
     inputs[0].addEventListener('input', () => {
       // typing converts a built-in row into a custom exercise (keeps typed text as-is)
@@ -1812,7 +1895,11 @@ function renderEditPanel() {
       editDraft[idx].name = inputs[0].value;
       row.classList.remove('invalid');
     });
-    inputs[1].addEventListener('input', () => { editDraft[idx].sets = num(inputs[1].value); });
+    inputs[1].addEventListener('input', () => {
+      editDraft[idx].sets = num(inputs[1].value);
+      // zmena počtu sérií hneď prispôsobí chipy a oreže už neplatné voľby
+      renderPlanFailureChips(failureBox, idx);
+    });
     inputs[2].addEventListener('input', () => { editDraft[idx].reps = num(inputs[2].value); });
     inputs[3].addEventListener('input', () => { editDraft[idx].weight = num(inputs[3].value); });
     row.querySelector('.btn-icon-danger').addEventListener('click', () => {
@@ -1826,8 +1913,51 @@ function renderEditPanel() {
         renderEditPanel();
       });
     });
+    renderPlanFailureChips(failureBox, idx);
     rows.appendChild(row);
   });
+}
+
+/* Vykreslí chipy "Série do zlyhania" pre jeden riadok editora (1..počet sérií + "Žiadna").
+   Pri platnom počte sérií zároveň oreže voľby nad nový maximálny počet. */
+function renderPlanFailureChips(box, idx) {
+  const ex = editDraft[idx];
+  const max = failureSetLimit(ex.sets);
+  if (max >= 1) ex.plannedFailureSets = cleanFailureSets(ex.plannedFailureSets, max);
+  const selected = Array.isArray(ex.plannedFailureSets) ? ex.plannedFailureSets : [];
+
+  box.innerHTML = '';
+
+  const label = document.createElement('span');
+  label.className = 'edit-failure-label';
+  label.textContent = t('failure.plannedLabel');
+  box.appendChild(label);
+
+  const chips = document.createElement('div');
+  chips.className = 'failure-chips';
+  for (let n = 1; n <= max; n++) {
+    const on = selected.indexOf(n) >= 0;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'failure-chip' + (on ? ' active' : '');
+    btn.dataset.set = n;
+    btn.textContent = n;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? t('failure.removeMarker') : t('failure.markSet'));
+    btn.title = on ? t('failure.removeMarker') : t('failure.markSet');
+    chips.appendChild(btn);
+  }
+
+  const none = document.createElement('button');
+  none.type = 'button';
+  none.className = 'failure-chip failure-chip-none' + (selected.length === 0 ? ' active' : '');
+  none.dataset.set = 0;
+  none.textContent = t('failure.none');
+  none.setAttribute('aria-label', t('failure.noSets'));
+  none.title = t('failure.noSets');
+  chips.appendChild(none);
+
+  box.appendChild(chips);
 }
 
 function escAttr(s) {
@@ -1837,6 +1967,27 @@ function escAttr(s) {
 function num(v) {
   const n = parseFloat(v);
   return Number.isFinite(n) ? n : 0;
+}
+
+/* Normalizuje zoznam sérií do zlyhania: celé čísla 1..maxSets, bez duplicít, vzostupne.
+   Chráni pred poškodenými alebo importovanými dátami – vždy vráti platné pole (nikdy null). */
+function cleanFailureSets(value, maxSets) {
+  const rawMax = Math.round(Number(maxSets));
+  const max = Number.isFinite(rawMax) ? Math.min(99, Math.max(0, rawMax)) : 0;
+  if (!Array.isArray(value)) return [];
+  const seen = new Set();
+  for (const item of value) {
+    const n = Math.round(Number(item));
+    if (!Number.isFinite(n) || n < 1 || n > max) continue;
+    seen.add(n);
+  }
+  return Array.from(seen).sort((a, b) => a - b);
+}
+
+/* Koľko sérií do zlyhania sa dá vybrať pre daný počet sérií (0 = neplatný vstup). */
+function failureSetLimit(sets) {
+  const n = Math.round(Number(sets));
+  return (Number.isFinite(n) && n >= 1) ? Math.min(99, n) : 0;
 }
 
 function saveEditPlan() {
@@ -1867,11 +2018,13 @@ function saveEditPlan() {
   plan.customName = (plan.builtin && typed === shown) ? (plan.customName || null) : typed;
 
   plan.exercises = editDraft.map(ex => {
+    const sets = Math.round(ex.sets);
     const out = {
       name: String(ex.name).trim(),
-      sets: Math.round(ex.sets),
+      sets,
       reps: Math.round(ex.reps),
       weight: Math.round(ex.weight * 2) / 2,
+      plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, sets),
     };
     if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
       out.id = ex.id;
@@ -1883,6 +2036,7 @@ function saveEditPlan() {
   editingPlan = null;
   editDraft = null;
   currentSets = {};
+  currentFailureSets = {};
   saveState();
   renderAll();
 }
@@ -1936,7 +2090,14 @@ function renderPokrok() {
       const setsDone = w.exercises.reduce((s, ex) => s + ex.sets, 0);
       const row = document.createElement('div');
       row.className = 'history-row';
-      const detail = w.exercises.map(e => `${esc(e.name)} ${e.sets}×${e.reps} · ${e.weight} ${t('units.kg')}`).join('<br>');
+      const detail = w.exercises.map(e => {
+        const line = `${esc(e.name)} ${e.sets}×${e.reps} · ${e.weight} ${t('units.kg')}`;
+        const fSets = cleanFailureSets(e.actualFailureSets, e.sets);
+        /* Zlyhanie sa zobrazuje len vtedy, keď bolo naozaj zaznamenané – nikdy z plánu. */
+        return fSets.length
+          ? line + `<div class="failure-note">🔥 ${esc(t('failure.sets', { sets: fSets.join(', ') }))}</div>`
+          : line;
+      }).join('<br>');
       row.innerHTML = `
         <div class="history-main">
           <div class="history-name">${esc(historyPlanName(w))}</div>
@@ -2158,11 +2319,15 @@ function closeDay() {
 function workoutBlock(w) {
   const div = document.createElement('div');
   div.className = 'day-workout';
-  const rows = w.exercises.map(ex => `
+  const rows = w.exercises.map(ex => {
+    const fSets = cleanFailureSets(ex.actualFailureSets, ex.sets);
+    return `
     <div class="day-ex">
       <span class="day-ex-name">${esc(historyExerciseName(ex))}</span>
       <span class="day-ex-meta">${ex.sets} × ${ex.reps} · ${ex.weight} ${t('units.kg')} · ${ex.setsDone} ${t('history.setsDoneLabel')}</span>
-    </div>`).join('');
+      ${fSets.length ? `<span class="day-ex-failure">🔥 ${esc(t('failure.sets', { sets: fSets.join(', ') }))}</span>` : ''}
+    </div>`;
+  }).join('');
   div.innerHTML = `
     <div class="day-workout-head">
       <span class="day-workout-name">${esc(historyPlanName(w))}</span>
@@ -2268,6 +2433,8 @@ function confirmFinish() {
     sets: ex.sets,
     reps: ex.reps,
     weight: ex.weight,
+    plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, ex.sets),
+    actualFailureSets: [],
   }));
 
   const doneCount = totalSetsDone();
@@ -2292,7 +2459,20 @@ function confirmFinish() {
       setsByKey[name] = (setsByKey[name] || 0) + 1;
     }
   }
-  entry.exercises.forEach(e => { e.setsDone = setsByKey[e.name] || 0; });
+  // actualFailureSets = len to, čo používateľ naozaj označil počas tréningu (nikdy nie plán)
+  const failureByKey = {};
+  for (const [key, on] of Object.entries(currentFailureSets)) {
+    if (!on) continue;
+    const idx = key.lastIndexOf(':');
+    const name = key.slice(0, idx);
+    const setNumber = parseInt(key.slice(idx + 1), 10) + 1;
+    if (!failureByKey[name]) failureByKey[name] = [];
+    failureByKey[name].push(setNumber);
+  }
+  entry.exercises.forEach(e => {
+    e.setsDone = setsByKey[e.name] || 0;
+    e.actualFailureSets = cleanFailureSets(failureByKey[e.name] || [], e.sets);
+  });
 
   state.history.push(entry);
   syncGoalSnapshot();    // tento týždeň je teraz "pozorovaný" so svojím cieľom
@@ -2308,6 +2488,7 @@ function confirmFinish() {
   lastXP = xp;
   selectedPlan = prevRecommended || selectedPlan;
   currentSets = {};
+  currentFailureSets = {};
   stopTimer();
 
   document.getElementById('modal-confirm').hidden = true;
@@ -2423,6 +2604,9 @@ function saveHistoryEdit() {
     e.reps = Math.max(1, Math.min(99, Math.round(e.reps)));
     e.weight = Math.max(0, Math.min(999, Math.round(e.weight * 2) / 2));
     e.setsDone = Math.max(0, Math.min(e.sets, Math.round(e.setsDone)));
+    /* Existujúce polia do zlyhania sa orežú na nový počet sérií; starým záznamom sa nepridávajú. */
+    if (Array.isArray(e.actualFailureSets)) e.actualFailureSets = cleanFailureSets(e.actualFailureSets, e.sets);
+    if (Array.isArray(e.plannedFailureSets)) e.plannedFailureSets = cleanFailureSets(e.plannedFailureSets, e.sets);
   });
   w.xp = BASE_XP + w.exercises.reduce((s, e) => s + e.setsDone, 0) * XP_PER_SET;
   document.getElementById('modal-history-edit').hidden = true;
@@ -2713,7 +2897,7 @@ function setupEvents() {
 
   on('btn-add-exercise', () => {
     if (editingPlan === null) return;
-    editDraft.push({ name: '', sets: 3, reps: 10, weight: 0 });
+    editDraft.push({ name: '', sets: 3, reps: 10, weight: 0, plannedFailureSets: [] });
     renderEditPanel();
   });
   on('btn-edit-save', saveEditPlan);
@@ -2734,6 +2918,7 @@ function setupEvents() {
   on('btn-reset-session', () => {
     showGeneric(t('trening.resetSessionTitle'), t('common.cancel'), () => {
       currentSets = {};
+      currentFailureSets = {};
       stopTimer();
       renderTrening();
     }, t('trening.resetSessionConfirm'));

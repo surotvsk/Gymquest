@@ -1439,6 +1439,101 @@ textarea.modal-input { resize: vertical; }
 
 .he-ex-row input:focus { outline: none; border-color: var(--border-strong); }
 
+/* ===== Sets to failure (plan editor) ===== */
+
+.edit-failure { flex: 1 1 100%; margin-top: var(--sp-2); }
+
+.edit-failure-label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-1);
+}
+
+.failure-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+.failure-chip {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 8px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.failure-chip:hover { border-color: var(--border-strong); color: var(--text); }
+
+.failure-chip.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.failure-chip-none { min-width: auto; padding: 8px 12px; }
+
+/* ===== Per-set failure toggle (active workout) ===== */
+
+.set-item { display: flex; align-items: stretch; gap: 4px; }
+
+.set-item .set-btn { flex: 0 0 auto; }
+
+.set-fail {
+  min-width: 40px;
+  min-height: 44px;
+  padding: 0 6px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.set-fail:hover { border-color: var(--border-strong); }
+
+/* naplánované zlyhanie = len jemný náznak, nikdy nie hotové zlyhanie */
+.set-fail.planned {
+  border-style: dashed;
+  border-color: var(--accent-line);
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.set-fail.active {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* ===== Failure info in history and calendar day detail ===== */
+
+.failure-note {
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.day-ex-failure {
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
 /* ===== Small screens ===== */
 
 @media (max-width: 380px) {
