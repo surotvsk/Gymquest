@@ -136,6 +136,26 @@ const I18N = {
     'kalendar.ariaWorkoutCount': '{n} tréningy v tento deň',
     'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Nohy',
     'plan.newName': 'Nový plán',
+    'planChoice.title': 'Vytvoriť tréningový plán',
+    'planChoice.blank': 'Prázdny tréningový plán',
+    'planChoice.blankDesc': 'Vytvor prázdny vlastný tréning a pridaj cviky ručne.',
+    'planChoice.fullBody': 'Full Body builder',
+    'planChoice.fullBodyDesc': 'Vytvor celotelový tréning výberom cvikov z existujúcich tréningových plánov.',
+    'fb.title': 'Full Body builder',
+    'fb.subtitle': 'Vyber cviky z existujúcich tréningových plánov.',
+    'fb.nameLabel': 'Názov tréningu',
+    'fb.defaultName': 'Celé telo',
+    'fb.selected': 'Vybrané cviky: {count}',
+    'fb.selected1': 'Vybraný cvik: {n}',
+    'fb.selectedFew': 'Vybrané cviky: {n}',
+    'fb.selectedMany': 'Vybraných cvikov: {n}',
+    'fb.selectAll': 'Vybrať všetko',
+    'fb.clear': 'Vymazať výber',
+    'fb.create': 'Vytvoriť Full Body tréning',
+    'fb.needOne': 'Vyber aspoň jeden cvik.',
+    'fb.noExercises': 'V tomto tréningovom pláne nie sú dostupné žiadne cviky.',
+    'fb.duplicates': 'Duplicitné cviky sa pridajú iba raz.',
+    'fb.bodyweight': 'Vlastná váha',
     'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Tlaky nad hlavou', 'exercise.dips': 'Dipy', 'exercise.lateral-raises': 'Upažovanie',
     'exercise.pull-ups': 'Zhyby', 'exercise.bent-over-rows': 'Príťahy v predklone', 'exercise.cable-rows': 'Veslovanie na kladke', 'exercise.bicep-curls': 'Bicepsové zdvihy',
     'exercise.squats': 'Drepy', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Výpady', 'exercise.leg-curls': 'Zakopávanie', 'exercise.calf-raises': 'Lýtka',
@@ -341,6 +361,26 @@ const I18N = {
     'kalendar.ariaWorkoutCount': '{n} workouts on this day',
     'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Legs',
     'plan.newName': 'New workout plan',
+    'planChoice.title': 'Create workout plan',
+    'planChoice.blank': 'Blank workout plan',
+    'planChoice.blankDesc': 'Create an empty custom workout plan and add exercises manually.',
+    'planChoice.fullBody': 'Full Body builder',
+    'planChoice.fullBodyDesc': 'Build a full-body workout by choosing exercises from your existing workout plans.',
+    'fb.title': 'Full Body builder',
+    'fb.subtitle': 'Choose exercises from your existing workout plans.',
+    'fb.nameLabel': 'Plan name',
+    'fb.defaultName': 'Full Body',
+    'fb.selected': 'Selected exercises: {count}',
+    'fb.selected1': 'Selected exercises: {n}',
+    'fb.selectedFew': 'Selected exercises: {n}',
+    'fb.selectedMany': 'Selected exercises: {n}',
+    'fb.selectAll': 'Select all',
+    'fb.clear': 'Clear',
+    'fb.create': 'Create Full Body workout',
+    'fb.needOne': 'Select at least one exercise.',
+    'fb.noExercises': 'No exercises are available in this workout plan.',
+    'fb.duplicates': 'Duplicate exercises are added only once.',
+    'fb.bodyweight': 'Bodyweight',
     'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Overhead press', 'exercise.dips': 'Dips', 'exercise.lateral-raises': 'Lateral raises',
     'exercise.pull-ups': 'Pull-ups', 'exercise.bent-over-rows': 'Bent-over rows', 'exercise.cable-rows': 'Cable rows', 'exercise.bicep-curls': 'Bicep curls',
     'exercise.squats': 'Squats', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Lunges', 'exercise.leg-curls': 'Leg curls', 'exercise.calf-raises': 'Calf raises',
@@ -2005,6 +2045,237 @@ function addPlan() {
   startEditPlan(id);
 }
 
+/* ---------- Full Body builder ----------
+   Výber cvikov z existujúcich plánov. Výsledkom je ÚPLNE obyčajný vlastný plán –
+   žiadny špeciálny typ ani trvalé pole navyše. */
+
+let fbName = '';          // rozpracovaný názov nového plánu
+let fbNameTouched = false;// používateľ názov upravil ručne?
+let fbPicked = {};        // "planId:index" -> true (rozpracovaný výber, nikdy sa neukladá)
+
+/* Stabilné id zabudovaného cviku; vlastné cviky id nemajú. */
+function builtinExerciseId(ex) {
+  return (ex && ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : null;
+}
+
+function openPlanChoice() {
+  // otvorenie ponuky zavrie editor; zahodený neuložený nový plán sa musí uložiť do odstránenia
+  if (editingPlan !== null && closeEditor()) { saveState(); renderTrening(); }
+  document.getElementById('modal-planchoice').hidden = false;
+  refreshUpdateBanner();
+}
+
+function closePlanChoice() {
+  document.getElementById('modal-planchoice').hidden = true;
+  refreshUpdateBanner();
+}
+
+function openFullBodyBuilder() {
+  fbName = t('fb.defaultName');
+  fbNameTouched = false;
+  fbPicked = {};
+  document.getElementById('modal-planchoice').hidden = true;
+  document.getElementById('fb-error').hidden = true;
+  document.getElementById('fb-name').value = fbName;
+  renderFullBodyBuilder();
+  document.getElementById('modal-fullbody').hidden = false;
+  refreshUpdateBanner();
+  const input = document.getElementById('fb-name');
+  if (input.focus) input.focus();
+}
+
+function closeFullBodyBuilder() {
+  document.getElementById('modal-fullbody').hidden = true;
+  fbPicked = {};
+  refreshUpdateBanner();
+}
+
+/* Sekcie = všetky aktuálne aktívne plány v poradí aplikácie (zabudované aj vlastné). */
+function fbSources() {
+  const out = [];
+  for (const planId of activePlanIds()) {
+    const plan = getPlan(planId);
+    if (!plan) continue;
+    out.push({
+      plan,
+      rows: plan.exercises.map((ex, index) => ({
+        key: planId + ':' + index,
+        ex,
+        name: exerciseDisplayName(ex),
+        meta: ex.sets + ' × ' + ex.reps + ' · '
+          + (ex.weight > 0 ? ex.weight + ' ' + t('units.kg') : t('fb.bodyweight')),
+      })),
+    });
+  }
+  return out;
+}
+
+function fbPickedRows() {
+  const out = [];
+  for (const src of fbSources()) {
+    for (const row of src.rows) if (fbPicked[row.key]) out.push(row);
+  }
+  return out;
+}
+
+/* Kópia cviku do nového plánu: živý odkaz na zdroj neexistuje.
+   actualFailureSets sa Zámerne nekopíruje – patrí len dokončenej histórii. */
+function fbCopyExercise(ex) {
+  const sets = Math.round(ex.sets);
+  const copy = {
+    name: String(ex.name),
+    sets,
+    reps: Math.round(ex.reps),
+    weight: ex.weight,
+    plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, sets),
+  };
+  if (builtinExerciseId(ex)) { copy.id = ex.id; copy.builtin = true; }
+  return copy;
+}
+
+/* Pravidlo duplicít: rovnaké stabilné id zabudovaného cviku = jeden výskyt.
+   Vlastné cviky sa nikdy nezlučujú (rovnaké meno môžu mať dva rôzne cviky). */
+function fbExercisesToCreate() {
+  const seen = new Set();
+  const out = [];
+  for (const row of fbPickedRows()) {
+    const id = builtinExerciseId(row.ex);
+    if (id) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+    }
+    out.push(fbCopyExercise(row.ex));
+  }
+  return out;
+}
+
+function fbToggle(key) {
+  if (fbPicked[key]) delete fbPicked[key];
+  else fbPicked[key] = true;
+  document.getElementById('fb-error').hidden = true;
+  renderFullBodyBuilder();
+}
+
+function fbSetSection(planId, on) {
+  for (const src of fbSources()) {
+    if (src.plan.id !== planId) continue;
+    for (const row of src.rows) {
+      if (on) fbPicked[row.key] = true;
+      else delete fbPicked[row.key];
+    }
+  }
+  document.getElementById('fb-error').hidden = true;
+  renderFullBodyBuilder();
+}
+
+function renderFullBodyBuilder() {
+  /* Neupravený názov sa pri prepnutí jazyka preloží spolu s rozhraním. */
+  if (!fbNameTouched) fbName = t('fb.defaultName');
+  const nameInput = document.getElementById('fb-name');
+  if (nameInput && nameInput.value !== fbName) nameInput.value = fbName;
+
+  const box = document.getElementById('fb-sources');
+  box.innerHTML = '';
+  for (const src of fbSources()) {
+    const section = document.createElement('div');
+    section.className = 'fb-source';
+    section.dataset.planId = src.plan.id;
+
+    const head = document.createElement('div');
+    head.className = 'fb-source-head';
+    const title = document.createElement('span');
+    title.className = 'fb-source-name';
+    title.textContent = planDisplayName(src.plan);
+    head.appendChild(title);
+
+    if (src.rows.length) {
+      const actions = document.createElement('div');
+      actions.className = 'fb-source-actions';
+      const all = document.createElement('button');
+      all.type = 'button';
+      all.className = 'fb-mini';
+      all.dataset.act = 'all';
+      all.textContent = t('fb.selectAll');
+      all.addEventListener('click', () => fbSetSection(src.plan.id, true));
+      const none = document.createElement('button');
+      none.type = 'button';
+      none.className = 'fb-mini';
+      none.dataset.act = 'none';
+      none.textContent = t('fb.clear');
+      none.addEventListener('click', () => fbSetSection(src.plan.id, false));
+      actions.append(all, none);
+      head.appendChild(actions);
+    }
+    section.appendChild(head);
+
+    if (!src.rows.length) {
+      const empty = document.createElement('p');
+      empty.className = 'fb-empty';
+      empty.textContent = t('fb.noExercises');
+      section.appendChild(empty);
+    } else {
+      for (const row of src.rows) {
+        const on = !!fbPicked[row.key];
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'fb-ex';
+        btn.dataset.key = row.key;
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        const check = document.createElement('span');
+        check.className = 'fb-check';
+        check.setAttribute('aria-hidden', 'true');
+        check.textContent = '✓';
+        const name = document.createElement('span');
+        name.className = 'fb-ex-name';
+        name.textContent = row.name;
+        const meta = document.createElement('span');
+        meta.className = 'fb-ex-meta';
+        meta.textContent = row.meta;
+        btn.append(check, name, meta);
+        btn.addEventListener('click', () => fbToggle(row.key));
+        section.appendChild(btn);
+      }
+    }
+    box.appendChild(section);
+  }
+
+  const picked = fbPickedRows().length;
+  document.getElementById('fb-count').textContent = tPlural('fb.selected', picked);
+  const note = document.getElementById('fb-note');
+  note.hidden = fbExercisesToCreate().length >= picked;   // upozorní len pri skutočnom zlúčení
+  note.textContent = t('fb.duplicates');
+}
+
+/* Vytvorí obyčajný vlastný plán s nakopírovanými cvikmi a otvorí ho v existujúcom editore. */
+function createFullBodyPlan() {
+  const exercises = fbExercisesToCreate();
+  const errEl = document.getElementById('fb-error');
+  if (!exercises.length) {
+    errEl.hidden = false;
+    errEl.textContent = t('fb.needOne');
+    return;
+  }
+  const typed = document.getElementById('fb-name').value.trim();
+  const id = 'p-' + uid();
+  state.plans[id] = {
+    id,
+    builtin: false,
+    customName: typed || t('fb.defaultName'),
+    exercises,
+  };
+  if (!Array.isArray(state.planOrder)) state.planOrder = [];
+  state.planOrder.push(id);
+  document.getElementById('modal-fullbody').hidden = true;
+  document.getElementById('modal-planchoice').hidden = true;
+  fbPicked = {};
+  /* Plán je už vytvorený a uložený, preto sa zrušenie editora nesmie zahodiť. */
+  newPlanId = null;
+  saveState();
+  switchTab('trening');
+  startEditPlan(id);
+  renderAll();
+}
+
 /* Posunie plán v poradí (rotácia aj chipy používajú toto poradie). */
 function movePlan(id, delta) {
   if (!id || !Array.isArray(state.planOrder)) return;
@@ -2608,6 +2879,9 @@ function renderAll() {
   // Otvorený detail dňa musí zareagovať na zmenu jazyka aj na zmenu histórie.
   const dayModal = document.getElementById('modal-day');
   if (dayModal && !dayModal.hidden && selectedDayKey) renderDayDetail(selectedDayKey);
+  // Otvorený Full Body builder musí prekresliť zdroje a preklady (výber zostáva zachovaný).
+  const fbModal = document.getElementById('modal-fullbody');
+  if (fbModal && !fbModal.hidden) renderFullBodyBuilder();
   refreshUpdateBanner();   // aktualizácia sa môže ponúknuť, len ak nič neupravujeme
 }
 
@@ -3136,7 +3410,13 @@ function setupEvents() {
   on('btn-edit-save', saveEditPlan);
   on('btn-edit-cancel', cancelEditPlan);
 
-  on('btn-add-plan', addPlan);
+  on('btn-add-plan', openPlanChoice);
+  on('btn-choice-blank', () => { closePlanChoice(); addPlan(); });
+  on('btn-choice-fullbody', openFullBodyBuilder);
+  on('btn-choice-cancel', closePlanChoice);
+  on('btn-fb-cancel', closeFullBodyBuilder);
+  on('btn-fb-create', createFullBodyPlan);
+  on('fb-name', (e) => { fbName = e.target.value; fbNameTouched = true; }, 'input');
   on('btn-plan-rename', () => startEditPlan(selectedPlan));
   on('btn-plan-left', () => movePlan(editingPlan, -1));
   on('btn-plan-right', () => movePlan(editingPlan, 1));
@@ -3266,7 +3546,8 @@ function isBusy() {
   if (editingPlan !== null) return true;                 // otvorený editor plánu s neuloženými zmenami
   if (getSession()) return true;                         // rozbehnutý aktívny tréning (meria sa jeho trvanie)
   if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
-  const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic'];
+  const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
+    'modal-planchoice', 'modal-fullbody'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg

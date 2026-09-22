@@ -15,6 +15,8 @@ everything on your own device.
 
 - **Custom workout plans** — start from the built-in Push / Pull / Legs plans, rename them, reorder
   them, delete them, or add as many of your own as you like.
+- **Full Body builder** — create a plan by picking exercises straight out of your existing plans.
+  The result is an ordinary custom plan you can rename, edit, reorder or delete like any other.
 - **Editable weekly goal** — choose how many workouts you want to complete per week (1–7) and change
   it whenever you want; every counter, streak and reward recalculates immediately.
 - **Workout rotation** — the next recommended workout follows the order of your own plan list, based
@@ -138,6 +140,31 @@ GymQuest ships with a full **Slovak** and **English** interface:
   and it stays *Nohy + Core* in English too. Untouched built-in plans keep translating.
 - **Workout history is an immutable record**: it keeps the exercise and plan names that were in use
   when the workout was logged, so a later rename or deletion never rewrites the past.
+
+---
+
+## Creating a workout plan
+
+**+ Add workout plan** asks which kind you want:
+
+- **Blank workout plan** — an empty custom plan; add the exercises yourself in the editor.
+- **Full Body builder** — pick exercises from plans you already have. Every active plan (built-in
+  Push / Pull / Legs, renamed ones, and your own) appears as a section, and each exercise row shows
+  its sets, reps and weight. Tick any combination, or use **Select all** / **Clear** per section.
+  The counter shows how many you have picked, and a plan name is pre-filled with *Full Body*
+  (*Celé telo*) — edit it before saving if you like.
+
+Nothing is pre-selected, and **Create Full Body workout** needs at least one exercise. Created
+exercises are *copies*: name, stable id and built-in/custom status, sets, reps, weight and the
+planned failure sets are copied, but there is no live link to the source plan afterwards — editing
+either side never changes the other. A deliberate duplicate rule applies: if the same **built-in**
+exercise (same stable id) is picked from more than one section, it is added once, and the builder
+says so. **Custom** exercises are never merged, even when they share a name.
+
+The new plan is saved immediately and opens in the normal plan editor, so you can still change the
+name, order, sets, reps, weights, failure sets, add exercises or delete them. From then on it behaves
+exactly like any other plan: rotation, Today recommendations, history, Calendar, XP, export/import
+and safe deletion all work the same way. Nothing is written to a special plan type.
 
 ---
 

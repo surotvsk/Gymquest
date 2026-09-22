@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 
@@ -332,6 +332,46 @@
     </div>
   </div>
 
-  <script src="script.js?v=12"></script>
+  <!-- ============ MODAL: voľba nového plánu ============ -->
+  <div class="modal-backdrop" id="modal-planchoice" hidden>
+    <div class="modal">
+      <h3 data-i18n="planChoice.title">Vytvoriť tréningový plán</h3>
+      <button type="button" class="choice-card" id="btn-choice-blank">
+        <span class="choice-title" data-i18n="planChoice.blank">Prázdny tréningový plán</span>
+        <span class="choice-desc" data-i18n="planChoice.blankDesc">Vytvor prázdny vlastný tréning a pridaj cviky ručne.</span>
+      </button>
+      <button type="button" class="choice-card" id="btn-choice-fullbody">
+        <span class="choice-title" data-i18n="planChoice.fullBody">Full Body builder</span>
+        <span class="choice-desc" data-i18n="planChoice.fullBodyDesc">Vytvor celotelový tréning výberom cvikov z existujúcich tréningových plánov.</span>
+      </button>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-choice-cancel" data-i18n="common.cancel">Zrušiť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: Full Body builder ============ -->
+  <div class="modal-backdrop" id="modal-fullbody" hidden>
+    <div class="modal modal-fb">
+      <div class="fb-head">
+        <h3 data-i18n="fb.title">Full Body builder</h3>
+        <p class="fb-sub" data-i18n="fb.subtitle">Vyber cviky z existujúcich tréningových plánov.</p>
+        <label class="modal-label" for="fb-name" data-i18n="fb.nameLabel">Názov tréningu</label>
+        <input type="text" class="modal-input" id="fb-name" maxlength="40" autocomplete="off">
+      </div>
+      <div class="fb-body" id="fb-sources"></div>
+      <div class="fb-foot">
+        <p class="fb-count" id="fb-count"></p>
+        <p class="card-note fb-hint" id="fb-note" hidden></p>
+        <p class="card-note fb-error" id="fb-error" hidden></p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="btn-fb-cancel" data-i18n="common.cancel">Zrušiť</button>
+          <button class="btn btn-primary" id="btn-fb-create" data-i18n="fb.create">Vytvoriť Full Body tréning</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=13"></script>
 </body>
 </html>
