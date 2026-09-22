@@ -34,8 +34,9 @@ everything on your own device.
 - **XP, levels and achievements** — earn XP for finishing workouts and completing sets, level up,
   and unlock achievements automatically.
 - **Weekly streaks** — consistency is measured in weeks. Reach your goal and the streak grows.
-- **Rest timer** — 60 / 90 / 120 second countdown during a workout, with an optional gentle gong
-  when the countdown reaches zero. The sound is **off by default** and toggled in ⚙️ Settings.
+- **Rest timer** — 60 / 90 / 120 second presets plus a custom time (minutes + seconds, up to 60
+  minutes), with an optional gentle gong when the countdown reaches zero. The sound is **off by
+  default**, has a **Short / Standard / Long** length choice, and is toggled in ⚙️ Settings.
 - **Comparison with last time** — every exercise shows whether you went heavier or lighter than your
   previous session.
 - **Two languages** — full Slovak and English interface with an instant `SK | EN` toggle.
@@ -144,23 +145,45 @@ GymQuest ships with a full **Slovak** and **English** interface:
 
 ---
 
-## Rest timer sound
+## Rest timer
+
+The rest timer has three quick presets (60 / 90 / 120 seconds) plus a **Custom** option where you
+enter minutes and seconds (up to 60 minutes; seconds ≥ 60 roll over into minutes). The last custom
+time you started is remembered. Starting a rest timer never touches your workout progress, history,
+XP, streaks or goals.
+
+The countdown uses an **absolute end timestamp**, not a ticking counter, so it stays correct when you
+switch tabs, open Settings or the Calendar, edit a plan, change language, or come back from the Home
+Screen. If the countdown finishes while you are away, the app shows **Rest time is over.**
+(*Pauza skončila.*) when you return, without restarting and without a delayed gong. A rest timer
+that is still running also survives a page refresh.
+
+### Rest timer sound
 
 The rest timer can play a short **gentle gong** when its countdown reaches zero. It is a setting in
-⚙️ Settings (*Rest timer sound* / *Zvuk po skončení pauzy*) with a **Test sound** button, and it is
-**off by default** — nothing plays until you switch it on.
+⚙️ Settings (*Rest timer sound* / *Zvuk po skončení pauzy*) with a **Test sound** button, a
+**Short / Standard / Long** length choice, and it is **off by default** — nothing plays until you
+switch it on.
 
-- The gong is generated in the browser with the Web Audio API (two soft sine tones with a slow fade
-  in and a long decay). **No audio file is bundled or downloaded**, and GymQuest stays offline.
-- It plays **once**, only when a countdown reaches zero by itself. Stopping the timer, resetting the
+- The gong is generated in the browser with the Web Audio API: a soft stack of sine tones (a fifth
+  plus an octave) with a slow fade-in and a long decay — Short ≈ 0.8 s, Standard ≈ 1.5 s, Long ≈ 2.2 s.
+  **No audio file is bundled or downloaded**, and GymQuest stays offline.
+- It plays **once**, only when a countdown reaches zero on its own. Stopping the timer, resetting the
   workout or picking a different duration stays silent, and it never plays for the workout-duration
-  timer or any other event.
-- Toggling the setting applies immediately to a countdown that is already running.
+  timer or any other event. Rapid taps stop the previous gong before starting the next, so sounds
+  never pile up.
 - Audio is only started after a real tap (turning the setting on, **Test sound** or starting the
   rest timer), so browsers never block it; if a browser refuses to play, GymQuest stays silent and
   the timer keeps working.
-- Your choice is stored with your settings, so it survives refresh, language switching, export and
-  import.
+
+### Honest iPhone / Safari limits
+
+GymQuest is a static web app, so its rest-timer sound **cannot** be guaranteed to play while iOS has
+the page suspended in the background, after returning to the Home Screen, while Silent Mode is on,
+or under Do Not Disturb / Focus. It does not schedule native notifications and does not attempt to
+bypass Silent Mode or misuse Critical Alerts. What it *does* guarantee: the timer stays correct
+(from the absolute timestamp), the completion state is shown on return, and — when the app is open
+and audio is allowed — the gong plays once at the natural end of a countdown.
 
 ---
 

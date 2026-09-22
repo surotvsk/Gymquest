@@ -237,10 +237,19 @@ const I18N = {
     'trening.resetSessionTitle': 'Resetovať tréning?',
     'trening.resetSessionConfirm': 'Vymažú sa označené série tohto tréningu. História zostane zachovaná.',
     'trening.timerLabel': 'Oddych',
-    'trening.timerDone': 'Oddych skončil!',
+    'trening.timerDone': 'Pauza skončila.',
+    'trening.timerComplete': 'Pauza skončila',
     'trening.timerStop': 'Zastaviť časovač',
     'trening.timerStart': 'Začať oddych',
     'trening.timerSection': 'Časovač oddychu',
+    'trening.timerCustom': 'Vlastný',
+    'trening.customTitle': 'Vlastný čas pauzy',
+    'trening.customMinutes': 'Minúty',
+    'trening.customSeconds': 'Sekundy',
+    'trening.customStart': 'Spustiť časovač pauzy',
+    'trening.customStartAlt': 'Spustiť vlastný časovač',
+    'trening.customInvalid': 'Zadaj platný čas pauzy.',
+    'trening.customZero': 'Čas pauzy musí byť väčší ako nula.',
     'failure.plannedLabel': 'Série do zlyhania',
     'failure.none': 'Žiadna',
     'failure.failure': 'Zlyhanie',
@@ -294,6 +303,10 @@ const I18N = {
     'settings.testSound': 'Otestovať zvuk',
     'settings.on': 'Zapnuté',
     'settings.off': 'Vypnuté',
+    'settings.restSoundLength': 'Dĺžka zvuku po skončení pauzy',
+    'settings.lenShort': 'Krátky',
+    'settings.lenStandard': 'Štandardný',
+    'settings.lenLong': 'Dlhý',
     'settings.export': 'Exportovať dáta',
     'settings.import': 'Importovať dáta',
     'settings.reset': 'Resetovať dáta',
@@ -467,10 +480,19 @@ const I18N = {
     'trening.resetSessionTitle': 'Reset workout?',
     'trening.resetSessionConfirm': 'Marked sets of this workout will be cleared. History stays intact.',
     'trening.timerLabel': 'Rest',
-    'trening.timerDone': 'Rest over!',
+    'trening.timerDone': 'Rest time is over.',
+    'trening.timerComplete': 'Rest complete',
     'trening.timerStop': 'Stop timer',
     'trening.timerStart': 'Start rest',
     'trening.timerSection': 'Rest timer',
+    'trening.timerCustom': 'Custom',
+    'trening.customTitle': 'Custom rest time',
+    'trening.customMinutes': 'Minutes',
+    'trening.customSeconds': 'Seconds',
+    'trening.customStart': 'Start rest timer',
+    'trening.customStartAlt': 'Start custom timer',
+    'trening.customInvalid': 'Enter a valid rest time.',
+    'trening.customZero': 'Rest time must be greater than zero.',
     'failure.plannedLabel': 'Sets to failure',
     'failure.none': 'None',
     'failure.failure': 'Failure',
@@ -524,6 +546,10 @@ const I18N = {
     'settings.testSound': 'Test sound',
     'settings.on': 'On',
     'settings.off': 'Off',
+    'settings.restSoundLength': 'Rest timer sound length',
+    'settings.lenShort': 'Short',
+    'settings.lenStandard': 'Standard',
+    'settings.lenLong': 'Long',
     'settings.export': 'Export data',
     'settings.import': 'Import data',
     'settings.reset': 'Reset data',
@@ -814,6 +840,19 @@ function buildSampleHistory() {
 
 /* ---------- Načítanie / ukladanie stavu / migrácia ---------- */
 
+/* Normalizuje minúty/sekundy vlastného času pauzy. Sekundy >= 60 sa prenesú do minút,
+   hodnoty sa orežú na 0..60 min / 0..59 s. Čisto aritmetická – nevkladá žiadny default. */
+function normalizeCustomRest(min, sec) {
+  let m = Math.floor(Number(min));
+  let s = Math.floor(Number(sec));
+  if (!Number.isFinite(m) || m < 0) m = 0;
+  if (!Number.isFinite(s) || s < 0) s = 0;
+  m += Math.floor(s / 60);
+  s = s % 60;
+  if (m > 60) { m = 60; s = 0; }
+  return { minutes: m, seconds: s };
+}
+
 function defaultState() {
   return {
     version: 3,
@@ -823,7 +862,7 @@ function defaultState() {
     excusedWeeks: [],
     goalHistory: {},     // ISO týždeň -> cieľ platný v tom týždni (snapshot pre vyhodnotenie série)
     legacyGoal: null,    // cieľ spred zavedenia snapshotov; null = nový používateľ bez histórie
-    settings: { weeklyGoal: 3, lang: 'en', restSound: false },
+    settings: { weeklyGoal: 3, lang: 'en', restSound: false, restSoundLength: 'standard', customRestMinutes: 2, customRestSeconds: 30 },
     achievements: {},
     demo: false,
     activeSession: null, // rozbehnutý tréning (trvá iba do dokončenia alebo potvrdeného resetu)
@@ -1008,6 +1047,14 @@ function migrateV2toV3(parsed) {
   if (out.settings.lang !== 'sk' && out.settings.lang !== 'en') out.settings.lang = 'sk';
   /* Zvuk po skončení pauzy: predvolene VYPNUTÝ; zapnutý je len explicitné true. */
   if (out.settings.restSound !== true) out.settings.restSound = false;
+  /* Dĺžka zvuku: len short/standard/long, predvolene standard. */
+  if (out.settings.restSoundLength !== 'short' && out.settings.restSoundLength !== 'long') {
+    out.settings.restSoundLength = 'standard';
+  }
+  /* Vlastný čas pauzy: normalizuje sekundy aj poškodené hodnoty; pri nule sa vráti default 2:30. */
+  const cr = normalizeCustomRest(out.settings.customRestMinutes, out.settings.customRestSeconds);
+  out.settings.customRestMinutes = (cr.minutes === 0 && cr.seconds === 0) ? 2 : cr.minutes;
+  out.settings.customRestSeconds = (cr.minutes === 0 && cr.seconds === 0) ? 30 : cr.seconds;
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -1841,11 +1888,23 @@ function updateDurationDisplay() {
   document.getElementById('duration-value').textContent = formatDurationClock(sessionElapsedSeconds(sess));
 }
 
-/* Jeden interval na celý beh aplikácie – po prekreslení nikdy nevznikne druhý. */
+/* Jeden interval na celý beh aplikácie – po prekreslení nikdy nevznikne druhý.
+   Zároveň jediný visibilitychange listener, ktorý po návrate z pozadia
+   zosynchronizuje trvanie tréningu aj bežiaci odpočet. */
 function startDurationTicker() {
   if (durationInterval !== null) return;
   durationInterval = setInterval(updateDurationDisplay, 1000);
-  document.addEventListener('visibilitychange', updateDurationDisplay);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+}
+
+function onVisibilityChange() {
+  updateDurationDisplay();
+  if (document.hidden) {
+    wasHidden = true;
+  } else {
+    if (wasHidden) refreshRestTimerOnVisible();
+    wasHidden = false;
+  }
 }
 
 function renderSessionNote() {
@@ -3325,14 +3384,41 @@ function unlockAudio() {
   } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
 }
 
-/* Dva konsonantné tóny (C5 + kvinta G5) s mäkkým nábehom a dlhým doznením:
-   žiadny klik, žiadny ostrý alarm, len tichý gong. */
-const CHIME_TONES = [
-  { freq: 523.25, peak: 0.18, decay: 1.7 },
-  { freq: 783.99, peak: 0.08, decay: 1.3 },
-];
+/* Vrstvený gong podľa zvolenej dĺžky: základ C5 + kvinta G5, pri dlhších variantoch
+   aj oktávový tón pre jemnejšie doznievanie. Žiadny ostrý alarm, žiadny klik. */
+const CHIME_PRESETS = {
+  short:    { tones: [ { f: 523.25, p: 0.18, d: 0.9 }, { f: 783.99, p: 0.08, d: 0.7 } ] },
+  standard: { tones: [ { f: 523.25, p: 0.18, d: 1.7 }, { f: 783.99, p: 0.08, d: 1.4 }, { f: 1046.50, p: 0.05, d: 1.0 } ] },
+  long:     { tones: [ { f: 523.25, p: 0.18, d: 2.4 }, { f: 783.99, p: 0.10, d: 2.0 }, { f: 1046.50, p: 0.06, d: 1.5 } ] },
+};
 
-function playChime() {
+function restSoundLength() {
+  const v = state && state.settings && state.settings.restSoundLength;
+  return (v === 'short' || v === 'long') ? v : 'standard';
+}
+
+/* Aktívne hraný gong – nový gong plynulo utíši predošlý, aby rýchle ťukania
+   nevytvorili neovládateľné prekrývajúce sa zvuky. */
+let activeChime = null;
+
+function stopActiveChime() {
+  if (!activeChime) return;
+  const ctx = activeChime.ctx;
+  try {
+    const now = ctx.currentTime;
+    for (const tone of activeChime.tones) {
+      try {
+        tone.gain.gain.cancelScheduledValues(now);
+        tone.gain.gain.setValueAtTime(Math.max(0.0001, tone.gain.gain.value), now);
+        tone.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+        tone.osc.stop(now + 0.06);
+      } catch (e) {}
+    }
+  } catch (e) {}
+  activeChime = null;
+}
+
+function playChime(length) {
   try {
     const ctx = getAudioContext();
     if (!ctx) return false;
@@ -3340,28 +3426,37 @@ function playChime() {
       const p = ctx.resume();
       if (p && typeof p.catch === 'function') p.catch(() => {});
     }
+    stopActiveChime();   // žiadne prekrývajúce sa zvuky pri rýchlom ťukaní
+    const preset = CHIME_PRESETS[length] || CHIME_PRESETS.standard;
     const now = ctx.currentTime;
     const master = ctx.createGain();
     master.gain.value = 0.9;
     master.connect(ctx.destination);
-    let remaining = CHIME_TONES.length;
-    for (const tone of CHIME_TONES) {
+    const tones = preset.tones.map(tone => {
       const osc = ctx.createOscillator();
       const env = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(tone.freq, now);
+      osc.frequency.setValueAtTime(tone.f, now);
       env.gain.setValueAtTime(0.0001, now);
-      env.gain.exponentialRampToValueAtTime(tone.peak, now + 0.03);
-      env.gain.exponentialRampToValueAtTime(0.0001, now + tone.decay);
+      env.gain.exponentialRampToValueAtTime(tone.p, now + 0.03);
+      env.gain.exponentialRampToValueAtTime(0.0001, now + tone.d);
       osc.connect(env);
       env.connect(master);
       osc.start(now);
-      osc.stop(now + tone.decay + 0.05);
+      osc.stop(now + tone.d + 0.05);
+      return { osc, gain: env };
+    });
+    activeChime = { ctx, master, tones };
+    let remaining = tones.length;
+    for (const tone of tones) {
       /* uzly sa po doznení odpoja – žiadne hromadenie v pamäti */
-      osc.onended = () => {
-        try { osc.disconnect(); env.disconnect(); } catch (e) {}
+      tone.osc.onended = () => {
+        try { tone.osc.disconnect(); tone.gain.disconnect(); } catch (e) {}
         remaining -= 1;
-        if (remaining <= 0) { try { master.disconnect(); } catch (e) {} }
+        if (remaining <= 0) {
+          try { master.disconnect(); } catch (e) {}
+          if (activeChime && activeChime.master === master) activeChime = null;
+        }
       };
     }
     return true;
@@ -3374,6 +3469,12 @@ function restSoundOn() {
   return !!(state && state.settings && state.settings.restSound === true);
 }
 
+function setSoundLength(len) {
+  state.settings.restSoundLength = (len === 'short' || len === 'long') ? len : 'standard';
+  renderRestSoundSetting();
+  saveState();
+}
+
 function renderRestSoundSetting() {
   const btn = document.getElementById('btn-rest-sound');
   const stateEl = document.getElementById('rest-sound-state');
@@ -3383,38 +3484,108 @@ function renderRestSoundSetting() {
     btn.classList.toggle('on', on);
   }
   if (stateEl) stateEl.textContent = on ? t('settings.on') : t('settings.off');
+  const box = document.getElementById('sound-length');
+  if (box) box.hidden = !on;   // dĺžka sa ukáže len keď je zvuk zapnutý
+  const len = restSoundLength();
+  document.querySelectorAll('.sound-length-chips .len-chip').forEach(c => {
+    const active = c.dataset.len === len;
+    c.classList.toggle('active', active);
+    c.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
 }
 
 /* ---------- Timer ---------- */
+
+/* Odpočet je tranzientný – ukladá sa do samostatného kľúča (nie do zálohy/exportu),
+   aby prežil obnovenie stránky, ale neprenášal sa medzi zariadeniami. */
+const REST_TIMER_KEY = 'gymquest_resttimer';
+let wasHidden = document.hidden;
+
+function persistRestTimerEnd(endAt) {
+  try {
+    if (endAt) localStorage.setItem(REST_TIMER_KEY, String(endAt));
+    else localStorage.removeItem(REST_TIMER_KEY);
+  } catch (e) {}
+}
+
+function restoreRestTimerEnd() {
+  try {
+    const raw = localStorage.getItem(REST_TIMER_KEY);
+    if (!raw) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  } catch (e) { return null; }
+}
+
+/* Dokončí odpočet. withSound=false = tiché dokončenie (napr. po návrate z pozadia). */
+function finishRestTimer(withSound) {
+  stopTimer();
+  const bar = document.getElementById('timer-bar');
+  bar.classList.add('done');
+  bar.hidden = false;
+  bar.setAttribute('aria-label', t('trening.timerComplete'));
+  document.getElementById('timer-label').textContent = t('trening.timerDone');
+  document.getElementById('timer-time').textContent = '00:00';
+  if (withSound && !timerRang) {
+    timerRang = true;
+    if (restSoundOn()) playChime(restSoundLength());
+  }
+}
+
+function restTimerTick() {
+  if (timerEnd - Date.now() <= 0) {
+    /* Gong len ak je appka práve viditeľná; v pozadí sa dokončí potichu. */
+    finishRestTimer(!document.hidden);
+    return;
+  }
+  updateTimerDisplay();
+}
+
+function armRestTimer() {
+  if (timerInterval !== null) return;
+  timerInterval = setInterval(restTimerTick, 250);
+}
+
+/* Po návrate z pozadia: ak odpočet už dobehol, dokonči ho potichu; inak len obnov zobrazenie. */
+function refreshRestTimerOnVisible() {
+  if (timerInterval === null) return;
+  if (Date.now() >= timerEnd) {
+    finishRestTimer(false);
+  } else {
+    updateTimerDisplay();
+  }
+}
+
+/* Obnoví bežiaci odpočet po obnovení stránky z absolútneho koncového času. */
+function restoreRestTimer() {
+  const endAt = restoreRestTimerEnd();
+  if (!endAt) return;
+  timerEnd = endAt;
+  if (Date.now() >= endAt) {
+    finishRestTimer(false);   // dobehol počas neprítomnosti – dokončený stav bez gongu
+    return;
+  }
+  const bar = document.getElementById('timer-bar');
+  bar.classList.remove('done');
+  bar.hidden = false;
+  document.getElementById('timer-label').textContent = t('trening.timerLabel');
+  updateTimerDisplay();
+  armRestTimer();
+}
 
 function startTimer(seconds) {
   stopTimer();
   unlockAudio();               // štart časovača je pokyn používateľa – odblokuje zvuk
   timerEnd = Date.now() + seconds * 1000;
   timerRang = false;
+  persistRestTimerEnd(timerEnd);   // absolútny koniec prežije aj obnovenie stránky
   const bar = document.getElementById('timer-bar');
   bar.classList.remove('done');
+  bar.removeAttribute('aria-label');
   bar.hidden = false;
   document.getElementById('timer-label').textContent = t('trening.timerLabel');
   updateTimerDisplay();
-  timerInterval = setInterval(() => {
-    const left = timerEnd - Date.now();
-    if (left <= 0) {
-      stopTimer();
-      document.getElementById('timer-label').textContent = t('trening.timerDone');
-      bar.classList.add('done');
-      bar.hidden = false;
-      document.getElementById('timer-time').textContent = '00:00';
-      /* Gong zaznie LEN pri prirodzenom dobehnutí do nuly a len raz za odpočet.
-         Nastavenie sa číta až tu, takže zmena počas behu platí presne pre tento časovač. */
-      if (!timerRang) {
-        timerRang = true;
-        if (restSoundOn()) playChime();
-      }
-      return;
-    }
-    updateTimerDisplay();
-  }, 250);
+  armRestTimer();
 }
 
 function updateTimerDisplay() {
@@ -3427,7 +3598,83 @@ function updateTimerDisplay() {
 function stopTimer() {
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = null;
-  document.getElementById('timer-bar').hidden = true;
+  persistRestTimerEnd(null);
+  const bar = document.getElementById('timer-bar');
+  if (bar) bar.hidden = true;
+}
+
+/* ---------- Vlastný čas pauzy ---------- */
+
+function renderCustomTimer() {
+  const box = document.getElementById('custom-timer');
+  if (!box) return;
+  const open = !box.hidden;
+  const chip = document.getElementById('btn-custom-timer');
+  if (chip) {
+    chip.classList.toggle('active', open);
+    chip.setAttribute('aria-pressed', open ? 'true' : 'false');
+  }
+  document.getElementById('ct-minutes').value = String(state.settings.customRestMinutes);
+  document.getElementById('ct-seconds').value = String(state.settings.customRestSeconds);
+  updateCustomPreview();
+  document.getElementById('ct-error').hidden = true;
+}
+
+function toggleCustomTimer() {
+  const box = document.getElementById('custom-timer');
+  box.hidden = !box.hidden;
+  renderCustomTimer();
+}
+
+function hideCustomTimer() {
+  const box = document.getElementById('custom-timer');
+  if (box) box.hidden = true;
+  const chip = document.getElementById('btn-custom-timer');
+  if (chip) { chip.classList.remove('active'); chip.setAttribute('aria-pressed', 'false'); }
+}
+
+function updateCustomPreview() {
+  const m = parseInt(document.getElementById('ct-minutes').value, 10);
+  const s = parseInt(document.getElementById('ct-seconds').value, 10);
+  const norm = normalizeCustomRest(
+    Number.isFinite(m) && m > 0 ? m : 0,
+    Number.isFinite(s) && s > 0 ? s : 0
+  );
+  document.getElementById('ct-preview').textContent = `${norm.minutes}:${String(norm.seconds).padStart(2, '0')}`;
+}
+
+/* Vráti { total, minutes, seconds } alebo { error: 'invalid' | 'zero' }. */
+function readCustomTimer() {
+  const minEl = document.getElementById('ct-minutes');
+  const secEl = document.getElementById('ct-seconds');
+  const mRaw = minEl.value.trim();
+  const sRaw = secEl.value.trim();
+  const m = Number(mRaw);
+  const s = Number(sRaw);
+  if (mRaw === '' || sRaw === '' || !Number.isFinite(m) || !Number.isFinite(s)
+      || !Number.isInteger(m) || !Number.isInteger(s) || m < 0 || s < 0) {
+    return { error: 'invalid' };
+  }
+  const norm = normalizeCustomRest(m, s);
+  const total = norm.minutes * 60 + norm.seconds;
+  if (total <= 0) return { error: 'zero' };
+  return { total, minutes: norm.minutes, seconds: norm.seconds };
+}
+
+function startCustomTimer() {
+  const errEl = document.getElementById('ct-error');
+  const result = readCustomTimer();
+  if (result.error) {
+    errEl.hidden = false;
+    errEl.textContent = t(result.error === 'zero' ? 'trening.customZero' : 'trening.customInvalid');
+    return;
+  }
+  errEl.hidden = true;
+  state.settings.customRestMinutes = result.minutes;
+  state.settings.customRestSeconds = result.seconds;
+  saveState();
+  hideCustomTimer();
+  startTimer(result.total);
 }
 
 /* ---------- Jazyk ---------- */
@@ -3547,10 +3794,17 @@ function setupEvents() {
     }, t('trening.resetSessionConfirm'));
   });
 
-  document.querySelectorAll('.timer-chip').forEach(chip => {
-    chip.addEventListener('click', () => startTimer(parseInt(chip.dataset.seconds, 10)));
+  document.querySelectorAll('.timer-chip[data-seconds]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      hideCustomTimer();
+      startTimer(parseInt(chip.dataset.seconds, 10));
+    });
   });
   on('timer-stop', stopTimer);
+  on('btn-custom-timer', toggleCustomTimer);
+  on('btn-start-custom', startCustomTimer);
+  on('ct-minutes', updateCustomPreview, 'input');
+  on('ct-seconds', updateCustomPreview, 'input');
 
   on('btn-setup-ok', confirmSetup);
   // viditeľné Uložiť aj pôvodné Zavrieť – obe uložia, aby sa zmena nikdy nestratila
@@ -3569,7 +3823,10 @@ function setupEvents() {
   });
   on('btn-test-sound', () => {
     unlockAudio();
-    playChime();
+    playChime(restSoundLength());
+  });
+  document.querySelectorAll('.sound-length-chips .len-chip').forEach(chip => {
+    chip.addEventListener('click', () => setSoundLength(chip.dataset.len));
   });
 
   on('btn-export', exportData);
@@ -3755,6 +4012,7 @@ renderAll();
 startDayWatcher();
 startDurationTicker();
 if (restoredSession) setSessionNote('trening.sessionRestored', 10000);
+restoreRestTimer();          // obnoví bežiaci (alebo už dobehnutý) odpočet z absolútneho konca
 registerServiceWorker();
 if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
   openSetup();

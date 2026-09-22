@@ -1752,6 +1752,46 @@ textarea.modal-input { resize: vertical; }
   background: var(--accent);
 }
 
+/* ===== Dĺžka zvuku po skončení pauzy ===== */
+
+.sound-length { margin: var(--sp-2) 0 var(--sp-3); text-align: left; }
+
+.sound-length[hidden] { display: none; }
+
+.sound-length-label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-1);
+}
+
+.sound-length-chips { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+
+.len-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.len-chip.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 /* Settings je dlhý formulár – na malom displeji sa posúva, aby boli tlačidlá vždy dosiahnuteľné. */
 #modal-settings .modal {
   max-height: calc(100dvh - var(--sp-5) * 2);
@@ -1780,15 +1820,89 @@ textarea.modal-input { resize: vertical; }
 
 .timer-chips {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--sp-2);
   margin-bottom: var(--sp-3);
 }
 
 .timer-chip {
   min-height: 44px;
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 8px;
   font-variant-numeric: tabular-nums;
 }
+
+.timer-chip-custom.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ===== Vlastný čas pauzy ===== */
+
+.custom-timer {
+  margin-bottom: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  text-align: left;
+}
+
+.custom-timer[hidden] { display: none; }
+
+.custom-title {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-2);
+}
+
+.custom-fields {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-end;
+}
+
+.custom-field { display: flex; flex-direction: column; gap: 2px; flex: 0 0 auto; }
+
+.custom-field label {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  font-weight: var(--fw-bold);
+}
+
+.custom-field input {
+  width: 76px;
+  min-height: 40px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-md);
+  padding: 6px 8px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.custom-field input:focus { outline: none; border-color: var(--border-strong); }
+
+.custom-preview {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-black);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.ct-error { color: var(--danger); font-weight: var(--fw-bold); }
+
+.custom-start { width: 100%; margin-top: var(--sp-2); }
 
 .row-actions {
   display: flex;

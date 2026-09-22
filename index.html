@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 
@@ -124,6 +124,24 @@
         <button class="chip timer-chip" data-seconds="60" data-i18n-aria="trening.timerStart">60 s</button>
         <button class="chip timer-chip" data-seconds="90" data-i18n-aria="trening.timerStart">90 s</button>
         <button class="chip timer-chip" data-seconds="120" data-i18n-aria="trening.timerStart">120 s</button>
+        <button type="button" class="chip timer-chip timer-chip-custom" id="btn-custom-timer" aria-pressed="false" data-i18n="trening.timerCustom" data-i18n-aria="trening.customStartAlt">Vlastný</button>
+      </div>
+
+      <div class="custom-timer" id="custom-timer" hidden>
+        <span class="custom-title" data-i18n="trening.customTitle">Vlastný čas pauzy</span>
+        <div class="custom-fields">
+          <div class="custom-field">
+            <label for="ct-minutes" data-i18n="trening.customMinutes">Minúty</label>
+            <input type="number" id="ct-minutes" min="0" max="60" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="custom-field">
+            <label for="ct-seconds" data-i18n="trening.customSeconds">Sekundy</label>
+            <input type="number" id="ct-seconds" min="0" max="59" inputmode="numeric" autocomplete="off">
+          </div>
+        </div>
+        <p class="custom-preview" id="ct-preview">2:30</p>
+        <p class="card-note ct-error" id="ct-error" hidden></p>
+        <button class="btn btn-primary custom-start" id="btn-start-custom" data-i18n="trening.customStart">Spustiť časovač pauzy</button>
       </div>
 
       <div class="row-actions">
@@ -289,6 +307,15 @@
       </div>
       <button class="btn btn-secondary btn-block" id="btn-test-sound" data-i18n="settings.testSound">Otestovať zvuk</button>
 
+      <div class="sound-length" id="sound-length" hidden>
+        <span class="sound-length-label" data-i18n="settings.restSoundLength">Dĺžka zvuku po skončení pauzy</span>
+        <div class="sound-length-chips" id="sound-length-chips" role="group" data-i18n-aria="settings.restSoundLength">
+          <button type="button" class="len-chip" data-len="short" aria-pressed="false" data-i18n="settings.lenShort">Krátky</button>
+          <button type="button" class="len-chip" data-len="standard" aria-pressed="true" data-i18n="settings.lenStandard">Štandardný</button>
+          <button type="button" class="len-chip" data-len="long" aria-pressed="false" data-i18n="settings.lenLong">Dlhý</button>
+        </div>
+      </div>
+
       <div class="modal-actions">
         <button class="btn btn-secondary" id="btn-export" data-i18n="settings.export">Exportovať dáta</button>
         <button class="btn btn-secondary" id="btn-import" data-i18n="settings.import">Importovať dáta</button>
@@ -388,6 +415,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=14"></script>
+  <script src="script.js?v=15"></script>
 </body>
 </html>
