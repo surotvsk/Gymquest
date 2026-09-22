@@ -172,9 +172,13 @@ switch it on.
   workout or picking a different duration stays silent, and it never plays for the workout-duration
   timer or any other event. Rapid taps stop the previous gong before starting the next, so sounds
   never pile up.
+- **Test sound** plays exactly the same gong on demand. It is disabled while the sound setting is off
+  (with a short explanation), and it never starts a rest timer or touches your workout.
 - Audio is only started after a real tap (turning the setting on, **Test sound** or starting the
-  rest timer), so browsers never block it; if a browser refuses to play, GymQuest stays silent and
-  the timer keeps working.
+  rest timer), and the gong is only scheduled once the browser's audio context is actually running —
+  on iOS/Safari a new context starts suspended, and sounds scheduled before it starts are silent. If
+  the browser still refuses to play, the test shows a short message (*Sound could not be played. Check
+  your device sound settings.*) and the rest timer keeps working.
 
 ### Honest iPhone / Safari limits
 

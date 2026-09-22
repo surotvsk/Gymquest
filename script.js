@@ -301,6 +301,8 @@ const I18N = {
     'settings.restSound': 'Zvuk po skončení pauzy',
     'settings.restSoundHint': 'Prehrať krátky gong, keď časovač oddychu dosiahne nulu.',
     'settings.testSound': 'Otestovať zvuk',
+    'settings.testSoundDisabledHint': 'Ak chceš zvuk otestovať, zapni zvuk po skončení pauzy.',
+    'settings.testSoundFailed': 'Zvuk sa nepodarilo prehrať. Skontroluj nastavenia zvuku zariadenia.',
     'settings.on': 'Zapnuté',
     'settings.off': 'Vypnuté',
     'settings.restSoundLength': 'Dĺžka zvuku po skončení pauzy',
@@ -544,6 +546,8 @@ const I18N = {
     'settings.restSound': 'Rest timer sound',
     'settings.restSoundHint': 'Play a short gong when the rest timer reaches zero.',
     'settings.testSound': 'Test sound',
+    'settings.testSoundDisabledHint': 'Enable Rest timer sound to test it.',
+    'settings.testSoundFailed': 'Sound could not be played. Check your device sound settings.',
     'settings.on': 'On',
     'settings.off': 'Off',
     'settings.restSoundLength': 'Rest timer sound length',
@@ -3372,12 +3376,13 @@ function getAudioContext() {
   return audioCtx;
 }
 
-/* Odblokovanie zvuku – iOS aj Chrome ho vyžadujú pri pokyne používateľa. */
+/* Odblokovanie zvuku – iOS aj Chrome ho vyžadujú pri pokyne používateľa.
+   Kontext sa tu aj vytvára, takže vzniká vnútri skutočného pokynu používateľa. */
 function unlockAudio() {
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
-    if (ctx.state === 'suspended' && typeof ctx.resume === 'function') {
+    if (ctx.state !== 'running' && typeof ctx.resume === 'function') {
       const p = ctx.resume();
       if (p && typeof p.catch === 'function') p.catch(() => {});
     }
@@ -3418,51 +3423,70 @@ function stopActiveChime() {
   activeChime = null;
 }
 
-function playChime(length) {
-  try {
-    const ctx = getAudioContext();
-    if (!ctx) return false;
-    if (ctx.state === 'suspended' && typeof ctx.resume === 'function') {
-      const p = ctx.resume();
-      if (p && typeof p.catch === 'function') p.catch(() => {});
-    }
-    stopActiveChime();   // žiadne prekrývajúce sa zvuky pri rýchlom ťukaní
-    const preset = CHIME_PRESETS[length] || CHIME_PRESETS.standard;
-    const now = ctx.currentTime;
-    const master = ctx.createGain();
-    master.gain.value = 0.9;
-    master.connect(ctx.destination);
-    const tones = preset.tones.map(tone => {
-      const osc = ctx.createOscillator();
-      const env = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(tone.f, now);
-      env.gain.setValueAtTime(0.0001, now);
-      env.gain.exponentialRampToValueAtTime(tone.p, now + 0.03);
-      env.gain.exponentialRampToValueAtTime(0.0001, now + tone.d);
-      osc.connect(env);
-      env.connect(master);
-      osc.start(now);
-      osc.stop(now + tone.d + 0.05);
-      return { osc, gain: env };
-    });
-    activeChime = { ctx, master, tones };
-    let remaining = tones.length;
-    for (const tone of tones) {
-      /* uzly sa po doznení odpoja – žiadne hromadenie v pamäti */
-      tone.osc.onended = () => {
-        try { tone.osc.disconnect(); tone.gain.disconnect(); } catch (e) {}
-        remaining -= 1;
-        if (remaining <= 0) {
-          try { master.disconnect(); } catch (e) {}
-          if (activeChime && activeChime.master === master) activeChime = null;
-        }
-      };
-    }
-    return true;
-  } catch (e) {
-    return false;   // prehliadač zvuk odmietol – ticho a bez chyby v konzole
+/* Vykreslí gong na UŽ BEŽIACI kontext. Nikdy sa nevolá na pozastavenom kontexte –
+   práve preto je celá tvorba uzlov oddelená od playChime(). */
+function scheduleChime(ctx, length) {
+  stopActiveChime();   // žiadne prekrývajúce sa zvuky pri rýchlom ťukaní
+  const preset = CHIME_PRESETS[length] || CHIME_PRESETS.standard;
+  /* malý predstih, aby žiadna naplánovaná udalosť nepadla do minulosti */
+  const now = ctx.currentTime + 0.01;
+  const master = ctx.createGain();
+  master.gain.value = 0.9;
+  master.connect(ctx.destination);
+  const tones = preset.tones.map(tone => {
+    const osc = ctx.createOscillator();
+    const env = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(tone.f, now);
+    env.gain.setValueAtTime(0.0001, now);
+    env.gain.exponentialRampToValueAtTime(tone.p, now + 0.03);
+    env.gain.exponentialRampToValueAtTime(0.0001, now + tone.d);
+    osc.connect(env);
+    env.connect(master);
+    osc.start(now);
+    osc.stop(now + tone.d + 0.05);
+    return { osc, gain: env };
+  });
+  activeChime = { ctx, master, tones };
+  let remaining = tones.length;
+  for (const tone of tones) {
+    /* uzly sa po doznení odpoja – žiadne hromadenie v pamäti */
+    tone.osc.onended = () => {
+      try { tone.osc.disconnect(); tone.gain.disconnect(); } catch (e) {}
+      remaining -= 1;
+      if (remaining <= 0) {
+        try { master.disconnect(); } catch (e) {}
+        if (activeChime && activeChime.master === master) activeChime = null;
+      }
+    };
   }
+  return true;
+}
+
+/* Prehrá gong. Vždy najprv počká, kým je kontext naozaj spustený: na iOS/Safari je
+   nový AudioContext 'suspended' (aj 'interrupted') a uzly naplánované pred spustením
+   sa neprehrajú – to bola príčina tichého "Test sound".
+   Vracia Promise<boolean>: true = zvuk sa naozaj naplánoval, false = zvuk nie je
+   dostupný alebo ho prehliadač odmietol. */
+function playChime(length) {
+  let ctx = null;
+  try {
+    ctx = getAudioContext();   // vytvorenie prebehne synchrónne v rámci pokynu používateľa
+  } catch (e) { ctx = null; }
+  if (!ctx) return Promise.resolve(false);
+
+  const trySchedule = () => {
+    try { return scheduleChime(ctx, length); } catch (e) { return false; }
+  };
+
+  if (ctx.state === 'running') return Promise.resolve(trySchedule());
+
+  let resuming = null;
+  try { resuming = ctx.resume(); } catch (e) { resuming = null; }
+  if (!resuming || typeof resuming.then !== 'function') return Promise.resolve(trySchedule());
+
+  /* Naplánovať až po skutočnom spustení – inak je gong ticho. */
+  return resuming.then(() => trySchedule()).catch(() => false);
 }
 
 function restSoundOn() {
@@ -3473,6 +3497,11 @@ function setSoundLength(len) {
   state.settings.restSoundLength = (len === 'short' || len === 'long') ? len : 'standard';
   renderRestSoundSetting();
   saveState();
+}
+
+function hideTestSoundError() {
+  const el = document.getElementById('test-sound-error');
+  if (el) { el.hidden = true; el.textContent = ''; }
 }
 
 function renderRestSoundSetting() {
@@ -3486,6 +3515,12 @@ function renderRestSoundSetting() {
   if (stateEl) stateEl.textContent = on ? t('settings.on') : t('settings.off');
   const box = document.getElementById('sound-length');
   if (box) box.hidden = !on;   // dĺžka sa ukáže len keď je zvuk zapnutý
+  /* Test sound má zmysel len pri zapnutom zvuku – inak je neaktívne s vysvetlením. */
+  const testBtn = document.getElementById('btn-test-sound');
+  if (testBtn) testBtn.disabled = !on;
+  const hint = document.getElementById('test-sound-hint');
+  if (hint) hint.hidden = on;
+  if (!on) hideTestSoundError();
   const len = restSoundLength();
   document.querySelectorAll('.sound-length-chips .len-chip').forEach(c => {
     const active = c.dataset.len === len;
@@ -3822,8 +3857,17 @@ function setupEvents() {
     saveState();
   });
   on('btn-test-sound', () => {
-    unlockAudio();
-    playChime(restSoundLength());
+    if (!restSoundOn()) return;        // pri vypnutom zvuku je tlačidlo neaktívne
+    hideTestSoundError();
+    /* Presne ten istý gong, aký zaznie pri prirodzenom dobehnutí odpočtu.
+       playChime vytvorí/obnoví AudioContext synchrónne v rámci tohto kliknutia. */
+    playChime(restSoundLength()).then((played) => {
+      if (played) return;              // hrá – nič nehlásime
+      const err = document.getElementById('test-sound-error');
+      if (!err) return;
+      err.textContent = t('settings.testSoundFailed');
+      err.hidden = false;
+    });
   });
   document.querySelectorAll('.sound-length-chips .len-chip').forEach(chip => {
     chip.addEventListener('click', () => setSoundLength(chip.dataset.len));

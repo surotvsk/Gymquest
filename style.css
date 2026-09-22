@@ -1342,6 +1342,8 @@ body.has-update-banner .app-main {
      stĺpcov pri 320 px nezmestia – menšie vnútorné odsadenie ich udrží vnútri modálu. */
   .modal-actions .btn { padding: 0 var(--sp-3); }
   #modal-settings .modal { padding-left: var(--sp-4); padding-right: var(--sp-4); }
+  /* "Štandardný" je najdlhší popisok – menší font ho udrží vnútri chipu. */
+  .len-chip { font-size: var(--fs-xs); padding: 8px 6px; }
 }
 
 /* ===== Výber typu nového plánu ===== */
@@ -1783,6 +1785,7 @@ textarea.modal-input { resize: vertical; }
   font-size: var(--fs-sm);
   font-weight: var(--fw-bold);
   cursor: pointer;
+  overflow-wrap: break-word;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
@@ -1791,6 +1794,26 @@ textarea.modal-input { resize: vertical; }
   background: var(--accent-soft);
   color: var(--accent);
 }
+
+/* Test sound: neaktívne pri vypnutom zvuku + krátke vysvetlenie a chybové hlásenie. */
+
+.modal #btn-test-sound:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.modal .test-sound-hint,
+.modal .test-sound-error {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: break-word;
+}
+
+.modal .test-sound-hint { color: var(--text-faint); }
+.modal .test-sound-error { color: var(--danger); font-weight: var(--fw-bold); }
 
 /* Settings je dlhý formulár – na malom displeji sa posúva, aby boli tlačidlá vždy dosiahnuteľné. */
 #modal-settings .modal {

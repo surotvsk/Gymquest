@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
 
@@ -306,6 +306,8 @@
         </div>
       </div>
       <button class="btn btn-secondary btn-block" id="btn-test-sound" data-i18n="settings.testSound">Otestovať zvuk</button>
+      <p class="card-note test-sound-hint" id="test-sound-hint" hidden data-i18n="settings.testSoundDisabledHint">Ak chceš zvuk otestovať, zapni zvuk po skončení pauzy.</p>
+      <p class="card-note test-sound-error" id="test-sound-error" hidden></p>
 
       <div class="sound-length" id="sound-length" hidden>
         <span class="sound-length-label" data-i18n="settings.restSoundLength">Dĺžka zvuku po skončení pauzy</span>
@@ -415,6 +417,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=15"></script>
+  <script src="script.js?v=16"></script>
 </body>
 </html>
