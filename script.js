@@ -3389,12 +3389,37 @@ function unlockAudio() {
   } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
 }
 
-/* Vrstvený gong podľa zvolenej dĺžky: základ C5 + kvinta G5, pri dlhších variantoch
-   aj oktávový tón pre jemnejšie doznievanie. Žiadny ostrý alarm, žiadny klik. */
+/* Viacstupňový gong: tri údery v čase 0 / 2 / 4 s s klesajúcou silou a spoločným doznením.
+   Každý úder je malý harmonický zväzok (C5 + kvinta G5, prvý aj oktáva C6) a chvost
+   KAŽDÉHO úderu siaha až do konca skladby – zvuk preto nikdy nezmizne do ticha pred
+   koncom a zostáva zreteľne počuteľný celých 6–8 sekúnd. Žiadny ostrý alarm, žiadny klik. */
 const CHIME_PRESETS = {
-  short:    { tones: [ { f: 523.25, p: 0.18, d: 0.9 }, { f: 783.99, p: 0.08, d: 0.7 } ] },
-  standard: { tones: [ { f: 523.25, p: 0.18, d: 1.7 }, { f: 783.99, p: 0.08, d: 1.4 }, { f: 1046.50, p: 0.05, d: 1.0 } ] },
-  long:     { tones: [ { f: 523.25, p: 0.18, d: 2.4 }, { f: 783.99, p: 0.10, d: 2.0 }, { f: 1046.50, p: 0.06, d: 1.5 } ] },
+  /* 6,0 s – dva údery */
+  short: {
+    end: 6.0,
+    strikes: [
+      { at: 0.0, tones: [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ] },
+      { at: 2.0, tones: [ { f: 523.25, p: 0.10 }, { f: 783.99, p: 0.045 }, { f: 1046.50, p: 0.025 } ] },
+    ],
+  },
+  /* 7,0 s – tri údery (predvolené) */
+  standard: {
+    end: 7.0,
+    strikes: [
+      { at: 0.0, tones: [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ] },
+      { at: 2.0, tones: [ { f: 523.25, p: 0.10 }, { f: 783.99, p: 0.045 }, { f: 1046.50, p: 0.025 } ] },
+      { at: 4.0, tones: [ { f: 523.25, p: 0.07 }, { f: 783.99, p: 0.03 } ] },
+    ],
+  },
+  /* 8,0 s – tri údery s najdlhším doznením */
+  long: {
+    end: 8.0,
+    strikes: [
+      { at: 0.0, tones: [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ] },
+      { at: 2.0, tones: [ { f: 523.25, p: 0.10 }, { f: 783.99, p: 0.045 }, { f: 1046.50, p: 0.025 } ] },
+      { at: 4.0, tones: [ { f: 523.25, p: 0.07 }, { f: 783.99, p: 0.03 }, { f: 1046.50, p: 0.02 } ] },
+    ],
+  },
 };
 
 function restSoundLength() {
@@ -3429,24 +3454,37 @@ function scheduleChime(ctx, length) {
   stopActiveChime();   // žiadne prekrývajúce sa zvuky pri rýchlom ťukaní
   const preset = CHIME_PRESETS[length] || CHIME_PRESETS.standard;
   /* malý predstih, aby žiadna naplánovaná udalosť nepadla do minulosti */
-  const now = ctx.currentTime + 0.01;
+  const start = ctx.currentTime + 0.01;
+  const end = start + preset.end;
   const master = ctx.createGain();
   master.gain.value = 0.9;
   master.connect(ctx.destination);
-  const tones = preset.tones.map(tone => {
-    const osc = ctx.createOscillator();
-    const env = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(tone.f, now);
-    env.gain.setValueAtTime(0.0001, now);
-    env.gain.exponentialRampToValueAtTime(tone.p, now + 0.03);
-    env.gain.exponentialRampToValueAtTime(0.0001, now + tone.d);
-    osc.connect(env);
-    env.connect(master);
-    osc.start(now);
-    osc.stop(now + tone.d + 0.05);
-    return { osc, gain: env };
-  });
+
+  const tones = [];
+  for (const strike of preset.strikes) {
+    const t0 = start + strike.at;
+    for (const tone of strike.tones) {
+      const osc = ctx.createOscillator();
+      const env = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(tone.f, t0);
+      /* Obálka: jemný nábeh, prvotné doznenie, DRŽANÉ telo a dlhý chvost až do konca.
+         Vďaka držanému telu gong neznie ako krátke pípnutie; vďaka spoločnému koncu
+         nezmizne do ticha skôr, než skladba naozaj doznie. */
+      env.gain.setValueAtTime(0.0001, t0);
+      env.gain.exponentialRampToValueAtTime(tone.p, t0 + 0.03);
+      env.gain.exponentialRampToValueAtTime(tone.p * 0.50, t0 + 0.45);
+      env.gain.exponentialRampToValueAtTime(tone.p * 0.22, t0 + 1.50);
+      env.gain.exponentialRampToValueAtTime(tone.p * 0.07, end - 0.5);
+      env.gain.exponentialRampToValueAtTime(0.0001, end);
+      osc.connect(env);
+      env.connect(master);
+      osc.start(t0);
+      osc.stop(end + 0.05);
+      tones.push({ osc, gain: env });
+    }
+  }
+
   activeChime = { ctx, master, tones };
   let remaining = tones.length;
   for (const tone of tones) {

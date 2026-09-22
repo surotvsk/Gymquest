@@ -165,9 +165,12 @@ The rest timer can play a short **gentle gong** when its countdown reaches zero.
 **Short / Standard / Long** length choice, and it is **off by default** — nothing plays until you
 switch it on.
 
-- The gong is generated in the browser with the Web Audio API: a soft stack of sine tones (a fifth
-  plus an octave) with a slow fade-in and a long decay — Short ≈ 0.8 s, Standard ≈ 1.5 s, Long ≈ 2.2 s.
-  **No audio file is bundled or downloaded**, and GymQuest stays offline.
+- The gong is generated in the browser with the Web Audio API and is a **multi-stage chime**: a clear
+  strike at the moment the timer ends, a softer strike about 2 seconds later, a third softer strike
+  about 4 seconds later, then a long shared tail. Every strike decays into the same ending, so the
+  sound stays clearly audible for its whole length instead of dying away after a moment —
+  **Short ≈ 6 s, Standard ≈ 7 s (default), Long ≈ 8 s**. **No audio file is bundled or downloaded**,
+  and GymQuest stays offline.
 - It plays **once**, only when a countdown reaches zero on its own. Stopping the timer, resetting the
   workout or picking a different duration stays silent, and it never plays for the workout-duration
   timer or any other event. Rapid taps stop the previous gong before starting the next, so sounds
