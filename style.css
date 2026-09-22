@@ -1236,6 +1236,13 @@ body.has-update-banner .app-main {
 
 .modal-actions .btn { flex: 1; }
 
+/* Potvrdzovacie tlačidlá (generický modal) sa na úzkych displejoch zalomia pod seba.
+   Dvojica "Cancel | Import data" resp. "Zrušiť | Importovať dáta" sa totiž pri 320–430 px
+   nezmestí vedľa seba do jedného riadku a popis deštruktívnej akcie by sa lámal do dvoch riadkov. */
+@media (max-width: 430px) {
+  #modal-generic .modal-actions { flex-direction: column; }
+}
+
 .modal-label {
   display: block;
   text-align: left;

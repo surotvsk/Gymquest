@@ -268,7 +268,7 @@ const I18N = {
     'settings.demoNone': 'Žiadne ukážkové dáta.',
     'units.kg': 'kg', 'units.xp': 'XP', 'units.sets': 'série', 'units.reps': 'op',
     'settings.importTitle': 'Importovať dáta?',
-    'settings.importConfirm': 'Nahradí všetky aktuálne dáta ({n} tréningov).',
+    'settings.importConfirm': 'Týmto sa nahradia všetky aktuálne dáta ({n} tréningov).',
     'settings.importError': 'Neplatný súbor zálohy.',
     'settings.resetTitle': 'Resetovať všetky dáta?',
     'settings.resetConfirm': 'Vymažú sa všetky tréningy, rekordy a nastavenia. Túto akciu nemožno vrátiť.',
@@ -2722,7 +2722,8 @@ function importFile(file) {
         return;
       }
       pendingImport = data;
-      showGeneric(t('settings.importTitle'), t('common.cancel'), () => {
+      // potvrdzujúce tlačidlo musí pomenovať deštruktívnu akciu, nie „Zrušiť" ako tlačidlo vľavo
+      showGeneric(t('settings.importTitle'), t('settings.import'), () => {
         try {
           // staršie zálohy (v1/v2) prejdú rovnakou migráciou ako uložené dáta
           if (data.settings && !data.settings.lang) data.settings.lang = state.settings.lang;
