@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 
@@ -93,12 +93,15 @@
         </div>
         <div class="edit-rows" id="edit-rows"></div>
         <button class="btn btn-secondary btn-block" id="btn-add-exercise" data-i18n="trening.addExercise">+ Pridať cvik</button>
+        <p class="edit-hint" data-i18n="trening.failureHintEdit">Voliteľné: vyber série, ktoré plánuješ ísť do zlyhania. Skutočný výsledok môžeš zmeniť počas tréningu.</p>
         <p class="card-note" id="edit-error" hidden></p>
         <div class="modal-actions">
           <button class="btn btn-secondary" id="btn-edit-cancel" data-i18n="common.cancel">Zrušiť</button>
           <button class="btn btn-primary" id="btn-edit-save" data-i18n="common.save">Uložiť</button>
         </div>
       </div>
+
+      <p class="failure-hint" data-i18n="trening.failureHint">🔥 Zlyhanie — označ iba sériu, ktorú si reálne odcvičil do zlyhania.</p>
 
       <div class="exercise-list" id="exercise-list"></div>
 
@@ -322,6 +325,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=11"></script>
 </body>
 </html>

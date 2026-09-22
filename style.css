@@ -499,6 +499,34 @@ body {
   min-height: 44px;
 }
 
+/* ===== Compact flame hint (active workout) =====
+   Jedna malá vysvetľujúca vrstva nad zoznamom cvikov — nie varovný box, nie tlačidlo. */
+
+.failure-hint {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent-line);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-3);
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: break-word;
+}
+
+/* Tlmená pomocná veta v editore plánu (jedna pre celú sekciu, neopakuje sa pri každom cviku). */
+
+.edit-hint {
+  color: var(--text-faint);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  text-align: left;
+  margin-bottom: var(--sp-3);
+  overflow-wrap: break-word;
+}
+
 /* ===== Exercise list (training log) ===== */
 
 .exercise-list {
