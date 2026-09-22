@@ -3389,37 +3389,24 @@ function unlockAudio() {
   } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
 }
 
-/* Viacstupňový gong: tri údery v čase 0 / 2 / 4 s s klesajúcou silou a spoločným doznením.
-   Každý úder je malý harmonický zväzok (C5 + kvinta G5, prvý aj oktáva C6) a chvost
-   KAŽDÉHO úderu siaha až do konca skladby – zvuk preto nikdy nezmizne do ticha pred
-   koncom a zostáva zreteľne počuteľný celých 6–8 sekúnd. Žiadny ostrý alarm, žiadny klik. */
+/* Sila jednotlivých úderov (postupne slabšie) – spoločná pre všetky dĺžky.
+   Každý úder je malý harmonický zväzok: C5 + kvinta G5, prvé údery aj oktáva C6.
+   Žiadny ostrý alarm, žiadny klik. */
+const STRIKE_LEVELS = [
+  [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ],
+  [ { f: 523.25, p: 0.11 }, { f: 783.99, p: 0.05 }, { f: 1046.50, p: 0.03 } ],
+  [ { f: 523.25, p: 0.085 }, { f: 783.99, p: 0.04 }, { f: 1046.50, p: 0.025 } ],
+  [ { f: 523.25, p: 0.07 }, { f: 783.99, p: 0.03 }, { f: 1046.50, p: 0.02 } ],
+];
+
+/* Dĺžky gongu: časy úderov a spoločné doznenie v `end`.
+   Krátky 4 s (2 údery) · štandardný 6 s (3 údery) · dlhý 8 s (4 údery).
+   Každý ďalší stupeň je o 2 sekundy dlhší a o jeden úder bohatší, takže rozdiel
+   medzi nimi je jasne počuteľný. */
 const CHIME_PRESETS = {
-  /* 6,0 s – dva údery */
-  short: {
-    end: 6.0,
-    strikes: [
-      { at: 0.0, tones: [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ] },
-      { at: 2.0, tones: [ { f: 523.25, p: 0.10 }, { f: 783.99, p: 0.045 }, { f: 1046.50, p: 0.025 } ] },
-    ],
-  },
-  /* 7,0 s – tri údery (predvolené) */
-  standard: {
-    end: 7.0,
-    strikes: [
-      { at: 0.0, tones: [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ] },
-      { at: 2.0, tones: [ { f: 523.25, p: 0.10 }, { f: 783.99, p: 0.045 }, { f: 1046.50, p: 0.025 } ] },
-      { at: 4.0, tones: [ { f: 523.25, p: 0.07 }, { f: 783.99, p: 0.03 } ] },
-    ],
-  },
-  /* 8,0 s – tri údery s najdlhším doznením */
-  long: {
-    end: 8.0,
-    strikes: [
-      { at: 0.0, tones: [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ] },
-      { at: 2.0, tones: [ { f: 523.25, p: 0.10 }, { f: 783.99, p: 0.045 }, { f: 1046.50, p: 0.025 } ] },
-      { at: 4.0, tones: [ { f: 523.25, p: 0.07 }, { f: 783.99, p: 0.03 }, { f: 1046.50, p: 0.02 } ] },
-    ],
-  },
+  short:    { end: 4.0, at: [0, 1.8] },
+  standard: { end: 6.0, at: [0, 2.0, 4.0] },
+  long:     { end: 8.0, at: [0, 2.0, 4.0, 6.0] },
 };
 
 function restSoundLength() {
@@ -3461,21 +3448,27 @@ function scheduleChime(ctx, length) {
   master.connect(ctx.destination);
 
   const tones = [];
-  for (const strike of preset.strikes) {
-    const t0 = start + strike.at;
-    for (const tone of strike.tones) {
+  preset.at.forEach((offset, index) => {
+    const t0 = start + offset;
+    const span = end - t0;    // koľko času tomuto úderu ešte zostáva
+    /* Obálka sa prispôsobuje dĺžke úderu. Pri pevných odstupoch by sa pri krátkych
+       dĺžkach držané telo a chvost stretli v tom istom čase a zvuk by stratil sustain. */
+    const ringAt = t0 + Math.min(0.45, span * 0.20);
+    const bodyAt = t0 + Math.min(1.50, span * 0.50);
+    const fadeAt = end - Math.min(0.50, span * 0.25);
+    const levels = STRIKE_LEVELS[index] || STRIKE_LEVELS[STRIKE_LEVELS.length - 1];
+    for (const tone of levels) {
       const osc = ctx.createOscillator();
       const env = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(tone.f, t0);
-      /* Obálka: jemný nábeh, prvotné doznenie, DRŽANÉ telo a dlhý chvost až do konca.
-         Vďaka držanému telu gong neznie ako krátke pípnutie; vďaka spoločnému koncu
-         nezmizne do ticha skôr, než skladba naozaj doznie. */
+      /* jemný nábeh → prvotné doznenie → DRŽANÉ telo → ešte zreteľne znejúci chvost →
+         plynulé utíchnutie. Žiadny klik, žiadny skok, žiadne ticho pred koncom. */
       env.gain.setValueAtTime(0.0001, t0);
       env.gain.exponentialRampToValueAtTime(tone.p, t0 + 0.03);
-      env.gain.exponentialRampToValueAtTime(tone.p * 0.50, t0 + 0.45);
-      env.gain.exponentialRampToValueAtTime(tone.p * 0.22, t0 + 1.50);
-      env.gain.exponentialRampToValueAtTime(tone.p * 0.07, end - 0.5);
+      env.gain.exponentialRampToValueAtTime(tone.p * 0.55, ringAt);
+      env.gain.exponentialRampToValueAtTime(tone.p * 0.30, bodyAt);
+      env.gain.exponentialRampToValueAtTime(tone.p * 0.22, fadeAt);
       env.gain.exponentialRampToValueAtTime(0.0001, end);
       osc.connect(env);
       env.connect(master);
@@ -3483,7 +3476,7 @@ function scheduleChime(ctx, length) {
       osc.stop(end + 0.05);
       tones.push({ osc, gain: env });
     }
-  }
+  });
 
   activeChime = { ctx, master, tones };
   let remaining = tones.length;
