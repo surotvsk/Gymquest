@@ -3389,24 +3389,19 @@ function unlockAudio() {
   } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
 }
 
-/* Sila jednotlivých úderov (postupne slabšie) – spoločná pre všetky dĺžky.
-   Každý úder je malý harmonický zväzok: C5 + kvinta G5, prvé údery aj oktáva C6.
-   Žiadny ostrý alarm, žiadny klik. */
-const STRIKE_LEVELS = [
-  [ { f: 523.25, p: 0.16 }, { f: 783.99, p: 0.07 }, { f: 1046.50, p: 0.045 } ],
-  [ { f: 523.25, p: 0.11 }, { f: 783.99, p: 0.05 }, { f: 1046.50, p: 0.03 } ],
-  [ { f: 523.25, p: 0.085 }, { f: 783.99, p: 0.04 }, { f: 1046.50, p: 0.025 } ],
-  [ { f: 523.25, p: 0.07 }, { f: 783.99, p: 0.03 }, { f: 1046.50, p: 0.02 } ],
-];
+/* JEDEN gongový tón pre všetky údery – žiadna melódia, žiadna zmena výšky.
+   Každý ďalší úder je len o niečo tichší, takže to znie ako obyčajná
+   notifikácia časovača: GONG … GONG … GONG. */
+const GONG_FREQ = 392;             // Hz – teplý tón, zreteľne počuteľný aj na reproduktore telefónu
+const GONG_PEAK = 0.22;            // hlasitosť prvého úderu (stredná)
+const GONG_TAPER = [1, 0.7, 0.5];  // každý ďalší úder je tichší: 0.22 → 0.154 → 0.11
 
 /* Dĺžky gongu: časy úderov a spoločné doznenie v `end`.
-   Krátky 4 s (2 údery) · štandardný 6 s (3 údery) · dlhý 8 s (4 údery).
-   Každý ďalší stupeň je o 2 sekundy dlhší a o jeden úder bohatší, takže rozdiel
-   medzi nimi je jasne počuteľný. */
+   Krátky 2 s (2 údery) · štandardný 4 s (3 údery) · dlhý 6 s (3 údery). */
 const CHIME_PRESETS = {
-  short:    { end: 4.0, at: [0, 1.8] },
-  standard: { end: 6.0, at: [0, 2.0, 4.0] },
-  long:     { end: 8.0, at: [0, 2.0, 4.0, 6.0] },
+  short:    { end: 2.0, at: [0, 1.0] },
+  standard: { end: 4.0, at: [0, 1.5, 3.0] },
+  long:     { end: 6.0, at: [0, 2.0, 4.0] },
 };
 
 function restSoundLength() {
@@ -3456,26 +3451,25 @@ function scheduleChime(ctx, length) {
     const ringAt = t0 + Math.min(0.45, span * 0.20);
     const bodyAt = t0 + Math.min(1.50, span * 0.50);
     const fadeAt = end - Math.min(0.50, span * 0.25);
-    const levels = STRIKE_LEVELS[index] || STRIKE_LEVELS[STRIKE_LEVELS.length - 1];
-    for (const tone of levels) {
-      const osc = ctx.createOscillator();
-      const env = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(tone.f, t0);
-      /* jemný nábeh → prvotné doznenie → DRŽANÉ telo → ešte zreteľne znejúci chvost →
-         plynulé utíchnutie. Žiadny klik, žiadny skok, žiadne ticho pred koncom. */
-      env.gain.setValueAtTime(0.0001, t0);
-      env.gain.exponentialRampToValueAtTime(tone.p, t0 + 0.03);
-      env.gain.exponentialRampToValueAtTime(tone.p * 0.55, ringAt);
-      env.gain.exponentialRampToValueAtTime(tone.p * 0.30, bodyAt);
-      env.gain.exponentialRampToValueAtTime(tone.p * 0.22, fadeAt);
-      env.gain.exponentialRampToValueAtTime(0.0001, end);
-      osc.connect(env);
-      env.connect(master);
-      osc.start(t0);
-      osc.stop(end + 0.05);
-      tones.push({ osc, gain: env });
-    }
+    /* rovnaký tón pri každom údere – mení sa LEN hlasitosť, teda žiadna melódia */
+    const peak = GONG_PEAK * (GONG_TAPER[index] !== undefined ? GONG_TAPER[index] : GONG_TAPER[GONG_TAPER.length - 1]);
+    const osc = ctx.createOscillator();
+    const env = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(GONG_FREQ, t0);
+    /* jemný nábeh → prirodzené doznenie → držané telo → ešte zreteľne znejúci chvost →
+       plynulé utíchnutie. Žiadny klik, žiadny skok, žiadny ostrý alarm. */
+    env.gain.setValueAtTime(0.0001, t0);
+    env.gain.exponentialRampToValueAtTime(peak, t0 + 0.03);
+    env.gain.exponentialRampToValueAtTime(peak * 0.55, ringAt);
+    env.gain.exponentialRampToValueAtTime(peak * 0.30, bodyAt);
+    env.gain.exponentialRampToValueAtTime(peak * 0.22, fadeAt);
+    env.gain.exponentialRampToValueAtTime(0.0001, end);
+    osc.connect(env);
+    env.connect(master);
+    osc.start(t0);
+    osc.stop(end + 0.05);
+    tones.push({ osc, gain: env });
   });
 
   activeChime = { ctx, master, tones };
