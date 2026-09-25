@@ -74,7 +74,8 @@ html, body { min-height: 100dvh; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic",
+               "Geeza Pro", Tahoma, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   display: flex;
   flex-direction: column;
@@ -125,22 +126,6 @@ body {
   border-radius: var(--r-full);
   font-variant-numeric: tabular-nums;
 }
-
-.lang-toggle {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-full);
-  color: var(--text-faint);
-  font-family: inherit;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-black);
-  letter-spacing: 0.06em;
-  padding: 6px 10px;
-  cursor: pointer;
-  min-height: 34px;
-}
-
-.lang-toggle .active-lang { color: var(--accent); }
 
 .btn-icon {
   background: var(--surface);
@@ -221,7 +206,7 @@ body {
 /* hero panel on Today (weekly goal) — accent hairline, quiet depth */
 .card:has(#week-count) {
   background: linear-gradient(180deg, var(--surface-2), var(--surface));
-  border-left: 2px solid var(--accent);
+  border-inline-start: 2px solid var(--accent);
 }
 
 .card-head {
@@ -384,7 +369,7 @@ body {
 /* ===== Motivation ===== */
 
 .motivation-card {
-  border-left: 2px solid var(--border-strong);
+  border-inline-start: 2px solid var(--border-strong);
   background: var(--surface);
 }
 
@@ -451,8 +436,9 @@ body {
   flex: 0 0 auto;
   width: 44px;
   min-height: 48px;
-  border-radius: 0 var(--r-md) var(--r-md) 0;
-  border-left: none;
+  border-start-end-radius: var(--r-md);
+  border-end-end-radius: var(--r-md);
+  border-inline-start: none;
   font-size: 13px;
   color: var(--text-faint);
   background: var(--surface);
@@ -505,14 +491,14 @@ body {
 .failure-hint {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-left: 2px solid var(--accent-line);
+  border-inline-start: 2px solid var(--accent-line);
   border-radius: var(--r-sm);
   padding: var(--sp-2) var(--sp-3);
   margin-bottom: var(--sp-3);
   color: var(--text-dim);
   font-size: var(--fs-sm);
   line-height: 1.4;
-  text-align: left;
+  text-align: start;
   overflow-wrap: break-word;
 }
 
@@ -522,7 +508,7 @@ body {
   color: var(--text-faint);
   font-size: var(--fs-sm);
   line-height: 1.4;
-  text-align: left;
+  text-align: start;
   margin-bottom: var(--sp-3);
   overflow-wrap: break-word;
 }
@@ -542,7 +528,7 @@ body {
   border-radius: var(--r-sm);
   padding: var(--sp-2) var(--sp-3);
   margin-bottom: var(--sp-3);
-  text-align: left;
+  text-align: start;
 }
 
 .duration-row[hidden] { display: none; }
@@ -996,7 +982,7 @@ button.cal-cell:hover { border-color: var(--border-strong); }
 .cal-badge {
   position: absolute;
   top: 1px;
-  right: 1px;
+  inset-inline-end: 1px;
   min-width: 13px;
   height: 13px;
   padding: 0 2px;
@@ -1054,7 +1040,7 @@ button.cal-cell:hover { border-color: var(--border-strong); }
 .day-status-miss { color: var(--miss); }
 .day-status-today { color: var(--accent); }
 
-.day-body { text-align: left; }
+.day-body { text-align: start; }
 
 .day-workout {
   background: var(--surface-2);
@@ -1230,8 +1216,7 @@ body.has-update-banner .app-main {
    the tab and the icon on the same line as the others. */
 @media (max-width: 340px) {
   .tab {
-    padding-left: 0;
-    padding-right: 0;
+    padding-inline: 0;
     letter-spacing: 0;
   }
 }
@@ -1341,7 +1326,7 @@ body.has-update-banner .app-main {
   /* Dlhé slovenské popisky ("Importovať dáta", "Načítať ukážkové dáta") sa do dvoch
      stĺpcov pri 320 px nezmestia – menšie vnútorné odsadenie ich udrží vnútri modálu. */
   .modal-actions .btn { padding: 0 var(--sp-3); }
-  #modal-settings .modal { padding-left: var(--sp-4); padding-right: var(--sp-4); }
+  #modal-settings .modal { padding-inline: var(--sp-4); }
   /* "Štandardný" je najdlhší popisok – menší font ho udrží vnútri chipu. */
   .len-chip { font-size: var(--fs-xs); padding: 8px 6px; }
 }
@@ -1353,7 +1338,7 @@ body.has-update-banner .app-main {
   flex-direction: column;
   gap: var(--sp-1);
   width: 100%;
-  text-align: left;
+  text-align: start;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
@@ -1387,7 +1372,7 @@ body.has-update-banner .app-main {
   max-width: 440px;
   max-height: calc(100dvh - var(--sp-5) * 2);
   padding: 0;
-  text-align: left;
+  text-align: start;
   overflow: hidden;
 }
 
@@ -1462,7 +1447,7 @@ body.has-update-banner .app-main {
   gap: var(--sp-3);
   width: 100%;
   min-height: 48px;
-  text-align: left;
+  text-align: start;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -1539,7 +1524,7 @@ body.has-update-banner .app-main {
 
 .modal-label {
   display: block;
-  text-align: left;
+  text-align: start;
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   letter-spacing: var(--track-wide);
@@ -1687,7 +1672,7 @@ textarea.modal-input { resize: vertical; }
   border-radius: var(--r-sm);
   padding: var(--sp-3);
   margin: var(--sp-3) 0;
-  text-align: left;
+  text-align: start;
 }
 
 .setting-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -1726,7 +1711,7 @@ textarea.modal-input { resize: vertical; }
 .switch::before {
   content: '';
   position: absolute;
-  left: 4px;
+  inset-inline-start: 4px;
   top: 6px;
   width: 52px;
   height: 32px;
@@ -1740,7 +1725,7 @@ textarea.modal-input { resize: vertical; }
 .switch-knob {
   position: absolute;
   top: 10px;
-  left: 8px;
+  inset-inline-start: 8px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -1760,7 +1745,7 @@ textarea.modal-input { resize: vertical; }
 
 /* ===== Dĺžka zvuku po skončení pauzy ===== */
 
-.sound-length { margin: var(--sp-2) 0 var(--sp-3); text-align: left; }
+.sound-length { margin: var(--sp-2) 0 var(--sp-3); text-align: start; }
 
 .sound-length[hidden] { display: none; }
 
@@ -1812,7 +1797,7 @@ textarea.modal-input { resize: vertical; }
   margin: var(--sp-1) 0 0;
   font-size: var(--fs-sm);
   line-height: 1.4;
-  text-align: left;
+  text-align: start;
   overflow-wrap: break-word;
 }
 
@@ -1874,7 +1859,7 @@ textarea.modal-input { resize: vertical; }
   border: 1px solid var(--border);
   border-radius: var(--r-md);
   padding: var(--sp-3);
-  text-align: left;
+  text-align: start;
 }
 
 .custom-timer[hidden] { display: none; }
@@ -2095,8 +2080,9 @@ textarea.modal-input { resize: vertical; }
 .chip-drag {
   width: 26px;
   min-height: 48px;
-  border-radius: var(--r-md) 0 0 var(--r-md);
-  border-right: none;
+  border-start-start-radius: var(--r-md);
+  border-end-start-radius: var(--r-md);
+  border-inline-end: none;
   font-size: var(--fs-sm);
 }
 
@@ -2225,10 +2211,118 @@ textarea.modal-input { resize: vertical; }
   color: var(--text-faint);
 }
 
+/* ===== Voľba jazyka (Nastavenia + picker) ===== */
+
+.setting-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+  margin: var(--sp-3) 0;
+  text-align: start;
+}
+
+.setting-block .card-title { font-size: var(--fs-sm); overflow-wrap: anywhere; }
+.setting-block .card-sub { font-size: var(--fs-sm); overflow-wrap: anywhere; }
+.setting-block .btn { margin-top: var(--sp-2); }
+
+.lang-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0 var(--sp-1);
+  text-align: start;
+}
+
+.lang-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: 52px;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-med);
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.lang-item:hover { background: var(--surface-3); border-color: var(--border-strong); }
+
+.lang-item.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: var(--fw-bold);
+}
+
+.lang-check {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-3);
+  color: transparent;
+  font-size: 13px;
+  font-weight: var(--fw-black);
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-item.active .lang-check {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #16130F;
+}
+
+.lang-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ===== RTL (arabčina) =====
+   Väčšina rozloženia je postavená na logických vlastnostiach (border-inline-*,
+   inset-inline-*, text-align: start, flex), takže sa v RTL preklopí sama.
+   Tu je len to, čo sa logicky vyjadriť nedá. */
+
+[dir="rtl"] .switch[aria-checked="true"] .switch-knob {
+  transform: translateX(-20px);
+}
+
+/* Číselné hodnoty musia zostať čitateľné a nezrkadliť sa v arabskom texte:
+   "3 × 10 · 50 كغ", "00:42:13", "+22 XP" sa čítajú zľava doprava. */
+[dir="rtl"] .duration-value,
+[dir="rtl"] .timer-time,
+[dir="rtl"] .exercise-meta,
+[dir="rtl"] .set-btn,
+[dir="rtl"] .record-weight,
+[dir="rtl"] .history-xp,
+[dir="rtl"] .card-value,
+[dir="rtl"] .stat-value,
+[dir="rtl"] .day-ex-meta,
+[dir="rtl"] .cal-num,
+[dir="rtl"] .cal-badge {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
 /* ===== Small screens ===== */
 
 @media (max-width: 380px) {
-  .app-main { padding-left: var(--sp-3); padding-right: var(--sp-3); }
+  .app-main { padding-inline: var(--sp-3); }
   .card-value { font-size: var(--fs-2xl); }
   .stat-value { font-size: var(--fs-xl); }
 }

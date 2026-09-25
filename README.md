@@ -47,7 +47,8 @@ everything on your own device.
   default**, has a **Short / Standard / Long** length choice, and is toggled in ⚙️ Settings.
 - **Comparison with last time** — every exercise shows whether you went heavier or lighter than your
   previous session **of the same workout plan**.
-- **Two languages** — full Slovak and English interface with an instant `SK | EN` toggle.
+- **Six languages** — full **Slovak, English, Spanish, Brazilian Portuguese, French and Arabic**
+  interfaces, chosen in ⚙️ Settings and switched instantly. Arabic is a complete right-to-left mode.
 - **Export and import** — back up or restore all of your data as a JSON file.
 - **Installable** — add it to your phone's home screen and it opens like a native app.
 
@@ -161,18 +162,116 @@ badges earned for personal records.
 
 ## Languages
 
-GymQuest ships with a full **Slovak** and **English** interface:
+GymQuest ships with six fully supported interface languages, all built in — no translation service,
+no network call, nothing to download:
 
-- The **`SK | EN`** toggle in the header translates the entire interface instantly, and your choice
-  is saved.
+| Code | Language | Locale | Direction |
+|---|---|---|---|
+| `sk` | Slovenčina | `sk-SK` | left-to-right |
+| `en` | English | `en-US` | left-to-right |
+| `es` | Español | `es-ES` | left-to-right |
+| `pt-BR` | **Português (Brasil)** | `pt-BR` | left-to-right |
+| `fr` | Français | `fr-FR` | left-to-right |
+| `ar` | العربية | `ar` | **right-to-left** |
+
+Portuguese is deliberately **Brazilian Portuguese** and is labelled *Português (Brasil)* everywhere —
+the vocabulary is Brazilian (*treino*, *séries até a falha*, *Duração do treino*).
+
+### Choosing a language
+
+The header no longer carries a `SK | EN` switch — with six languages that would be cluttered on a
+phone. Language now lives in **⚙️ Settings**, at the top:
+
+```
+Language
+English
+[ Change language ]
+```
+
+**Change language** opens a picker listing every language by its own name, with a ✓ on the current
+one:
+
+```
+✓ English
+  Slovenčina
+  Español
+  Português (Brasil)
+  Français
+  العربية
+```
+
+Tapping one switches the whole app **immediately** — no reload — and saves the choice, which then
+survives refresh, export/import and app updates. Switching language **never touches your training**:
+completed sets, failure markers, the rest timer, workout duration, the active session, the selected
+plan, the plan order and the calendar month you are looking at all stay exactly as they were.
+
+An old or unknown stored language value safely falls back to English, while existing Slovak and
+English users keep the language they already had.
+
+### What is translated
+
+- **Everything in the interface** — navigation, Today, the workout screen, the plan editor, the Full
+  Body builder and the "add from existing plans" picker, Progress, history, the Calendar, Motivation,
+  achievements, Settings, every dialog and every accessibility label.
 - **Built-in plans and exercises** are app content and are translated, so the Slovak plan *Nohy*
-  appears as *Legs* in English.
+  appears as *Legs* in English, *Piernas* in Spanish, *Pernas* in Portuguese, *Jambes* in French and
+  *الأرجل* in Arabic.
 - **Custom exercises** you create or rename are never translated — they appear exactly as you typed
   them.
 - A **renamed plan** becomes a custom name and is never translated. Rename *Nohy* to *Nohy + Core*
-  and it stays *Nohy + Core* in English too. Untouched built-in plans keep translating.
-- **Workout history is an immutable record**: it keeps the exercise and plan names that were in use
-  when the workout was logged, so a later rename or deletion never rewrites the past.
+  and it stays *Nohy + Core* in every language. Untouched built-in plans keep translating. The app
+  recognises a built-in plan's original name in **any** of the six languages, so typing *Legs* or
+  *الأرجل* back into the field still counts as "not renamed".
+- **Your notes** are never translated. **Workout history is an immutable record**: it keeps the
+  exercise and plan names that were in use when the workout was logged, so a later rename or deletion
+  never rewrites the past.
+
+### Plurals
+
+Counting text is pluralised with the browser's own `Intl.PluralRules` for the selected locale, so
+each language follows its own CLDR rules — nothing is forced through one language's pattern:
+
+| | 0 | 1 | 2 | 3 | 5 | 11 |
+|---|---|---|---|---|---|---|
+| Slovak | iné | 1 tréning | 2 tréningy | 3 tréningy | 5 tréningov | 11 tréningov |
+| English | other | 1 workout | 2 workouts | 3 workouts | 5 workouts | 11 workouts |
+| Spanish | otro | 1 entrenamiento | 2 entrenamientos | 3 entrenamientos | 5 entrenamientos | 11 entrenamientos |
+| Portuguese (Brasil) | 0 treino | 1 treino | 2 treinos | 3 treinos | 5 treinos | 11 treinos |
+| French | 0 entraînement | 1 entraînement | 2 entraînements | 3 entraînements | 5 entraînements | 11 entraînements |
+| Arabic | 0 ثانية | 1 ثانية | 2 ثانيتان | 3 ثوانٍ | 5 ثوانٍ | 11 ثانية |
+
+Note the details that a single rule would get wrong: French treats **0 as singular**, Portuguese
+treats **0 and 1 as singular**, and Arabic has its own **dual** (2) and **few** (3–10) forms. The
+`One / Two / Few / Many / Other` (and `Zero`) forms live in the dictionaries, and every language
+always has an `Other` form, so a missing slot can never fall back to another language's text.
+
+### Dates, numbers and the Calendar
+
+Month names, weekday names and weekday abbreviations come from explicit per-language tables (the
+app's deliberate choice: identical output in every browser, fully offline, no ICU variation). Each
+language has its own date shape — `18. septembra 2026`, `Sep 18, 2026`, `18 sep 2026`,
+`18 set 2026`, `18 sept. 2026`, `18 سبتمبر 2026` — and its own full form for the Today row and the
+Calendar day detail. **The Monday-first calendar grid, the ISO week logic and the stored
+`YYYY-MM-DD` history format are unchanged**, so no date ever shifts.
+
+Weights, reps, sets, XP and durations keep Western digits in every language (`6 kg`, `3 × 10`,
+`00:42:13`, `+22 XP`) and are bidi-isolated in Arabic so they always read left-to-right.
+
+### Arabic and right-to-left
+
+Arabic is a full RTL mode, not just a translation:
+
+- `html lang="ar"` and `html dir="rtl"` are set (and reset to `ltr` when you switch away), and the
+  layout is driven by CSS **logical properties** (`border-inline-start`, `inset-inline-end`,
+  `padding-inline`, `text-align: start`), so it flips by itself.
+- **Arrows never lie**: the Calendar's *previous month* control sits on the right and points right,
+  *next month* sits on the left and points left, and the plan-editor reorder arrows swap the same way.
+- **Fitness meaning is never mirrored**: *left* and *right* keep their real meaning, and the side
+  sequence of a unilateral exercise is a training order, not a layout direction.
+- Arabic-capable system fonts (`Noto Sans Arabic`, `Geeza Pro`, `Segoe UI`, `Tahoma`) are used from the
+  existing stack — nothing is fetched.
+- Long translations are handled by the same wrapping rules as before, and the layout is verified for
+  overflow at 320 / 375 / 390 / 393 / 414 / 430 px in all six languages.
 
 ---
 

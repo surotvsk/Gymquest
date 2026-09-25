@@ -1,6 +1,46 @@
 /* ===== GymQuest v2 — aplikácia ===== */
 'use strict';
 
+/* ---------- Jazyky ----------
+   Jediný zdroj pravdy pre jazyky: kód uložený v dátach, endonym (názov v tom
+   istom jazyku, ktorý sa nikdy neprekladá), locale pre pluralizáciu a smer. */
+const LANGUAGES = [
+  { code: 'sk', name: 'Slovenčina', locale: 'sk-SK', rtl: false },
+  { code: 'en', name: 'English', locale: 'en-US', rtl: false },
+  { code: 'es', name: 'Español', locale: 'es-ES', rtl: false },
+  { code: 'pt-BR', name: 'Português (Brasil)', locale: 'pt-BR', rtl: false },
+  { code: 'fr', name: 'Français', locale: 'fr-FR', rtl: false },
+  { code: 'ar', name: 'العربية', locale: 'ar', rtl: true },
+];
+const LANG_CODES = LANGUAGES.map(l => l.code);
+const DEFAULT_LANG = 'en';
+
+function langMeta(code) {
+  for (const l of LANGUAGES) if (l.code === code) return l;
+  return LANGUAGES[1];   // neznámy kód sa správa ako angličtina
+}
+
+/* Neplatná alebo chýbajúca hodnota jazyka vždy bezpečne spadne na angličtinu.
+   Platné hodnoty (vrátane starých 'sk'/'en') sa vracajú presne tak, ako prišli. */
+function normalizeLang(value) {
+  return LANG_CODES.indexOf(value) >= 0 ? value : DEFAULT_LANG;
+}
+
+/* Aktuálny jazyk aplikácie (vždy platný kód). */
+function activeLang() {
+  return state ? normalizeLang(state.settings.lang) : DEFAULT_LANG;
+}
+
+function isRtl() {
+  return langMeta(activeLang()).rtl === true;
+}
+
+/* Názov jazyka sa nikdy neprekladá – používateľ musí svoj jazyk spoznať
+   aj vtedy, keď je rozhranie v jazyku, ktorému nerozumie. */
+function langDisplayName(code) {
+  return langMeta(code).name;
+}
+
 /* ---------- Plány (vzory tréningov) ---------- */
 
 const DEFAULT_PLANS = {
@@ -45,8 +85,13 @@ const BUILTIN_PLAN_IDS = ['push', 'pull', 'legs'];
 const DEFAULT_PLAN_ORDER = ['push', 'pull', 'legs'];
 // kanonické (zdrojové) názvy zabudovaných plánov – ukladajú sa do histórie ako záznam
 const BUILTIN_PLAN_NAMES = { push: 'Push', pull: 'Pull', legs: 'Nohy' };
-// akékoľvek názvy, ktoré patria zabudovanému plánu (SK aj EN) – rozlíši premenovanie od pôvodného názvu
-const BUILTIN_PLAN_LABELS = { push: ['Push'], pull: ['Pull'], legs: ['Nohy', 'Legs'] };
+// akékoľvek názvy, ktoré patria zabudovanému plánu (všetky jazyky) –
+// rozlíši premenovanie od pôvodného názvu, nech ho používateľ napíše v ktoromkoľvek jazyku
+const BUILTIN_PLAN_LABELS = {
+  push: ['Push', 'Poussée', 'Empuje', 'Empurrar', 'دفع'],
+  pull: ['Pull', 'Tirage', 'Tirón', 'Puxar', 'سحب'],
+  legs: ['Nohy', 'Legs', 'Jambes', 'Piernas', 'Pernas', 'الأرجل'],
+};
 
 function isBuiltinPlanLabel(id, value) {
   return value === id || (BUILTIN_PLAN_LABELS[id] || []).includes(value);
@@ -133,7 +178,9 @@ const I18N = {
     'kalendar.emptyPast': 'V tento deň nebol zaznamenaný žiadny tréning.',
     'kalendar.achievements': 'Odomknuté úspechy',
     'kalendar.ariaDay': '{date} — {status}',
-    'kalendar.ariaWorkoutCount': '{n} tréningy v tento deň',
+    'kalendar.ariaWorkoutCountOne': '{n} tréning v tento deň',
+    'kalendar.ariaWorkoutCountFew': '{n} tréningy v tento deň',
+    'kalendar.ariaWorkoutCountOther': '{n} tréningov v tento deň',
     'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Nohy',
     'plan.newName': 'Nový plán',
     'planChoice.title': 'Vytvoriť tréningový plán',
@@ -145,10 +192,10 @@ const I18N = {
     'fb.subtitle': 'Vyber cviky z existujúcich tréningových plánov.',
     'fb.nameLabel': 'Názov tréningu',
     'fb.defaultName': 'Celé telo',
-    'fb.selected': 'Vybrané cviky: {count}',
-    'fb.selected1': 'Vybraný cvik: {n}',
+    'fb.selected': 'Vybrané cviky: {n}',
+    'fb.selectedOne': 'Vybraný cvik: {n}',
     'fb.selectedFew': 'Vybrané cviky: {n}',
-    'fb.selectedMany': 'Vybraných cvikov: {n}',
+    'fb.selectedOther': 'Vybraných cvikov: {n}',
     'fb.selectAll': 'Vybrať všetko',
     'fb.clear': 'Vymazať výber',
     'fb.create': 'Vytvoriť Full Body tréning',
@@ -164,9 +211,9 @@ const I18N = {
     'unilateral.startRight': 'Začať pravou',
     'unilateral.left': 'Ľavá',
     'unilateral.right': 'Pravá',
-    'unilateral.setsPerSide1': '{n} séria na každú stranu',
+    'unilateral.setsPerSideOne': '{n} séria na každú stranu',
     'unilateral.setsPerSideFew': '{n} série na každú stranu',
-    'unilateral.setsPerSideMany': '{n} sérií na každú stranu',
+    'unilateral.setsPerSideOther': '{n} sérií na každú stranu',
     'unilateral.setSide': 'Séria {n} — {side}',
     'unilateral.completed': 'Dokončené: {sides}',
     'unilateral.bothSides': 'Ľavá a pravá',
@@ -180,28 +227,34 @@ const I18N = {
     'header.level': 'Úr.',
     'header.settingsTitle': 'Nastavenia',
     'header.levelTitle': 'Úroveň',
-    'header.langTitle': 'Jazyk / Language',
+    'settings.language': 'Jazyk',
+    'settings.changeLanguage': 'Zmeniť jazyk',
+    'settings.languageCurrent': 'Aktuálny jazyk: {name}',
+    'langPicker.title': 'Jazyk',
+    'langPicker.select': '{name} — vybrať jazyk',
+    'langPicker.selected': '{name} — aktuálne vybraný',
     'dnes.weekTitle': 'Tréningy tento týždeň',
     'dnes.weekDone': '{n} z {g}',
     'dnes.weekDoneShort': '{n} z {g}',
     'dnes.weekGoalMet': 'Cieľ na tento týždeň splnený!',
     'dnes.weekRemaining': 'Ešte {n} do splnenia cieľa.',
-    'dnes.weekRemaining1': 'Ešte {n} tréning do splnenia cieľa.',
+    'dnes.weekRemainingOne': 'Ešte {n} tréning do splnenia cieľa.',
     'dnes.weekRemainingFew': 'Ešte {n} tréningy do splnenia cieľa.',
-    'dnes.weekRemainingMany': 'Ešte {n} tréningov do splnenia cieľa.',
+    'dnes.weekRemainingOther': 'Ešte {n} tréningov do splnenia cieľa.',
     'dnes.streakTitle': '🔥 Súdržnosť',
     'dnes.streakNone': 'Žiadna séria',
-    'dnes.streakWeek1': '🔥 {n} týždeň v rade',
+    'dnes.streakWeek': '🔥 {n} týždňov v rade',
+    'dnes.streakWeekOne': '🔥 {n} týždeň v rade',
     'dnes.streakWeekFew': '🔥 {n} týždne v rade',
-    'dnes.streakWeekMany': '🔥 {n} týždňov v rade',
+    'dnes.streakWeekOther': '🔥 {n} týždňov v rade',
     'dnes.streakStart': 'Absolvuj aspoň {g} tréningy tento týždeň a začni sériu.',
-    'dnes.streakStart1': 'Absolvuj aspoň {g} tréning tento týždeň a začni sériu.',
+    'dnes.streakStartOne': 'Absolvuj aspoň {g} tréning tento týždeň a začni sériu.',
     'dnes.streakStartFew': 'Absolvuj aspoň {g} tréningy tento týždeň a začni sériu.',
-    'dnes.streakStartMany': 'Absolvuj aspoň {g} tréningov tento týždeň a začni sériu.',
+    'dnes.streakStartOther': 'Absolvuj aspoň {g} tréningov tento týždeň a začni sériu.',
     'dnes.streakContinue': 'Dokonči tento týždeň {g} tréningy, aby si pokračoval v sérii.',
-    'dnes.streakContinue1': 'Dokonči tento týždeň {g} tréning, aby si pokračoval v sérii.',
+    'dnes.streakContinueOne': 'Dokonči tento týždeň {g} tréning, aby si pokračoval v sérii.',
     'dnes.streakContinueFew': 'Dokonči tento týždeň {g} tréningy, aby si pokračoval v sérii.',
-    'dnes.streakContinueMany': 'Dokonči tento týždeň {g} tréningov, aby si pokračoval v sérii.',
+    'dnes.streakContinueOther': 'Dokonči tento týždeň {g} tréningov, aby si pokračoval v sérii.',
     'dnes.streakGoing': 'Týždenný cieľ je splnený. Tvoja séria pokračuje!',
     'dnes.streakEnded': 'Tvoja séria sa skončila. Začni novú sériu splnením týždenného cieľa.',
     'dnes.excuse': 'Škola / choroba',
@@ -289,10 +342,11 @@ const I18N = {
     'trening.planSaved': 'Zmeny plánu boli uložené. Priebeh aktuálneho tréningu zostal zachovaný.',
     'trening.durationResult': 'Trvanie tréningu: {duration}',
     'history.duration': 'Trvanie: {duration}',
-    'duration.sec': '{n} s',
-    'duration.min': '{n} min',
-    'duration.hourMin': '{n} h {m} min',
-    'duration.hour': '{n} h',
+    'duration.secOne': '{n} sekunda', 'duration.secFew': '{n} sekundy', 'duration.secOther': '{n} sekúnd',
+    'duration.minOne': '{n} minúta', 'duration.minFew': '{n} minúty', 'duration.minOther': '{n} minút',
+    'duration.hourUnitOne': '{n} hodina', 'duration.hourUnitFew': '{n} hodiny', 'duration.hourUnitOther': '{n} hodín',
+    'duration.minUnitOne': '{n} minúta', 'duration.minUnitFew': '{n} minúty', 'duration.minUnitOther': '{n} minút',
+    'duration.hourMin': '{h} {m}',
     'pokrok.thisWeek': 'Tento týždeň', 'pokrok.thisMonth': 'Tento mesiac', 'pokrok.total': 'Celkom',
     'pokrok.recordsTitle': '🏆 Osobné rekordy',
     'pokrok.recordsEmpty': 'Zatiaľ žiadne rekordy.',
@@ -301,7 +355,7 @@ const I18N = {
     'pokrok.historyEmpty': 'Zatiaľ žiadne tréningy.',
     'pokrok.workoutName': '{plan}',
     'pokrok.workoutFallback': 'Tréning',
-    'pokrok.setsCount1': '{n} séria', 'pokrok.setsCountFew': '{n} série', 'pokrok.setsCountMany': '{n} sérií',
+    'pokrok.setsCountOne': '{n} séria', 'pokrok.setsCountFew': '{n} série', 'pokrok.setsCountOther': '{n} sérií',
     'history.editTitle': 'Upraviť tréning',
     'history.deleteTitle': 'Vymazať tréning?',
     'history.deleteConfirm': 'Vymaže sa tento tréning a jeho {xp} XP.',
@@ -402,7 +456,9 @@ const I18N = {
     'kalendar.emptyPast': 'No workout was recorded on this day.',
     'kalendar.achievements': 'Achievements unlocked',
     'kalendar.ariaDay': '{date} — {status}',
-    'kalendar.ariaWorkoutCount': '{n} workouts on this day',
+    'kalendar.ariaWorkoutCountOne': '{n} workout on this day',
+    'kalendar.ariaWorkoutCountFew': '{n} workouts on this day',
+    'kalendar.ariaWorkoutCountOther': '{n} workouts on this day',
     'plan.push': 'Push', 'plan.pull': 'Pull', 'plan.legs': 'Legs',
     'plan.newName': 'New workout plan',
     'planChoice.title': 'Create workout plan',
@@ -414,10 +470,10 @@ const I18N = {
     'fb.subtitle': 'Choose exercises from your existing workout plans.',
     'fb.nameLabel': 'Plan name',
     'fb.defaultName': 'Full Body',
-    'fb.selected': 'Selected exercises: {count}',
-    'fb.selected1': 'Selected exercises: {n}',
+    'fb.selected': 'Selected exercises: {n}',
+    'fb.selectedOne': 'Selected exercises: {n}',
     'fb.selectedFew': 'Selected exercises: {n}',
-    'fb.selectedMany': 'Selected exercises: {n}',
+    'fb.selectedOther': 'Selected exercises: {n}',
     'fb.selectAll': 'Select all',
     'fb.clear': 'Clear',
     'fb.create': 'Create Full Body workout',
@@ -433,9 +489,9 @@ const I18N = {
     'unilateral.startRight': 'Start with right',
     'unilateral.left': 'Left',
     'unilateral.right': 'Right',
-    'unilateral.setsPerSide1': '{n} set per side',
+    'unilateral.setsPerSideOne': '{n} set per side',
     'unilateral.setsPerSideFew': '{n} sets per side',
-    'unilateral.setsPerSideMany': '{n} sets per side',
+    'unilateral.setsPerSideOther': '{n} sets per side',
     'unilateral.setSide': 'Set {n} — {side}',
     'unilateral.completed': 'Completed: {sides}',
     'unilateral.bothSides': 'Left and Right',
@@ -449,28 +505,34 @@ const I18N = {
     'header.level': 'Lv.',
     'header.settingsTitle': 'Settings',
     'header.levelTitle': 'Level',
-    'header.langTitle': 'Language',
+    'settings.language': 'Language',
+    'settings.changeLanguage': 'Change language',
+    'settings.languageCurrent': 'Current language: {name}',
+    'langPicker.title': 'Language',
+    'langPicker.select': '{name} — choose this language',
+    'langPicker.selected': '{name} — currently selected',
     'dnes.weekTitle': 'Workouts this week',
     'dnes.weekDone': '{n} of {g}',
     'dnes.weekDoneShort': '{n} of {g}',
     'dnes.weekGoalMet': 'Weekly goal reached!',
     'dnes.weekRemaining': 'Still {n} to go.',
-    'dnes.weekRemaining1': 'Still {n} workout to go.',
+    'dnes.weekRemainingOne': 'Still {n} workout to go.',
     'dnes.weekRemainingFew': 'Still {n} workouts to go.',
-    'dnes.weekRemainingMany': 'Still {n} workouts to go.',
+    'dnes.weekRemainingOther': 'Still {n} workouts to go.',
     'dnes.streakTitle': '🔥 Consistency',
     'dnes.streakNone': 'No streak',
-    'dnes.streakWeek1': '🔥 {n} week in a row',
+    'dnes.streakWeek': '🔥 {n} weeks in a row',
+    'dnes.streakWeekOne': '🔥 {n} week in a row',
     'dnes.streakWeekFew': '🔥 {n} weeks in a row',
-    'dnes.streakWeekMany': '🔥 {n} weeks in a row',
+    'dnes.streakWeekOther': '🔥 {n} weeks in a row',
     'dnes.streakStart': 'Complete at least {g} workouts this week to start a streak.',
-    'dnes.streakStart1': 'Complete at least {g} workout this week to start a streak.',
+    'dnes.streakStartOne': 'Complete at least {g} workout this week to start a streak.',
     'dnes.streakStartFew': 'Complete at least {g} workouts this week to start a streak.',
-    'dnes.streakStartMany': 'Complete at least {g} workouts this week to start a streak.',
+    'dnes.streakStartOther': 'Complete at least {g} workouts this week to start a streak.',
     'dnes.streakContinue': 'Complete {g} workouts this week to continue your streak.',
-    'dnes.streakContinue1': 'Complete {g} workout this week to continue your streak.',
+    'dnes.streakContinueOne': 'Complete {g} workout this week to continue your streak.',
     'dnes.streakContinueFew': 'Complete {g} workouts this week to continue your streak.',
-    'dnes.streakContinueMany': 'Complete {g} workouts this week to continue your streak.',
+    'dnes.streakContinueOther': 'Complete {g} workouts this week to continue your streak.',
     'dnes.streakGoing': 'Weekly goal completed. Your streak continues!',
     'dnes.streakEnded': 'Your streak has ended. Start a new streak by completing your weekly goal.',
     'dnes.excuse': 'School / sick',
@@ -558,10 +620,11 @@ const I18N = {
     'trening.planSaved': 'Plan changes are saved. Your current workout progress is preserved.',
     'trening.durationResult': 'Workout duration: {duration}',
     'history.duration': 'Duration: {duration}',
-    'duration.sec': '{n} sec',
-    'duration.min': '{n} min',
-    'duration.hourMin': '{n} h {m} min',
-    'duration.hour': '{n} h',
+    'duration.secOne': '{n} second', 'duration.secFew': '{n} seconds', 'duration.secOther': '{n} seconds',
+    'duration.minOne': '{n} minute', 'duration.minFew': '{n} minutes', 'duration.minOther': '{n} minutes',
+    'duration.hourUnitOne': '{n} hour', 'duration.hourUnitFew': '{n} hours', 'duration.hourUnitOther': '{n} hours',
+    'duration.minUnitOne': '{n} minute', 'duration.minUnitFew': '{n} minutes', 'duration.minUnitOther': '{n} minutes',
+    'duration.hourMin': '{h} {m}',
     'pokrok.thisWeek': 'This week', 'pokrok.thisMonth': 'This month', 'pokrok.total': 'Total',
     'pokrok.recordsTitle': '🏆 Personal records',
     'pokrok.recordsEmpty': 'No records yet.',
@@ -570,7 +633,7 @@ const I18N = {
     'pokrok.historyEmpty': 'No workouts yet.',
     'pokrok.workoutName': '{plan}',
     'pokrok.workoutFallback': 'Workout',
-    'pokrok.setsCount1': '{n} set', 'pokrok.setsCountFew': '{n} sets', 'pokrok.setsCountMany': '{n} sets',
+    'pokrok.setsCountOne': '{n} set', 'pokrok.setsCountFew': '{n} sets', 'pokrok.setsCountOther': '{n} sets',
     'history.editTitle': 'Edit workout',
     'history.deleteTitle': 'Delete workout?',
     'history.deleteConfirm': 'This workout and its {xp} XP will be removed.',
@@ -655,10 +718,1145 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP from achievements',
     'motivacia.newAchievement': 'New achievement: {names}',
   },
+  es: {
+    'tab.dnes': 'Hoy', 'tab.trening': 'Entrenamiento', 'tab.pokrok': 'Progreso', 'tab.motivacia': 'Motivación', 'tab.kalendar': 'Calendario',
+    'kalendar.prevMonth': 'Mes anterior',
+    'kalendar.nextMonth': 'Mes siguiente',
+    'kalendar.goToday': 'Hoy',
+    'kalendar.legendTitle': 'Leyenda',
+    'kalendar.legendWorkout': 'Verde — Entrenamiento completado',
+    'kalendar.legendMissed': 'Rojo — Sin entrenamiento registrado',
+    'kalendar.legendToday': 'Borde naranja — Hoy',
+    'kalendar.statusWorkout': 'Entrenamiento completado',
+    'kalendar.statusNone': 'Sin entrenamiento registrado',
+    'kalendar.statusTodayNone': 'Hoy — todavía sin entrenamiento registrado',
+    'kalendar.statusFuture': 'Esta fecha está en el futuro.',
+    'kalendar.emptyPast': 'No se registró ningún entrenamiento este día.',
+    'kalendar.achievements': 'Logros desbloqueados',
+    'kalendar.ariaDay': '{date} — {status}',
+    'kalendar.ariaWorkoutCountOne': '{n} entrenamiento este día',
+    'kalendar.ariaWorkoutCountFew': '{n} entrenamientos este día',
+    'kalendar.ariaWorkoutCountOther': '{n} entrenamientos este día',
+    'plan.push': 'Empuje', 'plan.pull': 'Tirón', 'plan.legs': 'Piernas',
+    'plan.newName': 'Nuevo plan de entrenamiento',
+    'planChoice.title': 'Crear plan de entrenamiento',
+    'planChoice.blank': 'Plan de entrenamiento vacío',
+    'planChoice.blankDesc': 'Crea un plan personalizado vacío y añade los ejercicios a mano.',
+    'planChoice.fullBody': 'Constructor Cuerpo completo',
+    'planChoice.fullBodyDesc': 'Crea un entrenamiento de cuerpo completo eligiendo ejercicios de tus planes existentes.',
+    'fb.title': 'Constructor Cuerpo completo',
+    'fb.subtitle': 'Elige ejercicios de tus planes de entrenamiento existentes.',
+    'fb.nameLabel': 'Nombre del plan',
+    'fb.defaultName': 'Cuerpo completo',
+    'fb.selected': 'Ejercicios seleccionados: {n}',
+    'fb.selectedOne': 'Ejercicios seleccionados: {n}',
+    'fb.selectedFew': 'Ejercicios seleccionados: {n}',
+    'fb.selectedOther': 'Ejercicios seleccionados: {n}',
+    'fb.selectAll': 'Seleccionar todo',
+    'fb.clear': 'Limpiar',
+    'fb.create': 'Crear entrenamiento de cuerpo completo',
+    'fb.needOne': 'Selecciona al menos un ejercicio.',
+    'fb.noExercises': 'No hay ejercicios disponibles en este plan.',
+    'fb.duplicates': 'Los ejercicios duplicados se añaden solo una vez.',
+    'fb.bodyweight': 'Peso corporal',
+    'picker.title': 'Añadir ejercicios de planes existentes',
+    'picker.subtitle': 'Marca los ejercicios que quieres añadir a este plan.',
+    'picker.apply': 'Añadir al plan',
+    'unilateral.trainBoth': 'Entrenar ambos lados por separado',
+    'unilateral.startLeft': 'Empezar por la izquierda',
+    'unilateral.startRight': 'Empezar por la derecha',
+    'unilateral.left': 'Izquierda',
+    'unilateral.right': 'Derecha',
+    'unilateral.setsPerSideOne': '{n} serie por lado',
+    'unilateral.setsPerSideFew': '{n} series por lado',
+    'unilateral.setsPerSideOther': '{n} series por lado',
+    'unilateral.setSide': 'Serie {n} — {side}',
+    'unilateral.completed': 'Completado: {sides}',
+    'unilateral.bothSides': 'Izquierda y derecha',
+    'unilateral.leftOnly': 'Solo izquierda',
+    'unilateral.rightOnly': 'Solo derecha',
+    'unilateral.noneSides': 'Ninguno',
+    'unilateral.failureList': 'Fallo: {list}',
+    'exercise.bench-press': 'Press de banca', 'exercise.overhead-press': 'Press militar', 'exercise.dips': 'Fondos', 'exercise.lateral-raises': 'Elevaciones laterales',
+    'exercise.pull-ups': 'Dominadas', 'exercise.bent-over-rows': 'Remo con barra', 'exercise.cable-rows': 'Remo en polea', 'exercise.bicep-curls': 'Curl de bíceps',
+    'exercise.squats': 'Sentadillas', 'exercise.leg-press': 'Prensa de piernas', 'exercise.lunges': 'Zancadas', 'exercise.leg-curls': 'Curl femoral', 'exercise.calf-raises': 'Elevación de talones',
+    'header.level': 'Nv.',
+    'header.settingsTitle': 'Ajustes',
+    'header.levelTitle': 'Nivel',
+    'settings.language': 'Idioma',
+    'settings.changeLanguage': 'Cambiar idioma',
+    'settings.languageCurrent': 'Idioma actual: {name}',
+    'langPicker.title': 'Idioma',
+    'langPicker.select': '{name} — elegir este idioma',
+    'langPicker.selected': '{name} — seleccionado actualmente',
+    'dnes.weekTitle': 'Entrenamientos esta semana',
+    'dnes.weekDone': '{n} de {g}',
+    'dnes.weekDoneShort': '{n} de {g}',
+    'dnes.weekGoalMet': '¡Objetivo semanal alcanzado!',
+    'dnes.weekRemaining': 'Aún {n} por hacer.',
+    'dnes.weekRemainingOne': 'Aún {n} entrenamiento por hacer.',
+    'dnes.weekRemainingFew': 'Aún {n} entrenamientos por hacer.',
+    'dnes.weekRemainingOther': 'Aún {n} entrenamientos por hacer.',
+    'dnes.streakTitle': '🔥 Constancia',
+    'dnes.streakNone': 'Sin racha',
+    'dnes.streakWeek': '🔥 {n} semanas seguidas',
+    'dnes.streakWeekOne': '🔥 {n} semana seguida',
+    'dnes.streakWeekFew': '🔥 {n} semanas seguidas',
+    'dnes.streakWeekOther': '🔥 {n} semanas seguidas',
+    'dnes.streakStart': 'Completa al menos {g} entrenamientos esta semana para empezar una racha.',
+    'dnes.streakStartOne': 'Completa al menos {g} entrenamiento esta semana para empezar una racha.',
+    'dnes.streakStartFew': 'Completa al menos {g} entrenamientos esta semana para empezar una racha.',
+    'dnes.streakStartOther': 'Completa al menos {g} entrenamientos esta semana para empezar una racha.',
+    'dnes.streakContinue': 'Completa {g} entrenamientos esta semana para continuar tu racha.',
+    'dnes.streakContinueOne': 'Completa {g} entrenamiento esta semana para continuar tu racha.',
+    'dnes.streakContinueFew': 'Completa {g} entrenamientos esta semana para continuar tu racha.',
+    'dnes.streakContinueOther': 'Completa {g} entrenamientos esta semana para continuar tu racha.',
+    'dnes.streakGoing': 'Objetivo semanal completado. ¡Tu racha continúa!',
+    'dnes.streakEnded': 'Tu racha ha terminado. Empieza una nueva completando tu objetivo semanal.',
+    'dnes.excuse': 'Colegio / enfermedad',
+    'dnes.excuseActive': 'Colegio / enfermedad ✓ (activo)',
+    'dnes.excuseNote': 'Esta semana está justificada — la racha se mantiene.',
+    'dnes.start': 'Empezar entrenamiento',
+    'dnes.nextPlan': 'Recomendado: {plan}',
+    'dnes.weekOf': 'Semana {n}',
+    'trening.finish': 'Terminar entrenamiento',
+    'trening.finishTitle': '¿Terminar entrenamiento?',
+    'trening.doneTitle': '🏆 ¡Entrenamiento completado!',
+    'trening.confirmText': '{plan} · {done} de {total} series<br>Ganas <b style="color:#a3e635">+{xp} XP</b>',
+    'trening.noteLabel': 'Nota (opcional)',
+    'trening.super': '¡Genial!',
+    'trening.undo': 'Deshacer este entrenamiento',
+    'trening.undoConfirmTitle': '¿Deshacer entrenamiento?',
+    'trening.undoConfirm': 'Se eliminará este entrenamiento y sus {xp} XP.',
+    'trening.setsDone': 'Series hechas: <b>{done} de {total}</b> · {msg}',
+    'trening.setsHint': 'Marca las series como hechas.',
+    'trening.firstTime': 'Primera vez',
+    'trening.compareUp': '▲ {w} kg · +{r} reps vs la última vez',
+    'trening.compareDown': '▼ {w} kg · {r} reps vs la última vez',
+    'trening.compareSame': 'Igual que la última vez ({w} kg)',
+    'trening.compareWeightUp': '▲ {w} kg vs la última vez',
+    'trening.compareWeightDown': '▼ {w} kg vs la última vez',
+    'trening.compareRepsUp': '+{r} reps vs la última vez',
+    'trening.compareRepsDown': '{r} reps vs la última vez',
+    'trening.edit': 'Editar plan',
+    'trening.editTitle': 'Editar plan',
+    'trening.planLabel': 'Plan de entrenamiento',
+    'trening.editPlanButton': '✏️ Editar plan',
+    'trening.planNameLabel': 'Nombre del plan',
+    'trening.planNamePlaceholder': 'p. ej. Tren superior',
+    'trening.planNameInvalid': 'Escribe un nombre de plan (máx. 40 caracteres).',
+    'trening.addPlan': '+ Añadir plan de entrenamiento',
+    'trening.movePlanLeft': 'Mover a la izquierda',
+    'trening.movePlanRight': 'Mover a la derecha',
+    'trening.dragPlan': 'Mover plan de entrenamiento',
+    'trening.dragExercise': 'Mover ejercicio',
+    'trening.moveUp': 'Subir',
+    'trening.moveDown': 'Bajar',
+    'trening.addFromPlans': 'Añadir ejercicios de planes existentes',
+    'trening.setDoneAria': 'Marcar la serie {n} como hecha',
+    'trening.deletePlan': 'Eliminar plan',
+    'trening.deletePlanTitle': '¿Eliminar plan?',
+    'trening.deletePlanConfirm': 'El plan «{name}» se eliminará y ya no aparecerá en la rotación. El historial de entrenamientos se conservará.',
+    'trening.deletePlanLast': 'Debe quedar al menos un plan.',
+    'trening.addExercise': '+ Añadir ejercicio',
+    'trening.exercisePlaceholder': 'Ejercicio',
+    'trening.editSave': 'Guardar',
+    'trening.editCancel': 'Cancelar',
+    'trening.lastExerciseBlock': 'Un plan necesita al menos un ejercicio. Añade uno nuevo.',
+    'trening.deleteExerciseTitle': '¿Eliminar ejercicio?',
+    'trening.deleteExercise': 'El ejercicio «{name}» se eliminará del plan.',
+    'trening.editInvalid': 'Rellena el nombre del ejercicio y los números (series 1–99, reps 1–99, peso 0–999).',
+    'trening.resetSession': 'Reiniciar entrenamiento',
+    'trening.resetSessionTitle': '¿Reiniciar entrenamiento?',
+    'trening.resetSessionConfirm': 'Se borrarán las series marcadas de este entrenamiento. El historial no cambia.',
+    'trening.timerLabel': 'Descanso',
+    'trening.timerDone': 'El descanso ha terminado.',
+    'trening.timerComplete': 'Descanso completado',
+    'trening.timerStop': 'Parar temporizador',
+    'trening.timerStart': 'Empezar descanso',
+    'trening.timerSection': 'Temporizador de descanso',
+    'trening.timerCustom': 'Personalizado',
+    'trening.customTitle': 'Tiempo de descanso personalizado',
+    'trening.customMinutes': 'Minutos',
+    'trening.customSeconds': 'Segundos',
+    'trening.customStart': 'Iniciar temporizador de descanso',
+    'trening.customStartAlt': 'Iniciar temporizador personalizado',
+    'trening.customInvalid': 'Introduce un tiempo de descanso válido.',
+    'trening.customZero': 'El tiempo de descanso debe ser mayor que cero.',
+    'failure.plannedLabel': 'Series al fallo',
+    'failure.none': 'Ninguna',
+    'failure.failure': 'Fallo',
+    'failure.planned': 'Fallo planeado',
+    'failure.noSets': 'Sin series al fallo',
+    'failure.sets': 'Series al fallo: {sets}',
+    'failure.markSet': 'Marcar serie como fallo',
+    'failure.removeMarker': 'Quitar marca de fallo',
+    'trening.failureHint': '🔥 Fallo — marca una serie solo si realmente llegaste al fallo.',
+    'trening.failureHintEdit': 'Opcional: elige las series que planeas llevar al fallo. Puedes cambiar el resultado real durante el entrenamiento.',
+    'trening.durationLabel': 'Duración del entrenamiento',
+    'trening.sessionRestored': 'Entrenamiento activo restaurado',
+    'trening.planSaved': 'Los cambios del plan se guardan. El progreso de tu entrenamiento actual se conserva.',
+    'trening.durationResult': 'Duración del entrenamiento: {duration}',
+    'history.duration': 'Duración: {duration}',
+    'duration.secOne': '{n} segundo', 'duration.secFew': '{n} segundos', 'duration.secOther': '{n} segundos',
+    'duration.minOne': '{n} minuto', 'duration.minFew': '{n} minutos', 'duration.minOther': '{n} minutos',
+    'duration.hourUnitOne': '{n} hora', 'duration.hourUnitFew': '{n} horas', 'duration.hourUnitOther': '{n} horas',
+    'duration.minUnitOne': '{n} minuto', 'duration.minUnitFew': '{n} minutos', 'duration.minUnitOther': '{n} minutos',
+    'duration.hourMin': '{h} {m}',
+    'pokrok.thisWeek': 'Esta semana', 'pokrok.thisMonth': 'Este mes', 'pokrok.total': 'Total',
+    'pokrok.recordsTitle': '🏆 Récords personales',
+    'pokrok.recordsEmpty': 'Aún no hay récords.',
+    'pokrok.nextMilestone': 'Siguiente hito: {kg} kg',
+    'pokrok.historyTitle': '📋 Historial de entrenamientos',
+    'pokrok.historyEmpty': 'Aún no hay entrenamientos.',
+    'pokrok.workoutName': '{plan}',
+    'pokrok.workoutFallback': 'Entrenamiento',
+    'pokrok.setsCountOne': '{n} serie', 'pokrok.setsCountFew': '{n} series', 'pokrok.setsCountOther': '{n} series',
+    'history.editTitle': 'Editar entrenamiento',
+    'history.deleteTitle': '¿Eliminar entrenamiento?',
+    'history.deleteConfirm': 'Se eliminará este entrenamiento y sus {xp} XP.',
+    'history.workoutSummary': '{name} {sets}×{reps} · {w} kg',
+    'history.date': 'Fecha',
+    'history.setsLabel': 'Series', 'history.repsLabel': 'Reps', 'history.setsDoneLabel': 'Hechas',
+    'motivacia.levelTitle': 'Nivel',
+    'motivacia.levelSub': 'Tienes {xp} XP en total. Te faltan {left} XP para el siguiente nivel.',
+    'motivacia.achTitle': '🎖️ Logros',
+    'motivacia.unlocked': 'Desbloqueado {date}',
+    'motivacia.ach.5kg': '{name} · {kg} kg',
+    'setup.title': 'Configuración del entrenamiento',
+    'setup.question': '¿Cuántos entrenamientos por semana quieres completar?',
+    'setup.explain': 'Tu objetivo semanal determina el progreso, la racha y las recompensas semanales.',
+    'setup.continue': 'Continuar',
+    'settings.title': 'Ajustes',
+    'settings.goalLabel': 'Objetivo semanal de entrenamientos',
+    'settings.goalHint': 'Elige entre 1 y 7 entrenamientos por semana.',
+    'settings.goalInvalid': 'Introduce un número entero de {min} a {max}.',
+    'settings.save': 'Guardar objetivo',
+    'settings.restSound': 'Sonido del temporizador de descanso',
+    'settings.restSoundHint': 'Reproduce un gong corto cuando el temporizador de descanso llegue a cero.',
+    'settings.testSound': 'Probar sonido',
+    'settings.testSoundDisabledHint': 'Activa el sonido del temporizador de descanso para probarlo.',
+    'settings.testSoundFailed': 'No se pudo reproducir el sonido. Revisa los ajustes de sonido del dispositivo.',
+    'settings.on': 'Activado',
+    'settings.off': 'Desactivado',
+    'settings.restSoundLength': 'Duración del sonido del descanso',
+    'settings.lenShort': 'Corto',
+    'settings.lenStandard': 'Estándar',
+    'settings.lenLong': 'Largo',
+    'settings.export': 'Exportar datos',
+    'settings.import': 'Importar datos',
+    'settings.reset': 'Restablecer datos',
+    'settings.loadDemo': 'Cargar datos de ejemplo',
+    'settings.removeDemo': 'Quitar datos de ejemplo',
+    'settings.demoConfirm': 'Esto reemplazará el historial actual por datos de ejemplo.',
+    'settings.demoRemoveConfirm': 'Esto quitará los datos de ejemplo y empezarás de cero.',
+    'settings.demoNone': 'No hay datos de ejemplo.',
+    'units.kg': 'kg', 'units.xp': 'XP', 'units.sets': 'series', 'units.reps': 'reps',
+    'settings.importTitle': '¿Importar datos?',
+    'settings.importConfirm': 'Esto reemplazará todos los datos actuales ({n} entrenamientos).',
+    'settings.importError': 'Archivo de copia no válido.',
+    'settings.resetTitle': '¿Restablecer todos los datos?',
+    'settings.resetConfirm': 'Se eliminarán todos los entrenamientos, récords y ajustes. Esto no se puede deshacer.',
+    'settings.resetFinal': '¿Borrar todo de verdad?',
+    'settings.resetFinalConfirm': 'Esto borrará todos los datos de forma permanente.',
+    'settings.resetConfirmAction': 'Restablecer todos los datos',
+    'settings.resetFinalAction': 'Borrar de verdad',
+    'common.cancel': 'Cancelar', 'common.close': 'Cerrar', 'common.save': 'Guardar', 'common.ok': 'OK', 'common.delete': 'Eliminar',
+    'update.available': 'Hay una nueva versión de GymQuest disponible.',
+    'update.now': 'Actualizar ahora',
+    'app.storageError': 'Este navegador rechazó guardar tus datos — los cambios se perderán al recargar. Permite el almacenamiento del sitio (localStorage) e inténtalo de nuevo.',
+    'common.confirm': 'Confirmación',
+    'common.confirmTitle': 'Confirmación',
+    'achievements.first': 'Primer entrenamiento', 'achievements.firstDesc': 'Completa tu primer entrenamiento',
+    'achievements.five': '5 entrenamientos', 'achievements.fiveDesc': 'Completa 5 entrenamientos',
+    'achievements.ten': '10 entrenamientos', 'achievements.tenDesc': 'Completa 10 entrenamientos',
+    'achievements.twentyfive': '25 entrenamientos', 'achievements.twentyfiveDesc': 'Completa 25 entrenamientos',
+    'achievements.fifty': '50 entrenamientos', 'achievements.fiftyDesc': 'Completa 50 entrenamientos',
+    'achievements.hundred': '100 entrenamientos', 'achievements.hundredDesc': 'Completa 100 entrenamientos',
+    'achievements.weeklygoal1': 'Primer objetivo semanal', 'achievements.weeklygoal1Desc': 'Alcanza tu objetivo semanal',
+    'achievements.consistent2': 'Constancia 2 semanas', 'achievements.consistent2Desc': 'Entrena al menos {g}× por semana durante 2 semanas seguidas',
+    'achievements.consistent4': 'Constancia 4 semanas', 'achievements.consistent4Desc': 'Entrena al menos {g}× por semana durante 4 semanas seguidas',
+    'achievements.consistent8': 'Constancia 8 semanas', 'achievements.consistent8Desc': 'Entrena al menos {g}× por semana durante 8 semanas seguidas',
+    'achievements.consistent12': 'Constancia 12 semanas', 'achievements.consistent12Desc': 'Entrena al menos {g}× por semana durante 12 semanas seguidas',
+    'achievements.xp200': '200 XP', 'achievements.xp200Desc': 'Gana 200 XP',
+    'achievements.newpr': 'Nuevo récord personal', 'achievements.newprDesc': 'Establece un nuevo peso máximo personal',
+    'achievements.solid2': 'Semana constante', 'achievements.solid2Desc': 'Completa al menos 3 entrenamientos en 2 semanas naturales distintas',
+    'achievements.solid4': 'Impulso mensual', 'achievements.solid4Desc': 'Completa al menos 3 entrenamientos en 4 semanas naturales distintas',
+    'achievements.fullweek': 'Semana completa', 'achievements.fullweekDesc': 'Completa 5 entrenamientos en una sola semana natural',
+    'achievements.pr5': 'Rompe récords', 'achievements.pr5Desc': 'Consigue 5 récords personales',
+    'achievements.pr10': 'Cazador de récords', 'achievements.pr10Desc': 'Consigue 10 récords personales',
+    'achievements.improve': 'Más fuerte cada día', 'achievements.improveDesc': 'Supera tu peso registrado anterior para el mismo ejercicio',
+    'achievements.customplan': 'Creador de planes', 'achievements.customplanDesc': 'Crea tu primer plan de entrenamiento personalizado',
+    'achievements.fourplans': 'Arquitecto del entrenamiento', 'achievements.fourplansDesc': 'Crea 4 planes de entrenamiento activos',
+    'achievements.customex5': 'Coleccionista de ejercicios', 'achievements.customex5Desc': 'Añade 5 ejercicios personalizados a tus planes',
+    'achievements.variety4': 'Atleta versátil', 'achievements.variety4Desc': 'Completa entrenamientos de 4 planes distintos',
+    'achievements.comeback': 'Vuelta más fuerte', 'achievements.comebackDesc': 'Completa un entrenamiento tras al menos 14 días sin ninguno',
+    'achievements.missedweek': 'Nunca te rindas', 'achievements.missedweekDesc': 'Completa un entrenamiento tras perder una semana natural completa',
+    'motivacia.xpReward': '+{xp} XP',
+    'motivacia.newAchXp': '+{xp} XP por logros',
+    'motivacia.newAchievement': 'Nuevo logro: {names}',
+  },
+  'pt-BR': {
+    'tab.dnes': 'Hoje', 'tab.trening': 'Treino', 'tab.pokrok': 'Progresso', 'tab.motivacia': 'Motivação', 'tab.kalendar': 'Calendário',
+    'kalendar.prevMonth': 'Mês anterior',
+    'kalendar.nextMonth': 'Próximo mês',
+    'kalendar.goToday': 'Hoje',
+    'kalendar.legendTitle': 'Legenda',
+    'kalendar.legendWorkout': 'Verde — Treino concluído',
+    'kalendar.legendMissed': 'Vermelho — Nenhum treino registrado',
+    'kalendar.legendToday': 'Contorno laranja — Hoje',
+    'kalendar.statusWorkout': 'Treino concluído',
+    'kalendar.statusNone': 'Nenhum treino registrado',
+    'kalendar.statusTodayNone': 'Hoje — ainda sem treino registrado',
+    'kalendar.statusFuture': 'Esta data está no futuro.',
+    'kalendar.emptyPast': 'Nenhum treino foi registrado neste dia.',
+    'kalendar.achievements': 'Conquistas desbloqueadas',
+    'kalendar.ariaDay': '{date} — {status}',
+    'kalendar.ariaWorkoutCountOne': '{n} treino neste dia',
+    'kalendar.ariaWorkoutCountFew': '{n} treinos neste dia',
+    'kalendar.ariaWorkoutCountOther': '{n} treinos neste dia',
+    'plan.push': 'Empurrar', 'plan.pull': 'Puxar', 'plan.legs': 'Pernas',
+    'plan.newName': 'Novo plano de treino',
+    'planChoice.title': 'Criar plano de treino',
+    'planChoice.blank': 'Plano de treino vazio',
+    'planChoice.blankDesc': 'Crie um plano personalizado vazio e adicione os exercícios manualmente.',
+    'planChoice.fullBody': 'Construtor Corpo inteiro',
+    'planChoice.fullBodyDesc': 'Monte um treino de corpo inteiro escolhendo exercícios dos seus planos existentes.',
+    'fb.title': 'Construtor Corpo inteiro',
+    'fb.subtitle': 'Escolha exercícios dos seus planos de treino existentes.',
+    'fb.nameLabel': 'Nome do plano',
+    'fb.defaultName': 'Corpo inteiro',
+    'fb.selected': 'Exercícios selecionados: {n}',
+    'fb.selectedOne': 'Exercícios selecionados: {n}',
+    'fb.selectedFew': 'Exercícios selecionados: {n}',
+    'fb.selectedOther': 'Exercícios selecionados: {n}',
+    'fb.selectAll': 'Selecionar tudo',
+    'fb.clear': 'Limpar',
+    'fb.create': 'Criar treino de corpo inteiro',
+    'fb.needOne': 'Selecione pelo menos um exercício.',
+    'fb.noExercises': 'Nenhum exercício disponível neste plano de treino.',
+    'fb.duplicates': 'Exercícios duplicados são adicionados apenas uma vez.',
+    'fb.bodyweight': 'Peso corporal',
+    'picker.title': 'Adicionar exercícios de planos existentes',
+    'picker.subtitle': 'Marque os exercícios que você quer adicionar a este plano.',
+    'picker.apply': 'Adicionar ao plano',
+    'unilateral.trainBoth': 'Treinar cada lado separadamente',
+    'unilateral.startLeft': 'Começar pelo esquerdo',
+    'unilateral.startRight': 'Começar pelo direito',
+    'unilateral.left': 'Esquerdo',
+    'unilateral.right': 'Direito',
+    'unilateral.setsPerSideOne': '{n} série por lado',
+    'unilateral.setsPerSideFew': '{n} séries por lado',
+    'unilateral.setsPerSideOther': '{n} séries por lado',
+    'unilateral.setSide': 'Série {n} — {side}',
+    'unilateral.completed': 'Concluído: {sides}',
+    'unilateral.bothSides': 'Esquerdo e direito',
+    'unilateral.leftOnly': 'Somente esquerdo',
+    'unilateral.rightOnly': 'Somente direito',
+    'unilateral.noneSides': 'Nenhum',
+    'unilateral.failureList': 'Falha: {list}',
+    'exercise.bench-press': 'Supino reto', 'exercise.overhead-press': 'Desenvolvimento militar', 'exercise.dips': 'Paralelas', 'exercise.lateral-raises': 'Elevação lateral',
+    'exercise.pull-ups': 'Barra fixa', 'exercise.bent-over-rows': 'Remada curvada', 'exercise.cable-rows': 'Remada na polia', 'exercise.bicep-curls': 'Rosca direta',
+    'exercise.squats': 'Agachamento', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Avanço', 'exercise.leg-curls': 'Mesa flexora', 'exercise.calf-raises': 'Elevação de panturrilha',
+    'header.level': 'Nv.',
+    'header.settingsTitle': 'Configurações',
+    'header.levelTitle': 'Nível',
+    'settings.language': 'Idioma',
+    'settings.changeLanguage': 'Alterar idioma',
+    'settings.languageCurrent': 'Idioma atual: {name}',
+    'langPicker.title': 'Idioma',
+    'langPicker.select': '{name} — escolher este idioma',
+    'langPicker.selected': '{name} — selecionado no momento',
+    'dnes.weekTitle': 'Treinos nesta semana',
+    'dnes.weekDone': '{n} de {g}',
+    'dnes.weekDoneShort': '{n} de {g}',
+    'dnes.weekGoalMet': 'Meta semanal alcançada!',
+    'dnes.weekRemaining': 'Ainda faltam {n}.',
+    'dnes.weekRemainingOne': 'Ainda falta {n} treino.',
+    'dnes.weekRemainingFew': 'Ainda faltam {n} treinos.',
+    'dnes.weekRemainingOther': 'Ainda faltam {n} treinos.',
+    'dnes.streakTitle': '🔥 Constância',
+    'dnes.streakNone': 'Sem sequência',
+    'dnes.streakWeek': '🔥 {n} semanas seguidas',
+    'dnes.streakWeekOne': '🔥 {n} semana seguida',
+    'dnes.streakWeekFew': '🔥 {n} semanas seguidas',
+    'dnes.streakWeekOther': '🔥 {n} semanas seguidas',
+    'dnes.streakStart': 'Complete pelo menos {g} treinos nesta semana para começar uma sequência.',
+    'dnes.streakStartOne': 'Complete pelo menos {g} treino nesta semana para começar uma sequência.',
+    'dnes.streakStartFew': 'Complete pelo menos {g} treinos nesta semana para começar uma sequência.',
+    'dnes.streakStartOther': 'Complete pelo menos {g} treinos nesta semana para começar uma sequência.',
+    'dnes.streakContinue': 'Complete {g} treinos nesta semana para continuar sua sequência.',
+    'dnes.streakContinueOne': 'Complete {g} treino nesta semana para continuar sua sequência.',
+    'dnes.streakContinueFew': 'Complete {g} treinos nesta semana para continuar sua sequência.',
+    'dnes.streakContinueOther': 'Complete {g} treinos nesta semana para continuar sua sequência.',
+    'dnes.streakGoing': 'Meta semanal concluída. Sua sequência continua!',
+    'dnes.streakEnded': 'Sua sequência terminou. Comece uma nova cumprindo sua meta semanal.',
+    'dnes.excuse': 'Escola / doença',
+    'dnes.excuseActive': 'Escola / doença ✓ (ativo)',
+    'dnes.excuseNote': 'Esta semana está justificada — a sequência é mantida.',
+    'dnes.start': 'Começar treino',
+    'dnes.nextPlan': 'Recomendado: {plan}',
+    'dnes.weekOf': 'Semana {n}',
+    'trening.finish': 'Finalizar treino',
+    'trening.finishTitle': 'Finalizar treino?',
+    'trening.doneTitle': '🏆 Treino concluído!',
+    'trening.confirmText': '{plan} · {done} de {total} séries<br>Você ganha <b style="color:#a3e635">+{xp} XP</b>',
+    'trening.noteLabel': 'Observação (opcional)',
+    'trening.super': 'Muito bom!',
+    'trening.undo': 'Desfazer este treino',
+    'trening.undoConfirmTitle': 'Desfazer treino?',
+    'trening.undoConfirm': 'Este treino e seus {xp} XP serão removidos.',
+    'trening.setsDone': 'Séries feitas: <b>{done} de {total}</b> · {msg}',
+    'trening.setsHint': 'Marque as séries como feitas.',
+    'trening.firstTime': 'Primeira vez',
+    'trening.compareUp': '▲ {w} kg · +{r} reps vs. última vez',
+    'trening.compareDown': '▼ {w} kg · {r} reps vs. última vez',
+    'trening.compareSame': 'Igual à última vez ({w} kg)',
+    'trening.compareWeightUp': '▲ {w} kg vs. última vez',
+    'trening.compareWeightDown': '▼ {w} kg vs. última vez',
+    'trening.compareRepsUp': '+{r} reps vs. última vez',
+    'trening.compareRepsDown': '{r} reps vs. última vez',
+    'trening.edit': 'Editar plano',
+    'trening.editTitle': 'Editar plano',
+    'trening.planLabel': 'Plano de treino',
+    'trening.editPlanButton': '✏️ Editar plano',
+    'trening.planNameLabel': 'Nome do plano',
+    'trening.planNamePlaceholder': 'ex.: Parte superior',
+    'trening.planNameInvalid': 'Digite um nome de plano (máx. 40 caracteres).',
+    'trening.addPlan': '+ Adicionar plano de treino',
+    'trening.movePlanLeft': 'Mover para a esquerda',
+    'trening.movePlanRight': 'Mover para a direita',
+    'trening.dragPlan': 'Mover plano de treino',
+    'trening.dragExercise': 'Mover exercício',
+    'trening.moveUp': 'Mover para cima',
+    'trening.moveDown': 'Mover para baixo',
+    'trening.addFromPlans': 'Adicionar exercícios de planos existentes',
+    'trening.setDoneAria': 'Marcar a série {n} como feita',
+    'trening.deletePlan': 'Excluir plano',
+    'trening.deletePlanTitle': 'Excluir plano?',
+    'trening.deletePlanConfirm': 'O plano “{name}” será removido e não aparecerá mais na rotação. O histórico de treinos será mantido.',
+    'trening.deletePlanLast': 'Pelo menos um plano deve permanecer.',
+    'trening.addExercise': '+ Adicionar exercício',
+    'trening.exercisePlaceholder': 'Exercício',
+    'trening.editSave': 'Salvar',
+    'trening.editCancel': 'Cancelar',
+    'trening.lastExerciseBlock': 'Um plano precisa de pelo menos um exercício. Adicione um novo.',
+    'trening.deleteExerciseTitle': 'Excluir exercício?',
+    'trening.deleteExercise': 'O exercício “{name}” será removido do plano.',
+    'trening.editInvalid': 'Preencha o nome do exercício e os números (séries 1–99, reps 1–99, peso 0–999).',
+    'trening.resetSession': 'Reiniciar treino',
+    'trening.resetSessionTitle': 'Reiniciar treino?',
+    'trening.resetSessionConfirm': 'As séries marcadas deste treino serão apagadas. O histórico continua intacto.',
+    'trening.timerLabel': 'Descanso',
+    'trening.timerDone': 'O descanso acabou.',
+    'trening.timerComplete': 'Descanso concluído',
+    'trening.timerStop': 'Parar cronômetro',
+    'trening.timerStart': 'Começar descanso',
+    'trening.timerSection': 'Cronômetro de descanso',
+    'trening.timerCustom': 'Personalizado',
+    'trening.customTitle': 'Tempo de descanso personalizado',
+    'trening.customMinutes': 'Minutos',
+    'trening.customSeconds': 'Segundos',
+    'trening.customStart': 'Iniciar cronômetro de descanso',
+    'trening.customStartAlt': 'Iniciar cronômetro personalizado',
+    'trening.customInvalid': 'Digite um tempo de descanso válido.',
+    'trening.customZero': 'O tempo de descanso deve ser maior que zero.',
+    'failure.plannedLabel': 'Séries até a falha',
+    'failure.none': 'Nenhuma',
+    'failure.failure': 'Falha',
+    'failure.planned': 'Falha planejada',
+    'failure.noSets': 'Sem séries até a falha',
+    'failure.sets': 'Séries até a falha: {sets}',
+    'failure.markSet': 'Marcar série como falha',
+    'failure.removeMarker': 'Remover marcação de falha',
+    'trening.failureHint': '🔥 Falha — marque uma série apenas se você realmente chegou à falha.',
+    'trening.failureHintEdit': 'Opcional: escolha as séries que você planeja levar até a falha. Você pode mudar o resultado real durante o treino.',
+    'trening.durationLabel': 'Duração do treino',
+    'trening.sessionRestored': 'Treino ativo restaurado',
+    'trening.planSaved': 'As mudanças do plano foram salvas. O progresso do seu treino atual foi preservado.',
+    'trening.durationResult': 'Duração do treino: {duration}',
+    'history.duration': 'Duração: {duration}',
+    'duration.secOne': '{n} segundo', 'duration.secFew': '{n} segundos', 'duration.secOther': '{n} segundos',
+    'duration.minOne': '{n} minuto', 'duration.minFew': '{n} minutos', 'duration.minOther': '{n} minutos',
+    'duration.hourUnitOne': '{n} hora', 'duration.hourUnitFew': '{n} horas', 'duration.hourUnitOther': '{n} horas',
+    'duration.minUnitOne': '{n} minuto', 'duration.minUnitFew': '{n} minutos', 'duration.minUnitOther': '{n} minutos',
+    'duration.hourMin': '{h} {m}',
+    'pokrok.thisWeek': 'Esta semana', 'pokrok.thisMonth': 'Este mês', 'pokrok.total': 'Total',
+    'pokrok.recordsTitle': '🏆 Recordes pessoais',
+    'pokrok.recordsEmpty': 'Ainda não há recordes.',
+    'pokrok.nextMilestone': 'Próxima marca: {kg} kg',
+    'pokrok.historyTitle': '📋 Histórico de treinos',
+    'pokrok.historyEmpty': 'Ainda não há treinos.',
+    'pokrok.workoutName': '{plan}',
+    'pokrok.workoutFallback': 'Treino',
+    'pokrok.setsCountOne': '{n} série', 'pokrok.setsCountFew': '{n} séries', 'pokrok.setsCountOther': '{n} séries',
+    'history.editTitle': 'Editar treino',
+    'history.deleteTitle': 'Excluir treino?',
+    'history.deleteConfirm': 'Este treino e seus {xp} XP serão removidos.',
+    'history.workoutSummary': '{name} {sets}×{reps} · {w} kg',
+    'history.date': 'Data',
+    'history.setsLabel': 'Séries', 'history.repsLabel': 'Reps', 'history.setsDoneLabel': 'Feitas',
+    'motivacia.levelTitle': 'Nível',
+    'motivacia.levelSub': 'Você tem {xp} XP no total. Faltam {left} XP para o próximo nível.',
+    'motivacia.achTitle': '🎖️ Conquistas',
+    'motivacia.unlocked': 'Desbloqueado {date}',
+    'motivacia.ach.5kg': '{name} · {kg} kg',
+    'setup.title': 'Configuração do treino',
+    'setup.question': 'Quantos treinos por semana você quer completar?',
+    'setup.explain': 'Sua meta semanal define o progresso, a sequência e as recompensas semanais.',
+    'setup.continue': 'Continuar',
+    'settings.title': 'Configurações',
+    'settings.goalLabel': 'Meta semanal de treinos',
+    'settings.goalHint': 'Escolha entre 1 e 7 treinos por semana.',
+    'settings.goalInvalid': 'Digite um número inteiro de {min} a {max}.',
+    'settings.save': 'Salvar meta',
+    'settings.restSound': 'Som do cronômetro de descanso',
+    'settings.restSoundHint': 'Tocar um gongo curto quando o cronômetro de descanso chegar a zero.',
+    'settings.testSound': 'Testar som',
+    'settings.testSoundDisabledHint': 'Ative o som do cronômetro de descanso para testá-lo.',
+    'settings.testSoundFailed': 'Não foi possível tocar o som. Verifique as configurações de som do dispositivo.',
+    'settings.on': 'Ligado',
+    'settings.off': 'Desligado',
+    'settings.restSoundLength': 'Duração do som do descanso',
+    'settings.lenShort': 'Curto',
+    'settings.lenStandard': 'Padrão',
+    'settings.lenLong': 'Longo',
+    'settings.export': 'Exportar dados',
+    'settings.import': 'Importar dados',
+    'settings.reset': 'Redefinir dados',
+    'settings.loadDemo': 'Carregar dados de exemplo',
+    'settings.removeDemo': 'Remover dados de exemplo',
+    'settings.demoConfirm': 'Isto substituirá o histórico atual por dados de exemplo.',
+    'settings.demoRemoveConfirm': 'Isto removerá os dados de exemplo e você começará do zero.',
+    'settings.demoNone': 'Não há dados de exemplo.',
+    'units.kg': 'kg', 'units.xp': 'XP', 'units.sets': 'séries', 'units.reps': 'reps',
+    'settings.importTitle': 'Importar dados?',
+    'settings.importConfirm': 'Isto substituirá todos os dados atuais ({n} treinos).',
+    'settings.importError': 'Arquivo de backup inválido.',
+    'settings.resetTitle': 'Redefinir todos os dados?',
+    'settings.resetConfirm': 'Todos os treinos, recordes e configurações serão excluídos. Isto não pode ser desfeito.',
+    'settings.resetFinal': 'Realmente apagar tudo?',
+    'settings.resetFinalConfirm': 'Isto apagará todos os dados permanentemente.',
+    'settings.resetConfirmAction': 'Redefinir todos os dados',
+    'settings.resetFinalAction': 'Apagar de verdade',
+    'common.cancel': 'Cancelar', 'common.close': 'Fechar', 'common.save': 'Salvar', 'common.ok': 'OK', 'common.delete': 'Excluir',
+    'update.available': 'Uma nova versão do GymQuest está disponível.',
+    'update.now': 'Atualizar agora',
+    'app.storageError': 'Este navegador recusou salvar seus dados — as mudanças serão perdidas ao recarregar. Permita o armazenamento do site (localStorage) e tente de novo.',
+    'common.confirm': 'Confirmação',
+    'common.confirmTitle': 'Confirmação',
+    'achievements.first': 'Primeiro treino', 'achievements.firstDesc': 'Complete seu primeiro treino',
+    'achievements.five': '5 treinos', 'achievements.fiveDesc': 'Complete 5 treinos',
+    'achievements.ten': '10 treinos', 'achievements.tenDesc': 'Complete 10 treinos',
+    'achievements.twentyfive': '25 treinos', 'achievements.twentyfiveDesc': 'Complete 25 treinos',
+    'achievements.fifty': '50 treinos', 'achievements.fiftyDesc': 'Complete 50 treinos',
+    'achievements.hundred': '100 treinos', 'achievements.hundredDesc': 'Complete 100 treinos',
+    'achievements.weeklygoal1': 'Primeira meta semanal', 'achievements.weeklygoal1Desc': 'Alcance sua meta semanal',
+    'achievements.consistent2': 'Constância 2 semanas', 'achievements.consistent2Desc': 'Treine pelo menos {g}× por semana durante 2 semanas seguidas',
+    'achievements.consistent4': 'Constância 4 semanas', 'achievements.consistent4Desc': 'Treine pelo menos {g}× por semana durante 4 semanas seguidas',
+    'achievements.consistent8': 'Constância 8 semanas', 'achievements.consistent8Desc': 'Treine pelo menos {g}× por semana durante 8 semanas seguidas',
+    'achievements.consistent12': 'Constância 12 semanas', 'achievements.consistent12Desc': 'Treine pelo menos {g}× por semana durante 12 semanas seguidas',
+    'achievements.xp200': '200 XP', 'achievements.xp200Desc': 'Ganhe 200 XP',
+    'achievements.newpr': 'Novo recorde pessoal', 'achievements.newprDesc': 'Estabeleça um novo peso máximo pessoal',
+    'achievements.solid2': 'Semana constante', 'achievements.solid2Desc': 'Complete pelo menos 3 treinos em 2 semanas do calendário diferentes',
+    'achievements.solid4': 'Impulso mensal', 'achievements.solid4Desc': 'Complete pelo menos 3 treinos em 4 semanas do calendário diferentes',
+    'achievements.fullweek': 'Semana completa', 'achievements.fullweekDesc': 'Complete 5 treinos em uma única semana do calendário',
+    'achievements.pr5': 'Quebrador de recordes', 'achievements.pr5Desc': 'Consiga 5 recordes pessoais',
+    'achievements.pr10': 'Caçador de recordes', 'achievements.pr10Desc': 'Consiga 10 recordes pessoais',
+    'achievements.improve': 'Mais forte a cada dia', 'achievements.improveDesc': 'Supere seu peso registrado anteriormente no mesmo exercício',
+    'achievements.customplan': 'Criador de planos', 'achievements.customplanDesc': 'Crie seu primeiro plano de treino personalizado',
+    'achievements.fourplans': 'Arquiteto do treino', 'achievements.fourplansDesc': 'Crie 4 planos de treino ativos',
+    'achievements.customex5': 'Colecionador de exercícios', 'achievements.customex5Desc': 'Adicione 5 exercícios personalizados aos seus planos',
+    'achievements.variety4': 'Atleta versátil', 'achievements.variety4Desc': 'Complete treinos de 4 planos diferentes',
+    'achievements.comeback': 'Volta mais forte', 'achievements.comebackDesc': 'Complete um treino depois de pelo menos 14 dias sem nenhum',
+    'achievements.missedweek': 'Nunca desista', 'achievements.missedweekDesc': 'Complete um treino depois de perder uma semana do calendário inteira',
+    'motivacia.xpReward': '+{xp} XP',
+    'motivacia.newAchXp': '+{xp} XP por conquistas',
+    'motivacia.newAchievement': 'Nova conquista: {names}',
+  },
+  fr: {
+    'tab.dnes': 'Aujourd’hui', 'tab.trening': 'Entraînement', 'tab.pokrok': 'Progrès', 'tab.motivacia': 'Motivation', 'tab.kalendar': 'Calendrier',
+    'kalendar.prevMonth': 'Mois précédent',
+    'kalendar.nextMonth': 'Mois suivant',
+    'kalendar.goToday': 'Aujourd’hui',
+    'kalendar.legendTitle': 'Légende',
+    'kalendar.legendWorkout': 'Vert — Entraînement terminé',
+    'kalendar.legendMissed': 'Rouge — Aucun entraînement enregistré',
+    'kalendar.legendToday': 'Contour orange — Aujourd’hui',
+    'kalendar.statusWorkout': 'Entraînement terminé',
+    'kalendar.statusNone': 'Aucun entraînement enregistré',
+    'kalendar.statusTodayNone': 'Aujourd’hui — pas encore d’entraînement enregistré',
+    'kalendar.statusFuture': 'Cette date est dans le futur.',
+    'kalendar.emptyPast': 'Aucun entraînement n’a été enregistré ce jour-là.',
+    'kalendar.achievements': 'Succès débloqués',
+    'kalendar.ariaDay': '{date} — {status}',
+    'kalendar.ariaWorkoutCountOne': '{n} entraînement ce jour-là',
+    'kalendar.ariaWorkoutCountFew': '{n} entraînements ce jour-là',
+    'kalendar.ariaWorkoutCountOther': '{n} entraînements ce jour-là',
+    'plan.push': 'Poussée', 'plan.pull': 'Tirage', 'plan.legs': 'Jambes',
+    'plan.newName': 'Nouveau plan d’entraînement',
+    'planChoice.title': 'Créer un plan d’entraînement',
+    'planChoice.blank': 'Plan d’entraînement vide',
+    'planChoice.blankDesc': 'Crée un plan personnalisé vide et ajoute les exercices à la main.',
+    'planChoice.fullBody': 'Générateur Corps entier',
+    'planChoice.fullBodyDesc': 'Crée un entraînement complet en choisissant des exercices de tes plans existants.',
+    'fb.title': 'Générateur Corps entier',
+    'fb.subtitle': 'Choisis des exercices dans tes plans d’entraînement existants.',
+    'fb.nameLabel': 'Nom du plan',
+    'fb.defaultName': 'Corps entier',
+    'fb.selected': 'Exercices sélectionnés : {n}',
+    'fb.selectedOne': 'Exercices sélectionnés : {n}',
+    'fb.selectedFew': 'Exercices sélectionnés : {n}',
+    'fb.selectedOther': 'Exercices sélectionnés : {n}',
+    'fb.selectAll': 'Tout sélectionner',
+    'fb.clear': 'Effacer',
+    'fb.create': 'Créer l’entraînement complet',
+    'fb.needOne': 'Sélectionne au moins un exercice.',
+    'fb.noExercises': 'Aucun exercice disponible dans ce plan.',
+    'fb.duplicates': 'Les exercices en double ne sont ajoutés qu’une fois.',
+    'fb.bodyweight': 'Poids du corps',
+    'picker.title': 'Ajouter des exercices de plans existants',
+    'picker.subtitle': 'Coche les exercices que tu veux ajouter à ce plan.',
+    'picker.apply': 'Ajouter au plan',
+    'unilateral.trainBoth': 'Travailler chaque côté séparément',
+    'unilateral.startLeft': 'Commencer à gauche',
+    'unilateral.startRight': 'Commencer à droite',
+    'unilateral.left': 'Gauche',
+    'unilateral.right': 'Droite',
+    'unilateral.setsPerSideOne': '{n} série par côté',
+    'unilateral.setsPerSideFew': '{n} séries par côté',
+    'unilateral.setsPerSideOther': '{n} séries par côté',
+    'unilateral.setSide': 'Série {n} — {side}',
+    'unilateral.completed': 'Terminé : {sides}',
+    'unilateral.bothSides': 'Gauche et droite',
+    'unilateral.leftOnly': 'Gauche seulement',
+    'unilateral.rightOnly': 'Droite seulement',
+    'unilateral.noneSides': 'Aucun',
+    'unilateral.failureList': 'Échec : {list}',
+    'exercise.bench-press': 'Développé couché', 'exercise.overhead-press': 'Développé militaire', 'exercise.dips': 'Dips', 'exercise.lateral-raises': 'Élévations latérales',
+    'exercise.pull-ups': 'Tractions', 'exercise.bent-over-rows': 'Rowing barre', 'exercise.cable-rows': 'Rowing à la poulie', 'exercise.bicep-curls': 'Curl biceps',
+    'exercise.squats': 'Squats', 'exercise.leg-press': 'Presse à cuisses', 'exercise.lunges': 'Fentes', 'exercise.leg-curls': 'Leg curl', 'exercise.calf-raises': 'Mollets',
+    'header.level': 'Niv.',
+    'header.settingsTitle': 'Réglages',
+    'header.levelTitle': 'Niveau',
+    'settings.language': 'Langue',
+    'settings.changeLanguage': 'Changer de langue',
+    'settings.languageCurrent': 'Langue actuelle : {name}',
+    'langPicker.title': 'Langue',
+    'langPicker.select': '{name} — choisir cette langue',
+    'langPicker.selected': '{name} — actuellement sélectionnée',
+    'dnes.weekTitle': 'Entraînements cette semaine',
+    'dnes.weekDone': '{n} sur {g}',
+    'dnes.weekDoneShort': '{n} sur {g}',
+    'dnes.weekGoalMet': 'Objectif hebdomadaire atteint !',
+    'dnes.weekRemaining': 'Encore {n} à faire.',
+    'dnes.weekRemainingOne': 'Encore {n} entraînement à faire.',
+    'dnes.weekRemainingFew': 'Encore {n} entraînements à faire.',
+    'dnes.weekRemainingOther': 'Encore {n} entraînements à faire.',
+    'dnes.streakTitle': '🔥 Régularité',
+    'dnes.streakNone': 'Aucune série',
+    'dnes.streakWeek': '🔥 {n} semaines d’affilée',
+    'dnes.streakWeekOne': '🔥 {n} semaine d’affilée',
+    'dnes.streakWeekFew': '🔥 {n} semaines d’affilée',
+    'dnes.streakWeekOther': '🔥 {n} semaines d’affilée',
+    'dnes.streakStart': 'Termine au moins {g} entraînements cette semaine pour commencer une série.',
+    'dnes.streakStartOne': 'Termine au moins {g} entraînement cette semaine pour commencer une série.',
+    'dnes.streakStartFew': 'Termine au moins {g} entraînements cette semaine pour commencer une série.',
+    'dnes.streakStartOther': 'Termine au moins {g} entraînements cette semaine pour commencer une série.',
+    'dnes.streakContinue': 'Termine {g} entraînements cette semaine pour continuer ta série.',
+    'dnes.streakContinueOne': 'Termine {g} entraînement cette semaine pour continuer ta série.',
+    'dnes.streakContinueFew': 'Termine {g} entraînements cette semaine pour continuer ta série.',
+    'dnes.streakContinueOther': 'Termine {g} entraînements cette semaine pour continuer ta série.',
+    'dnes.streakGoing': 'Objectif hebdomadaire atteint. Ta série continue !',
+    'dnes.streakEnded': 'Ta série est terminée. Commences-en une nouvelle en atteignant ton objectif hebdomadaire.',
+    'dnes.excuse': 'École / maladie',
+    'dnes.excuseActive': 'École / maladie ✓ (actif)',
+    'dnes.excuseNote': 'Cette semaine est excusée — la série est conservée.',
+    'dnes.start': 'Commencer l’entraînement',
+    'dnes.nextPlan': 'Recommandé : {plan}',
+    'dnes.weekOf': 'Semaine {n}',
+    'trening.finish': 'Terminer l’entraînement',
+    'trening.finishTitle': 'Terminer l’entraînement ?',
+    'trening.doneTitle': '🏆 Entraînement terminé !',
+    'trening.confirmText': '{plan} · {done} sur {total} séries<br>Tu gagnes <b style="color:#a3e635">+{xp} XP</b>',
+    'trening.noteLabel': 'Note (facultative)',
+    'trening.super': 'Génial !',
+    'trening.undo': 'Annuler cet entraînement',
+    'trening.undoConfirmTitle': 'Annuler l’entraînement ?',
+    'trening.undoConfirm': 'Cet entraînement et ses {xp} XP seront supprimés.',
+    'trening.setsDone': 'Séries faites : <b>{done} sur {total}</b> · {msg}',
+    'trening.setsHint': 'Coche les séries faites.',
+    'trening.firstTime': 'Première fois',
+    'trening.compareUp': '▲ {w} kg · +{r} reps vs la dernière fois',
+    'trening.compareDown': '▼ {w} kg · {r} reps vs la dernière fois',
+    'trening.compareSame': 'Identique à la dernière fois ({w} kg)',
+    'trening.compareWeightUp': '▲ {w} kg vs la dernière fois',
+    'trening.compareWeightDown': '▼ {w} kg vs la dernière fois',
+    'trening.compareRepsUp': '+{r} reps vs la dernière fois',
+    'trening.compareRepsDown': '{r} reps vs la dernière fois',
+    'trening.edit': 'Modifier le plan',
+    'trening.editTitle': 'Modifier le plan',
+    'trening.planLabel': 'Plan d’entraînement',
+    'trening.editPlanButton': '✏️ Modifier le plan',
+    'trening.planNameLabel': 'Nom du plan',
+    'trening.planNamePlaceholder': 'ex. Haut du corps',
+    'trening.planNameInvalid': 'Saisis un nom de plan (40 caractères max.).',
+    'trening.addPlan': '+ Ajouter un plan d’entraînement',
+    'trening.movePlanLeft': 'Déplacer à gauche',
+    'trening.movePlanRight': 'Déplacer à droite',
+    'trening.dragPlan': 'Déplacer le plan d’entraînement',
+    'trening.dragExercise': 'Déplacer l’exercice',
+    'trening.moveUp': 'Monter',
+    'trening.moveDown': 'Descendre',
+    'trening.addFromPlans': 'Ajouter des exercices de plans existants',
+    'trening.setDoneAria': 'Marquer la série {n} comme faite',
+    'trening.deletePlan': 'Supprimer le plan',
+    'trening.deletePlanTitle': 'Supprimer le plan ?',
+    'trening.deletePlanConfirm': 'Le plan « {name} » sera supprimé et n’apparaîtra plus dans la rotation. L’historique des entraînements sera conservé.',
+    'trening.deletePlanLast': 'Au moins un plan doit rester.',
+    'trening.addExercise': '+ Ajouter un exercice',
+    'trening.exercisePlaceholder': 'Exercice',
+    'trening.editSave': 'Enregistrer',
+    'trening.editCancel': 'Annuler',
+    'trening.lastExerciseBlock': 'Un plan a besoin d’au moins un exercice. Ajoutes-en un.',
+    'trening.deleteExerciseTitle': 'Supprimer l’exercice ?',
+    'trening.deleteExercise': 'L’exercice « {name} » sera supprimé du plan.',
+    'trening.editInvalid': 'Remplis le nom de l’exercice et les nombres (séries 1–99, reps 1–99, poids 0–999).',
+    'trening.resetSession': 'Réinitialiser l’entraînement',
+    'trening.resetSessionTitle': 'Réinitialiser l’entraînement ?',
+    'trening.resetSessionConfirm': 'Les séries cochées de cet entraînement seront effacées. L’historique reste intact.',
+    'trening.timerLabel': 'Repos',
+    'trening.timerDone': 'Le repos est terminé.',
+    'trening.timerComplete': 'Repos terminé',
+    'trening.timerStop': 'Arrêter le minuteur',
+    'trening.timerStart': 'Commencer le repos',
+    'trening.timerSection': 'Minuteur de repos',
+    'trening.timerCustom': 'Personnalisé',
+    'trening.customTitle': 'Temps de repos personnalisé',
+    'trening.customMinutes': 'Minutes',
+    'trening.customSeconds': 'Secondes',
+    'trening.customStart': 'Lancer le minuteur de repos',
+    'trening.customStartAlt': 'Lancer le minuteur personnalisé',
+    'trening.customInvalid': 'Saisis un temps de repos valide.',
+    'trening.customZero': 'Le temps de repos doit être supérieur à zéro.',
+    'failure.plannedLabel': 'Séries jusqu’à l’échec',
+    'failure.none': 'Aucune',
+    'failure.failure': 'Échec',
+    'failure.planned': 'Échec prévu',
+    'failure.noSets': 'Aucune série jusqu’à l’échec',
+    'failure.sets': 'Séries jusqu’à l’échec : {sets}',
+    'failure.markSet': 'Marquer la série comme échec',
+    'failure.removeMarker': 'Retirer la marque d’échec',
+    'trening.failureHint': '🔥 Échec — marque une série seulement si tu as vraiment atteint l’échec.',
+    'trening.failureHintEdit': 'Facultatif : choisis les séries que tu prévois de pousser jusqu’à l’échec. Tu peux changer le résultat réel pendant l’entraînement.',
+    'trening.durationLabel': 'Durée de l’entraînement',
+    'trening.sessionRestored': 'Entraînement actif restauré',
+    'trening.planSaved': 'Les modifications du plan sont enregistrées. La progression de ton entraînement en cours est conservée.',
+    'trening.durationResult': 'Durée de l’entraînement : {duration}',
+    'history.duration': 'Durée : {duration}',
+    'duration.secOne': '{n} seconde', 'duration.secFew': '{n} secondes', 'duration.secOther': '{n} secondes',
+    'duration.minOne': '{n} minute', 'duration.minFew': '{n} minutes', 'duration.minOther': '{n} minutes',
+    'duration.hourUnitOne': '{n} heure', 'duration.hourUnitFew': '{n} heures', 'duration.hourUnitOther': '{n} heures',
+    'duration.minUnitOne': '{n} minute', 'duration.minUnitFew': '{n} minutes', 'duration.minUnitOther': '{n} minutes',
+    'duration.hourMin': '{h} {m}',
+    'pokrok.thisWeek': 'Cette semaine', 'pokrok.thisMonth': 'Ce mois-ci', 'pokrok.total': 'Total',
+    'pokrok.recordsTitle': '🏆 Records personnels',
+    'pokrok.recordsEmpty': 'Pas encore de records.',
+    'pokrok.nextMilestone': 'Prochain palier : {kg} kg',
+    'pokrok.historyTitle': '📋 Historique des entraînements',
+    'pokrok.historyEmpty': 'Pas encore d’entraînements.',
+    'pokrok.workoutName': '{plan}',
+    'pokrok.workoutFallback': 'Entraînement',
+    'pokrok.setsCountOne': '{n} série', 'pokrok.setsCountFew': '{n} séries', 'pokrok.setsCountOther': '{n} séries',
+    'history.editTitle': 'Modifier l’entraînement',
+    'history.deleteTitle': 'Supprimer l’entraînement ?',
+    'history.deleteConfirm': 'Cet entraînement et ses {xp} XP seront supprimés.',
+    'history.workoutSummary': '{name} {sets}×{reps} · {w} kg',
+    'history.date': 'Date',
+    'history.setsLabel': 'Séries', 'history.repsLabel': 'Reps', 'history.setsDoneLabel': 'Faites',
+    'motivacia.levelTitle': 'Niveau',
+    'motivacia.levelSub': 'Tu as {xp} XP au total. Il te manque {left} XP pour le niveau suivant.',
+    'motivacia.achTitle': '🎖️ Succès',
+    'motivacia.unlocked': 'Débloqué le {date}',
+    'motivacia.ach.5kg': '{name} · {kg} kg',
+    'setup.title': 'Configuration de l’entraînement',
+    'setup.question': 'Combien d’entraînements par semaine veux-tu faire ?',
+    'setup.explain': 'Ton objectif hebdomadaire détermine la progression, la série et les récompenses hebdomadaires.',
+    'setup.continue': 'Continuer',
+    'settings.title': 'Réglages',
+    'settings.goalLabel': 'Objectif hebdomadaire d’entraînements',
+    'settings.goalHint': 'Choisis entre 1 et 7 entraînements par semaine.',
+    'settings.goalInvalid': 'Saisis un nombre entier de {min} à {max}.',
+    'settings.save': 'Enregistrer l’objectif',
+    'settings.restSound': 'Son du minuteur de repos',
+    'settings.restSoundHint': 'Jouer un court gong quand le minuteur de repos atteint zéro.',
+    'settings.testSound': 'Tester le son',
+    'settings.testSoundDisabledHint': 'Active le son du minuteur de repos pour le tester.',
+    'settings.testSoundFailed': 'Le son n’a pas pu être joué. Vérifie les réglages sonores de l’appareil.',
+    'settings.on': 'Activé',
+    'settings.off': 'Désactivé',
+    'settings.restSoundLength': 'Durée du son de repos',
+    'settings.lenShort': 'Court',
+    'settings.lenStandard': 'Standard',
+    'settings.lenLong': 'Long',
+    'settings.export': 'Exporter les données',
+    'settings.import': 'Importer les données',
+    'settings.reset': 'Réinitialiser les données',
+    'settings.loadDemo': 'Charger des données de démo',
+    'settings.removeDemo': 'Retirer les données de démo',
+    'settings.demoConfirm': 'Cela remplacera l’historique actuel par des données de démo.',
+    'settings.demoRemoveConfirm': 'Cela retirera les données de démo et tu repartiras de zéro.',
+    'settings.demoNone': 'Pas de données de démo.',
+    'units.kg': 'kg', 'units.xp': 'XP', 'units.sets': 'séries', 'units.reps': 'reps',
+    'settings.importTitle': 'Importer les données ?',
+    'settings.importConfirm': 'Cela remplacera toutes les données actuelles ({n} entraînements).',
+    'settings.importError': 'Fichier de sauvegarde invalide.',
+    'settings.resetTitle': 'Réinitialiser toutes les données ?',
+    'settings.resetConfirm': 'Tous les entraînements, records et réglages seront supprimés. C’est irréversible.',
+    'settings.resetFinal': 'Vraiment tout supprimer ?',
+    'settings.resetFinalConfirm': 'Cela effacera définitivement toutes les données.',
+    'settings.resetConfirmAction': 'Réinitialiser toutes les données',
+    'settings.resetFinalAction': 'Vraiment supprimer',
+    'common.cancel': 'Annuler', 'common.close': 'Fermer', 'common.save': 'Enregistrer', 'common.ok': 'OK', 'common.delete': 'Supprimer',
+    'update.available': 'Une nouvelle version de GymQuest est disponible.',
+    'update.now': 'Mettre à jour',
+    'app.storageError': 'Ce navigateur a refusé d’enregistrer tes données — les changements seront perdus après un rechargement. Autorise le stockage du site (localStorage) et réessaie.',
+    'common.confirm': 'Confirmation',
+    'common.confirmTitle': 'Confirmation',
+    'achievements.first': 'Premier entraînement', 'achievements.firstDesc': 'Termine ton premier entraînement',
+    'achievements.five': '5 entraînements', 'achievements.fiveDesc': 'Termine 5 entraînements',
+    'achievements.ten': '10 entraînements', 'achievements.tenDesc': 'Termine 10 entraînements',
+    'achievements.twentyfive': '25 entraînements', 'achievements.twentyfiveDesc': 'Termine 25 entraînements',
+    'achievements.fifty': '50 entraînements', 'achievements.fiftyDesc': 'Termine 50 entraînements',
+    'achievements.hundred': '100 entraînements', 'achievements.hundredDesc': 'Termine 100 entraînements',
+    'achievements.weeklygoal1': 'Premier objectif hebdomadaire', 'achievements.weeklygoal1Desc': 'Atteins ton objectif hebdomadaire',
+    'achievements.consistent2': 'Régularité 2 semaines', 'achievements.consistent2Desc': 'Entraîne-toi au moins {g}× par semaine pendant 2 semaines d’affilée',
+    'achievements.consistent4': 'Régularité 4 semaines', 'achievements.consistent4Desc': 'Entraîne-toi au moins {g}× par semaine pendant 4 semaines d’affilée',
+    'achievements.consistent8': 'Régularité 8 semaines', 'achievements.consistent8Desc': 'Entraîne-toi au moins {g}× par semaine pendant 8 semaines d’affilée',
+    'achievements.consistent12': 'Régularité 12 semaines', 'achievements.consistent12Desc': 'Entraîne-toi au moins {g}× par semaine pendant 12 semaines d’affilée',
+    'achievements.xp200': '200 XP', 'achievements.xp200Desc': 'Gagne 200 XP',
+    'achievements.newpr': 'Nouveau record personnel', 'achievements.newprDesc': 'Établis un nouveau poids record personnel',
+    'achievements.solid2': 'Semaine régulière', 'achievements.solid2Desc': 'Termine au moins 3 entraînements sur 2 semaines calendaires différentes',
+    'achievements.solid4': 'Élan mensuel', 'achievements.solid4Desc': 'Termine au moins 3 entraînements sur 4 semaines calendaires différentes',
+    'achievements.fullweek': 'Semaine complète', 'achievements.fullweekDesc': 'Termine 5 entraînements sur une seule semaine calendaire',
+    'achievements.pr5': 'Briseur de records', 'achievements.pr5Desc': 'Obtiens 5 records personnels',
+    'achievements.pr10': 'Chasseur de records', 'achievements.pr10Desc': 'Obtiens 10 records personnels',
+    'achievements.improve': 'Plus fort chaque jour', 'achievements.improveDesc': 'Bats ton poids précédemment enregistré sur le même exercice',
+    'achievements.customplan': 'Créateur de plans', 'achievements.customplanDesc': 'Crée ton premier plan d’entraînement personnalisé',
+    'achievements.fourplans': 'Architecte de l’entraînement', 'achievements.fourplansDesc': 'Crée 4 plans d’entraînement actifs',
+    'achievements.customex5': 'Collectionneur d’exercices', 'achievements.customex5Desc': 'Ajoute 5 exercices personnalisés à tes plans',
+    'achievements.variety4': 'Athlète polyvalent', 'achievements.variety4Desc': 'Termine des entraînements de 4 plans différents',
+    'achievements.comeback': 'Retour plus fort', 'achievements.comebackDesc': 'Termine un entraînement après au moins 14 jours sans aucun',
+    'achievements.missedweek': 'Jamais abandonner', 'achievements.missedweekDesc': 'Termine un entraînement après avoir manqué une semaine calendaire entière',
+    'motivacia.xpReward': '+{xp} XP',
+    'motivacia.newAchXp': '+{xp} XP grâce aux succès',
+    'motivacia.newAchievement': 'Nouveau succès : {names}',
+  },
+  ar: {
+    'tab.dnes': 'اليوم', 'tab.trening': 'التمرين', 'tab.pokrok': 'التقدّم', 'tab.motivacia': 'التحفيز', 'tab.kalendar': 'التقويم',
+    'kalendar.prevMonth': 'الشهر السابق',
+    'kalendar.nextMonth': 'الشهر التالي',
+    'kalendar.goToday': 'اليوم',
+    'kalendar.legendTitle': 'المفتاح',
+    'kalendar.legendWorkout': 'أخضر — تمرين مكتمل',
+    'kalendar.legendMissed': 'أحمر — لا يوجد تمرين مسجَّل',
+    'kalendar.legendToday': 'إطار برتقالي — اليوم',
+    'kalendar.statusWorkout': 'تمرين مكتمل',
+    'kalendar.statusNone': 'لا يوجد تمرين مسجَّل',
+    'kalendar.statusTodayNone': 'اليوم — لا يوجد تمرين مسجَّل بعد',
+    'kalendar.statusFuture': 'هذا التاريخ في المستقبل.',
+    'kalendar.emptyPast': 'لم يُسجَّل أي تمرين في هذا اليوم.',
+    'kalendar.achievements': 'الإنجازات المفتوحة',
+    'kalendar.ariaDay': '{date} — {status}',
+    'kalendar.ariaWorkoutCountZero': '{n} تمرين في هذا اليوم',
+    'kalendar.ariaWorkoutCountOne': '{n} تمرين في هذا اليوم',
+    'kalendar.ariaWorkoutCountTwo': '{n} تمرينان في هذا اليوم',
+    'kalendar.ariaWorkoutCountFew': '{n} تمارين في هذا اليوم',
+    'kalendar.ariaWorkoutCountMany': '{n} تمرينًا في هذا اليوم',
+    'kalendar.ariaWorkoutCountOther': '{n} تمرين في هذا اليوم',
+    'plan.push': 'دفع', 'plan.pull': 'سحب', 'plan.legs': 'الأرجل',
+    'plan.newName': 'خطة تمرين جديدة',
+    'planChoice.title': 'إنشاء خطة تمرين',
+    'planChoice.blank': 'خطة تمرين فارغة',
+    'planChoice.blankDesc': 'أنشئ خطة مخصّصة فارغة وأضف التمارين يدويًا.',
+    'planChoice.fullBody': 'منشئ الجسم كامل',
+    'planChoice.fullBodyDesc': 'أنشئ تمرينًا للجسم كامل باختيار تمارين من خططك الحالية.',
+    'fb.title': 'منشئ الجسم كامل',
+    'fb.subtitle': 'اختر تمارين من خطط التمرين الحالية.',
+    'fb.nameLabel': 'اسم الخطة',
+    'fb.defaultName': 'الجسم كامل',
+    'fb.selected': 'التمارين المختارة: {n}',
+    'fb.selectedZero': 'التمارين المختارة: {n}',
+    'fb.selectedOne': 'التمارين المختارة: {n}',
+    'fb.selectedTwo': 'التمارين المختارة: {n}',
+    'fb.selectedFew': 'التمارين المختارة: {n}',
+    'fb.selectedMany': 'التمارين المختارة: {n}',
+    'fb.selectedOther': 'التمارين المختارة: {n}',
+    'fb.selectAll': 'تحديد الكل',
+    'fb.clear': 'مسح',
+    'fb.create': 'إنشاء تمرين الجسم كامل',
+    'fb.needOne': 'اختر تمرينًا واحدًا على الأقل.',
+    'fb.noExercises': 'لا توجد تمارين متاحة في خطة التمرين هذه.',
+    'fb.duplicates': 'التمارين المكرّرة تُضاف مرة واحدة فقط.',
+    'fb.bodyweight': 'وزن الجسم',
+    'picker.title': 'إضافة تمارين من خطط موجودة',
+    'picker.subtitle': 'حدّد التمارين التي تريد إضافتها إلى هذه الخطة.',
+    'picker.apply': 'إضافة إلى الخطة',
+    'unilateral.trainBoth': 'تدريب كل جهة على حدة',
+    'unilateral.startLeft': 'البدء باليسرى',
+    'unilateral.startRight': 'البدء باليمنى',
+    'unilateral.left': 'اليسرى',
+    'unilateral.right': 'اليمنى',
+    'unilateral.setsPerSideZero': '{n} مجموعة لكل جهة',
+    'unilateral.setsPerSideOne': '{n} مجموعة لكل جهة',
+    'unilateral.setsPerSideTwo': '{n} مجموعتان لكل جهة',
+    'unilateral.setsPerSideFew': '{n} مجموعات لكل جهة',
+    'unilateral.setsPerSideMany': '{n} مجموعة لكل جهة',
+    'unilateral.setsPerSideOther': '{n} مجموعة لكل جهة',
+    'unilateral.setSide': 'السلسلة {n} — {side}',
+    'unilateral.completed': 'المكتمل: {sides}',
+    'unilateral.bothSides': 'اليسرى واليمنى',
+    'unilateral.leftOnly': 'اليسرى فقط',
+    'unilateral.rightOnly': 'اليمنى فقط',
+    'unilateral.noneSides': 'لا شيء',
+    'unilateral.failureList': 'الوصول للفشل: {list}',
+    'exercise.bench-press': 'ضغط الصدر بالبار', 'exercise.overhead-press': 'ضغط الكتف واقفًا', 'exercise.dips': 'الغطس', 'exercise.lateral-raises': 'الرفرفة الجانبية',
+    'exercise.pull-ups': 'العقلة', 'exercise.bent-over-rows': 'السحب بالبار من الانحناء', 'exercise.cable-rows': 'السحب على الكيبل', 'exercise.bicep-curls': 'مرجحة البايسبس',
+    'exercise.squats': 'السكوات', 'exercise.leg-press': 'دفع الأرجل', 'exercise.lunges': 'الطعن', 'exercise.leg-curls': 'ثني الرجل الخلفية', 'exercise.calf-raises': 'رفع السمانة',
+    'header.level': 'مستوى',
+    'header.settingsTitle': 'الإعدادات',
+    'header.levelTitle': 'المستوى',
+    'settings.language': 'اللغة',
+    'settings.changeLanguage': 'تغيير اللغة',
+    'settings.languageCurrent': 'اللغة الحالية: {name}',
+    'langPicker.title': 'اللغة',
+    'langPicker.select': '{name} — اختيار هذه اللغة',
+    'langPicker.selected': '{name} — محدَّدة حاليًا',
+    'dnes.weekTitle': 'تدريبات هذا الأسبوع',
+    'dnes.weekDone': '{n} من {g}',
+    'dnes.weekDoneShort': '{n} من {g}',
+    'dnes.weekGoalMet': 'تم تحقيق الهدف الأسبوعي!',
+    'dnes.weekRemaining': 'بقي {n} للوصول إلى الهدف.',
+    'dnes.weekRemainingZero': 'تم تحقيق الهدف الأسبوعي.',
+    'dnes.weekRemainingOne': 'بقي {n} تمرين للوصول إلى الهدف.',
+    'dnes.weekRemainingTwo': 'بقي {n} تمرينان للوصول إلى الهدف.',
+    'dnes.weekRemainingFew': 'بقيت {n} تمارين للوصول إلى الهدف.',
+    'dnes.weekRemainingMany': 'بقي {n} تمرينًا للوصول إلى الهدف.',
+    'dnes.weekRemainingOther': 'بقي {n} تمرين للوصول إلى الهدف.',
+    'dnes.streakTitle': '🔥 الاستمرارية',
+    'dnes.streakNone': 'لا توجد سلسلة',
+    'dnes.streakWeek': '🔥 {n} أسبوع متتالٍ',
+    'dnes.streakWeekZero': '🔥 لا توجد سلسلة',
+    'dnes.streakWeekOne': '🔥 {n} أسبوع متتالٍ',
+    'dnes.streakWeekTwo': '🔥 {n} أسبوعان متتاليان',
+    'dnes.streakWeekFew': '🔥 {n} أسابيع متتالية',
+    'dnes.streakWeekMany': '🔥 {n} أسبوعًا متتاليًا',
+    'dnes.streakWeekOther': '🔥 {n} أسبوع متتالٍ',
+    'dnes.streakStart': 'أكمل {g} تمرينًا هذا الأسبوع لبدء سلسلة.',
+    'dnes.streakStartOne': 'أكمل {g} تمرين هذا الأسبوع لبدء سلسلة.',
+    'dnes.streakStartTwo': 'أكمل {g} تمرينين هذا الأسبوع لبدء سلسلة.',
+    'dnes.streakStartFew': 'أكمل {g} تمارين هذا الأسبوع لبدء سلسلة.',
+    'dnes.streakStartMany': 'أكمل {g} تمرينًا هذا الأسبوع لبدء سلسلة.',
+    'dnes.streakStartOther': 'أكمل {g} تمرين هذا الأسبوع لبدء سلسلة.',
+    'dnes.streakContinue': 'أكمل {g} تمرينًا هذا الأسبوع لمواصلة سلسلتك.',
+    'dnes.streakContinueOne': 'أكمل {g} تمرين هذا الأسبوع لمواصلة سلسلتك.',
+    'dnes.streakContinueTwo': 'أكمل {g} تمرينين هذا الأسبوع لمواصلة سلسلتك.',
+    'dnes.streakContinueFew': 'أكمل {g} تمارين هذا الأسبوع لمواصلة سلسلتك.',
+    'dnes.streakContinueMany': 'أكمل {g} تمرينًا هذا الأسبوع لمواصلة سلسلتك.',
+    'dnes.streakContinueOther': 'أكمل {g} تمرين هذا الأسبوع لمواصلة سلسلتك.',
+    'dnes.streakGoing': 'تم تحقيق الهدف الأسبوعي. سلسلتك مستمرة!',
+    'dnes.streakEnded': 'انتهت سلسلتك. ابدأ سلسلة جديدة بتحقيق هدفك الأسبوعي.',
+    'dnes.excuse': 'دراسة / مرض',
+    'dnes.excuseActive': 'دراسة / مرض ✓ (نشِط)',
+    'dnes.excuseNote': 'هذا الأسبوع مُستثنى — السلسلة محفوظة.',
+    'dnes.start': 'بدء التمرين',
+    'dnes.nextPlan': 'الموصى به: {plan}',
+    'dnes.weekOf': 'الأسبوع {n}',
+    'trening.finish': 'إنهاء التمرين',
+    'trening.finishTitle': 'إنهاء التمرين؟',
+    'trening.doneTitle': '🏆 اكتمل التمرين!',
+    'trening.confirmText': '{plan} · {done} من {total} سلسلة<br>ستحصل على <b style="color:#a3e635">+{xp} XP</b>',
+    'trening.noteLabel': 'ملاحظة (اختيارية)',
+    'trening.super': 'رائع!',
+    'trening.undo': 'تراجع عن هذا التمرين',
+    'trening.undoConfirmTitle': 'التراجع عن التمرين؟',
+    'trening.undoConfirm': 'سيُحذف هذا التمرين و{xp} XP.',
+    'trening.setsDone': 'السلاسل المنجزة: <b>{done} من {total}</b> · {msg}',
+    'trening.setsHint': 'حدّد السلاسل المنجزة.',
+    'trening.firstTime': 'المرة الأولى',
+    'trening.compareUp': '▲ {w} كغ · +{r} تكرار مقارنة بالمرة السابقة',
+    'trening.compareDown': '▼ {w} كغ · {r} تكرار مقارنة بالمرة السابقة',
+    'trening.compareSame': 'مثل المرة السابقة ({w} كغ)',
+    'trening.compareWeightUp': '▲ {w} كغ مقارنة بالمرة السابقة',
+    'trening.compareWeightDown': '▼ {w} كغ مقارنة بالمرة السابقة',
+    'trening.compareRepsUp': '+{r} تكرار مقارنة بالمرة السابقة',
+    'trening.compareRepsDown': '{r} تكرار مقارنة بالمرة السابقة',
+    'trening.edit': 'تعديل الخطة',
+    'trening.editTitle': 'تعديل الخطة',
+    'trening.planLabel': 'خطة التمرين',
+    'trening.editPlanButton': '✏️ تعديل الخطة',
+    'trening.planNameLabel': 'اسم الخطة',
+    'trening.planNamePlaceholder': 'مثال: الجزء العلوي',
+    'trening.planNameInvalid': 'اكتب اسم الخطة (40 حرفًا كحد أقصى).',
+    'trening.addPlan': '+ إضافة خطة تمرين',
+    'trening.movePlanLeft': 'تحريك لليسار',
+    'trening.movePlanRight': 'تحريك لليمين',
+    'trening.dragPlan': 'تحريك خطة التمرين',
+    'trening.dragExercise': 'تحريك التمرين',
+    'trening.moveUp': 'تحريك للأعلى',
+    'trening.moveDown': 'تحريك للأسفل',
+    'trening.addFromPlans': 'إضافة تمارين من خطط موجودة',
+    'trening.setDoneAria': 'تحديد السلسلة {n} كمنجزة',
+    'trening.deletePlan': 'حذف الخطة',
+    'trening.deletePlanTitle': 'حذف الخطة؟',
+    'trening.deletePlanConfirm': 'ستُحذف الخطة «{name}» ولن تظهر في التبديل. سيبقى سجل التمارين محفوظًا.',
+    'trening.deletePlanLast': 'يجب أن تبقى خطة واحدة على الأقل.',
+    'trening.addExercise': '+ إضافة تمرين',
+    'trening.exercisePlaceholder': 'التمرين',
+    'trening.editSave': 'حفظ',
+    'trening.editCancel': 'إلغاء',
+    'trening.lastExerciseBlock': 'تحتاج الخطة إلى تمرين واحد على الأقل. أضف تمرينًا جديدًا.',
+    'trening.deleteExerciseTitle': 'حذف التمرين؟',
+    'trening.deleteExercise': 'سيُحذف التمرين «{name}» من الخطة.',
+    'trening.editInvalid': 'املأ اسم التمرين والأرقام (السلاسل 1–99، التكرارات 1–99، الوزن 0–999).',
+    'trening.resetSession': 'إعادة ضبط التمرين',
+    'trening.resetSessionTitle': 'إعادة ضبط التمرين؟',
+    'trening.resetSessionConfirm': 'ستُمسح السلاسل المحدَّدة في هذا التمرين. السجل يبقى سليمًا.',
+    'trening.timerLabel': 'راحة',
+    'trening.timerDone': 'انتهت الراحة.',
+    'trening.timerComplete': 'اكتملت الراحة',
+    'trening.timerStop': 'إيقاف المؤقت',
+    'trening.timerStart': 'بدء الراحة',
+    'trening.timerSection': 'مؤقت الراحة',
+    'trening.timerCustom': 'مخصّص',
+    'trening.customTitle': 'زمن راحة مخصّص',
+    'trening.customMinutes': 'دقائق',
+    'trening.customSeconds': 'ثوانٍ',
+    'trening.customStart': 'بدء مؤقت الراحة',
+    'trening.customStartAlt': 'بدء مؤقت مخصّص',
+    'trening.customInvalid': 'أدخل زمن راحة صالحًا.',
+    'trening.customZero': 'يجب أن يكون زمن الراحة أكبر من صفر.',
+    'failure.plannedLabel': 'سلاسل الفشل',
+    'failure.none': 'لا شيء',
+    'failure.failure': 'فشل',
+    'failure.planned': 'فشل مخطَّط',
+    'failure.noSets': 'لا توجد سلاسل فشل',
+    'failure.sets': 'سلاسل الفشل: {sets}',
+    'failure.markSet': 'تحديد السلسلة كفشل',
+    'failure.removeMarker': 'إزالة علامة الفشل',
+    'trening.failureHint': '🔥 الفشل — حدّد السلسلة فقط إذا وصلت فعلًا إلى الفشل.',
+    'trening.failureHintEdit': 'اختياري: اختر السلاسل التي تخطّط للوصول فيها إلى الفشل. يمكنك تغيير النتيجة الفعلية أثناء التمرين.',
+    'trening.durationLabel': 'مدة التمرين',
+    'trening.sessionRestored': 'تم استعادة التمرين النشط',
+    'trening.planSaved': 'تم حفظ تغييرات الخطة. تقدّم تمرينك الحالي محفوظ.',
+    'trening.durationResult': 'مدة التمرين: {duration}',
+    'history.duration': 'المدة: {duration}',
+    'duration.secZero': '{n} ثانية', 'duration.secOne': '{n} ثانية', 'duration.secTwo': '{n} ثانيتان', 'duration.secFew': '{n} ثوانٍ', 'duration.secMany': '{n} ثانية', 'duration.secOther': '{n} ثانية',
+    'duration.minZero': '{n} دقيقة', 'duration.minOne': '{n} دقيقة', 'duration.minTwo': '{n} دقيقتان', 'duration.minFew': '{n} دقائق', 'duration.minMany': '{n} دقيقة', 'duration.minOther': '{n} دقيقة',
+    'duration.hourUnitZero': '{n} ساعة', 'duration.hourUnitOne': '{n} ساعة', 'duration.hourUnitTwo': '{n} ساعتان', 'duration.hourUnitFew': '{n} ساعات', 'duration.hourUnitMany': '{n} ساعة', 'duration.hourUnitOther': '{n} ساعة',
+    'duration.minUnitZero': '{n} دقيقة', 'duration.minUnitOne': '{n} دقيقة', 'duration.minUnitTwo': '{n} دقيقتان', 'duration.minUnitFew': '{n} دقائق', 'duration.minUnitMany': '{n} دقيقة', 'duration.minUnitOther': '{n} دقيقة',
+    'duration.hourMin': '{h} و{m}',
+    'pokrok.thisWeek': 'هذا الأسبوع', 'pokrok.thisMonth': 'هذا الشهر', 'pokrok.total': 'الإجمالي',
+    'pokrok.recordsTitle': '🏆 الأرقام القياسية',
+    'pokrok.recordsEmpty': 'لا توجد أرقام قياسية بعد.',
+    'pokrok.nextMilestone': 'المرحلة التالية: {kg} كغ',
+    'pokrok.historyTitle': '📋 سجل التمارين',
+    'pokrok.historyEmpty': 'لا توجد تمارين بعد.',
+    'pokrok.workoutName': '{plan}',
+    'pokrok.workoutFallback': 'تمرين',
+    'pokrok.setsCountZero': '{n} مجموعة', 'pokrok.setsCountOne': '{n} مجموعة', 'pokrok.setsCountTwo': '{n} مجموعتان', 'pokrok.setsCountFew': '{n} مجموعات', 'pokrok.setsCountMany': '{n} مجموعة', 'pokrok.setsCountOther': '{n} مجموعة',
+    'history.editTitle': 'تعديل التمرين',
+    'history.deleteTitle': 'حذف التمرين؟',
+    'history.deleteConfirm': 'سيُحذف هذا التمرين و{xp} XP.',
+    'history.workoutSummary': '{name} {sets}×{reps} · {w} كغ',
+    'history.date': 'التاريخ',
+    'history.setsLabel': 'السلاسل', 'history.repsLabel': 'تكرار', 'history.setsDoneLabel': 'منجز',
+    'motivacia.levelTitle': 'المستوى',
+    'motivacia.levelSub': 'لديك {xp} XP إجمالًا. تحتاج {left} XP للمستوى التالي.',
+    'motivacia.achTitle': '🎖️ الإنجازات',
+    'motivacia.unlocked': 'تم فتحه {date}',
+    'motivacia.ach.5kg': '{name} · {kg} كغ',
+    'setup.title': 'إعداد التمرين',
+    'setup.question': 'كم تمرينًا في الأسبوع تريد إنجازه؟',
+    'setup.explain': 'هدفك الأسبوعي يحدّد التقدّم والسلسلة والمكافآت الأسبوعية.',
+    'setup.continue': 'متابعة',
+    'settings.title': 'الإعدادات',
+    'settings.goalLabel': 'الهدف الأسبوعي للتمارين',
+    'settings.goalHint': 'اختر بين 1 و7 تمارين في الأسبوع.',
+    'settings.goalInvalid': 'أدخل رقمًا صحيحًا من {min} إلى {max}.',
+    'settings.save': 'حفظ الهدف',
+    'settings.restSound': 'صوت مؤقت الراحة',
+    'settings.restSoundHint': 'تشغيل جرس قصير عند وصول مؤقت الراحة إلى الصفر.',
+    'settings.testSound': 'تجربة الصوت',
+    'settings.testSoundDisabledHint': 'فعّل صوت مؤقت الراحة لتجربته.',
+    'settings.testSoundFailed': 'تعذّر تشغيل الصوت. تحقّق من إعدادات صوت الجهاز.',
+    'settings.on': 'مفعّل',
+    'settings.off': 'متوقف',
+    'settings.restSoundLength': 'طول صوت الراحة',
+    'settings.lenShort': 'قصير',
+    'settings.lenStandard': 'قياسي',
+    'settings.lenLong': 'طويل',
+    'settings.export': 'تصدير البيانات',
+    'settings.import': 'استيراد البيانات',
+    'settings.reset': 'إعادة ضبط البيانات',
+    'settings.loadDemo': 'تحميل بيانات تجريبية',
+    'settings.removeDemo': 'إزالة البيانات التجريبية',
+    'settings.demoConfirm': 'سيستبدل هذا السجل الحالي ببيانات تجريبية.',
+    'settings.demoRemoveConfirm': 'ستُزال البيانات التجريبية وتبدأ من الصفر.',
+    'settings.demoNone': 'لا توجد بيانات تجريبية.',
+    'units.kg': 'كغ', 'units.xp': 'XP', 'units.sets': 'سلاسل', 'units.reps': 'تكرار',
+    'settings.importTitle': 'استيراد البيانات؟',
+    'settings.importConfirm': 'سيستبدل هذا جميع البيانات الحالية ({n} تمرين).',
+    'settings.importError': 'ملف نسخة احتياطية غير صالح.',
+    'settings.resetTitle': 'إعادة ضبط كل البيانات؟',
+    'settings.resetConfirm': 'ستُحذف جميع التمارين والأرقام القياسية والإعدادات. لا يمكن التراجع.',
+    'settings.resetFinal': 'حذف كل شيء فعلًا؟',
+    'settings.resetFinalConfirm': 'سيؤدي هذا إلى محو جميع البيانات نهائيًا.',
+    'settings.resetConfirmAction': 'إعادة ضبط كل البيانات',
+    'settings.resetFinalAction': 'حذف فعلًا',
+    'common.cancel': 'إلغاء', 'common.close': 'إغلاق', 'common.save': 'حفظ', 'common.ok': 'حسنًا', 'common.delete': 'حذف',
+    'update.available': 'يتوفّر إصدار جديد من GymQuest.',
+    'update.now': 'التحديث الآن',
+    'app.storageError': 'رفض هذا المتصفح حفظ بياناتك — ستُفقد التغييرات بعد إعادة التحميل. اسمح بتخزين بيانات الموقع (localStorage) وحاول مرة أخرى.',
+    'common.confirm': 'تأكيد',
+    'common.confirmTitle': 'تأكيد',
+    'achievements.first': 'أول تمرين', 'achievements.firstDesc': 'أكمل أول تمرين لك',
+    'achievements.five': '5 تمارين', 'achievements.fiveDesc': 'أكمل 5 تمارين',
+    'achievements.ten': '10 تمارين', 'achievements.tenDesc': 'أكمل 10 تمارين',
+    'achievements.twentyfive': '25 تمرينًا', 'achievements.twentyfiveDesc': 'أكمل 25 تمرينًا',
+    'achievements.fifty': '50 تمرينًا', 'achievements.fiftyDesc': 'أكمل 50 تمرينًا',
+    'achievements.hundred': '100 تمرين', 'achievements.hundredDesc': 'أكمل 100 تمرين',
+    'achievements.weeklygoal1': 'أول هدف أسبوعي', 'achievements.weeklygoal1Desc': 'حقّق هدفك الأسبوعي',
+    'achievements.consistent2': 'استمرارية أسبوعين', 'achievements.consistent2Desc': 'تدرّب {g}× في الأسبوع على الأقل لأسبوعين متتاليين',
+    'achievements.consistent4': 'استمرارية 4 أسابيع', 'achievements.consistent4Desc': 'تدرّب {g}× في الأسبوع على الأقل لأربعة أسابيع متتالية',
+    'achievements.consistent8': 'استمرارية 8 أسابيع', 'achievements.consistent8Desc': 'تدرّب {g}× في الأسبوع على الأقل لثمانية أسابيع متتالية',
+    'achievements.consistent12': 'استمرارية 12 أسبوعًا', 'achievements.consistent12Desc': 'تدرّب {g}× في الأسبوع على الأقل لاثني عشر أسبوعًا متتاليًا',
+    'achievements.xp200': '200 XP', 'achievements.xp200Desc': 'اجمع 200 XP',
+    'achievements.newpr': 'رقم قياسي جديد', 'achievements.newprDesc': 'سجّل أفضل وزن شخصي جديد',
+    'achievements.solid2': 'أسبوع منتظم', 'achievements.solid2Desc': 'أكمل 3 تمارين على الأقل في أسبوعين تقويميين مختلفين',
+    'achievements.solid4': 'زخم شهري', 'achievements.solid4Desc': 'أكمل 3 تمارين على الأقل في 4 أسابيع تقويمية مختلفة',
+    'achievements.fullweek': 'أسبوع كامل', 'achievements.fullweekDesc': 'أكمل 5 تمارين في أسبوع تقويمي واحد',
+    'achievements.pr5': 'محطّم الأرقام', 'achievements.pr5Desc': 'حقّق 5 أرقام قياسية شخصية',
+    'achievements.pr10': 'صيّاد الأرقام', 'achievements.pr10Desc': 'حقّق 10 أرقام قياسية شخصية',
+    'achievements.improve': 'أقوى كل يوم', 'achievements.improveDesc': 'تجاوز وزنك المسجَّل السابق في التمرين نفسه',
+    'achievements.customplan': 'بانِي الخطط', 'achievements.customplanDesc': 'أنشئ أول خطة تمرين مخصّصة',
+    'achievements.fourplans': 'مهندس التدريب', 'achievements.fourplansDesc': 'أنشئ 4 خطط تمرين نشطة',
+    'achievements.customex5': 'جامع التمارين', 'achievements.customex5Desc': 'أضف 5 تمارين مخصّصة إلى خططك',
+    'achievements.variety4': 'رياضي متنوّع', 'achievements.variety4Desc': 'أكمل تمارين من 4 خطط مختلفة',
+    'achievements.comeback': 'عودة أقوى', 'achievements.comebackDesc': 'أكمل تمرينًا بعد 14 يومًا على الأقل بدون تمرين',
+    'achievements.missedweek': 'لا أستسلم', 'achievements.missedweekDesc': 'أكمل تمرينًا بعد تفويت أسبوع تقويمي كامل',
+    'motivacia.xpReward': '+{xp} XP',
+    'motivacia.newAchXp': '+{xp} XP من الإنجازات',
+    'motivacia.newAchievement': 'إنجاز جديد: {names}',
+  },
 };
 
 function t(key, vars) {
-  let s = (I18N[state.settings.lang] && I18N[state.settings.lang][key]) || I18N.sk[key] || key;
+  const dict = I18N[activeLang()] || I18N.en;
+  let s = dict[key];
+  if (s === undefined) s = I18N.en[key];
+  if (s === undefined) s = I18N.sk[key];
+  if (s === undefined) s = key;
   if (vars) {
     for (const [k, v] of Object.entries(vars)) {
       s = s.split('{' + k + '}').join(String(v));
@@ -667,56 +1865,141 @@ function t(key, vars) {
   return s;
 }
 
-function plural(n, one, few, other) {
-  if (state.settings.lang === 'sk') {
-    if (n === 1) return one;
-    if (n >= 2 && n <= 4) return few;
-    return other;
+/* ---------- Pluralizácia ----------
+   Kategórie sa berú z Intl.PluralRules pre locale daného jazyka – je súčasťou
+   prehliadača, funguje offline a nič sa nesťahuje. Kľúče nesú príponu presne
+   podľa kategórie: Zero / One / Two / Few / Many / Other.
+   Tvar "Other" je povinný v každom jazyku, takže chýbajúci tvar nikdy nemôže
+   spadnúť na slovenský alebo anglický reťazec. */
+const pluralCache = {};
+const PLURAL_SLOTS = { zero: 'Zero', one: 'One', two: 'Two', few: 'Few', many: 'Many', other: 'Other' };
+
+function pluralCategory(n) {
+  const meta = langMeta(activeLang());
+  try {
+    if (!pluralCache[meta.locale]) pluralCache[meta.locale] = new Intl.PluralRules(meta.locale);
+    const cat = pluralCache[meta.locale].select(Number(n));
+    return PLURAL_SLOTS[cat] ? cat : 'other';
+  } catch (e) {
+    return Number(n) === 1 ? 'one' : 'other';   // bez Intl.PluralRules platí anglické pravidlo
   }
-  return n === 1 ? one : other;
+}
+
+/* Ohnutý tvar bez doplnenia {n} – používa sa tam, kde sa číslo skladá zvlášť. */
+function tPluralWord(base, n) {
+  const dict = I18N[activeLang()] || I18N.en;
+  const slot = PLURAL_SLOTS[pluralCategory(n)];
+  if (dict[base + slot] !== undefined) return t(base + slot, { n });
+  if (dict[base + 'Other'] !== undefined) return t(base + 'Other', { n });
+  if (dict[base + 'Many'] !== undefined) return t(base + 'Many', { n });   // staršie kľúče
+  return t(base, { n });
 }
 
 function tPlural(base, n) {
-  const suffix = n === 1 ? '1' : (state.settings.lang === 'sk' && n >= 2 && n <= 4 ? 'Few' : 'Many');
-  return t(base + suffix, { n });
+  return tPluralWord(base, n);
 }
 
-/* Názvy dní a mesiacov pre dátum v hlavičke obrazovky Dnes.
-   Zámerne vlastné polia namiesto Intl.DateTimeFormat – výstup je tak rovnaký
-   vo všetkých prehliadačoch, funguje offline a zodpovedá presnému formátu aplikácie. */
-const WEEKDAYS = {
-  en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  sk: ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'],
-};
-const MONTHS_EN_LONG = ['January', 'February', 'March', 'April', 'May', 'June',
+/* ---------- Dátumy, dni a mesiace ----------
+   Zámerne vlastné tabuľky namiesto Intl.DateTimeFormat: výstup je rovnaký vo
+   všetkých prehliadačoch, funguje offline a zodpovedá presnému formátu aplikácie.
+   Logika kalendára (pondelok prvý) aj uložený formát dátumu "YYYY-MM-DD" sa nemenia. */
+const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
+const MONTHS_EN_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MONTHS_SK_GEN = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna',
   'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
-/* Nominatív pre názov mesiaca v kalendári ("September 2026"). */
 const MONTHS_SK_NOM = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún',
   'Júl', 'August', 'September', 'Október', 'November', 'December'];
-/* Krátke dni v týždni pre hlavičku kalendára – pondelok prvý. */
-const WEEKDAYS_SHORT = {
-  en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  sk: ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'],
+const MONTHS_SK_SHORT = ['jan.', 'feb.', 'mar.', 'apr.', 'máj', 'jún',
+  'júl', 'aug.', 'sep.', 'okt.', 'nov.', 'dec.'];
+const MONTHS_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const MONTHS_ES_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const MONTHS_PT = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+const MONTHS_PT_SHORT = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const MONTHS_FR = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+const MONTHS_FR_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const MONTHS_AR = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+  'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+
+const LOCALE_DATA = {
+  sk: {
+    weekdays: ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'],
+    weekdaysShort: ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'],
+    monthsNom: MONTHS_SK_NOM, monthsGen: MONTHS_SK_GEN, monthsShort: MONTHS_SK_SHORT,
+    datePattern: '{d}. {monthGen} {y}',
+    fullPattern: '{wd}, {d}. {monthGen} {y}',
+    titlePattern: '{monthNom} {y}',
+  },
+  en: {
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    weekdaysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    monthsNom: MONTHS_EN, monthsGen: MONTHS_EN, monthsShort: MONTHS_EN_SHORT,
+    datePattern: '{monthShort} {d}, {y}',
+    fullPattern: '{wd}, {monthGen} {d}, {y}',
+    titlePattern: '{monthNom} {y}',
+  },
+  es: {
+    weekdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    weekdaysShort: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+    monthsNom: MONTHS_ES, monthsGen: MONTHS_ES, monthsShort: MONTHS_ES_SHORT,
+    datePattern: '{d} {monthShort} {y}',
+    fullPattern: '{wd}, {d} de {monthGen} de {y}',
+    titlePattern: '{monthNom} {y}',
+  },
+  'pt-BR': {
+    weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
+    weekdaysShort: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+    monthsNom: MONTHS_PT, monthsGen: MONTHS_PT, monthsShort: MONTHS_PT_SHORT,
+    datePattern: '{d} {monthShort} {y}',
+    fullPattern: '{wd}, {d} de {monthGen} de {y}',
+    titlePattern: '{monthNom} {y}',
+  },
+  fr: {
+    weekdays: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    weekdaysShort: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+    monthsNom: MONTHS_FR, monthsGen: MONTHS_FR, monthsShort: MONTHS_FR_SHORT,
+    datePattern: '{d} {monthShort} {y}',
+    fullPattern: '{wd} {d} {monthGen} {y}',
+    titlePattern: '{monthNom} {y}',
+  },
+  ar: {
+    weekdays: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+    weekdaysShort: ['إث', 'ثل', 'أر', 'خم', 'جم', 'سب', 'أح'],
+    monthsNom: MONTHS_AR, monthsGen: MONTHS_AR, monthsShort: MONTHS_AR,
+    datePattern: '{d} {monthShort} {y}',
+    fullPattern: '{wd}، {d} {monthGen} {y}',
+    titlePattern: '{monthNom} {y}',
+  },
 };
+
+function localeData() {
+  return LOCALE_DATA[activeLang()] || LOCALE_DATA.en;
+}
 
 /* Pondelok = 0 … nedeľa = 6. Rovnaká konvencia, akú používa weekKey(). */
 function mondayIndex(d) {
   return (d.getDay() + 6) % 7;
 }
 
-function activeLang() {
-  return WEEKDAYS[state.settings.lang] ? state.settings.lang : 'en';
+/* Vyplní jazykovú šablónu dátumu. Poradie dopĺňania nezáleží – názvy mesiacov
+   ani dní neobsahujú zástupné symboly. */
+function fillDatePattern(pattern, d, weekday) {
+  const L = localeData();
+  return pattern
+    .split('{y}').join(String(d.getFullYear()))
+    .split('{d}').join(String(d.getDate()))
+    .split('{wd}').join(weekday || '')
+    .split('{monthShort}').join(L.monthsShort[d.getMonth()])
+    .split('{monthGen}').join(L.monthsGen[d.getMonth()])
+    .split('{monthNom}').join(L.monthsNom[d.getMonth()]);
 }
 
 function formatDate(iso) {
   const d = parseDate(iso);
-  if (state.settings.lang === 'en') {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-  }
-  return `${d.getDate()}. ${MONTHS_SK_GEN[d.getMonth()]} ${d.getFullYear()}`;
+  return fillDatePattern(localeData().datePattern, d, '');
 }
 
 /* Číslo aktuálneho ISO týždňa – odvodené z toho istého pomocníka, aký používa
@@ -728,12 +2011,8 @@ function currentIsoWeekNumber() {
 /* Plný dátum podľa aktuálneho jazyka: "Friday, September 18, 2026" / "Piatok, 18. septembra 2026".
    Zdieľa ho hlavička Dnes aj detail dňa v kalendári. */
 function formatFullDate(d) {
-  const lang = activeLang();
-  const weekday = WEEKDAYS[lang][d.getDay()];
-  if (lang === 'en') {
-    return `${weekday}, ${MONTHS_EN_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-  }
-  return `${weekday}, ${d.getDate()}. ${MONTHS_SK_GEN[d.getMonth()]} ${d.getFullYear()}`;
+  const L = localeData();
+  return fillDatePattern(L.fullPattern, d, L.weekdays[d.getDay()]);
 }
 
 /* Dnešný dátum a ISO týždeň z lokálneho času zariadenia. */
@@ -1116,7 +2395,9 @@ function migrateV2toV3(parsed) {
   };
   const goal = Math.round(Number(out.settings.weeklyGoal));
   out.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, Number.isFinite(goal) && goal ? goal : 3));
-  if (out.settings.lang !== 'sk' && out.settings.lang !== 'en') out.settings.lang = 'sk';
+  /* Jazyk: platný kód sa zachová presne (vrátane starých 'sk'/'en'), neplatná
+     alebo chýbajúca hodnota bezpečne spadne na angličtinu. */
+  out.settings.lang = normalizeLang(out.settings.lang);
   /* Zvuk po skončení pauzy: predvolene VYPNUTÝ; zapnutý je len explicitné true. */
   if (out.settings.restSound !== true) out.settings.restSound = false;
   /* Dĺžka zvuku: len short/standard/long, predvolene standard. */
@@ -1700,112 +2981,186 @@ function dayOfYear(date) {
   return Math.floor((date - start) / 86400000);
 }
 
-const MOTIVATION_SK = [
-  'Každý tréning ťa posúva bližšie k cieľu.',
-  'Dnešný deň je skvelý deň na tréning.',
-  'Telo si pamätá tvoju drinu – neprestaň.',
-  'Silu nezískaš odpočinkom, ale pohybom.',
-  'Buď lepší, ako si bol včera.',
-  'Drepuješ dnes? Tvoje budúce ja ti poďakuje.',
-  'Malé kroky, veľké výsledky.',
-  'Súdržnosť poráža motiváciu. Príď znova.',
-  'Tréning je investícia do seba.',
-  'Začni, aj keď sa ti nechce. Potom to pôjde samo.',
-  'Disciplína je tvoja superveľmoc.',
-  'Jeden tréning môže zmeniť celý deň.',
-  'Najťažší krok je ten prvý – sprav ho teraz.',
-  'Tvoja jediná konkurencia si ty sám.',
-  'Buduj svoje telo ako chrám.',
-];
+/* ---------- Povzbudzujúce texty ----------
+   Krátke vety sa neprekladajú cez slovníkové kľúče, ale ako celé vety pre každý
+   jazyk. Vybraný jazyk má vždy vlastné pole; neznámy kód spadne na angličtinu. */
+const MOTIVATION = {
+  sk: [
+    'Každý tréning ťa posúva bližšie k cieľu.',
+    'Dnešný deň je skvelý deň na tréning.',
+    'Telo si pamätá tvoju drinu – neprestaň.',
+    'Silu nezískaš odpočinkom, ale pohybom.',
+    'Buď lepší, ako si bol včera.',
+    'Drepuješ dnes? Tvoje budúce ja ti poďakuje.',
+    'Malé kroky, veľké výsledky.',
+    'Súdržnosť poráža motiváciu. Príď znova.',
+    'Tréning je investícia do seba.',
+    'Začni, aj keď sa ti nechce. Potom to pôjde samo.',
+    'Disciplína je tvoja superveľmoc.',
+    'Jeden tréning môže zmeniť celý deň.',
+    'Najťažší krok je ten prvý – sprav ho teraz.',
+    'Tvoja jediná konkurencia si ty sám.',
+    'Buduj svoje telo ako chrám.',
+  ],
+  en: [
+    'Every workout moves you closer to your goal.',
+    'Today is a great day to train.',
+    'Your body remembers the hard work — keep going.',
+    'Strength comes from movement, not rest.',
+    'Be better than you were yesterday.',
+    'Squatting today? Your future self will thank you.',
+    'Small steps, big results.',
+    'Consistency beats motivation. Show up again.',
+    'Training is an investment in yourself.',
+    'Start even when you do not feel like it.',
+    'Discipline is your superpower.',
+    'One workout can change your whole day.',
+    'The hardest step is the first one — take it now.',
+    'Your only competition is yourself.',
+    'Build your body like a temple.',
+  ],
+  es: [
+    'Cada entrenamiento te acerca a tu objetivo.',
+    'Hoy es un gran día para entrenar.',
+    'Tu cuerpo recuerda el esfuerzo: no pares.',
+    'La fuerza viene del movimiento, no del descanso.',
+    'Sé mejor de lo que eras ayer.',
+    '¿Sentadillas hoy? Tu yo del futuro te lo agradecerá.',
+    'Pequeños pasos, grandes resultados.',
+    'La constancia vence a la motivación. Vuelve otra vez.',
+    'Entrenar es invertir en ti.',
+    'Empieza aunque no te apetezca.',
+    'La disciplina es tu superpoder.',
+    'Un entrenamiento puede cambiar todo tu día.',
+    'El paso más difícil es el primero: dalo ahora.',
+    'Tu única competencia eres tú.',
+    'Construye tu cuerpo como un templo.',
+  ],
+  'pt-BR': [
+    'Cada treino te aproxima do seu objetivo.',
+    'Hoje é um ótimo dia para treinar.',
+    'Seu corpo lembra do esforço: não pare.',
+    'A força vem do movimento, não do descanso.',
+    'Seja melhor do que você foi ontem.',
+    'Vai fazer agachamento hoje? Seu eu do futuro agradece.',
+    'Passos pequenos, resultados grandes.',
+    'Constância vence motivação. Apareça de novo.',
+    'Treinar é investir em você.',
+    'Comece mesmo sem vontade.',
+    'A disciplina é o seu superpoder.',
+    'Um treino pode mudar o seu dia inteiro.',
+    'O passo mais difícil é o primeiro: dê ele agora.',
+    'Sua única concorrência é você mesmo.',
+    'Construa seu corpo como um templo.',
+  ],
+  fr: [
+    'Chaque entraînement te rapproche de ton objectif.',
+    'Aujourd’hui est un bon jour pour s’entraîner.',
+    'Ton corps se souvient des efforts : ne t’arrête pas.',
+    'La force vient du mouvement, pas du repos.',
+    'Sois meilleur qu’hier.',
+    'Des squats aujourd’hui ? Ton toi futur te remerciera.',
+    'Petits pas, grands résultats.',
+    'La régularité bat la motivation. Reviens.',
+    'S’entraîner, c’est investir en soi.',
+    'Commence même sans envie.',
+    'La discipline est ton superpouvoir.',
+    'Un entraînement peut changer toute ta journée.',
+    'Le pas le plus dur est le premier : fais-le maintenant.',
+    'Ta seule concurrence, c’est toi.',
+    'Construis ton corps comme un temple.',
+  ],
+  ar: [
+    'كل تمرين يقرّبك من هدفك.',
+    'اليوم يوم رائع للتمرين.',
+    'جسمك يتذكر التعب — لا تتوقف.',
+    'القوة تأتي من الحركة لا من الراحة.',
+    'كن أفضل مما كنت بالأمس.',
+    'سكوات اليوم؟ نفسك في المستقبل ستشكرك.',
+    'خطوات صغيرة، نتائج كبيرة.',
+    'الاستمرارية تتغلب على الحماس. عُد مرة أخرى.',
+    'التمرين استثمار في نفسك.',
+    'ابدأ حتى لو لم ترغب.',
+    'الانضباط هو قوتك الخارقة.',
+    'تمرين واحد قد يغيّر يومك بالكامل.',
+    'أصعب خطوة هي الأولى — خذها الآن.',
+    'منافسك الوحيد هو أنت.',
+    'ابنِ جسمك كالمعبد.',
+  ],
+};
 
-const MOTIVATION_EN = [
-  'Every workout moves you closer to your goal.',
-  'Today is a great day to train.',
-  'Your body remembers the hard work — keep going.',
-  'Strength comes from movement, not rest.',
-  'Be better than you were yesterday.',
-  'Squatting today? Your future self will thank you.',
-  'Small steps, big results.',
-  'Consistency beats motivation. Show up again.',
-  'Training is an investment in yourself.',
-  'Start even when you do not feel like it.',
-  'Discipline is your superpower.',
-  'One workout can change your whole day.',
-  'The hardest step is the first one — take it now.',
-  'Your only competition is yourself.',
-  'Build your body like a temple.',
-];
+const MOTIVATION_LONG = {
+  sk: [
+    '🔥 Si vo veľkej forme! Takto sa to robí!',
+    '🔥 Nezastaviteľný! Pokračuj v tom!',
+    '🔥 Séria, na ktorú môžeš byť hrdý!',
+  ],
+  en: [
+    '🔥 You are on fire! Keep it up!',
+    '🔥 Unstoppable! Keep going!',
+    '🔥 A streak to be proud of!',
+  ],
+  es: [
+    '🔥 ¡Estás en racha! ¡Sigue así!',
+    '🔥 ¡Imparable! ¡No pares!',
+    '🔥 ¡Una racha de la que estar orgulloso!',
+  ],
+  'pt-BR': [
+    '🔥 Você está em chamas! Continue assim!',
+    '🔥 Imparável! Não pare!',
+    '🔥 Uma sequência para se orgulhar!',
+  ],
+  fr: [
+    '🔥 Tu es en feu ! Continue comme ça !',
+    '🔥 Imparable ! Ne lâche rien !',
+    '🔥 Une série dont tu peux être fier !',
+  ],
+  ar: [
+    '🔥 أنت في أفضل حال! واصل!',
+    '🔥 لا يمكن إيقافك! استمر!',
+    '🔥 سلسلة تستحق الفخر!',
+  ],
+};
 
-const MOTIVATION_LONG_STREAK_SK = [
-  '🔥 Si vo veľkej forme! Takto sa to robí!',
-  '🔥 Nezastaviteľný! Pokračuj v tom!',
-  '🔥 Séria, na ktorú môžeš byť hrdý!',
-];
+const ENCOURAGEMENT = {
+  sk: ['Skvelá práca! Zaslúžiš si oddych.', 'Výborne! Každý tréning sa počíta.', 'Paráda, zvládol si to!', 'Takto sa buduje forma!'],
+  en: ['Great job! You earned the rest.', 'Well done! Every workout counts.', 'Nice, you nailed it!', 'That is how you build fitness!'],
+  es: ['¡Buen trabajo! Te ganaste el descanso.', '¡Bien hecho! Cada entrenamiento cuenta.', '¡Genial, lo lograste!', '¡Así se construye la forma!'],
+  'pt-BR': ['Ótimo trabalho! Você merece o descanso.', 'Muito bem! Cada treino conta.', 'Boa, você conseguiu!', 'É assim que se constrói a forma!'],
+  fr: ['Beau travail ! Tu as mérité la pause.', 'Bravo ! Chaque entraînement compte.', 'Joli, tu l’as fait !', 'C’est comme ça qu’on progresse !'],
+  ar: ['عمل رائع! استحققت الراحة.', 'أحسنت! كل تمرين يُحتسب.', 'جميل، لقد أنجزته!', 'هكذا تُبنى اللياقة!'],
+};
 
-const MOTIVATION_LONG_STREAK_EN = [
-  '🔥 You are on fire! Keep it up!',
-  '🔥 Unstoppable! Keep going!',
-  '🔥 A streak to be proud of!',
-];
-
-const ENCOURAGEMENT_SK = [
-  'Skvelá práca! Zaslúžiš si oddych.',
-  'Výborne! Každý tréning sa počíta.',
-  'Paráda, zvládol si to!',
-  'Takto sa buduje forma!',
-];
-
-const ENCOURAGEMENT_EN = [
-  'Great job! You earned the rest.',
-  'Well done! Every workout counts.',
-  'Nice, you nailed it!',
-  'That is how you build fitness!',
-];
-
-const SET_MESSAGES_SK = [
-  'Séria hotová, pokračuj!',
-  'Ešte jedna séria, dáš to!',
-  'Skoro tam! Tlač ďalej!',
-  'Pekne! Telo pracuje, ty len tlačíš.',
-  'Sila rastie s každou sériou.',
-  'Nepoľavuj, ešte chvíľu!',
-  'Výborne, drž tempo!',
-];
-
-const SET_MESSAGES_EN = [
-  'Set done, keep going!',
-  'One more set, you got this!',
-  'Almost there! Push on!',
-  'Nice! Your body is working.',
-  'Strength grows with every set.',
-  'Do not let up, a little more!',
-  'Great, keep the pace!',
-];
+const SET_MESSAGES = {
+  sk: ['Séria hotová, pokračuj!', 'Ešte jedna séria, dáš to!', 'Skoro tam! Tlač ďalej!', 'Pekne! Telo pracuje, ty len tlačíš.', 'Sila rastie s každou sériou.', 'Nepoľavuj, ešte chvíľu!', 'Výborne, drž tempo!'],
+  en: ['Set done, keep going!', 'One more set, you got this!', 'Almost there! Push on!', 'Nice! Your body is working.', 'Strength grows with every set.', 'Do not let up, a little more!', 'Great, keep the pace!'],
+  es: ['Serie hecha, ¡sigue!', 'Una serie más, ¡puedes!', '¡Casi! ¡Empuja!', '¡Bien! Tu cuerpo está trabajando.', 'La fuerza crece con cada serie.', '¡No aflojes, un poco más!', '¡Genial, mantén el ritmo!'],
+  'pt-BR': ['Série concluída, continue!', 'Mais uma série, você consegue!', 'Quase lá! Empurre!', 'Boa! Seu corpo está trabalhando.', 'A força cresce a cada série.', 'Não desacelere, mais um pouco!', 'Ótimo, mantenha o ritmo!'],
+  fr: ['Série terminée, continue !', 'Encore une série, tu peux le faire !', 'Presque ! Pousse encore !', 'Bien ! Ton corps travaille.', 'La force grandit à chaque série.', 'Ne lâche pas, encore un peu !', 'Super, garde le rythme !'],
+  ar: ['انتهت السلسلة، واصل!', 'سلسلة أخرى، تستطيع!', 'اقتربت! واصل الدفع!', 'جيد! جسمك يعمل.', 'القوة تنمو مع كل سلسلة.', 'لا تتراجع، بقليل آخر!', 'رائع، حافظ على الإيقاع!'],
+};
 
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/* Pole pre aktuálny jazyk; neznámy kód vždy spadne na angličtinu. */
+function langList(map) {
+  return map[activeLang()] || map.en;
+}
+
 function motivationText() {
   const streak = computeStreak();
-  const longSk = MOTIVATION_LONG_STREAK_SK;
-  const longEn = MOTIVATION_LONG_STREAK_EN;
-  const baseSk = MOTIVATION_SK;
-  const baseEn = MOTIVATION_EN;
-  if (streak >= 4) {
-    const arr = state.settings.lang === 'en' ? longEn : longSk;
-    return arr[dayOfYear(new Date()) % arr.length];
-  }
-  const arr = state.settings.lang === 'en' ? baseEn : baseSk;
+  const arr = streak >= 4 ? langList(MOTIVATION_LONG) : langList(MOTIVATION);
   return arr[dayOfYear(new Date()) % arr.length];
 }
 
 function randomEncouragement() {
-  return pick(state.settings.lang === 'en' ? ENCOURAGEMENT_EN : ENCOURAGEMENT_SK);
+  return pick(langList(ENCOURAGEMENT));
 }
 
 function randomSetMessage() {
-  return pick(state.settings.lang === 'en' ? SET_MESSAGES_EN : SET_MESSAGES_SK);
+  return pick(langList(SET_MESSAGES));
 }
 
 /* ---------- Vykreslenie: DNES ---------- */
@@ -1972,14 +3327,20 @@ function formatDurationClock(seconds) {
   return `${h}:${m}:${s}`;
 }
 
-/* Prirodzené trvanie: "45 s" / "42 min" / "1 h 12 min". */
+/* Prirodzené trvanie: "45 s" / "42 min" / "1 h 12 min".
+   Jednotky sa skloňujú cez tPluralWord, takže arabčina dostane svoje tvary
+   a spojku, francúzština svoje a slovenčina svoje. */
 function formatDurationNatural(seconds) {
   const total = Math.max(0, Math.floor(Number(seconds) || 0));
-  if (total < 60) return t('duration.sec', { n: total });
-  if (total < 3600) return t('duration.min', { n: Math.floor(total / 60) });
+  if (total < 60) return tPlural('duration.sec', total);
+  if (total < 3600) return tPlural('duration.min', Math.floor(total / 60));
   const hours = Math.floor(total / 3600);
   const mins = Math.floor((total % 3600) / 60);
-  return mins === 0 ? t('duration.hour', { n: hours }) : t('duration.hourMin', { n: hours, m: mins });
+  if (mins === 0) return tPlural('duration.hourUnit', hours);
+  return t('duration.hourMin', {
+    h: tPluralWord('duration.hourUnit', hours),
+    m: tPluralWord('duration.minUnit', mins),
+  });
 }
 
 function updateDurationDisplay() {
@@ -3443,8 +4804,7 @@ function historyDurationLine(w) {
 }
 
 function monthTitle() {
-  const names = activeLang() === 'sk' ? MONTHS_SK_NOM : MONTHS_EN_LONG;
-  return `${names[viewMonth]} ${viewYear}`;
+  return fillDatePattern(localeData().titlePattern, new Date(viewYear, viewMonth, 1), '');
 }
 
 /* Krátky text stavu dňa – používa ho aria-label aj detail dňa. */
@@ -3464,7 +4824,7 @@ function renderKalendar() {
 
   const wd = document.getElementById('calendar-weekdays');
   wd.innerHTML = '';
-  for (const label of WEEKDAYS_SHORT[lang]) {
+  for (const label of localeData().weekdaysShort) {
     const el = document.createElement('span');
     el.className = 'calendar-weekday';
     el.textContent = label;
@@ -3509,7 +4869,7 @@ function renderKalendar() {
       + (isFuture ? ' cal-future' : '')
       + (key === selectedDayKey ? ' cal-selected' : '');
     let aria = t('kalendar.ariaDay', { date: formatFullDate(date), status });
-    if (workouts.length > 1) aria += ' · ' + t('kalendar.ariaWorkoutCount', { n: workouts.length });
+    if (workouts.length > 1) aria += ' · ' + tPlural('kalendar.ariaWorkoutCount', workouts.length);
     btn.setAttribute('aria-label', aria);
     btn.innerHTML = `<span class="cal-num">${dayNum}</span>`
       + (workouts.length > 1 ? `<span class="cal-badge">${workouts.length}</span>` : '');
@@ -3956,6 +5316,7 @@ function confirmSetup() {
 function openSettings() {
   renderGoalChips('settings-goal-chips', weeklyGoal());
   setGoalReadout(weeklyGoal());
+  renderLangSetting();
   renderRestSoundSetting();
   const removeBtn = document.getElementById('btn-remove-demo');
   if (removeBtn) {
@@ -4513,8 +5874,98 @@ function startCustomTimer() {
 
 /* ---------- Jazyk ---------- */
 
+/* Smerové glyfy: v RTL musia šípky ukazovať na tú stranu, ktorou sa naozaj ide.
+   "Predchádzajúci mesiac" je v RTL vpravo a ukazuje doprava. */
+function dirGlyph(ltrGlyph, rtlGlyph) {
+  return isRtl() ? rtlGlyph : ltrGlyph;
+}
+
+function applyDirGlyphs() {
+  const pairs = [
+    ['btn-cal-prev', '‹', '›'],
+    ['btn-cal-next', '›', '‹'],
+    ['btn-plan-left', '‹', '›'],
+    ['btn-plan-right', '›', '‹'],
+  ];
+  for (const [id, ltr, rtl] of pairs) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = dirGlyph(ltr, rtl);
+  }
+}
+
+/* Aktuálny jazyk v Nastaveniach. Endonym sa nikdy neprekladá – používateľ musí
+   svoju voľbu spoznať aj v rozhraní, ktorému nerozumie. */
+function renderLangSetting() {
+  const el = document.getElementById('lang-setting-value');
+  if (!el) return;
+  const name = langDisplayName(activeLang());
+  el.textContent = name;
+  el.setAttribute('aria-label', t('settings.languageCurrent', { name }));
+}
+
+/* Zoznam jazykov v pickeri. Každá položka nesie vlastné lang/dir, aby sa
+   العربية vykreslila správne aj v rozhraní iného jazyka. */
+function renderLangList() {
+  const box = document.getElementById('lang-list');
+  if (!box) return;
+  box.innerHTML = '';
+  const current = activeLang();
+  for (const lang of LANGUAGES) {
+    const on = lang.code === current;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'lang-item' + (on ? ' active' : '');
+    btn.dataset.lang = lang.code;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', t(on ? 'langPicker.selected' : 'langPicker.select', { name: lang.name }));
+
+    const check = document.createElement('span');
+    check.className = 'lang-check';
+    check.setAttribute('aria-hidden', 'true');
+    check.textContent = on ? '✓' : '';
+
+    const name = document.createElement('span');
+    name.className = 'lang-name';
+    name.lang = lang.code;
+    name.dir = lang.rtl ? 'rtl' : 'ltr';
+    name.textContent = lang.name;
+
+    btn.append(check, name);
+    btn.addEventListener('click', () => setLang(lang.code));
+    box.appendChild(btn);
+  }
+}
+
+function openLanguagePicker() {
+  renderLangList();
+  document.getElementById('modal-lang').hidden = false;
+  refreshUpdateBanner();
+}
+
+function hideLanguagePicker() {
+  const modal = document.getElementById('modal-lang');
+  if (modal) modal.hidden = true;
+  refreshUpdateBanner();
+}
+
+/* Prepnutie jazyka: okamžité, bez obnovenia stránky. NEMENÍ nič iné –
+   priebeh tréningu, označené série, časovače, trvanie, vybraný plán, poradie
+   plánov ani zobrazený mesiac kalendára zostávajú presne také, aké boli. */
+function setLang(code) {
+  if (LANG_CODES.indexOf(code) < 0) return;
+  hideLanguagePicker();
+  if (code === activeLang()) return;
+  state.settings.lang = code;
+  saveState();
+  applyStaticI18n();
+  renderAll();
+}
+
 function applyStaticI18n() {
-  document.documentElement.lang = state.settings.lang;
+  const lang = activeLang();
+  document.documentElement.lang = lang;
+  document.documentElement.dir = isRtl() ? 'rtl' : 'ltr';
+  if (document.body) document.body.classList.toggle('rtl', isRtl());
   document.querySelectorAll('[data-i18n]').forEach(el => {
     el.textContent = t(el.dataset.i18n);
   });
@@ -4527,23 +5978,25 @@ function applyStaticI18n() {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.placeholder = t(el.dataset.i18nPlaceholder);
   });
-  const langBtn = document.getElementById('btn-lang');
-  langBtn.innerHTML = `<span class="${state.settings.lang === 'sk' ? 'active-lang' : ''}">SK</span>|<span class="${state.settings.lang === 'en' ? 'active-lang' : ''}">EN</span>`;
-}
-
-function toggleLang() {
-  state.settings.lang = state.settings.lang === 'sk' ? 'en' : 'sk';
-  saveState();
-  applyStaticI18n();
-  renderAll();
+  renderLangSetting();
+  renderLangList();
+  applyDirGlyphs();
 }
 
 /* ---------- Kontrola prekladov ---------- */
 
+/* Každý jazyk sa porovnáva s angličtinou (referenčný slovník).
+   Chýbajúci kľúč sa v rozhraní nikdy nezobrazí ako kľúč – t() má fallback –
+   ale počas vývoja to musí byť vidieť. */
 function verifyI18n() {
-  const missing = Object.keys(I18N.sk).filter(k => I18N.en[k] === undefined);
-  if (missing.length) {
-    console.warn('GymQuest: chýbajúce EN preklady:', missing);
+  const ref = Object.keys(I18N.en);
+  for (const lang of LANG_CODES) {
+    if (lang === 'en') continue;
+    const dict = I18N[lang] || {};
+    const missing = ref.filter(k => dict[k] === undefined);
+    if (missing.length) {
+      console.warn('GymQuest: chýbajúce preklady (' + lang + '):', missing);
+    }
   }
 }
 
@@ -4566,7 +6019,8 @@ function setupEvents() {
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
   });
 
-  on('btn-lang', toggleLang);
+  on('btn-change-lang', openLanguagePicker);
+  on('btn-lang-cancel', hideLanguagePicker);
   on('btn-settings', openSettings);
 
   on('btn-start-workout', () => {
@@ -4722,8 +6176,11 @@ function setupEvents() {
   });
   // jeden dokumentový listener pre Esc (modal nie je fokusovateľný kontajner)
   document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const langModal = document.getElementById('modal-lang');
+    if (langModal && !langModal.hidden) { hideLanguagePicker(); return; }
     const modal = document.getElementById('modal-day');
-    if (e.key === 'Escape' && modal && !modal.hidden) closeDay();
+    if (modal && !modal.hidden) closeDay();
   });
 
   on('btn-update', applyUpdate);
@@ -4775,7 +6232,7 @@ function isBusy() {
   if (getSession()) return true;                         // rozbehnutý aktívny tréning (meria sa jeho trvanie)
   if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
-    'modal-planchoice', 'modal-fullbody'];
+    'modal-planchoice', 'modal-fullbody', 'modal-lang'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg
