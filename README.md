@@ -50,6 +50,9 @@ everything on your own device.
 - **Six languages** — full **Slovak, English, Spanish, Brazilian Portuguese, French and Arabic**
   interfaces, chosen in ⚙️ Settings and switched instantly. Arabic is a complete right-to-left mode.
 - **Export and import** — back up or restore all of your data as a JSON file.
+- **Automatic backups** — opt-in JSON backup files every five workouts (at most weekly), created
+  automatically on desktop and Android, and with one honest tap on iPhone. See *Automatic backups*
+  below for exactly what is and is not automatic.
 - **Installable** — add it to your phone's home screen and it opens like a native app.
 
 ---
@@ -510,6 +513,78 @@ another device.
 - **Export data** (⚙️ Settings) downloads all of your data as a JSON file.
 - **Import data** restores your data from a JSON backup, with validation and a confirmation prompt.
 - **Reset data** erases everything after a double confirmation.
+
+---
+
+## Automatic backups — what is automatic and what is not
+
+⚙️ Settings has an **Automatic backup** switch. It is **off by default**, and it only ever acts
+**while the app is open** — a static web app cannot run while it is closed or suspended, so GymQuest
+never claims otherwise.
+
+When you switch it on, a JSON backup becomes due after **five newly completed workouts** and **at most
+once every seven days**. If a backup is already due the next time you open the app, you are offered it
+then. Nothing is offered during an active workout, while you are entering exercise data, or while a
+dialog is open — the app waits until you are done.
+
+### The one honest limitation: iPhones cannot save a file without a tap
+
+| | Desktop / Android | iPhone (Safari and Home Screen) |
+|---|---|---|
+| Backup file created **with no tap** | **Yes** — the file goes straight to your Downloads | **No.** iOS gives no reliable way to do that |
+| What you get instead | — | A **Save backup now** strip; tapping it opens the iOS share sheet |
+| Where the file ends up | your Downloads folder | the share sheet → **Save to Files** → iCloud Drive or On My iPhone |
+
+A web app cannot silently write to Files or iCloud Drive, and the share sheet always needs a real tap —
+so on iPhone **one tap is always required**, and GymQuest says so instead of pretending otherwise.
+Worse, iOS gives no confirmation that the file was actually kept (the share sheet reports "done" even
+when you cancel), so **GymQuest never displays "Backup saved"** on any platform. It tells you the file
+was created and where to look, and nothing more.
+
+### Using it
+
+- **⚙️ Settings → Automatic backup** — the switch, the honest explanation, the date of the last
+  backup offered, and **Save backup now** (always available, whether or not a backup is due).
+- When a backup is due you also get a small strip above the tab bar with **Save backup now** (or
+  **Save again**), the filename, and the plain truth about confirmation. Dismissing it hides it for
+  that session only; export/import and the manual button are always there.
+
+The file is named `gymquest-backup-YYYY-MM-DD-HHMM.json` using your **local** date and time, and its
+contents are exactly the same payload as **Export data** (state without a half-finished workout). Old
+exports import into it and it imports into old versions — the format has not changed.
+
+Two protections worth knowing: because every offer is recorded, backups cannot pile up — at most one
+file per seven-day window; and if you ever import a backup that contains **fewer workouts than you
+currently have**, the confirmation dialog says so before anything is replaced.
+
+### Nothing leaves your device
+
+There is no server, no account and no cloud API. A backup file is only ever created **on your device**,
+by your browser, into your own Downloads folder or your own Files app. GymQuest also deliberately keeps
+**no second copy** in IndexedDB or the cache: storage that is wiped together with the app is not an
+independent backup, so it is not offered as one. Backup files are never added to the app's offline
+cache and never committed to the repository.
+
+### Recovering GymQuest from a backup file
+
+1. Open GymQuest (a brand-new install or a wiped browser is fine).
+2. ⚙️ Settings → **Import data** → choose `gymquest-backup-….json`.
+3. Confirm. Your plans, history, XP, achievements, streaks, goals, notes, durations, failure sets and
+   settings come back exactly as they were. Your current language is kept if the file has none.
+
+### On-device iPhone checks
+
+1. Add GymQuest to the Home Screen and open it from the icon.
+2. ⚙️ Settings → **Automatic backup** on → **Save backup now** → the share sheet appears → **Save to
+   Files** → iCloud Drive or On My iPhone.
+3. Check **Files** for `gymquest-backup-….json` and open it — you should see the JSON.
+4. To see the due strip without waiting a week, open Safari's Web Inspector console with the app in the
+   foreground and run:
+   `state.settings.autoBackupWorkoutCount = 0; state.settings.autoBackupOfferedAt = 0; saveState(); refreshBackupOffer();`
+   — on iPhone this shows the strip and waits for your tap. This is the part that cannot be verified
+   from a desktop browser, so it is worth confirming on your own device.
+5. Background it, wait, and reopen: the strip comes back only if a backup is still due. Nothing runs
+   while GymQuest is closed.
 
 ---
 

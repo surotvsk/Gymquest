@@ -233,6 +233,21 @@ const I18N = {
     'langPicker.title': 'Jazyk',
     'langPicker.select': '{name} — vybrať jazyk',
     'langPicker.selected': '{name} — aktuálne vybraný',
+    'settings.autoBackup': 'Automatické zálohovanie',
+    'settings.autoBackupHint': 'Ak to zariadenie podporuje, GymQuest sa pokúsi vytvoriť JSON zálohu počas používania aplikácie. iPhone môže vyžadovať potvrdenie alebo uloženie súboru.',
+    'settings.autoBackupLast': 'Naposledy ponúknutá externá záloha: {when}',
+    'settings.importOlder': 'Táto záloha má menej tréningov než tvoje aktuálne dáta ({old} → {new}).',
+    'backup.never': 'nikdy',
+    'backup.dueTitle': 'Záloha je potrebná',
+    'backup.dueBody': 'Ulož si kópiu JSON mimo GymQuestu, aby si mohol obnoviť tréningy a históriu.',
+    'backup.sentTitle': 'Súbor zálohy bol vytvorený',
+    'backup.sentBody': 'Súbor zálohy bol odovzdaný prehliadaču.',
+    'backup.saveNow': 'Uložiť zálohu teraz',
+    'backup.saveAgain': 'Uložiť znova',
+    'backup.dismiss': 'Skryť pripomienku zálohy',
+    'backup.noConfirm': 'GymQuest nemôže potvrdiť, že súbor bol naozaj uložený — skontroluj aplikáciu Súbory alebo priečinok Stiahnuté.',
+    'backup.shareHint': 'Ak sa otvorila ponuka zdieľania, zvoľ „Uložiť do Súborov“ (iCloud Drive alebo V iPhone). GymQuest nedokáže potvrdiť, že sa uložil.',
+    'backup.fileName': 'Súbor: {name}',
     'dnes.weekTitle': 'Tréningy tento týždeň',
     'dnes.weekDone': '{n} z {g}',
     'dnes.weekDoneShort': '{n} z {g}',
@@ -511,6 +526,21 @@ const I18N = {
     'langPicker.title': 'Language',
     'langPicker.select': '{name} — choose this language',
     'langPicker.selected': '{name} — currently selected',
+    'settings.autoBackup': 'Automatic backup',
+    'settings.autoBackupHint': 'When supported, GymQuest attempts to create a JSON backup while the app is open. iPhone may require you to confirm or save the file.',
+    'settings.autoBackupLast': 'Last external backup offered: {when}',
+    'settings.importOlder': 'This backup has fewer workouts than your current data ({old} → {new}).',
+    'backup.never': 'never',
+    'backup.dueTitle': 'Backup is due',
+    'backup.dueBody': 'Save a JSON copy outside GymQuest so you can restore your workouts and history.',
+    'backup.sentTitle': 'Backup file created',
+    'backup.sentBody': 'A backup file was handed to the browser.',
+    'backup.saveNow': 'Save backup now',
+    'backup.saveAgain': 'Save again',
+    'backup.dismiss': 'Dismiss backup reminder',
+    'backup.noConfirm': 'GymQuest cannot confirm the file was actually saved — check your Files app or Downloads folder.',
+    'backup.shareHint': 'If the share sheet appeared, choose “Save to Files” (iCloud Drive or On My iPhone). GymQuest cannot confirm it was saved.',
+    'backup.fileName': 'File: {name}',
     'dnes.weekTitle': 'Workouts this week',
     'dnes.weekDone': '{n} of {g}',
     'dnes.weekDoneShort': '{n} of {g}',
@@ -789,6 +819,21 @@ const I18N = {
     'langPicker.title': 'Idioma',
     'langPicker.select': '{name} — elegir este idioma',
     'langPicker.selected': '{name} — seleccionado actualmente',
+    'settings.autoBackup': 'Copia de seguridad automática',
+    'settings.autoBackupHint': 'Cuando sea compatible, GymQuest intenta crear una copia JSON mientras la aplicación está abierta. El iPhone puede pedirte que confirmes o guardes el archivo.',
+    'settings.autoBackupLast': 'Última copia externa ofrecida: {when}',
+    'settings.importOlder': 'Esta copia tiene menos entrenamientos que tus datos actuales ({old} → {new}).',
+    'backup.never': 'nunca',
+    'backup.dueTitle': 'Toca hacer copia de seguridad',
+    'backup.dueBody': 'Guarda una copia JSON fuera de GymQuest para poder restaurar tus entrenamientos y tu historial.',
+    'backup.sentTitle': 'Archivo de copia creado',
+    'backup.sentBody': 'Se ha entregado un archivo de copia al navegador.',
+    'backup.saveNow': 'Guardar copia ahora',
+    'backup.saveAgain': 'Guardar otra vez',
+    'backup.dismiss': 'Descartar el recordatorio de copia',
+    'backup.noConfirm': 'GymQuest no puede confirmar que el archivo se haya guardado realmente: revisa la app Archivos o la carpeta Descargas.',
+    'backup.shareHint': 'Si apareció el menú de compartir, elige «Guardar en Archivos» (iCloud Drive o En mi iPhone). GymQuest no puede confirmar que se haya guardado.',
+    'backup.fileName': 'Archivo: {name}',
     'dnes.weekTitle': 'Entrenamientos esta semana',
     'dnes.weekDone': '{n} de {g}',
     'dnes.weekDoneShort': '{n} de {g}',
@@ -1067,6 +1112,21 @@ const I18N = {
     'langPicker.title': 'Idioma',
     'langPicker.select': '{name} — escolher este idioma',
     'langPicker.selected': '{name} — selecionado no momento',
+    'settings.autoBackup': 'Backup automático',
+    'settings.autoBackupHint': 'Quando houver suporte, o GymQuest tenta criar um backup JSON enquanto o aplicativo está aberto. O iPhone pode pedir que você confirme ou salve o arquivo.',
+    'settings.autoBackupLast': 'Último backup externo oferecido: {when}',
+    'settings.importOlder': 'Este backup tem menos treinos do que os seus dados atuais ({old} → {new}).',
+    'backup.never': 'nunca',
+    'backup.dueTitle': 'Backup pendente',
+    'backup.dueBody': 'Salve uma cópia JSON fora do GymQuest para poder restaurar seus treinos e seu histórico.',
+    'backup.sentTitle': 'Arquivo de backup criado',
+    'backup.sentBody': 'Um arquivo de backup foi entregue ao navegador.',
+    'backup.saveNow': 'Salvar backup agora',
+    'backup.saveAgain': 'Salvar novamente',
+    'backup.dismiss': 'Dispensar o lembrete de backup',
+    'backup.noConfirm': 'O GymQuest não pode confirmar que o arquivo foi realmente salvo — verifique o app Arquivos ou a pasta Downloads.',
+    'backup.shareHint': 'Se a folha de compartilhamento apareceu, escolha “Salvar em Arquivos” (iCloud Drive ou No meu iPhone). O GymQuest não pode confirmar que foi salvo.',
+    'backup.fileName': 'Arquivo: {name}',
     'dnes.weekTitle': 'Treinos nesta semana',
     'dnes.weekDone': '{n} de {g}',
     'dnes.weekDoneShort': '{n} de {g}',
@@ -1345,6 +1405,21 @@ const I18N = {
     'langPicker.title': 'Langue',
     'langPicker.select': '{name} — choisir cette langue',
     'langPicker.selected': '{name} — actuellement sélectionnée',
+    'settings.autoBackup': 'Sauvegarde automatique',
+    'settings.autoBackupHint': 'Lorsque c’est pris en charge, GymQuest tente de créer une sauvegarde JSON pendant que l’application est ouverte. L’iPhone peut te demander de confirmer ou d’enregistrer le fichier.',
+    'settings.autoBackupLast': 'Dernière sauvegarde externe proposée : {when}',
+    'settings.importOlder': 'Cette sauvegarde contient moins d’entraînements que tes données actuelles ({old} → {new}).',
+    'backup.never': 'jamais',
+    'backup.dueTitle': 'Sauvegarde à faire',
+    'backup.dueBody': 'Enregistre une copie JSON en dehors de GymQuest pour pouvoir restaurer tes entraînements et ton historique.',
+    'backup.sentTitle': 'Fichier de sauvegarde créé',
+    'backup.sentBody': 'Un fichier de sauvegarde a été transmis au navigateur.',
+    'backup.saveNow': 'Enregistrer la sauvegarde',
+    'backup.saveAgain': 'Enregistrer à nouveau',
+    'backup.dismiss': 'Masquer le rappel de sauvegarde',
+    'backup.noConfirm': 'GymQuest ne peut pas confirmer que le fichier a réellement été enregistré — vérifie l’app Fichiers ou le dossier Téléchargements.',
+    'backup.shareHint': 'Si la feuille de partage est apparue, choisis « Enregistrer dans Fichiers » (iCloud Drive ou Sur mon iPhone). GymQuest ne peut pas confirmer l’enregistrement.',
+    'backup.fileName': 'Fichier : {name}',
     'dnes.weekTitle': 'Entraînements cette semaine',
     'dnes.weekDone': '{n} sur {g}',
     'dnes.weekDoneShort': '{n} sur {g}',
@@ -1632,6 +1707,21 @@ const I18N = {
     'langPicker.title': 'اللغة',
     'langPicker.select': '{name} — اختيار هذه اللغة',
     'langPicker.selected': '{name} — محدَّدة حاليًا',
+    'settings.autoBackup': 'النسخ الاحتياطي التلقائي',
+    'settings.autoBackupHint': 'عند توفر الدعم، يحاول GymQuest إنشاء نسخة JSON احتياطية أثناء فتح التطبيق. قد يطلب منك iPhone تأكيد الملف أو حفظه.',
+    'settings.autoBackupLast': 'آخر نسخة احتياطية خارجية معروضة: {when}',
+    'settings.importOlder': 'تحتوي هذه النسخة على تمارين أقل من بياناتك الحالية ({old} → {new}).',
+    'backup.never': 'أبدًا',
+    'backup.dueTitle': 'حان وقت النسخ الاحتياطي',
+    'backup.dueBody': 'احفظ نسخة JSON خارج GymQuest لتتمكن من استعادة تمارينك وسجلك.',
+    'backup.sentTitle': 'تم إنشاء ملف النسخة الاحتياطية',
+    'backup.sentBody': 'تم تسليم ملف النسخة الاحتياطية إلى المتصفح.',
+    'backup.saveNow': 'حفظ النسخة الآن',
+    'backup.saveAgain': 'حفظ مرة أخرى',
+    'backup.dismiss': 'إخفاء تذكير النسخ الاحتياطي',
+    'backup.noConfirm': 'لا يستطيع GymQuest تأكيد أن الملف قد حُفظ فعلًا — تحقق من تطبيق الملفات أو مجلد التنزيلات.',
+    'backup.shareHint': 'إذا ظهرت قائمة المشاركة، اختر «حفظ في الملفات» (iCloud Drive أو على iPhone). لا يستطيع GymQuest تأكيد الحفظ.',
+    'backup.fileName': 'الملف: {name}',
     'dnes.weekTitle': 'تدريبات هذا الأسبوع',
     'dnes.weekDone': '{n} من {g}',
     'dnes.weekDoneShort': '{n} من {g}',
@@ -2201,7 +2291,12 @@ function defaultState() {
     excusedWeeks: [],
     goalHistory: {},     // ISO týždeň -> cieľ platný v tom týždni (snapshot pre vyhodnotenie série)
     legacyGoal: null,    // cieľ spred zavedenia snapshotov; null = nový používateľ bez histórie
-    settings: { weeklyGoal: 3, lang: 'en', restSound: false, restSoundLength: 'standard', customRestMinutes: 2, customRestSeconds: 30 },
+    settings: {
+      weeklyGoal: 3, lang: 'en', restSound: false, restSoundLength: 'standard',
+      customRestMinutes: 2, customRestSeconds: 30,
+      /* Automatické zálohovanie: voliteľné, predvolene VYPNUTÉ. */
+      autoBackup: false, autoBackupOfferedAt: null, autoBackupWorkoutCount: 0,
+    },
     achievements: {},
     demo: false,
     activeSession: null, // rozbehnutý tréning (trvá iba do dokončenia alebo potvrdeného resetu)
@@ -2408,6 +2503,14 @@ function migrateV2toV3(parsed) {
   const cr = normalizeCustomRest(out.settings.customRestMinutes, out.settings.customRestSeconds);
   out.settings.customRestMinutes = (cr.minutes === 0 && cr.seconds === 0) ? 2 : cr.minutes;
   out.settings.customRestSeconds = (cr.minutes === 0 && cr.seconds === 0) ? 30 : cr.seconds;
+  /* Automatické zálohovanie: len explicitné true ho zapne (predvolene vypnuté).
+     Kniha záloh sa normalizuje nedeštruktívne – chýbajúca alebo poškodená
+     hodnota sa nahradí východiskom, platná sa zachová presne. */
+  if (out.settings.autoBackup !== true) out.settings.autoBackup = false;
+  const backupOffered = Number(out.settings.autoBackupOfferedAt);
+  out.settings.autoBackupOfferedAt = (Number.isFinite(backupOffered) && backupOffered > 0) ? backupOffered : null;
+  const backupCount = Math.round(Number(out.settings.autoBackupWorkoutCount));
+  out.settings.autoBackupWorkoutCount = (Number.isFinite(backupCount) && backupCount >= 0) ? backupCount : 0;
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -3375,6 +3478,9 @@ function onVisibilityChange() {
     wasHidden = false;
     timerHiddenAt = 0;
     resumeAudioIfNeeded(false);   // mimo pokynu používateľa: obnoví len existujúci kontext
+    /* Návrat do appky je presne ten moment, kedy sa má vyhodnotiť, či záloha
+       medzitým "dozrela" – aplikácia totiž na pozadí nič nerobí. */
+    refreshBackupOffer();
   }
 }
 
@@ -4901,6 +5007,7 @@ function openDay(key) {
 
 function closeDay() {
   document.getElementById('modal-day').hidden = true;
+  refreshUpdateBanner();
 }
 
 function workoutBlock(w) {
@@ -5317,6 +5424,7 @@ function openSettings() {
   renderGoalChips('settings-goal-chips', weeklyGoal());
   setGoalReadout(weeklyGoal());
   renderLangSetting();
+  renderAutoBackupSetting();
   renderRestSoundSetting();
   const removeBtn = document.getElementById('btn-remove-demo');
   if (removeBtn) {
@@ -5346,6 +5454,226 @@ function saveSettingsGoal() {
   return true;
 }
 
+/* ---------- Automatické zálohovanie do JSON súboru ----------
+   Zámerne poctivé. Aplikácia NIKDY netvrdí, že súbor je uložený – žiadna
+   platforma to nespoľahlivo nepotvrdzuje (<a download> nevracia nič a
+   navigator.share sa vyrieši aj pri zrušení). Preto sa zobrazuje len to, čo
+   je pravda: súbor bol vytvorený a odovzdaný, prípadne je pripravený na
+   uloženie a treba ho potvrdiť.
+
+   Žiadna kópia sa neukladá do IndexedDB ani do Cache Storage. Interné
+   úložisko nie je nezávislá záloha a nesmie sa tak ani tváriť.
+
+   Beží VÝHRADNE počas otvorenej aplikácie – statická stránka sa nedá zobudiť
+   na pozadí a nič také sa ani nesľubuje. */
+
+const BACKUP_EVERY_WORKOUTS = 5;
+const BACKUP_MIN_INTERVAL_MS = 7 * 24 * 3600 * 1000;
+let backupDismissed = false;      // len pre túto reláciu, nikdy sa neukladá
+let backupStripState = null;      // { kind, filename, usedShare }
+
+/* Apple mobil: iPhone/iPad vrátane aplikácie na ploche. */
+function isAppleMobile() {
+  const ua = navigator.userAgent || '';
+  if (/iPad|iPhone|iPod/.test(ua)) return true;
+  return /Macintosh/.test(ua) && Number(navigator.maxTouchPoints) > 1;
+}
+
+function isStandaloneApp() {
+  if (navigator.standalone === true) return true;
+  try {
+    return typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches;
+  } catch (e) { return false; }
+}
+
+/* Presne ten istý obsah, aký vytvára ručný export – staré aj nové zálohy
+   sa navzájom importujú bez zmien. Rozbehnutý tréning do zálohy nepatrí. */
+function backupPayload() {
+  const snapshot = Object.assign({}, state);
+  delete snapshot.activeSession;
+  return JSON.stringify(snapshot, null, 2);
+}
+
+/* Lokálny dátum a čas (nikdy UTC): gymquest-backup-YYYY-MM-DD-HHMM.json */
+function backupFileName(now) {
+  const d = now || new Date();
+  const p = (n) => String(n).padStart(2, '0');
+  return 'gymquest-backup-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate())
+    + '-' + p(d.getHours()) + p(d.getMinutes()) + '.json';
+}
+
+/* Odovzdanie súboru prehliadaču. true = akcia sa vykonala, NIE "súbor je uložený". */
+function downloadBackupFile(text, filename) {
+  try {
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => { try { URL.revokeObjectURL(url); } catch (e) {} }, 30000);
+    return true;
+  } catch (e) { return false; }
+}
+
+function canShareFiles() {
+  try {
+    if (typeof navigator.share !== 'function' || typeof navigator.canShare !== 'function') return false;
+    if (typeof File !== 'function') return false;
+    const probe = new File([new Blob(['{}'], { type: 'application/json' })], 'probe.json', { type: 'application/json' });
+    return navigator.canShare({ files: [probe] }) === true;
+  } catch (e) { return false; }
+}
+
+/* Uloženie vyžiadané používateľom. Na Apple mobile ide cez systémové
+   zdieľanie (jediná podporovaná cesta do Súborov / iCloud Drive), inde
+   cez bežné stiahnutie. Vždy sa vráti poctivý stav, nikdy "uložené". */
+function saveBackupNow() {
+  const text = backupPayload();
+  const filename = backupFileName();
+  let usedShare = false;
+  markBackupOffered();
+  if (isAppleMobile() && canShareFiles()) {
+    try {
+      const file = new File([new Blob([text], { type: 'application/json' })], filename, { type: 'application/json' });
+      const shared = navigator.share({ files: [file], title: 'GymQuest' });
+      if (shared && typeof shared.catch === 'function') shared.catch(() => {});
+      usedShare = true;
+    } catch (e) { usedShare = false; }
+  }
+  if (!usedShare) downloadBackupFile(text, filename);
+  showBackupStrip('sent', filename, usedShare);
+  renderAutoBackupSetting();
+  return true;
+}
+
+function backupNewWorkouts() {
+  return state.history.length - (Number(state.settings.autoBackupWorkoutCount) || 0);
+}
+
+/* Zapíše, že záloha bola ponúknutá (automaticky aj ručne). Práve to drží
+   limit "najviac raz za sedem dní" a zabraňuje hromadeniu duplicitných súborov. */
+function markBackupOffered() {
+  state.settings.autoBackupOfferedAt = Date.now();
+  state.settings.autoBackupWorkoutCount = state.history.length;
+  saveState();
+}
+
+/* Záloha je potrebná, keď od poslednej ponuky pribudlo aspoň päť dokončených
+   tréningov A zároveň ubehlo aspoň sedem dní. */
+function backupDue() {
+  if (!state || !state.settings || state.settings.autoBackup !== true) return false;
+  if (state.history.length === 0) return false;
+  if (backupNewWorkouts() < BACKUP_EVERY_WORKOUTS) return false;
+  const last = Number(state.settings.autoBackupOfferedAt) || 0;
+  return (Date.now() - last) >= BACKUP_MIN_INTERVAL_MS;
+}
+
+function updateBannerVisible() {
+  const el = document.getElementById('update-banner');
+  return !!(el && !el.hidden);
+}
+
+/* Počas tréningu, zadávania cvikov ani otvoreného dialógu sa záloha
+   neponúka ANI neodosiela. */
+function backupBlocked() {
+  if (backupDismissed) return true;
+  if (isBusy()) return true;
+  if (document.querySelector('.modal-backdrop:not([hidden])')) return true;
+  if (updateBannerVisible()) return true;   // dve lišty sa nikdy neprekrývajú
+  return false;
+}
+
+function renderBackupStrip() {
+  const el = document.getElementById('backup-banner');
+  if (!el || !backupStripState) return;
+  const { kind, filename, usedShare } = backupStripState;
+  const sent = kind === 'sent';
+  const title = document.getElementById('backup-title');
+  const body = document.getElementById('backup-body');
+  const meta = document.getElementById('backup-meta');
+  const note = document.getElementById('backup-note');
+  const btn = document.getElementById('btn-backup-save');
+  if (title) title.textContent = t(sent ? 'backup.sentTitle' : 'backup.dueTitle');
+  if (body) body.textContent = t(sent ? 'backup.sentBody' : 'backup.dueBody');
+  if (meta) meta.textContent = t('backup.fileName', { name: filename });
+  if (note) {
+    const noteKey = (sent && usedShare) ? 'backup.shareHint' : 'backup.noConfirm';
+    note.textContent = t(noteKey);
+    note.hidden = false;
+  }
+  if (btn) btn.textContent = t(sent ? 'backup.saveAgain' : 'backup.saveNow');
+  el.hidden = false;
+  document.body.classList.add('has-backup-banner');
+}
+
+function showBackupStrip(kind, filename, usedShare) {
+  backupStripState = { kind, filename, usedShare: usedShare === true };
+  renderBackupStrip();
+}
+
+function hideBackupStrip() {
+  backupStripState = null;
+  const el = document.getElementById('backup-banner');
+  if (el) el.hidden = true;
+  document.body.classList.remove('has-backup-banner');
+}
+
+/* Volá sa vždy, keď sa obrazovka alebo dialóg ustálil (a pri štarte).
+   Na bežných prehliadačoch súbor odovzdá automaticky; na Apple mobile sa
+   tiché sťahovanie Zámerne neskúša – je neoveriteľné a môže otvoriť náhľad
+   namiesto uloženia, takže používateľ dostane tlačidlo. */
+function refreshBackupOffer() {
+  if (!state) return;
+  /* Počas tréningu alebo otvoreného dialógu sa lišta schová a nič sa neodosiela.
+     Ponuka sa nezapisuje, takže zostáva "potrebná" a objaví sa, keď sa appka
+     upokojí. */
+  if (backupBlocked()) { hideBackupStrip(); return; }
+  /* Už zobrazená ponuka sa neprekresľuje ani neopakuje. */
+  if (backupStripState) return;
+  if (!backupDue()) return;
+  const filename = backupFileName();
+  /* Na Apple mobile sa tiché sťahovanie Zámerne neskúša – je neoveriteľné a
+     môže otvoriť náhľad namiesto uloženia, takže používateľ dostane tlačidlo. */
+  if (isAppleMobile()) {
+    markBackupOffered();
+    showBackupStrip('due', filename, false);
+    return;
+  }
+  const ok = downloadBackupFile(backupPayload(), filename);
+  markBackupOffered();
+  showBackupStrip(ok ? 'sent' : 'due', filename, false);
+}
+
+function formatBackupTimestamp(ms) {
+  const n = Number(ms);
+  if (!Number.isFinite(n) || n <= 0) return t('backup.never');
+  const d = new Date(n);
+  if (!Number.isFinite(d.getTime())) return t('backup.never');
+  const p = (v) => String(v).padStart(2, '0');
+  return formatDate(localDateKey(d)) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+function renderAutoBackupSetting() {
+  const on = !!(state && state.settings && state.settings.autoBackup === true);
+  const btn = document.getElementById('btn-auto-backup');
+  if (btn) {
+    btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    btn.classList.toggle('on', on);
+  }
+  const stateEl = document.getElementById('auto-backup-state');
+  if (stateEl) stateEl.textContent = on ? t('settings.on') : t('settings.off');
+  const lastEl = document.getElementById('auto-backup-last');
+  if (lastEl) {
+    lastEl.textContent = t('settings.autoBackupLast', {
+      when: formatBackupTimestamp(state && state.settings ? state.settings.autoBackupOfferedAt : null),
+    });
+  }
+}
+
 function exportData() {
   /* Rozbehnutá session je len stav tohto zariadenia – do zálohy nepatrí,
      aby sa cez export/import neprenášal nedokončený tréning. */
@@ -5371,6 +5699,15 @@ function importFile(file) {
         return;
       }
       pendingImport = data;
+      /* Ak je záloha menšia než to, čo je práve v appke, používateľ to musí
+         vidieť ešte pred potvrdením – nikdy nesmie ticho prepísať novšie dáta
+         starším súborom. Nič sa neblokuje, len sa to povie. */
+      const incomingCount = data.history.length;
+      const currentCount = state.history.length;
+      let confirmText = t('settings.importConfirm', { n: incomingCount });
+      if (incomingCount < currentCount) {
+        confirmText += '<br>' + t('settings.importOlder', { old: currentCount, new: incomingCount });
+      }
       // potvrdzujúce tlačidlo musí pomenovať deštruktívnu akciu, nie „Zrušiť" ako tlačidlo vľavo
       showGeneric(t('settings.importTitle'), t('settings.import'), () => {
         try {
@@ -5388,7 +5725,7 @@ function importFile(file) {
         } catch (err) {
           showGeneric(t('settings.importError'), t('common.ok'), null);
         }
-      }, t('settings.importConfirm', { n: data.history.length }));
+      }, confirmText);
     } catch (e) {
       showGeneric(t('settings.importError'), t('common.ok'), null);
     }
@@ -5980,6 +6317,8 @@ function applyStaticI18n() {
   });
   renderLangSetting();
   renderLangList();
+  renderAutoBackupSetting();
+  renderBackupStrip();   // jazyková zmena musí prekresliť aj lištu zálohy
   applyDirGlyphs();
 }
 
@@ -6043,7 +6382,7 @@ function setupEvents() {
   on('btn-finish-workout', finishWorkout);
   on('btn-confirm-cancel', () => { document.getElementById('modal-confirm').hidden = true; refreshUpdateBanner(); });
   on('btn-confirm-ok', confirmFinish);
-  on('btn-result-close', () => { document.getElementById('modal-result').hidden = true; });
+  on('btn-result-close', () => { document.getElementById('modal-result').hidden = true; refreshUpdateBanner(); });
   on('btn-result-undo', requestUndoWorkout);
 
   on('btn-add-exercise', () => {
@@ -6111,6 +6450,20 @@ function setupEvents() {
     unlockAudio();               // používateľský pokyn = povolenie prehrávať zvuk
     renderRestSoundSetting();
     saveState();
+  });
+  on('btn-auto-backup', () => {
+    state.settings.autoBackup = state.settings.autoBackup !== true;
+    backupDismissed = false;
+    saveState();
+    renderAutoBackupSetting();
+    /* Zapnutie hneď vyhodnotí, či už záloha nie je potrebná. */
+    refreshBackupOffer();
+  });
+  on('btn-backup-save', saveBackupNow);
+  on('btn-backup-now', saveBackupNow);
+  on('backup-dismiss', () => {
+    backupDismissed = true;      // len do konca tejto relácie
+    hideBackupStrip();
   });
   on('btn-test-sound', () => {
     if (!restSoundOn()) return;        // pri vypnutom zvuku je tlačidlo neaktívne
@@ -6258,6 +6611,9 @@ function refreshUpdateBanner() {
     pendingUpdateReload = false;
     reloadForUpdate();
   }
+  /* Záloha sa vyhodnocuje vždy, keď sa obrazovka ustálila – a nikdy počas
+     tréningu ani otvoreného dialógu (pozri backupBlocked). */
+  refreshBackupOffer();
 }
 
 function applyUpdate() {
@@ -6321,6 +6677,7 @@ startDayWatcher();
 startDurationTicker();
 if (restoredSession) setSessionNote('trening.sessionRestored', 10000);
 restoreRestTimer();          // obnoví bežiaci (alebo už dobehnutý) odpočet z absolútneho konca
+refreshBackupOffer();        // a vyhodnotí, či od minule "dozrela" záloha
 registerServiceWorker();
 if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
   openSetup();

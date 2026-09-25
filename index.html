@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 
@@ -30,6 +30,19 @@
     <div class="update-banner" id="update-banner" hidden>
       <span class="update-text" data-i18n="update.available">Je dostupná nová verzia GymQuestu.</span>
       <button class="btn btn-primary update-btn" id="btn-update" data-i18n="update.now">Aktualizovať</button>
+    </div>
+
+    <div class="backup-banner" id="backup-banner" hidden>
+      <div class="backup-main">
+        <span class="backup-title" id="backup-title"></span>
+        <span class="backup-body" id="backup-body"></span>
+        <span class="backup-meta" id="backup-meta"></span>
+        <span class="backup-note" id="backup-note" hidden></span>
+      </div>
+      <div class="backup-actions">
+        <button class="btn btn-primary backup-btn" id="btn-backup-save"></button>
+        <button class="btn-icon backup-close" id="backup-dismiss" data-i18n-title="backup.dismiss" data-i18n-aria="backup.dismiss">✕</button>
+      </div>
     </div>
 
     <!-- ============ DNES ============ -->
@@ -325,6 +338,22 @@
         </div>
       </div>
 
+      <div class="setting-row">
+        <div class="setting-main">
+          <span class="card-title" data-i18n="settings.autoBackup">Automatické zálohovanie</span>
+          <span class="card-sub" data-i18n="settings.autoBackupHint">Ak to zariadenie podporuje, GymQuest sa pokúsi vytvoriť JSON zálohu počas používania aplikácie. iPhone môže vyžadovať potvrdenie alebo uloženie súboru.</span>
+        </div>
+        <div class="setting-control">
+          <span class="setting-state" id="auto-backup-state">Vypnuté</span>
+          <button type="button" class="switch" id="btn-auto-backup" role="switch" aria-checked="false"
+                  data-i18n-title="settings.autoBackup" data-i18n-aria="settings.autoBackup">
+            <span class="switch-knob" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <p class="card-note" id="auto-backup-last"></p>
+      <button class="btn btn-secondary btn-block" id="btn-backup-now" data-i18n="backup.saveNow">Uložiť zálohu teraz</button>
+
       <div class="modal-actions">
         <button class="btn btn-secondary" id="btn-export" data-i18n="settings.export">Exportovať dáta</button>
         <button class="btn btn-secondary" id="btn-import" data-i18n="settings.import">Importovať dáta</button>
@@ -435,6 +464,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=21"></script>
+  <script src="script.js?v=22"></script>
 </body>
 </html>
