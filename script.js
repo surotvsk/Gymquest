@@ -305,6 +305,9 @@ const I18N = {
     'trening.planNamePlaceholder': 'Napr. Horná časť tela',
     'trening.planNameInvalid': 'Zadaj názov plánu (max. 40 znakov).',
     'trening.addPlan': '+ Pridať tréning',
+    'trening.managePlans': 'Upraviť plány',
+    'trening.managePlansDone': 'Hotovo',
+    'trening.manageHint': 'Potiahni plán a zmeň jeho poradie, alebo ťukni na ✏️ a uprav ho.',
     'trening.movePlanLeft': 'Posunúť doľava',
     'trening.movePlanRight': 'Posunúť doprava',
     'trening.dragPlan': 'Presunúť plán',
@@ -598,6 +601,9 @@ const I18N = {
     'trening.planNamePlaceholder': 'e.g. Upper body',
     'trening.planNameInvalid': 'Enter a workout plan name (max. 40 characters).',
     'trening.addPlan': '+ Add workout plan',
+    'trening.managePlans': 'Manage plans',
+    'trening.managePlansDone': 'Done',
+    'trening.manageHint': 'Drag a plan to change its order, or tap ✏️ to edit it.',
     'trening.movePlanLeft': 'Move left',
     'trening.movePlanRight': 'Move right',
     'trening.dragPlan': 'Move workout plan',
@@ -891,6 +897,9 @@ const I18N = {
     'trening.planNamePlaceholder': 'p. ej. Tren superior',
     'trening.planNameInvalid': 'Escribe un nombre de plan (máx. 40 caracteres).',
     'trening.addPlan': '+ Añadir plan de entrenamiento',
+    'trening.managePlans': 'Gestionar planes',
+    'trening.managePlansDone': 'Listo',
+    'trening.manageHint': 'Arrastra un plan para cambiar su orden, o toca ✏️ para editarlo.',
     'trening.movePlanLeft': 'Mover a la izquierda',
     'trening.movePlanRight': 'Mover a la derecha',
     'trening.dragPlan': 'Mover plan de entrenamiento',
@@ -1184,6 +1193,9 @@ const I18N = {
     'trening.planNamePlaceholder': 'ex.: Parte superior',
     'trening.planNameInvalid': 'Digite um nome de plano (máx. 40 caracteres).',
     'trening.addPlan': '+ Adicionar plano de treino',
+    'trening.managePlans': 'Gerenciar planos',
+    'trening.managePlansDone': 'Pronto',
+    'trening.manageHint': 'Arraste um plano para mudar a ordem, ou toque em ✏️ para editá-lo.',
     'trening.movePlanLeft': 'Mover para a esquerda',
     'trening.movePlanRight': 'Mover para a direita',
     'trening.dragPlan': 'Mover plano de treino',
@@ -1477,6 +1489,9 @@ const I18N = {
     'trening.planNamePlaceholder': 'ex. Haut du corps',
     'trening.planNameInvalid': 'Saisis un nom de plan (40 caractères max.).',
     'trening.addPlan': '+ Ajouter un plan d’entraînement',
+    'trening.managePlans': 'Gérer les plans',
+    'trening.managePlansDone': 'Terminé',
+    'trening.manageHint': 'Fais glisser un plan pour changer l’ordre, ou touche ✏️ pour le modifier.',
     'trening.movePlanLeft': 'Déplacer à gauche',
     'trening.movePlanRight': 'Déplacer à droite',
     'trening.dragPlan': 'Déplacer le plan d’entraînement',
@@ -1789,6 +1804,9 @@ const I18N = {
     'trening.planNamePlaceholder': 'مثال: الجزء العلوي',
     'trening.planNameInvalid': 'اكتب اسم الخطة (40 حرفًا كحد أقصى).',
     'trening.addPlan': '+ إضافة خطة تمرين',
+    'trening.managePlans': 'إدارة الخطط',
+    'trening.managePlansDone': 'تم',
+    'trening.manageHint': 'اسحب الخطة لتغيير ترتيبها، أو اضغط ✏️ لتعديلها.',
     'trening.movePlanLeft': 'تحريك لليسار',
     'trening.movePlanRight': 'تحريك لليمين',
     'trening.dragPlan': 'تحريك خطة التمرين',
@@ -2138,6 +2156,9 @@ let lastWorkoutId = null;    // id posledného dokončeného tréningu (pre Undo
 let editingPlan = null;      // id plánu v editačnom móde
 let newPlanId = null;        // id práve vytvoreného plánu (zrušenie ho zahodí); neukladá sa
 let editDraft = null;        // kópia cvikov počas editácie
+/* Režim úprav plánov: prepínač pod selektorom. Zámerne sa NEukladá –
+   aplikácia vždy otvorí čistý výber plánu. */
+let planManageMode = false;
 let pendingImport = null;    // naimportované dáta čakajúce na potvrdenie
 let pendingDeleteWorkout = null; // id tréningu čakajúceho na vymazanie
 let timerInterval = null;
@@ -3518,23 +3539,43 @@ function comparisonHint(ex, planId) {
   return `<span>${t('trening.compareSame', { w: w(prev.weight) })}</span>`;
 }
 
+/* Prepínač pod selektorom plánov. Jeho text sa musí prekresliť pri zmene jazyka
+   aj pri prepnutí režimu. */
+function updatePlanManageButton() {
+  const btn = document.getElementById('btn-manage-plans');
+  if (!btn) return;
+  btn.setAttribute('aria-pressed', planManageMode ? 'true' : 'false');
+  btn.textContent = t(planManageMode ? 'trening.managePlansDone' : 'trening.managePlans');
+  const hint = document.getElementById('plan-manage-hint');
+  if (hint) hint.hidden = !planManageMode;
+}
+
+function setPlanManageMode(on) {
+  planManageMode = on === true;
+  updatePlanManageButton();
+  renderTrening();
+}
+
 function renderTrening() {
   if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
 
   const chips = document.getElementById('plan-chips');
   chips.innerHTML = '';
+  chips.classList.toggle('managing', planManageMode);
+  updatePlanManageButton();
   const rec = recommendedPlan();
   for (const id of activePlanIds()) {
     const p = getPlan(id);
     const wrap = document.createElement('div');
     wrap.className = 'chip-wrap';
     wrap.dataset.planId = id;
-    /* Uchopovadlo pre presun plánu – funguje myšou aj prstom, preto je to vlastný prvok
-       a nie samotný chip (ťuknutie na chip musí stále len vybrať plán). */
+    /* Uchopovadlo a ceruzka existujú vždy, ale v bežnom režime sú skryté –
+       názov plánu tak dostane celú šírku karty a je vycentrovaný. */
     const drag = document.createElement('button');
     drag.type = 'button';
     drag.className = 'chip-drag';
     drag.textContent = '⠿';
+    drag.hidden = !planManageMode;
     drag.title = t('trening.dragPlan');
     drag.setAttribute('aria-label', t('trening.dragPlan') + ': ' + planDisplayName(p));
     wrap.appendChild(drag);
@@ -3555,6 +3596,7 @@ function renderTrening() {
     const editBtn = document.createElement('button');
     editBtn.className = 'btn-icon chip-edit';
     editBtn.textContent = '✏️';
+    editBtn.hidden = !planManageMode;
     editBtn.title = t('trening.edit');
     editBtn.addEventListener('click', () => {
       startEditPlan(id);
@@ -6319,6 +6361,7 @@ function applyStaticI18n() {
   renderLangList();
   renderAutoBackupSetting();
   renderBackupStrip();   // jazyková zmena musí prekresliť aj lištu zálohy
+  updatePlanManageButton();   // prepínač plánov má v každom jazyku správny text
   applyDirGlyphs();
 }
 
@@ -6393,6 +6436,7 @@ function setupEvents() {
   on('btn-edit-save', saveEditPlan);
   on('btn-edit-cancel', cancelEditPlan);
 
+  on('btn-manage-plans', () => setPlanManageMode(!planManageMode));
   on('btn-add-plan', openPlanChoice);
   on('btn-choice-blank', () => { closePlanChoice(); addPlan(); });
   on('btn-choice-fullbody', openFullBodyBuilder);

@@ -380,13 +380,24 @@ body {
   line-height: 1.6;
 }
 
-/* ===== Plan chips (segmented control) ===== */
+/* ===== Plan selector (mobile-first grid) =====
+   Názov plánu má prednosť pred ovládacími prvkami: v bežnom režime karta obsahuje
+   LEN názov, takže text dostane celú šírku karty. Uchopovadlo a ceruzka sa ukážu
+   až v režime úprav (`.plan-chips.managing`). */
 
 .plan-chips {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--sp-2);
-  margin-bottom: var(--sp-4);
-  flex-wrap: wrap;
+  margin-bottom: var(--sp-3);
+}
+
+/* Karta plánu = jedna bunka mriežky. */
+.chip-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
 }
 
 .chip {
@@ -418,19 +429,24 @@ body {
   color: var(--blue);
 }
 
-.chip-wrap {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 90px;
-  display: flex;
-  align-items: stretch;
+/* Karta v selektore plánov: celá šírka pre názov, vycentrovaný text,
+   prirodzené zalamovanie po slovách. */
+.plan-chips .chip {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 56px;
+  text-align: center;
+  line-height: 1.3;
+  /* Slová sa nelámu v strede; `break-word` zasiahne len vtedy, keď sa jedno
+     slovo naozaj nezmestí – vtedy radšej zalomí, než aby pretieklo mimo karty. */
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
-.chip-wrap .chip {
-  flex: 1;
-  min-width: 0;
-  border-radius: 0;
-}
+/* Ovládacie prvky sú v bežnom režime skryté, takže názov je vycentrovaný
+   v CELEJ karte (predtým ho posúvali 26 px vľavo a 44 px vpravo). */
+.chip-wrap > [hidden] { display: none; }
 
 .chip-edit {
   flex: 0 0 auto;
@@ -442,6 +458,58 @@ body {
   font-size: 13px;
   color: var(--text-faint);
   background: var(--surface);
+}
+
+/* ===== Režim úprav plánov =====
+   Jeden plán na riadok: veľký cieľ pre prst a názov, ktorý sa stále zmestí. */
+
+.plan-chips.managing { grid-template-columns: minmax(0, 1fr); }
+
+.plan-chips.managing .chip {
+  text-align: start;
+  padding-inline: var(--sp-3);
+}
+
+/* Susediace prvky tvoria jeden celok – karta vtedy nemá vlastné zaoblenie. */
+.plan-chips.managing .chip-wrap .chip {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.plan-chips.managing .chip-drag,
+.plan-chips.managing .chip-edit { display: inline-flex; }
+
+/* Rovnako široké ovládanie na oboch stranách drží názov opticky v strede. */
+.plan-chips.managing .chip-drag { width: 40px; }
+.plan-chips.managing .chip-edit { width: 40px; }
+
+/* ===== Tlačidlá pod selektorom plánov ===== */
+
+.plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.plan-actions .btn { flex: 1 1 150px; min-width: 0; overflow-wrap: break-word; }
+
+.plan-manage-hint[hidden] { display: none; }
+
+/* Pod 300 px (pod každým testovaným telefónom) je jedna kolóna čitateľnejšia. */
+@media (max-width: 300px) {
+  .plan-chips { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 380px) {
+  .plan-actions .btn { padding: 0 var(--sp-3); }
+}
+
+/* Na širších obrazovkách sa režim úprav vráti k dvom kolónam. */
+@media (min-width: 560px) {
+  .plan-chips.managing { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ===== Plan header: name + visible rename button ===== */

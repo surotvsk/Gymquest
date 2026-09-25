@@ -14,8 +14,8 @@ everything on your own device.
 ## Features
 
 - **Custom workout plans** — start from the built-in Push / Pull / Legs plans, rename them, reorder
-  them (drag the ⠿ handle, or use the ‹ › buttons), delete them, or add as many of your own as you
-  like.
+  them (drag the ⠿ handle in **Manage plans**, or use the ‹ › buttons), delete them, or add as many of
+  your own as you like.
 - **Full Body builder** — create a plan by picking exercises straight out of your existing plans.
   The result is an ordinary custom plan you can rename, edit, reorder or delete like any other.
 - **The same picker when you edit** — every plan editor has **Add exercises from existing plans**
@@ -103,11 +103,20 @@ reps, weight, completed sets, XP, note and any achievements unlocked that day. D
 your history by local calendar date, so a workout always appears on the day you recorded it.
 
 ### Workout
-The selected plan name with a **✏️ Edit plan** button, and a row of plan chips for switching between
-plans. Drag a plan by its ⠿ handle to change the rotation order, or use the ‹ › buttons in the
-editor. Editing a plan lets you rename it, delete it with 🗑️, reorder **and** add its exercises, and
-change each one — sets, reps, target weight in kilograms, planned failure sets, and whether it is
-trained one side at a time.
+The selected plan name with a **✏️ Edit plan** button, and a **two-column grid of plan cards** for
+switching between plans. Each card is just the plan's name — centred, equal in width, and given the
+full card so long custom names wrap cleanly instead of being squeezed — with the currently selected
+plan in orange and the recommended one marked ✦.
+
+**Manage plans** (next to **+ Add workout plan**) switches the same grid into a one-plan-per-row
+management list with a ⠿ drag handle and a ✏️ pencil on each plan: drag a plan to change the rotation
+order, or tap the pencil to edit that plan. The handles stay hidden during normal use so the names keep
+the whole card. **✏️ Edit plan** always edits the selected plan, and the editor's ‹ › buttons reorder
+one step at a time.
+
+Editing a plan lets you rename it, delete it with 🗑️, reorder **and** add its exercises, and change each
+one — sets, reps, target weight in kilograms, planned failure sets, and whether it is trained one side
+at a time.
 
 Mark each set as done while you train, then press **Finish workout**. You can also run a rest timer
 or reset the current workout without touching your history.
@@ -149,12 +158,12 @@ badges earned for personal records.
 
 ### Reordering
 
-- **Workout plans** — drag a plan chip by its ⠿ handle to move it before or after another plan. The
-  rotation order, the chips and the Today recommendation all follow the new order immediately, and the
-  order is saved with your data (it survives a refresh and export/import). The ‹ › buttons in the plan
-  editor do the same thing one step at a time, and your currently selected plan stays selected. Plan
-  ids, names and every past workout are untouched.
-- **Exercises in a plan** — every exercise row has a ⠿ handle and ↑ / ↓ buttons. Drag it, or step it
+- **Workout plans** — open **Manage plans** and drag a plan by its ⠿ handle to move it before or after
+  another plan. The rotation order, the selector and the Today recommendation all follow the new order
+  immediately, and the order is saved with your data (it survives a refresh and export/import). The ‹ ›
+  buttons in the plan editor do the same thing one step at a time, and your currently selected plan
+  stays selected. Plan ids, names and every past workout are untouched.
+- **Exercise reordering** — every exercise row has a ⠿ handle and ↑ / ↓ buttons. Drag it, or step it
   up and down, then save the plan as usual. The saved order is what the Workout screen shows and what a
   finished workout records into your history. Reordering never changes sets, reps, weights, planned
   failure sets, completed progress or exercise ids.

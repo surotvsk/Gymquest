@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
 
@@ -93,7 +93,11 @@
 
       <div class="plan-chips" id="plan-chips"></div>
 
-      <button class="btn btn-secondary btn-block" id="btn-add-plan" data-i18n="trening.addPlan">+ Pridať tréning</button>
+      <div class="plan-actions">
+        <button type="button" class="btn btn-secondary" id="btn-manage-plans" aria-pressed="false" data-i18n="trening.managePlans">Upraviť plány</button>
+        <button class="btn btn-secondary" id="btn-add-plan" data-i18n="trening.addPlan">+ Pridať tréning</button>
+      </div>
+      <p class="edit-hint plan-manage-hint" id="plan-manage-hint" hidden data-i18n="trening.manageHint">Potiahni plán a zmeň jeho poradie, alebo ťukni na ✏️ a uprav ho.</p>
 
       <div class="edit-panel" id="edit-panel" hidden>
         <label class="modal-label" for="edit-plan-name" data-i18n="trening.planNameLabel">Názov plánu</label>
@@ -464,6 +468,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=22"></script>
+  <script src="script.js?v=23"></script>
 </body>
 </html>
