@@ -444,7 +444,7 @@ body {
 .chip-wrap .chip {
   flex: 1;
   min-width: 0;
-  border-radius: var(--r-md) 0 0 var(--r-md);
+  border-radius: 0;
 }
 
 .chip-edit {
@@ -1548,6 +1548,10 @@ body.has-update-banner .app-main {
   margin: var(--sp-3) 0 var(--sp-1);
 }
 
+/* Popisok sa v režime výberu cvikov skrýva – bez tohto pravidla by ho `display: block`
+   prepísal a zostal by viditeľný. */
+.modal-label[hidden] { display: none; }
+
 .modal-input {
   width: 100%;
   background: var(--surface-3);
@@ -2058,6 +2062,167 @@ textarea.modal-input { resize: vertical; }
   font-size: var(--fs-xs);
   color: var(--accent);
   font-variant-numeric: tabular-nums;
+}
+
+/* ===== Uchopovadlá a ťahanie poradia =====
+   Ťahanie je postavené na Pointer Events (funguje aj na dotykových obrazovkách).
+   `touch-action: none` na uchopovadle zabráni skrolovaniu stránky počas ťahania. */
+
+.drag-handle,
+.chip-drag {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text-faint);
+  font-family: inherit;
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.drag-handle {
+  width: 40px;
+  min-height: 40px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-md);
+}
+
+.chip-drag {
+  width: 26px;
+  min-height: 48px;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  border-right: none;
+  font-size: var(--fs-sm);
+}
+
+.drag-handle:active,
+.chip-drag:active { cursor: grabbing; }
+
+.edit-row.dragging,
+.chip-wrap.dragging {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Nástroje riadku editora: uchopovadlo + prístupné tlačidlá Posunúť vyššie/nižšie. */
+.edit-tools {
+  display: flex;
+  gap: var(--sp-1);
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.edit-move {
+  width: 32px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+}
+
+.btn-from-plans { margin-top: var(--sp-2); }
+
+/* ===== Jednostranné cvičenie: nastavenie v editore plánu ===== */
+
+.edit-side { flex: 1 1 100%; margin-top: var(--sp-2); }
+
+.edit-side-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 40px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.edit-side-toggle input {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  accent-color: var(--accent);
+}
+
+.edit-side-start {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-top: var(--sp-1);
+}
+
+.edit-side-start[hidden] { display: none; }
+
+.side-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  overflow-wrap: break-word;
+  cursor: pointer;
+}
+
+.side-chip.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ===== Jednostranné cvičenie počas tréningu =====
+   Každá strana je vlastný riadok na celú šírku: popis "Séria 1 — Ľavá" a vedľa neho
+   samostatné Hotovo a Zlyhanie. Nikdy nevzniká vodorovné posúvanie. */
+
+.exercise-side-note {
+  margin: calc(-1 * var(--sp-1)) 0 var(--sp-2);
+  color: var(--text-faint);
+  font-size: var(--fs-sm);
+}
+
+.set-item.side-row { flex: 1 1 100%; align-items: center; }
+
+.set-side-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-dim);
+  overflow-wrap: break-word;
+}
+
+/* ===== Jednostranné cvičenie v histórii a v detaile dňa ===== */
+
+.history-side-note {
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  margin-top: 2px;
+}
+
+.day-ex-completed {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.he-ex-row .he-side {
+  flex: 1 1 100%;
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
 }
 
 /* ===== Small screens ===== */

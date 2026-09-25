@@ -156,6 +156,24 @@ const I18N = {
     'fb.noExercises': 'V tomto tréningovom pláne nie sú dostupné žiadne cviky.',
     'fb.duplicates': 'Duplicitné cviky sa pridajú iba raz.',
     'fb.bodyweight': 'Vlastná váha',
+    'picker.title': 'Pridať cviky z existujúcich plánov',
+    'picker.subtitle': 'Zaškrtni cviky, ktoré chceš pridať do tohto plánu.',
+    'picker.apply': 'Pridať do plánu',
+    'unilateral.trainBoth': 'Cvičiť každú stranu samostatne',
+    'unilateral.startLeft': 'Začať ľavou',
+    'unilateral.startRight': 'Začať pravou',
+    'unilateral.left': 'Ľavá',
+    'unilateral.right': 'Pravá',
+    'unilateral.setsPerSide1': '{n} séria na každú stranu',
+    'unilateral.setsPerSideFew': '{n} série na každú stranu',
+    'unilateral.setsPerSideMany': '{n} sérií na každú stranu',
+    'unilateral.setSide': 'Séria {n} — {side}',
+    'unilateral.completed': 'Dokončené: {sides}',
+    'unilateral.bothSides': 'Ľavá a pravá',
+    'unilateral.leftOnly': 'Iba ľavá',
+    'unilateral.rightOnly': 'Iba pravá',
+    'unilateral.noneSides': 'Žiadna',
+    'unilateral.failureList': 'Zlyhanie: {list}',
     'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Tlaky nad hlavou', 'exercise.dips': 'Dipy', 'exercise.lateral-raises': 'Upažovanie',
     'exercise.pull-ups': 'Zhyby', 'exercise.bent-over-rows': 'Príťahy v predklone', 'exercise.cable-rows': 'Veslovanie na kladke', 'exercise.bicep-curls': 'Bicepsové zdvihy',
     'exercise.squats': 'Drepy', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Výpady', 'exercise.leg-curls': 'Zakopávanie', 'exercise.calf-raises': 'Lýtka',
@@ -221,6 +239,12 @@ const I18N = {
     'trening.addPlan': '+ Pridať tréning',
     'trening.movePlanLeft': 'Posunúť doľava',
     'trening.movePlanRight': 'Posunúť doprava',
+    'trening.dragPlan': 'Presunúť plán',
+    'trening.dragExercise': 'Presunúť cvik',
+    'trening.moveUp': 'Posunúť vyššie',
+    'trening.moveDown': 'Posunúť nižšie',
+    'trening.addFromPlans': 'Pridať cviky z existujúcich plánov',
+    'trening.setDoneAria': 'Označiť sériu {n} ako hotovú',
     'trening.deletePlan': 'Vymazať plán',
     'trening.deletePlanTitle': 'Vymazať plán?',
     'trening.deletePlanConfirm': 'Plán „{name}“ sa odstráni a už sa nebude zobrazovať v rotácii. História tréningov zostane zachovaná.',
@@ -401,6 +425,24 @@ const I18N = {
     'fb.noExercises': 'No exercises are available in this workout plan.',
     'fb.duplicates': 'Duplicate exercises are added only once.',
     'fb.bodyweight': 'Bodyweight',
+    'picker.title': 'Add exercises from existing plans',
+    'picker.subtitle': 'Tick the exercises you want to add to this plan.',
+    'picker.apply': 'Add to plan',
+    'unilateral.trainBoth': 'Train both sides separately',
+    'unilateral.startLeft': 'Start with left',
+    'unilateral.startRight': 'Start with right',
+    'unilateral.left': 'Left',
+    'unilateral.right': 'Right',
+    'unilateral.setsPerSide1': '{n} set per side',
+    'unilateral.setsPerSideFew': '{n} sets per side',
+    'unilateral.setsPerSideMany': '{n} sets per side',
+    'unilateral.setSide': 'Set {n} — {side}',
+    'unilateral.completed': 'Completed: {sides}',
+    'unilateral.bothSides': 'Left and Right',
+    'unilateral.leftOnly': 'Left only',
+    'unilateral.rightOnly': 'Right only',
+    'unilateral.noneSides': 'None',
+    'unilateral.failureList': 'Failure: {list}',
     'exercise.bench-press': 'Bench press', 'exercise.overhead-press': 'Overhead press', 'exercise.dips': 'Dips', 'exercise.lateral-raises': 'Lateral raises',
     'exercise.pull-ups': 'Pull-ups', 'exercise.bent-over-rows': 'Bent-over rows', 'exercise.cable-rows': 'Cable rows', 'exercise.bicep-curls': 'Bicep curls',
     'exercise.squats': 'Squats', 'exercise.leg-press': 'Leg press', 'exercise.lunges': 'Lunges', 'exercise.leg-curls': 'Leg curls', 'exercise.calf-raises': 'Calf raises',
@@ -466,6 +508,12 @@ const I18N = {
     'trening.addPlan': '+ Add workout plan',
     'trening.movePlanLeft': 'Move left',
     'trening.movePlanRight': 'Move right',
+    'trening.dragPlan': 'Move workout plan',
+    'trening.dragExercise': 'Move exercise',
+    'trening.moveUp': 'Move up',
+    'trening.moveDown': 'Move down',
+    'trening.addFromPlans': 'Add exercises from existing plans',
+    'trening.setDoneAria': 'Mark set {n} as done',
     'trening.deletePlan': 'Delete workout plan',
     'trening.deletePlanTitle': 'Delete workout plan?',
     'trening.deletePlanConfirm': 'Workout plan “{name}” will be removed and will no longer appear in the rotation. Workout history will be kept.',
@@ -701,6 +749,10 @@ const XP_PER_SET = 2;        // XP za každú dokončenú sériu
 const XP_PER_LEVEL = 100;    // XP potrebných na ďalšiu úroveň
 const GOAL_MIN = 1;
 const GOAL_MAX = 7;
+/* Gong smie zaznieť len za dokončenie, ktoré appka naozaj videla naživo.
+   Bežiaci odpočet sa kontroluje každých 250 ms, takže 2 s tolerancia nepotlačí
+   skutočné dokončenie – len oneskorený callback po návrate z pozadia. */
+const TIMER_SOUND_GRACE_MS = 2000;
 
 /* ---------- Stav aplikácie ---------- */
 
@@ -721,7 +773,11 @@ let pendingImport = null;    // naimportované dáta čakajúce na potvrdenie
 let pendingDeleteWorkout = null; // id tréningu čakajúceho na vymazanie
 let timerInterval = null;
 let timerEnd = 0;
-let timerRang = false;         // gong za tento odpočet už zaznel (nikdy nezaznie dvakrát)
+/* Každé spustenie odpočtu má vlastné id. Dokončenie sa viaže na konkrétne id,
+   takže starý odpočet sa nikdy nemôže "dokončiť" dvakrát ani po návrate z pozadia. */
+let timerSessionId = 0;
+let timerCompletedId = 0;      // id odpočtu, ktorého dokončenie už bolo spracované
+let timerHiddenAt = 0;         // kedy sa stránka skryla (0 = je viditeľná)
 let dayWatchInterval = null;   // jediný interval pre zmenu dňa (nikdy sa neduplikuje)
 let lastRenderedDay = null;    // naposledy vykreslený lokálny deň "YYYY-MM-DD"
 /* Stav kalendára – len v pamäti, zámerne sa neukladá (kalendár sa vždy otvára na aktuálnom mesiaci). */
@@ -883,7 +939,7 @@ function normalizeActiveSession(raw) {
     const out = {};
     if (src && typeof src === 'object' && !Array.isArray(src)) {
       for (const [key, val] of Object.entries(src)) {
-        if (val === true && /:\d+$/.test(key)) out[key] = true;
+        if (val === true && /:\d+(?::[LR])?$/.test(key)) out[key] = true;
       }
     }
     return out;
@@ -960,6 +1016,18 @@ function backfillState() {
       } else {
         const mapped = BUILTIN_NAME_TO_ID[next.name];
         if (mapped) next = Object.assign({}, next, { id: mapped, builtin: true });
+      }
+      /* Jednostranné cvičenie: idempotentná normalizácia. Cvik bez tohto nastavenia
+         zostáva presne taký, aký bol – žiadne nové polia sa mu nepridávajú. */
+      if (next.unilateral === true) {
+        next = Object.assign({}, next, {
+          unilateral: true,
+          startSide: next.startSide === 'right' ? 'right' : 'left',
+        });
+      } else if (next.unilateral !== undefined || next.startSide !== undefined) {
+        next = Object.assign({}, next);
+        delete next.unilateral;
+        delete next.startSide;
       }
       return Object.assign({}, next, {
         plannedFailureSets: cleanFailureSets(next.plannedFailureSets, next.sets),
@@ -1275,10 +1343,24 @@ function personalRecords() {
   return Object.values(rec).sort((a, b) => b.weight - a.weight);
 }
 
-/* Najnovší výskyt cviku v histórii pred daným dátumom (podľa id, fallback podľa názvu) */
-function previousWorkoutFor(ex, beforeDate) {
+/* Patrí historický záznam k danému plánu?
+   Rozhoduje stabilné planId, ktoré sa premenovaním plánu nikdy nemení.
+   Veľmi staré záznamy bez planId sa priradia len vtedy, keď ich uložený názov
+   presne zodpovedá tomuto plánu – tak nikdy nevznikne porovnanie medzi dvoma plánmi. */
+function samePlanAsHistory(w, plan, planId) {
+  if (!w) return false;
+  if (w.planId) return w.planId === planId;
+  if (!plan || !w.planName) return false;
+  return w.planName === recordedPlanName(plan) || w.planName === planDisplayName(plan);
+}
+
+/* Najnovší výskyt cviku v histórii pred daným dátumom – VŽDY z toho istého plánu.
+   Porovnáva sa stabilné id plánu a stabilné id cviku; bez id platí zhoda názvu.
+   Ak plán pre tento cvik predchádzajúci záznam nemá, vráti null (žiadne porovnanie). */
+function previousWorkoutFor(ex, beforeDate, planId) {
+  const plan = getPlan(planId);
   const sorted = [...state.history]
-    .filter(w => w.date < beforeDate)
+    .filter(w => w.date < beforeDate && samePlanAsHistory(w, plan, planId))
     .sort((a, b) => b.date.localeCompare(a.date));
   for (const w of sorted) {
     const found = w.exercises.find(e =>
@@ -1787,8 +1869,22 @@ function exerciseSessionKey(ex) {
   return ex.id ? String(ex.id) : 'c:' + String(ex.name == null ? '' : ex.name);
 }
 
-function setSessionKey(ex, index) {
-  return exerciseSessionKey(ex) + ':' + index;
+/* Kľúč jednej série. Jednostranný cvik má pre každú stranu vlastný kľúč,
+   takže ľavá a pravá strana sa nikdy nemôžu označiť navzájom. */
+function setSessionKey(ex, index, side) {
+  const base = exerciseSessionKey(ex) + ':' + index;
+  return side ? base + ':' + (side === 'right' ? 'R' : 'L') : base;
+}
+
+/* Poradie strán jednostranného cviku; null pre bežný (obojstranný) cvik. */
+function exerciseSideOrder(ex) {
+  if (!ex || ex.unilateral !== true) return null;
+  return ex.startSide === 'right' ? ['right', 'left'] : ['left', 'right'];
+}
+
+/* Koľko samostatne označiteľných položiek cvik má (každá strana = jedna). */
+function exerciseSlotCount(ex) {
+  return ex.sets * (exerciseSideOrder(ex) ? 2 : 1);
 }
 
 /* Vytvorí session, ak ešte neexistuje. Volá sa pri "Začať tréning" a pri prvom označení série,
@@ -1816,26 +1912,26 @@ function clearSession() {
 }
 
 /* Nastaví značku série (hotová / do zlyhania). Vždy zapisuje do session, nikdy do DOM. */
-function toggleSetMark(kind, ex, index, on) {
+function toggleSetMark(kind, ex, index, on, side) {
   const sess = ensureSession();
   if (!sess) return false;
   const map = kind === 'failure' ? sess.actualFailureSets : sess.completedSets;
-  const key = setSessionKey(ex, index);
+  const key = setSessionKey(ex, index, side);
   if (on) map[key] = true;
   else delete map[key];
   saveState();
   return true;
 }
 
-function setMark(kind, ex, index) {
+function setMark(kind, ex, index, side) {
   const sess = getSession();
   if (!sess) return false;
   const map = kind === 'failure' ? sess.actualFailureSets : sess.completedSets;
-  return !!map[setSessionKey(ex, index)];
+  return !!map[setSessionKey(ex, index, side)];
 }
 
 function planExerciseCount(plan) {
-  return plan.exercises.reduce((s, ex) => s + ex.sets, 0);
+  return plan.exercises.reduce((s, ex) => s + exerciseSlotCount(ex), 0);
 }
 
 /* Počet dokončených sérií sa ráta z session, ale VŽDY len pre série, ktoré práve existujú
@@ -1846,8 +1942,11 @@ function totalSetsDone() {
   if (!sess || !plan) return 0;
   let n = 0;
   for (const ex of plan.exercises) {
+    const sides = exerciseSideOrder(ex);
     for (let i = 0; i < ex.sets; i++) {
-      if (sess.completedSets[setSessionKey(ex, i)]) n++;
+      if (sides) {
+        for (const side of sides) if (sess.completedSets[setSessionKey(ex, i, side)]) n++;
+      } else if (sess.completedSets[setSessionKey(ex, i)]) n++;
     }
   }
   return n;
@@ -1905,9 +2004,16 @@ function onVisibilityChange() {
   updateDurationDisplay();
   if (document.hidden) {
     wasHidden = true;
+    timerHiddenAt = Date.now();
+    /* Odchod do pozadia zruší naplánovaný aj rozohraný gong. Keby zostal v pozastavenom
+       zvukovom kontexte, prehral by sa po návrate dodatočne – presne ten "oneskorený gong",
+       ktorý sa už nesmie objaviť. */
+    stopActiveChime();
   } else {
     if (wasHidden) refreshRestTimerOnVisible();
     wasHidden = false;
+    timerHiddenAt = 0;
+    resumeAudioIfNeeded(false);   // mimo pokynu používateľa: obnoví len existujúci kontext
   }
 }
 
@@ -1928,9 +2034,11 @@ function setSessionNote(key, autoHideMs) {
   renderSessionNote();
 }
 
-function comparisonHint(ex) {
+/* Porovnanie sa robí LEN s tým istým cvikom v tom istom pláne.
+   Bez zhody v pláne sa nezobrazí nič – žiadne falošné "-2" z iného tréningu. */
+function comparisonHint(ex, planId) {
   if (ex.weight <= 0) return '';
-  const prev = previousWorkoutFor(ex, todayISO());
+  const prev = previousWorkoutFor(ex, todayISO(), planId);
   if (!prev) return t('trening.firstTime');
   const dw = ex.weight - prev.weight;
   const dr = ex.reps - prev.reps;
@@ -1953,6 +2061,17 @@ function renderTrening() {
     const p = getPlan(id);
     const wrap = document.createElement('div');
     wrap.className = 'chip-wrap';
+    wrap.dataset.planId = id;
+    /* Uchopovadlo pre presun plánu – funguje myšou aj prstom, preto je to vlastný prvok
+       a nie samotný chip (ťuknutie na chip musí stále len vybrať plán). */
+    const drag = document.createElement('button');
+    drag.type = 'button';
+    drag.className = 'chip-drag';
+    drag.textContent = '⠿';
+    drag.title = t('trening.dragPlan');
+    drag.setAttribute('aria-label', t('trening.dragPlan') + ': ' + planDisplayName(p));
+    wrap.appendChild(drag);
+
     const btn = document.createElement('button');
     btn.className = 'chip' + (id === selectedPlan ? ' active' : '') + (id === rec ? ' recommended' : '');
     btn.textContent = planDisplayName(p);
@@ -2010,10 +2129,21 @@ function renderTrening() {
     meta.className = 'exercise-meta';
     meta.innerHTML = `${ex.sets} × ${ex.reps} &nbsp;·&nbsp; <b>${ex.weight} ${t('units.kg')}</b>`;
     head.append(name, meta);
+    div.appendChild(head);
+
+    /* Jednostranný cvik: každá strana má vlastné série, vlastné značky aj vlastné zlyhania. */
+    const sides = exerciseSideOrder(ex);
+    if (sides) {
+      const sideNote = document.createElement('p');
+      sideNote.className = 'exercise-side-note';
+      sideNote.textContent = tPlural('unilateral.setsPerSide', ex.sets);
+      div.appendChild(sideNote);
+    }
 
     const hint = document.createElement('div');
     hint.className = 'compare-hint';
-    hint.innerHTML = comparisonHint(ex);
+    hint.innerHTML = comparisonHint(ex, plan.id);
+    div.appendChild(hint);
 
     const sets = document.createElement('div');
     sets.className = 'sets';
@@ -2021,53 +2151,80 @@ function renderTrening() {
     const plannedFailure = cleanFailureSets(ex.plannedFailureSets, ex.sets);
 
     for (let i = 0; i < ex.sets; i++) {
-      const item = document.createElement('div');
-      item.className = 'set-item';
-
-      const setBtn = document.createElement('button');
-      setBtn.type = 'button';
-      setBtn.className = 'set-btn';
-      setBtn.textContent = `${i + 1} ✓`;
-      setBtn.classList.toggle('done', setMark('done', ex, i));
-      setBtn.addEventListener('click', () => {
-        const on = !setMark('done', ex, i);
-        toggleSetMark('done', ex, i, on);
-        setBtn.classList.toggle('done', on);
-        setSessionNote(null, 0);
-        updateSummary();
-      });
-
-      /* Samostatný ovládač pre každú sériu. Naplánovaná séria je len nenápadný náznak
-         (prerušovaný oranžový okraj) – nikdy sa automaticky nepočíta ako dosiahnuté zlyhanie. */
-      const wasPlanned = plannedFailure.includes(i + 1);
-      const failBtn = document.createElement('button');
-      failBtn.type = 'button';
-      failBtn.className = 'set-fail' + (wasPlanned ? ' planned' : '');
-      failBtn.textContent = '🔥';
-      const syncFail = () => {
-        const on = setMark('failure', ex, i);
-        failBtn.classList.toggle('active', on);
-        failBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-        failBtn.setAttribute('aria-label', on ? t('failure.removeMarker') : t('failure.markSet'));
-        failBtn.title = on ? t('failure.failure') : (wasPlanned ? t('failure.planned') : t('failure.markSet'));
-      };
-      syncFail();
-      failBtn.addEventListener('click', () => {
-        toggleSetMark('failure', ex, i, !setMark('failure', ex, i));
-        setSessionNote(null, 0);
-        syncFail();
-      });
-
-      item.append(setBtn, failBtn);
-      sets.appendChild(item);
+      if (sides) {
+        for (const side of sides) sets.appendChild(buildSetItem(ex, i, plannedFailure, side));
+      } else {
+        sets.appendChild(buildSetItem(ex, i, plannedFailure, null));
+      }
     }
 
-    div.append(head, hint, sets);
+    div.appendChild(sets);
     list.appendChild(div);
   }
 
   updateSummary();         // skutočný počet hotových sérií aj stav tlačidla Dokončiť
   refreshUpdateBanner();   // otvorenie/zatvorenie editora plánu mení stav "zaneprázdnený"
+}
+
+/* Preklad názvu strany pre jednostranný cvik. */
+function sideName(side) {
+  return t(side === 'right' ? 'unilateral.right' : 'unilateral.left');
+}
+
+/* Jedna séria – pri jednostrannom cviku jedna jeho strana.
+   Značky (hotová / do zlyhania) žijú v session, nie v DOM, takže prekreslenie nič nestratí.
+   `side` je 'left' | 'right' pre jednostranný cvik, inak null. */
+function buildSetItem(ex, index, plannedFailure, side) {
+  const item = document.createElement('div');
+  item.className = 'set-item' + (side ? ' side-row' : '');
+
+  const sideLabel = side ? t('unilateral.setSide', { n: index + 1, side: sideName(side) }) : '';
+
+  if (side) {
+    const label = document.createElement('span');
+    label.className = 'set-side-label';
+    label.textContent = sideLabel;
+    item.appendChild(label);
+  }
+
+  const setBtn = document.createElement('button');
+  setBtn.type = 'button';
+  setBtn.className = 'set-btn';
+  /* Pri jednostrannom cviku nesie číslo série už popisok strany, preto stačí začiarknutie. */
+  setBtn.textContent = side ? '✓' : `${index + 1} ✓`;
+  setBtn.classList.toggle('done', setMark('done', ex, index, side));
+  setBtn.setAttribute('aria-label', (side ? sideLabel + ' — ' : '') + t('trening.setDoneAria', { n: index + 1 }));
+  setBtn.addEventListener('click', () => {
+    const on = !setMark('done', ex, index, side);
+    toggleSetMark('done', ex, index, on, side);
+    setBtn.classList.toggle('done', on);
+    setSessionNote(null, 0);
+    updateSummary();
+  });
+
+  /* Samostatný ovládač pre každú sériu. Naplánovaná séria je len nenápadný náznak
+     (prerušovaný oranžový okraj) – nikdy sa automaticky nepočíta ako dosiahnuté zlyhanie. */
+  const wasPlanned = plannedFailure.includes(index + 1);
+  const failBtn = document.createElement('button');
+  failBtn.type = 'button';
+  failBtn.className = 'set-fail' + (wasPlanned ? ' planned' : '');
+  failBtn.textContent = '🔥';
+  const syncFail = () => {
+    const on = setMark('failure', ex, index, side);
+    failBtn.classList.toggle('active', on);
+    failBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    failBtn.setAttribute('aria-label', (side ? sideLabel + ' — ' : '') + (on ? t('failure.removeMarker') : t('failure.markSet')));
+    failBtn.title = on ? t('failure.failure') : (wasPlanned ? t('failure.planned') : t('failure.markSet'));
+  };
+  syncFail();
+  failBtn.addEventListener('click', () => {
+    toggleSetMark('failure', ex, index, !setMark('failure', ex, index, side), side);
+    setSessionNote(null, 0);
+    syncFail();
+  });
+
+  item.append(setBtn, failBtn);
+  return item;
 }
 
 function updateSummary() {
@@ -2128,6 +2285,10 @@ function addPlan() {
 let fbName = '';          // rozpracovaný názov nového plánu
 let fbNameTouched = false;// používateľ názov upravil ručne?
 let fbPicked = {};        // "planId:index" -> true (rozpracovaný výber, nikdy sa neukladá)
+/* Režim zdieľaného dialógu: 'create' = nový Full Body plán, 'edit' = pridanie cvikov
+   z existujúcich plánov do práve otvoreného editora. */
+let fbMode = 'create';
+let editPick = { src: [], own: [] };   // riadky rozpracovaného výberu pri úprave (neukladá sa)
 
 /* Stabilné id zabudovaného cviku; vlastné cviky id nemajú. */
 function builtinExerciseId(ex) {
@@ -2146,13 +2307,30 @@ function closePlanChoice() {
   refreshUpdateBanner();
 }
 
+/* Spoločný dialóg pre oba režimy – popisky sa prepínajú, markup zostáva jeden. */
+function setFullBodyChrome(mode) {
+  const isEdit = mode === 'edit';
+  const title = document.getElementById('fb-title');
+  const sub = document.getElementById('fb-sub');
+  const nameLabel = document.getElementById('fb-name-label');
+  const nameInput = document.getElementById('fb-name');
+  const createBtn = document.getElementById('btn-fb-create');
+  if (title) title.textContent = t(isEdit ? 'picker.title' : 'fb.title');
+  if (sub) sub.textContent = t(isEdit ? 'picker.subtitle' : 'fb.subtitle');
+  if (nameLabel) nameLabel.hidden = isEdit;
+  if (nameInput) nameInput.hidden = isEdit;
+  if (createBtn) createBtn.textContent = t(isEdit ? 'picker.apply' : 'fb.create');
+}
+
 function openFullBodyBuilder() {
+  fbMode = 'create';
   fbName = t('fb.defaultName');
   fbNameTouched = false;
   fbPicked = {};
   document.getElementById('modal-planchoice').hidden = true;
   document.getElementById('fb-error').hidden = true;
   document.getElementById('fb-name').value = fbName;
+  setFullBodyChrome('create');
   renderFullBodyBuilder();
   document.getElementById('modal-fullbody').hidden = false;
   refreshUpdateBanner();
@@ -2163,7 +2341,15 @@ function openFullBodyBuilder() {
 function closeFullBodyBuilder() {
   document.getElementById('modal-fullbody').hidden = true;
   fbPicked = {};
+  editPick = { src: [], own: [] };
+  fbMode = 'create';
   refreshUpdateBanner();
+}
+
+/* "3 × 10 · 25 kg" / "3 × 10 · Vlastná váha" – rovnaký popis vo Full Body builderi aj vo výbere. */
+function fbRowMeta(ex) {
+  return ex.sets + ' × ' + ex.reps + ' · '
+    + (ex.weight > 0 ? ex.weight + ' ' + t('units.kg') : t('fb.bodyweight'));
 }
 
 /* Sekcie = všetky aktuálne aktívne plány v poradí aplikácie (zabudované aj vlastné). */
@@ -2178,8 +2364,7 @@ function fbSources() {
         key: planId + ':' + index,
         ex,
         name: exerciseDisplayName(ex),
-        meta: ex.sets + ' × ' + ex.reps + ' · '
-          + (ex.weight > 0 ? ex.weight + ' ' + t('units.kg') : t('fb.bodyweight')),
+        meta: fbRowMeta(ex),
       })),
     });
   }
@@ -2206,6 +2391,10 @@ function fbCopyExercise(ex) {
     plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, sets),
   };
   if (builtinExerciseId(ex)) { copy.id = ex.id; copy.builtin = true; }
+  if (ex.unilateral === true) {
+    copy.unilateral = true;
+    copy.startSide = ex.startSide === 'right' ? 'right' : 'left';
+  }
   return copy;
 }
 
@@ -2245,6 +2434,8 @@ function fbSetSection(planId, on) {
 }
 
 function renderFullBodyBuilder() {
+  if (fbMode === 'edit') { renderExercisePicker(); return; }
+  setFullBodyChrome('create');
   /* Neupravený názov sa pri prepnutí jazyka preloží spolu s rozhraním. */
   if (!fbNameTouched) fbName = t('fb.defaultName');
   const nameInput = document.getElementById('fb-name');
@@ -2352,6 +2543,352 @@ function createFullBodyPlan() {
   renderAll();
 }
 
+/* ---------- Výber cvikov z existujúcich plánov pri ÚPRAVE plánu ----------
+   Rovnaký princíp ako Full Body builder, ale výsledok sa vloží do práve otvoreného
+   editora. Žiadny plán sa neidentifikuje podľa názvu – tlačidlo je dostupné pri každom
+   upraviteľnom pláne, takže premenované ani staré Full Body plány nie sú výnimka. */
+
+/* Nájde v návrhu cvik, ktorý zodpovedá zdrojovému cviku:
+   zabudovaný podľa stabilného id, vlastný podľa presného názvu.
+   Vlastné cviky sa NIKDY nezlučujú len preto, že sa ich názvy podobajú. */
+function findDraftIndexForSource(ex) {
+  if (!Array.isArray(editDraft)) return null;
+  const id = builtinExerciseId(ex);
+  if (id) {
+    const at = editDraft.findIndex(d => builtinExerciseId(d) === id);
+    return at >= 0 ? at : null;
+  }
+  const name = String(ex.name == null ? '' : ex.name).trim();
+  const at = editDraft.findIndex(d => !builtinExerciseId(d)
+    && String(d.name == null ? '' : d.name).trim() === name);
+  return at >= 0 ? at : null;
+}
+
+/* Riadky výberu: všetky zdrojové plány okrem upravovaného + vlastné riadky pre cviky,
+   ktoré sa v žiadnom zdrojovom pláne nenašli (napr. ručne napísané). */
+function buildEditPickRows() {
+  const src = [];
+  const matched = new Set();
+  for (const planId of activePlanIds()) {
+    if (planId === editingPlan) continue;
+    const plan = getPlan(planId);
+    if (!plan) continue;
+    plan.exercises.forEach((ex, index) => {
+      const draftIndex = findDraftIndexForSource(ex);
+      if (draftIndex !== null) matched.add(draftIndex);
+      src.push({
+        key: 'src:' + planId + ':' + index,
+        planId,
+        planName: planDisplayName(plan),
+        ex,
+        name: exerciseDisplayName(ex),
+        meta: fbRowMeta(ex),
+        draftIndex,
+        initial: draftIndex !== null,
+        current: draftIndex !== null,
+      });
+    });
+  }
+  const own = [];
+  editDraft.forEach((ex, index) => {
+    if (matched.has(index)) return;
+    own.push({
+      key: 'draft:' + index,
+      planId: null,
+      planName: '',
+      ex,
+      name: exerciseDisplayName(ex),
+      meta: fbRowMeta(ex),
+      draftIndex: index,
+      initial: true,
+      current: true,
+    });
+  });
+  return { src, own };
+}
+
+/* Otvorí výber pre plán, ktorý je práve v editore. */
+function openExercisePicker() {
+  if (editingPlan === null || !Array.isArray(editDraft)) return;
+  fbMode = 'edit';
+  editPick = buildEditPickRows();
+  document.getElementById('fb-error').hidden = true;
+  renderExercisePicker();
+  document.getElementById('modal-fullbody').hidden = false;
+  refreshUpdateBanner();
+}
+
+function editPickToggle(row) {
+  row.current = !row.current;
+  renderExercisePicker();
+}
+
+function editPickSetSection(rows, on) {
+  rows.forEach(r => { r.current = on; });
+  renderExercisePicker();
+}
+
+/* Jedna sekcia výberu (zdrojový plán alebo cviky, ktoré sú len v tomto pláne). */
+function buildPickerSection(name, rows, withBulk) {
+  const section = document.createElement('div');
+  section.className = 'fb-source';
+
+  const head = document.createElement('div');
+  head.className = 'fb-source-head';
+  const title = document.createElement('span');
+  title.className = 'fb-source-name';
+  title.textContent = name;
+  head.appendChild(title);
+
+  if (withBulk && rows.length) {
+    const actions = document.createElement('div');
+    actions.className = 'fb-source-actions';
+    const all = document.createElement('button');
+    all.type = 'button';
+    all.className = 'fb-mini';
+    all.textContent = t('fb.selectAll');
+    all.addEventListener('click', () => editPickSetSection(rows, true));
+    const none = document.createElement('button');
+    none.type = 'button';
+    none.className = 'fb-mini';
+    none.textContent = t('fb.clear');
+    none.addEventListener('click', () => editPickSetSection(rows, false));
+    actions.append(all, none);
+    head.appendChild(actions);
+  }
+  section.appendChild(head);
+
+  for (const row of rows) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'fb-ex';
+    btn.dataset.key = row.key;
+    btn.setAttribute('aria-pressed', row.current ? 'true' : 'false');
+    const check = document.createElement('span');
+    check.className = 'fb-check';
+    check.setAttribute('aria-hidden', 'true');
+    check.textContent = '✓';
+    const nm = document.createElement('span');
+    nm.className = 'fb-ex-name';
+    nm.textContent = row.name;
+    const meta = document.createElement('span');
+    meta.className = 'fb-ex-meta';
+    meta.textContent = row.meta;
+    btn.append(check, nm, meta);
+    btn.addEventListener('click', () => editPickToggle(row));
+    section.appendChild(btn);
+  }
+  return section;
+}
+
+function renderExercisePicker() {
+  setFullBodyChrome('edit');
+  const box = document.getElementById('fb-sources');
+  box.innerHTML = '';
+
+  /* Sekcie v poradí plánov, presne s názvami, ktoré používateľ zadal. */
+  const order = [];
+  const byPlan = new Map();
+  for (const row of editPick.src) {
+    if (!byPlan.has(row.planId)) {
+      byPlan.set(row.planId, { name: row.planName, rows: [] });
+      order.push(row.planId);
+    }
+    byPlan.get(row.planId).rows.push(row);
+  }
+
+  let total = 0;
+  for (const key of order) {
+    const sec = byPlan.get(key);
+    total += sec.rows.filter(r => r.current).length;
+    box.appendChild(buildPickerSection(sec.name, sec.rows, true));
+  }
+  if (editPick.own.length) {
+    total += editPick.own.filter(r => r.current).length;
+    box.appendChild(buildPickerSection(
+      planDisplayName(getPlan(editingPlan)) || t('pokrok.workoutFallback'),
+      editPick.own,
+      false
+    ));
+  }
+
+  document.getElementById('fb-count').textContent = tPlural('fb.selected', total);
+  document.getElementById('fb-note').hidden = true;
+  document.getElementById('fb-error').hidden = true;
+}
+
+/* Potvrdí výber: odoberie odškrtnuté a pridá novo zaškrtnuté.
+   Už existujúce cviky si zachovajú upravené hodnoty aj poradie. */
+function applyExercisePicker() {
+  if (!Array.isArray(editDraft)) { closeFullBodyBuilder(); return; }
+
+  const remove = new Set();
+  const add = [];
+  for (const row of editPick.src) {
+    if (row.current && !row.initial) add.push(row.ex);
+    if (!row.current && row.initial && row.draftIndex !== null) remove.add(row.draftIndex);
+  }
+  for (const row of editPick.own) {
+    if (!row.current && row.draftIndex !== null) remove.add(row.draftIndex);
+  }
+
+  const kept = editDraft.filter((_, i) => !remove.has(i));
+  /* Deduplikácia: ten istý zabudovaný cvik (rovnaké stabilné id) sa pridá len raz.
+     Vlastné cviky sa nikdy nezlučujú, aj keď majú rovnaký názov. */
+  const seen = new Set();
+  for (const ex of kept) {
+    const id = builtinExerciseId(ex);
+    if (id) seen.add(id);
+  }
+  const added = [];
+  for (const ex of add) {
+    const id = builtinExerciseId(ex);
+    if (id) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+    }
+    added.push(fbCopyExercise(ex));
+  }
+
+  editDraft = kept.concat(added);
+  closeFullBodyBuilder();
+  renderEditPanel();
+}
+
+/* ---------- Ťahanie poradia (Pointer Events) ----------
+   HTML5 drag & drop nie je na iOS spoľahlivé, preto používame pointer events.
+   Zachytenie ukazovateľa je na TRVALOM kontajneri (nie na riadku), takže ho
+   prekreslenie počas ťahania nepreruší. */
+
+let dragInfo = null;   // { kind: 'exercise'|'plan', container, pointerId, index, planId }
+
+function beginDrag(kind, container, pointerId, opts) {
+  dragInfo = Object.assign({ kind, container, pointerId }, opts || {});
+  try { container.setPointerCapture(pointerId); } catch (e) {}
+}
+
+function endDrag() {
+  if (!dragInfo) return;
+  const info = dragInfo;
+  dragInfo = null;
+  try { info.container.releasePointerCapture(info.pointerId); } catch (e) {}
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+}
+
+/* Ktorý riadok editora je najbližšie k danému bodu (rozhoduje zvislý stred). */
+function editRowIndexAt(container, clientY) {
+  let best = null;
+  let bestDist = Infinity;
+  container.querySelectorAll('.edit-row').forEach((row) => {
+    const r = row.getBoundingClientRect();
+    const dist = Math.abs(clientY - (r.top + r.height / 2));
+    if (dist < bestDist) { bestDist = dist; best = Number(row.dataset.idx); }
+  });
+  return best;
+}
+
+/* Ktorý plán je najbližšie k danému bodu – chips sa zalamujú, preto sa meria v 2D. */
+function chipPlanIdAt(container, clientX, clientY) {
+  let best = null;
+  let bestDist = Infinity;
+  container.querySelectorAll('.chip-wrap').forEach((wrap) => {
+    if (!wrap.dataset.planId) return;
+    const r = wrap.getBoundingClientRect();
+    const dx = clientX - (r.left + r.width / 2);
+    const dy = clientY - (r.top + r.height / 2);
+    const dist = dx * dx + dy * dy;
+    if (dist < bestDist) { bestDist = dist; best = wrap.dataset.planId; }
+  });
+  return best;
+}
+
+function setupEditRowDrag() {
+  const container = document.getElementById('edit-rows');
+  if (!container) return;
+
+  container.addEventListener('pointerdown', (e) => {
+    if (editingPlan === null || !Array.isArray(editDraft)) return;
+    const handle = e.target.closest ? e.target.closest('.drag-handle') : null;
+    if (!handle) return;
+    const row = handle.closest('.edit-row');
+    if (!row) return;
+    e.preventDefault();      // ťahanie nesmie aktivovať vstupy ani skrolovať stránkou
+    beginDrag('exercise', container, e.pointerId, { index: Number(row.dataset.idx) });
+    row.classList.add('dragging');
+  });
+
+  container.addEventListener('pointermove', (e) => {
+    if (!dragInfo || dragInfo.kind !== 'exercise' || e.pointerId !== dragInfo.pointerId) return;
+    e.preventDefault();
+    const target = editRowIndexAt(container, e.clientY);
+    if (target === null || target === dragInfo.index) return;
+    const moved = editDraft.splice(dragInfo.index, 1)[0];
+    editDraft.splice(target, 0, moved);
+    dragInfo.index = target;
+    renderEditPanel();
+    const row = container.querySelector('.edit-row[data-idx="' + target + '"]');
+    if (row) row.classList.add('dragging');
+  });
+
+  const finish = (e) => {
+    if (!dragInfo || dragInfo.kind !== 'exercise') return;
+    if (e.pointerId !== undefined && e.pointerId !== dragInfo.pointerId) return;
+    endDrag();
+  };
+  container.addEventListener('pointerup', finish);
+  container.addEventListener('pointercancel', finish);
+  /* Uvoľnenie mimo kontajnera (alebo keď prehliadač ukazovateľ stratí) musí ťahanie
+     tiež korektne ukončiť – inak by zostal visieť stav ťahania. */
+  window.addEventListener('pointerup', finish);
+  window.addEventListener('pointercancel', finish);
+}
+
+function setupChipDrag() {
+  const container = document.getElementById('plan-chips');
+  if (!container) return;
+
+  container.addEventListener('pointerdown', (e) => {
+    const handle = e.target.closest ? e.target.closest('.chip-drag') : null;
+    if (!handle) return;
+    const wrap = handle.closest('.chip-wrap');
+    if (!wrap || !wrap.dataset.planId) return;
+    e.preventDefault();
+    beginDrag('plan', container, e.pointerId, { planId: wrap.dataset.planId });
+    wrap.classList.add('dragging');
+  });
+
+  container.addEventListener('pointermove', (e) => {
+    if (!dragInfo || dragInfo.kind !== 'plan' || e.pointerId !== dragInfo.pointerId) return;
+    e.preventDefault();
+    const targetId = chipPlanIdAt(container, e.clientX, e.clientY);
+    if (!targetId || targetId === dragInfo.planId) return;
+
+    const ordered = activePlanIds();
+    const from = ordered.indexOf(dragInfo.planId);
+    const to = ordered.indexOf(targetId);
+    if (from < 0 || to < 0) return;
+    ordered.splice(from, 1);
+    ordered.splice(to, 0, dragInfo.planId);
+    /* Nič sa nesmie stratiť: prípadné id mimo aktívnych plánov idú na koniec. */
+    const extras = state.planOrder.filter(id => ordered.indexOf(id) === -1);
+    state.planOrder = ordered.concat(extras);
+    renderTrening();
+    const wrap = container.querySelector('.chip-wrap[data-plan-id="' + dragInfo.planId + '"]');
+    if (wrap) wrap.classList.add('dragging');
+  });
+
+  const finish = (e) => {
+    if (!dragInfo || dragInfo.kind !== 'plan') return;
+    if (e.pointerId !== undefined && e.pointerId !== dragInfo.pointerId) return;
+    endDrag();
+    saveState();             // poradie sa ukladá raz, na konci ťahania
+  };
+  container.addEventListener('pointerup', finish);
+  container.addEventListener('pointercancel', finish);
+  window.addEventListener('pointerup', finish);
+  window.addEventListener('pointercancel', finish);
+}
+
 /* Posunie plán v poradí (rotácia aj chipy používajú toto poradie). */
 function movePlan(id, delta) {
   if (!id || !Array.isArray(state.planOrder)) return;
@@ -2407,12 +2944,23 @@ function renderEditPanel() {
     const row = document.createElement('div');
     row.className = 'edit-row';
     row.dataset.idx = idx;
+    const exLabel = escAttr(exerciseDisplayName(ex));
     row.innerHTML = `
-      <input type="text" class="edit-name" value="${escAttr(exerciseDisplayName(ex))}" placeholder="${t('trening.exercisePlaceholder')}">
+      <span class="edit-tools">
+        <button type="button" class="drag-handle" title="${t('trening.dragExercise')}" aria-label="${t('trening.dragExercise')}: ${exLabel}">⠿</button>
+        <button type="button" class="btn-icon-sm edit-move" data-move="-1" title="${t('trening.moveUp')}" aria-label="${t('trening.moveUp')}">↑</button>
+        <button type="button" class="btn-icon-sm edit-move" data-move="1" title="${t('trening.moveDown')}" aria-label="${t('trening.moveDown')}">↓</button>
+      </span>
+      <input type="text" class="edit-name" value="${exLabel}" placeholder="${t('trening.exercisePlaceholder')}">
       <input type="number" class="edit-num" min="1" max="99" value="${ex.sets}">
       <input type="number" class="edit-num" min="1" max="99" value="${ex.reps}">
       <input type="number" class="edit-num" min="0" max="999" value="${ex.weight}">
       <button class="btn-icon btn-icon-danger" title="${t('trening.deleteExerciseTitle')}">🗑️</button>`;
+
+    /* Presun cviku – prístupné tlačidlá (ťahanie uchopovadlom je alternatíva). */
+    row.querySelectorAll('.edit-move').forEach(btn => {
+      btn.addEventListener('click', () => moveDraftExercise(idx, Number(btn.dataset.move)));
+    });
 
     /* Voliteľná sekcia "Série do zlyhania" / "Sets to failure".
        Počet chipov sa generuje dynamicky z počtu sérií daného cviku. */
@@ -2436,23 +2984,74 @@ function renderEditPanel() {
     });
     row.appendChild(failureBox);
 
-    const inputs = row.querySelectorAll('input');
-    inputs[0].addEventListener('input', () => {
+    /* Voliteľné jednostranné cvičenie: "Cvičiť každú stranu samostatne".
+       Predvolene VYPNUTÉ – existujúce cviky sa nikdy nemenia. */
+    const sideBox = document.createElement('div');
+    sideBox.className = 'edit-side';
+    const sideToggle = document.createElement('label');
+    sideToggle.className = 'edit-side-toggle';
+    const sideCheck = document.createElement('input');
+    sideCheck.type = 'checkbox';
+    sideCheck.className = 'edit-unilateral';
+    sideCheck.checked = ex.unilateral === true;
+    const sideText = document.createElement('span');
+    sideText.textContent = t('unilateral.trainBoth');
+    sideToggle.append(sideCheck, sideText);
+
+    const sideStart = document.createElement('div');
+    sideStart.className = 'edit-side-start';
+    sideStart.hidden = ex.unilateral !== true;
+    for (const side of ['left', 'right']) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      const currentStart = ex.startSide === 'right' ? 'right' : 'left';
+      b.className = 'side-chip' + (currentStart === side ? ' active' : '');
+      b.dataset.side = side;
+      b.textContent = t(side === 'right' ? 'unilateral.startRight' : 'unilateral.startLeft');
+      b.setAttribute('aria-pressed', currentStart === side ? 'true' : 'false');
+      b.addEventListener('click', () => {
+        editDraft[idx].startSide = side;
+        sideStart.querySelectorAll('.side-chip').forEach(c => {
+          const on = c.dataset.side === side;
+          c.classList.toggle('active', on);
+          c.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      });
+      sideStart.appendChild(b);
+    }
+
+    sideCheck.addEventListener('change', () => {
+      if (sideCheck.checked) {
+        editDraft[idx].unilateral = true;
+        if (editDraft[idx].startSide !== 'right') editDraft[idx].startSide = 'left';
+      } else {
+        delete editDraft[idx].unilateral;
+        delete editDraft[idx].startSide;
+      }
+      sideStart.hidden = !sideCheck.checked;
+    });
+
+    sideBox.append(sideToggle, sideStart);
+    row.appendChild(sideBox);
+
+    const nameInput = row.querySelector('.edit-name');
+    const numInputs = row.querySelectorAll('.edit-num');
+    nameInput.addEventListener('input', () => {
       // typing converts a built-in row into a custom exercise (keeps typed text as-is)
       if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
         delete ex.id;
         ex.builtin = false;
       }
-      editDraft[idx].name = inputs[0].value;
+      editDraft[idx].name = nameInput.value;
       row.classList.remove('invalid');
     });
-    inputs[1].addEventListener('input', () => {
-      editDraft[idx].sets = num(inputs[1].value);
+    numInputs[0].addEventListener('input', () => {
+      editDraft[idx].sets = num(numInputs[0].value);
       // zmena počtu sérií hneď prispôsobí chipy a oreže už neplatné voľby
       renderPlanFailureChips(failureBox, idx);
     });
-    inputs[2].addEventListener('input', () => { editDraft[idx].reps = num(inputs[2].value); });
-    inputs[3].addEventListener('input', () => { editDraft[idx].weight = num(inputs[3].value); });
+    numInputs[1].addEventListener('input', () => { editDraft[idx].reps = num(numInputs[1].value); });
+    numInputs[2].addEventListener('input', () => { editDraft[idx].weight = num(numInputs[2].value); });
     row.querySelector('.btn-icon-danger').addEventListener('click', () => {
       if (editDraft.length <= 1) {
         showGeneric(t('trening.lastExerciseBlock'), t('common.ok'), null);
@@ -2467,6 +3066,18 @@ function renderEditPanel() {
     renderPlanFailureChips(failureBox, idx);
     rows.appendChild(row);
   });
+}
+
+/* Posunie cvik v návrhu plánu o jednu pozíciu (prístupná alternatíva k ťahaniu).
+   Poradie sa uloží až tlačidlom Uložiť – rovnako ako každá iná zmena v editore. */
+function moveDraftExercise(idx, delta) {
+  if (!Array.isArray(editDraft)) return;
+  const j = idx + delta;
+  if (j < 0 || j >= editDraft.length) return;
+  const tmp = editDraft[idx];
+  editDraft[idx] = editDraft[j];
+  editDraft[j] = tmp;
+  renderEditPanel();
 }
 
 /* Vykreslí chipy "Série do zlyhania" pre jeden riadok editora (1..počet sérií + "Žiadna").
@@ -2541,6 +3152,16 @@ function failureSetLimit(sets) {
   return (Number.isFinite(n) && n >= 1) ? Math.min(99, n) : 0;
 }
 
+/* Normalizuje mapu strán { left: [...], right: [...] } na čísla sérií 1..maxSets.
+   Vždy vráti platný objekt (nikdy null) – bezpečné pre poškodené aj importované dáta. */
+function cleanSideSets(value, maxSets) {
+  const out = { left: [], right: [] };
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return out;
+  out.left = cleanFailureSets(value.left, maxSets);
+  out.right = cleanFailureSets(value.right, maxSets);
+  return out;
+}
+
 function saveEditPlan() {
   const plan = getPlan(editingPlan);
   if (!plan) return;
@@ -2580,6 +3201,11 @@ function saveEditPlan() {
     if (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) {
       out.id = ex.id;
       out.builtin = true;
+    }
+    /* Jednostranné cvičenie sa ukladá len keď je zapnuté – ostatné cviky zostávajú bez zmeny. */
+    if (ex.unilateral === true) {
+      out.unilateral = true;
+      out.startSide = ex.startSide === 'right' ? 'right' : 'left';
     }
     return out;
   });
@@ -2639,17 +3265,10 @@ function renderPokrok() {
   } else {
     const sorted = [...state.history].sort((a, b) => b.date.localeCompare(a.date));
     for (const w of sorted) {
-      const setsDone = w.exercises.reduce((s, ex) => s + ex.sets, 0);
+      const setsDone = w.exercises.reduce((s, ex) => s + exerciseSlotCount(ex), 0);
       const row = document.createElement('div');
       row.className = 'history-row';
-      const detail = w.exercises.map(e => {
-        const line = `${esc(e.name)} ${e.sets}×${e.reps} · ${e.weight} ${t('units.kg')}`;
-        const fSets = cleanFailureSets(e.actualFailureSets, e.sets);
-        /* Zlyhanie sa zobrazuje len vtedy, keď bolo naozaj zaznamenané – nikdy z plánu. */
-        return fSets.length
-          ? line + `<div class="failure-note">🔥 ${esc(t('failure.sets', { sets: fSets.join(', ') }))}</div>`
-          : line;
-      }).join('<br>');
+      const detail = w.exercises.map(e => historyExerciseDetail(e)).join('<br>');
       row.innerHTML = `
         <div class="history-main">
           <div class="history-name">${esc(historyPlanName(w))}</div>
@@ -2766,6 +3385,47 @@ function achievementLabel(id) {
 function historyExerciseName(ex) {
   if (ex.exId && BUILTIN_EXERCISE_IDS.has(ex.exId)) return t('exercise.' + ex.exId);
   return recordedNameToDisplay(ex.name);
+}
+
+/* "Ľavá a pravá" / "iba ľavá" / "iba pravá" / "žiadna". */
+function completedSidesLabel(done) {
+  const hasLeft = done.left.length > 0;
+  const hasRight = done.right.length > 0;
+  if (hasLeft && hasRight) return t('unilateral.bothSides');
+  if (hasLeft) return t('unilateral.leftOnly');
+  if (hasRight) return t('unilateral.rightOnly');
+  return t('unilateral.noneSides');
+}
+
+/* Zoznam zlyhaní po stranách: "Séria 3 — Pravá, Séria 1 — Ľavá". */
+function sideFailureList(fails) {
+  const parts = [];
+  for (const side of ['left', 'right']) {
+    for (const n of fails[side]) parts.push(t('unilateral.setSide', { n, side: sideName(side) }));
+  }
+  return parts.join(', ');
+}
+
+/* Jeden riadok cviku v histórii (Progress). Jednostranný cvik ukáže "na každú stranu",
+   dokončené strany a zlyhania po stranách; bežný cvik vyzerá presne ako doteraz. */
+function historyExerciseDetail(ex, displayName) {
+  if (ex && ex.unilateral === true) {
+    const sets = Math.round(Number(ex.sets)) || 0;
+    const done = cleanSideSets(ex.sidesDone, sets);
+    const fails = cleanSideSets(ex.sidesFailure, sets);
+    const head = `${esc(displayName !== undefined ? displayName : ex.name)} `
+      + `${esc(tPlural('unilateral.setsPerSide', sets))} · ${ex.reps} ${t('units.reps')} · ${ex.weight} ${t('units.kg')}`;
+    let out = head + `<div class="history-side-note">${esc(t('unilateral.completed', { sides: completedSidesLabel(done) }))}</div>`;
+    const list = sideFailureList(fails);
+    if (list) out += `<div class="failure-note">🔥 ${esc(t('unilateral.failureList', { list }))}</div>`;
+    return out;
+  }
+  const line = `${esc(displayName !== undefined ? displayName : ex.name)} ${ex.sets}×${ex.reps} · ${ex.weight} ${t('units.kg')}`;
+  const fSets = cleanFailureSets(ex.actualFailureSets, ex.sets);
+  /* Zlyhanie sa zobrazuje len vtedy, keď bolo naozaj zaznamenané – nikdy z plánu. */
+  return fSets.length
+    ? line + `<div class="failure-note">🔥 ${esc(t('failure.sets', { sets: fSets.join(', ') }))}</div>`
+    : line;
 }
 
 /* Trvanie uložené v histórii: nezáporné celé sekundy, inak null (nikdy nevymýšľame hodnotu).
@@ -2887,6 +3547,19 @@ function workoutBlock(w) {
   const div = document.createElement('div');
   div.className = 'day-workout';
   const rows = w.exercises.map(ex => {
+    if (ex.unilateral === true) {
+      const sets = Math.round(Number(ex.sets)) || 0;
+      const done = cleanSideSets(ex.sidesDone, sets);
+      const fails = cleanSideSets(ex.sidesFailure, sets);
+      const list = sideFailureList(fails);
+      return `
+    <div class="day-ex">
+      <span class="day-ex-name">${esc(historyExerciseName(ex))}</span>
+      <span class="day-ex-meta">${esc(tPlural('unilateral.setsPerSide', sets))} · ${ex.reps} ${t('units.reps')} · ${ex.weight} ${t('units.kg')} · ${ex.setsDone} ${t('history.setsDoneLabel')}</span>
+      <span class="day-ex-completed">${esc(t('unilateral.completed', { sides: completedSidesLabel(done) }))}</span>
+      ${list ? `<span class="day-ex-failure">🔥 ${esc(t('unilateral.failureList', { list }))}</span>` : ''}
+    </div>`;
+    }
     const fSets = cleanFailureSets(ex.actualFailureSets, ex.sets);
     return `
     <div class="day-ex">
@@ -3003,22 +3676,47 @@ function confirmFinish() {
   /* setsDone aj actualFailureSets sa čítajú zo session cez stabilné kľúče cvikov,
      takže sa nikdy nemôžu pomiešať dva cviky s rovnakým menom ani stratiť po úprave plánu. */
   const exercises = plan.exercises.map(ex => {
-    const done = [];
-    const fails = [];
-    for (let i = 0; i < ex.sets; i++) {
-      if (sess && sess.completedSets[setSessionKey(ex, i)]) done.push(i + 1);
-      if (sess && sess.actualFailureSets[setSessionKey(ex, i)]) fails.push(i + 1);
-    }
-    return {
+    const sides = exerciseSideOrder(ex);
+    const entry = {
       name: ex.name,
       exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
       sets: ex.sets,
       reps: ex.reps,
       weight: ex.weight,
-      setsDone: done.length,
       plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, ex.sets),
-      actualFailureSets: cleanFailureSets(fails, ex.sets),
     };
+    if (sides) {
+      /* Jednostranný cvik: každá strana sa zaznamenáva samostatne.
+         setsDone zostáva SÚČET oboch strán – rovnaký význam ako pri bežnom cviku. */
+      const doneSide = { left: [], right: [] };
+      const failSide = { left: [], right: [] };
+      for (let i = 0; i < ex.sets; i++) {
+        for (const side of sides) {
+          if (sess && sess.completedSets[setSessionKey(ex, i, side)]) doneSide[side].push(i + 1);
+          if (sess && sess.actualFailureSets[setSessionKey(ex, i, side)]) failSide[side].push(i + 1);
+        }
+      }
+      const cleanDone = cleanSideSets(doneSide, ex.sets);
+      const cleanFails = cleanSideSets(failSide, ex.sets);
+      entry.unilateral = true;
+      entry.startSide = ex.startSide === 'right' ? 'right' : 'left';
+      entry.setsDone = cleanDone.left.length + cleanDone.right.length;
+      entry.sidesDone = cleanDone;
+      entry.sidesFailure = cleanFails;
+      /* actualFailureSets zostáva zjednotením čísel sérií – pre staršie zobrazenia aj kompatibilitu. */
+      entry.actualFailureSets = Array.from(new Set(cleanFails.left.concat(cleanFails.right)))
+        .sort((a, b) => a - b);
+    } else {
+      const done = [];
+      const fails = [];
+      for (let i = 0; i < ex.sets; i++) {
+        if (sess && sess.completedSets[setSessionKey(ex, i)]) done.push(i + 1);
+        if (sess && sess.actualFailureSets[setSessionKey(ex, i)]) fails.push(i + 1);
+      }
+      entry.setsDone = done.length;
+      entry.actualFailureSets = cleanFailureSets(fails, ex.sets);
+    }
+    return entry;
   });
 
   const doneCount = totalSetsDone();
@@ -3154,6 +3852,7 @@ function openHistoryEdit(id) {
     row.className = 'he-ex-row';
     row.innerHTML = `
       <span class="he-name">${esc(ex.name)}</span>
+      ${ex.unilateral === true ? `<span class="he-side">${esc(tPlural('unilateral.setsPerSide', ex.sets))}</span>` : ''}
       <span class="he-label">${t('history.setsLabel')}</span><input type="number" min="1" max="99" value="${ex.sets}" data-f="sets">
       <span class="he-label">${t('history.repsLabel')}</span><input type="number" min="1" max="99" value="${ex.reps}" data-f="reps">
       <span class="he-label">${t('units.kg')}</span><input type="number" min="0" max="999" value="${ex.weight}" data-f="weight">
@@ -3181,6 +3880,16 @@ function saveHistoryEdit() {
     /* Existujúce polia do zlyhania sa orežú na nový počet sérií; starým záznamom sa nepridávajú. */
     if (Array.isArray(e.actualFailureSets)) e.actualFailureSets = cleanFailureSets(e.actualFailureSets, e.sets);
     if (Array.isArray(e.plannedFailureSets)) e.plannedFailureSets = cleanFailureSets(e.plannedFailureSets, e.sets);
+    if (e.unilateral === true) {
+      /* Jednostranný cvik: setsDone je súčet oboch strán, takže sa oreže na 2× počet sérií.
+         Zlyhania po stranách sa orežú rovnako a zjednotenie sa prepočíta. */
+      e.startSide = e.startSide === 'right' ? 'right' : 'left';
+      e.setsDone = Math.max(0, Math.min(e.sets * 2, Math.round(e.setsDone)));
+      e.sidesDone = cleanSideSets(e.sidesDone, e.sets);
+      e.sidesFailure = cleanSideSets(e.sidesFailure, e.sets);
+      e.actualFailureSets = Array.from(new Set(e.sidesFailure.left.concat(e.sidesFailure.right)))
+        .sort((a, b) => a - b);
+    }
   });
   w.xp = BASE_XP + w.exercises.reduce((s, e) => s + e.setsDone, 0) * XP_PER_SET;
   document.getElementById('modal-history-edit').hidden = true;
@@ -3368,25 +4077,79 @@ function confirmGeneric() {
    aby prehliadač nehlásil porušenie autoplay pravidiel. */
 
 let audioCtx = null;
+let audioPrimed = false;   // zvuková stopa už bola raz aktivovaná v rámci pokynu používateľa
 
 function getAudioContext() {
   const Ctor = window.AudioContext || window.webkitAudioContext;
   if (!Ctor) return null;
-  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new Ctor();
+  if (!audioCtx || audioCtx.state === 'closed') {
+    audioCtx = new Ctor();
+    audioPrimed = false;
+    attachAudioStateWatcher(audioCtx);
+  }
   return audioCtx;
+}
+
+/* iOS drží zvukový kontext po návrate z pozadia v stave 'interrupted' alebo 'suspended'.
+   Sledujeme zmenu stavu, aby sme vedeli, kedy je zvuk naozaj dostupný. */
+function attachAudioStateWatcher(ctx) {
+  if (!ctx || typeof ctx.addEventListener !== 'function') return;
+  ctx.addEventListener('statechange', () => {
+    if (ctx.state === 'running') audioPrimed = true;
+  });
+}
+
+/* Aktivuje zvukovú stopu. WebKit potrebuje prejsť aspoň jeden uzol do `destination`
+   v rámci pokynu používateľa – bez toho sa výstup (reproduktor, slúchadlá, Bluetooth)
+   nemusí vôbec prepnúť a gong zostane ticho. Preto po každom úspešnom resume
+   prehráme jednu tichú vzorku. */
+function primeAudio(ctx) {
+  try {
+    const buffer = ctx.createBuffer(1, 1, 22050);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start(0);
+    audioPrimed = true;
+  } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
+}
+
+/* Obnoví zvukový kontext a (prvý raz) aktivuje zvukovú stopu.
+   Vracia Promise<boolean>: true = kontext naozaj beží. Nikdy nevyhodí výnimku. */
+function resumeAudio() {
+  let ctx = null;
+  try { ctx = getAudioContext(); } catch (e) { return Promise.resolve(false); }
+  if (!ctx) return Promise.resolve(false);
+  if (ctx.state === 'running') {
+    if (!audioPrimed) primeAudio(ctx);
+    return Promise.resolve(true);
+  }
+  if (typeof ctx.resume !== 'function') return Promise.resolve(false);
+  let resuming = null;
+  try { resuming = ctx.resume(); } catch (e) { return Promise.resolve(false); }
+  if (!resuming || typeof resuming.then !== 'function') return Promise.resolve(ctx.state === 'running');
+  return resuming.then(() => {
+    if (ctx.state === 'running') {
+      if (!audioPrimed) primeAudio(ctx);
+      return true;
+    }
+    return false;
+  }).catch(() => false);
 }
 
 /* Odblokovanie zvuku – iOS aj Chrome ho vyžadujú pri pokyne používateľa.
    Kontext sa tu aj vytvára, takže vzniká vnútri skutočného pokynu používateľa. */
 function unlockAudio() {
-  try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    if (ctx.state !== 'running' && typeof ctx.resume === 'function') {
-      const p = ctx.resume();
-      if (p && typeof p.catch === 'function') p.catch(() => {});
-    }
-  } catch (e) { /* zvuk je len doplnok – nikdy nesmie nič pokaziť */ }
+  return resumeAudio();
+}
+
+/* Obnovenie zvuku mimo pokynu používateľa (návrat z pozadia, ďalšie ťuknutie).
+   Bez pokynu sa nový kontext NIKDY nevytvára – len sa obnoví existujúci. */
+function resumeAudioIfNeeded(fromGesture) {
+  if (!restSoundOn()) return;
+  if (audioCtx && audioCtx.state === 'running' && audioPrimed) return;
+  if (!audioCtx && !fromGesture) return;
+  unlockAudio();
 }
 
 /* JEDEN gongový tón pre všetky údery – žiadna melódia, žiadna zmena výšky.
@@ -3500,18 +4263,13 @@ function playChime(length) {
   } catch (e) { ctx = null; }
   if (!ctx) return Promise.resolve(false);
 
-  const trySchedule = () => {
+  /* Naplánovať až po skutočnom spustení kontextu – na pozastavenom kontexte je gong ticho.
+     resumeAudio() zároveň aktivuje zvukovú stopu (primeAudio), takže sa použije práve
+     aktuálna výstupná cesta zariadenia – vrátane slúchadiel a Bluetooth. */
+  return resumeAudio().then((running) => {
+    if (!running) return false;
     try { return scheduleChime(ctx, length); } catch (e) { return false; }
-  };
-
-  if (ctx.state === 'running') return Promise.resolve(trySchedule());
-
-  let resuming = null;
-  try { resuming = ctx.resume(); } catch (e) { resuming = null; }
-  if (!resuming || typeof resuming.then !== 'function') return Promise.resolve(trySchedule());
-
-  /* Naplánovať až po skutočnom spustení – inak je gong ticho. */
-  return resuming.then(() => trySchedule()).catch(() => false);
+  });
 }
 
 function restSoundOn() {
@@ -3577,8 +4335,16 @@ function restoreRestTimerEnd() {
   } catch (e) { return null; }
 }
 
-/* Dokončí odpočet. withSound=false = tiché dokončenie (napr. po návrate z pozadia). */
-function finishRestTimer(withSound) {
+/* Dokončí odpočet. Dokončenie je naviazané na KONKRÉTNE id odpočtu, takže:
+   - ten istý odpočet sa nikdy nemôže dokončiť dvakrát (interval, návrat z pozadia,
+     obnovenie stránky, ťuknutie, prekreslenie),
+   - nový odpočet sa nikdy nemôže "dokončiť" oneskoreným callbackom starého odpočtu.
+   withSound=true znamená, že dokončenie sme naozaj videli naživo. */
+function finishRestTimer(sessionId, withSound) {
+  if (sessionId !== timerSessionId) return;      // beží už iný odpočet
+  if (timerCompletedId === sessionId) return;    // toto dokončenie je už spracované
+  timerCompletedId = sessionId;
+
   stopTimer();
   const bar = document.getElementById('timer-bar');
   bar.classList.add('done');
@@ -3586,16 +4352,21 @@ function finishRestTimer(withSound) {
   bar.setAttribute('aria-label', t('trening.timerComplete'));
   document.getElementById('timer-label').textContent = t('trening.timerDone');
   document.getElementById('timer-time').textContent = '00:00';
-  if (withSound && !timerRang) {
-    timerRang = true;
-    if (restSoundOn()) playChime(restSoundLength());
-  }
+  if (withSound && restSoundOn()) playChime(restSoundLength());
+}
+
+/* Smie za toto dokončenie zaznieť gong? Iba ak appka bežala naživo a koniec sme
+   zachytili hneď. Keď bol callback oneskorený (telefón appku pozastavil) alebo
+   sme boli v čase konca skrytí, odpočet sa dokončí potichu – žiadny oneskorený gong. */
+function completionWasLive() {
+  if (document.hidden) return false;
+  if (timerHiddenAt !== 0 && timerHiddenAt < timerEnd) return false;
+  return (Date.now() - timerEnd) <= TIMER_SOUND_GRACE_MS;
 }
 
 function restTimerTick() {
-  if (timerEnd - Date.now() <= 0) {
-    /* Gong len ak je appka práve viditeľná; v pozadí sa dokončí potichu. */
-    finishRestTimer(!document.hidden);
+  if (Date.now() >= timerEnd) {
+    finishRestTimer(timerSessionId, completionWasLive());
     return;
   }
   updateTimerDisplay();
@@ -3606,23 +4377,26 @@ function armRestTimer() {
   timerInterval = setInterval(restTimerTick, 250);
 }
 
-/* Po návrate z pozadia: ak odpočet už dobehol, dokonči ho potichu; inak len obnov zobrazenie. */
+/* Po návrate z pozadia: ak odpočet už dobehol, dokonči ho POTICHU; inak len obnov zobrazenie. */
 function refreshRestTimerOnVisible() {
   if (timerInterval === null) return;
   if (Date.now() >= timerEnd) {
-    finishRestTimer(false);
+    finishRestTimer(timerSessionId, false);
   } else {
     updateTimerDisplay();
   }
 }
 
-/* Obnoví bežiaci odpočet po obnovení stránky z absolútneho koncového času. */
+/* Obnoví bežiaci odpočet po obnovení stránky z absolútneho koncového času.
+   Obnovený odpočet je vždy NOVÁ inštancia, takže sa nemôže pomýliť s tou predchádzajúcou.
+   Ak medzitým dobehol, zobrazí sa dokončený stav BEZ gongu. */
 function restoreRestTimer() {
   const endAt = restoreRestTimerEnd();
   if (!endAt) return;
+  timerSessionId++;
   timerEnd = endAt;
   if (Date.now() >= endAt) {
-    finishRestTimer(false);   // dobehol počas neprítomnosti – dokončený stav bez gongu
+    finishRestTimer(timerSessionId, false);
     return;
   }
   const bar = document.getElementById('timer-bar');
@@ -3636,8 +4410,8 @@ function restoreRestTimer() {
 function startTimer(seconds) {
   stopTimer();
   unlockAudio();               // štart časovača je pokyn používateľa – odblokuje zvuk
+  timerSessionId++;            // nový odpočet = nová identita (starý sa už nikdy nedokončí)
   timerEnd = Date.now() + seconds * 1000;
-  timerRang = false;
   persistRestTimerEnd(timerEnd);   // absolútny koniec prežije aj obnovenie stránky
   const bar = document.getElementById('timer-bar');
   bar.classList.remove('done');
@@ -3831,8 +4605,11 @@ function setupEvents() {
   on('btn-choice-fullbody', openFullBodyBuilder);
   on('btn-choice-cancel', closePlanChoice);
   on('btn-fb-cancel', closeFullBodyBuilder);
-  on('btn-fb-create', createFullBodyPlan);
+  on('btn-fb-create', () => { if (fbMode === 'edit') applyExercisePicker(); else createFullBodyPlan(); });
   on('fb-name', (e) => { fbName = e.target.value; fbNameTouched = true; }, 'input');
+  on('btn-edit-add-from-plans', openExercisePicker);
+  setupEditRowDrag();
+  setupChipDrag();
   on('btn-plan-rename', () => startEditPlan(selectedPlan));
   on('btn-plan-left', () => movePlan(editingPlan, -1));
   on('btn-plan-right', () => movePlan(editingPlan, 1));
@@ -3950,6 +4727,11 @@ function setupEvents() {
   });
 
   on('btn-update', applyUpdate);
+
+  /* Prvý dotyk/klik pri zapnutom zvuku vytvorí a aktivuje zvukový kontext v rámci
+     skutočného pokynu používateľa – iOS ho inak po pozastavení sám neobnoví a gong
+     by sa prehral inou výstupnou cestou (alebo vôbec). */
+  document.addEventListener('pointerdown', () => { resumeAudioIfNeeded(true); }, { passive: true });
 }
 
 /* ---------- Denný strážca (dátum, ISO týždeň, týždenný progres) ---------- */

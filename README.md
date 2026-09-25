@@ -14,9 +14,17 @@ everything on your own device.
 ## Features
 
 - **Custom workout plans** — start from the built-in Push / Pull / Legs plans, rename them, reorder
-  them, delete them, or add as many of your own as you like.
+  them (drag the ⠿ handle, or use the ‹ › buttons), delete them, or add as many of your own as you
+  like.
 - **Full Body builder** — create a plan by picking exercises straight out of your existing plans.
   The result is an ordinary custom plan you can rename, edit, reorder or delete like any other.
+- **The same picker when you edit** — every plan editor has **Add exercises from existing plans**
+  (*Pridať cviky z existujúcich plánov*), so you can pull exercises out of your other plans into a
+  plan you already have instead of retyping them.
+- **Reorder exercises** — move exercises up and down inside a plan by dragging the handle or with the
+  ↑ / ↓ buttons. The order is saved with the plan.
+- **Train one side at a time** — an optional per-exercise switch for unilateral work (single-arm,
+  single-leg, split squats…), with independent completion and failure tracking for each side.
 - **Editable weekly goal** — choose how many workouts you want to complete per week (1–7) and change
   it whenever you want; every counter, streak and reward recalculates immediately.
 - **Workout rotation** — the next recommended workout follows the order of your own plan list, based
@@ -38,7 +46,7 @@ everything on your own device.
   minutes), with an optional gentle gong when the countdown reaches zero. The sound is **off by
   default**, has a **Short / Standard / Long** length choice, and is toggled in ⚙️ Settings.
 - **Comparison with last time** — every exercise shows whether you went heavier or lighter than your
-  previous session.
+  previous session **of the same workout plan**.
 - **Two languages** — full Slovak and English interface with an instant `SK | EN` toggle.
 - **Export and import** — back up or restore all of your data as a JSON file.
 - **Installable** — add it to your phone's home screen and it opens like a native app.
@@ -92,8 +100,10 @@ your history by local calendar date, so a workout always appears on the day you 
 
 ### Workout
 The selected plan name with a **✏️ Edit plan** button, and a row of plan chips for switching between
-plans. Editing a plan lets you rename it, reorder it with the ‹ › buttons, delete it with 🗑️, and
-change its exercises — each with sets, reps and target weight in kilograms.
+plans. Drag a plan by its ⠿ handle to change the rotation order, or use the ‹ › buttons in the
+editor. Editing a plan lets you rename it, delete it with 🗑️, reorder **and** add its exercises, and
+change each one — sets, reps, target weight in kilograms, planned failure sets, and whether it is
+trained one side at a time.
 
 Mark each set as done while you train, then press **Finish workout**. You can also run a rest timer
 or reset the current workout without touching your history.
@@ -125,6 +135,27 @@ badges earned for personal records.
 - **Achievements** — unlocked automatically and stored with the date they were earned. Each exercise
   unlocks 5 kg milestones as you set new personal records (for example 50 kg, then 55 kg, then
   60 kg…).
+- **Comparison with last time** — the arrow and the "+2 reps" / "−2 reps" line compare an exercise
+  only with the **same exercise in the same workout plan**, using the stable plan id and the stable
+  exercise id. Renaming a plan never breaks this, because its id does not change. A Bench press in a
+  Full Body plan is never compared against a Bench press in Push, and two custom exercises that
+  happen to share a name are never compared with each other. If there is no earlier record of that
+  exercise in that plan, the app shows *First time* and no comparison at all — never a misleading
+  number taken from a different plan.
+
+### Reordering
+
+- **Workout plans** — drag a plan chip by its ⠿ handle to move it before or after another plan. The
+  rotation order, the chips and the Today recommendation all follow the new order immediately, and the
+  order is saved with your data (it survives a refresh and export/import). The ‹ › buttons in the plan
+  editor do the same thing one step at a time, and your currently selected plan stays selected. Plan
+  ids, names and every past workout are untouched.
+- **Exercises in a plan** — every exercise row has a ⠿ handle and ↑ / ↓ buttons. Drag it, or step it
+  up and down, then save the plan as usual. The saved order is what the Workout screen shows and what a
+  finished workout records into your history. Reordering never changes sets, reps, weights, planned
+  failure sets, completed progress or exercise ids.
+- Both kinds of dragging use pointer events, so they work with a mouse **and** with a finger on a
+  touch screen; the handle has `touch-action: none`, so dragging never scrolls the page.
 
 ---
 
@@ -158,6 +189,14 @@ Screen. If the countdown finishes while you are away, the app shows **Rest time 
 (*Pauza skončila.*) when you return, without restarting and without a delayed gong. A rest timer
 that is still running also survives a page refresh.
 
+Every countdown gets its own **timer session id**, and its completion is recorded once against that
+id. That is what makes the completion *idempotent*: the ticking interval, returning from the
+background, restoring the page, opening the Workout tab, tapping the timer, starting another timer and
+every screen re-render all go through the same guard, so a countdown can never be "completed" twice.
+A completion is only treated as a live one — and only then may the gong play — when the app is visible
+and the end was detected within about two seconds of the real end. Anything later was a suspended
+callback, and it finishes **silently** with the visual *Rest time is over.* state instead.
+
 ### Rest timer sound
 
 The rest timer can play a short **gentle gong** when its countdown reaches zero. It is a setting in
@@ -171,26 +210,37 @@ switch it on.
   (three, default), Long ≈ 6 s (three)**. Each gong has a smooth natural decay, and the whole thing is
   moderate in volume — no harsh beep, no alarm. **No audio file is bundled or downloaded**, and
   GymQuest stays offline.
-- It plays **once**, only when a countdown reaches zero on its own. Stopping the timer, resetting the
-  workout or picking a different duration stays silent, and it never plays for the workout-duration
-  timer or any other event. Rapid taps stop the previous gong before starting the next, so sounds
-  never pile up.
-- **Test sound** plays exactly the same gong on demand. It is disabled while the sound setting is off
-  (with a short explanation), and it never starts a rest timer or touches your workout.
-- Audio is only started after a real tap (turning the setting on, **Test sound** or starting the
-  rest timer), and the gong is only scheduled once the browser's audio context is actually running —
-  on iOS/Safari a new context starts suspended, and sounds scheduled before it starts are silent. If
-  the browser still refuses to play, the test shows a short message (*Sound could not be played. Check
-  your device sound settings.*) and the rest timer keeps working.
+- It plays **once**, only when a countdown reaches zero on its own **while the app is open**. Stopping
+  the timer, resetting the workout or picking a different duration stays silent, and it never plays
+  for the workout-duration timer or any other event. Rapid taps stop the previous gong before
+  starting the next, so sounds never pile up.
+- **Test sound** plays exactly the same gong on demand — it is the *same code path*, not a second
+  implementation. It is disabled while the sound setting is off (with a short explanation), and it
+  never starts a rest timer or touches your workout.
+- **One shared audio context.** The app creates exactly one `AudioContext`, only in response to a real
+  tap, and never a second one. It is created and resumed inside the user gesture (turning the setting
+  on, **Test sound**, starting a rest timer, or the first tap anywhere while sound is on), and after
+  each successful resume it also sends one silent sample to the audio destination. That last step
+  matters on iOS: WebKit only switches its output route — speaker, headphones, Bluetooth — once the
+  audio session has actually been activated by a user gesture, which is the usual reason a Web Audio
+  gong is inaudible on headphones. The gong is scheduled only once the context is genuinely running,
+  so nothing is queued on a suspended context. If the browser still refuses to play, **Test sound**
+  shows a short message (*Sound could not be played. Check your device sound settings.*) and the rest
+  timer keeps working normally.
+- Going to the background cancels any gong that is still scheduled or playing, so a suspended audio
+  context can never flush an old gong after you come back.
 
 ### Honest iPhone / Safari limits
 
 GymQuest is a static web app, so its rest-timer sound **cannot** be guaranteed to play while iOS has
 the page suspended in the background, after returning to the Home Screen, while Silent Mode is on,
-or under Do Not Disturb / Focus. It does not schedule native notifications and does not attempt to
-bypass Silent Mode or misuse Critical Alerts. What it *does* guarantee: the timer stays correct
-(from the absolute timestamp), the completion state is shown on return, and — when the app is open
-and audio is allowed — the gong plays once at the natural end of a countdown.
+or under Do Not Disturb / Focus. It also **cannot choose your output route**: whether a gong comes out
+of the speaker, wired headphones or a Bluetooth device is decided entirely by iOS and the browser, and
+GymQuest only asks for the audio session to be active. It does not schedule native notifications and
+does not attempt to bypass Silent Mode or misuse Critical Alerts. What it *does* guarantee: the timer
+stays correct (from the absolute timestamp), the completion state is shown on return, no old gong is
+ever replayed late, and — when the app is open and audio is allowed — the gong plays once at the
+natural end of a countdown.
 
 ---
 
@@ -217,6 +267,31 @@ name, order, sets, reps, weights, failure sets, add exercises or delete them. Fr
 exactly like any other plan: rotation, Today recommendations, history, Calendar, XP, export/import
 and safe deletion all work the same way. Nothing is written to a special plan type.
 
+### Adding exercises to a plan you already have
+
+The same picker is available while you edit **any** plan, through the **Add exercises from existing
+plans** (*Pridať cviky z existujúcich plánov*) button in the editor. It is not tied to any special plan
+type and never looks at the plan's name, so it works exactly the same for a Full Body plan you created
+earlier, for one you have since renamed, and for an ordinary custom plan.
+
+- Every other **active plan** appears as a section with the name you gave it (Push, Pull, Nohy, a
+  renamed plan, or one of your own).
+- Exercises that are **already in the plan you are editing** show up ticked, so you can see what is
+  already there and untick anything you want to remove.
+- Exercises that are only in the plan itself — for example one you typed by hand — get their own
+  section at the end, also ticked.
+- Tick anything else to add a **copy** of it; **Select all** / **Clear** work per section.
+- **Add to plan** applies the selection and returns you to the editor. Nothing is written to your data
+  until you press **Save**, exactly like every other editor change, and typing an exercise by hand
+  with **+ Add exercise** still works as before.
+
+Copies are independent: the same fields as the builder copies (name, stable id and built-in/custom
+status, sets, reps, target weight, planned failure sets, and the one-side-at-a-time setting) are taken
+once, and there is no live link in either direction afterwards. Recorded results are never copied —
+`actualFailureSets` belongs to finished history and can never leak into a future plan. Built-in
+exercises are de-duplicated by their stable id; custom exercises are never merged, even when their
+names look the same.
+
 ---
 
 ## Training to failure (optional)
@@ -236,6 +311,61 @@ switches anything on by itself.
   result, and only when there is one. Old workouts without this data simply show no failure line.
 
 It is tracked information only — not a training recommendation, and never medical advice.
+
+---
+
+## Training one side at a time (optional)
+
+Some exercises are done one side at a time — a single-arm curl or triceps extension, a single-arm row,
+a single-leg extension or curl, a Bulgarian split squat, or any custom unilateral exercise.
+
+Every exercise in the plan editor has an optional switch, **Train both sides separately** (*Cvičiť
+každú stranu samostatne*). It is **off by default**, so nothing about your existing plans changes until
+you switch it on. When it is on you also choose the side you start with — **Start with left** (*Začať
+ľavou*) or **Start with right** (*Začať pravou*), defaulting to left. Both the switch and the starting
+side are saved with the plan and survive a refresh, export/import, language switching and updates.
+
+During the workout the exercise is listed as *N sets per side* (*N série na každú stranu*) and every
+planned set becomes two independent rows, alternating the sides in the order you chose:
+
+```
+Single-arm Triceps Extension        3 sets per side
+Set 1 — Left    [✓] [🔥]
+Set 1 — Right   [✓] [🔥]
+Set 2 — Left    [✓] [🔥]
+Set 2 — Right   [✓] [🔥]
+Set 3 — Left    [✓] [🔥]
+Set 3 — Right   [✓] [🔥]
+```
+
+- Each side is tracked **separately**: ticking the left never ticks the right, and each side has its
+  own 🔥 failure marker. You can finish left-only, right-only, one side at a time, or anything in
+  between.
+- The rest timer stays completely manual — nothing is ever started for you between sides. Start it
+  yourself whenever you want it, exactly as before.
+- Your progress through the sides lives in the active session, so it survives changing language,
+  switching tabs, opening the Calendar, editing a plan, backgrounding the app and a page refresh, and
+  the workout duration keeps running normally.
+- History and the Calendar day detail record that the exercise was unilateral, which side you started
+  with and which sides you actually completed — for example *3 sets per side · 12 reps · 10 kg*,
+  *Completed: Left and Right*, *Failure: Set 3 — Right*.
+- **XP rule (documented):** a unilateral set is one working set per side, and GymQuest already awards
+  XP per *tracked* set — so each completed side counts once, just like any other completed set. Sets
+  that were not completed count for nothing, a side is never counted twice, and personal records are
+  unaffected because they are based on the exercise's weight, not on how many sides you logged.
+- An exercise without the switch behaves exactly as before, and nothing in your existing plans,
+  history, XP or achievements is changed by this feature.
+
+It is tracked information only — not a training recommendation, and never medical advice.
+
+---
+
+## Training to failure, side by side
+
+The optional **failure** tracking works unchanged, and on a unilateral exercise each row has its own
+flame: *Séria 3 — Pravá* can be marked as failure while *Séria 3 — Ľavá* is not. The finished workout
+stores the planned configuration for the exercise and the actual per-side result separately, and
+history only ever shows the recorded result.
 
 ---
 

@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 
@@ -93,6 +93,7 @@
         </div>
         <div class="edit-rows" id="edit-rows"></div>
         <button class="btn btn-secondary btn-block" id="btn-add-exercise" data-i18n="trening.addExercise">+ Pridať cvik</button>
+        <button class="btn btn-secondary btn-block btn-from-plans" id="btn-edit-add-from-plans" data-i18n="trening.addFromPlans">Pridať cviky z existujúcich plánov</button>
         <p class="edit-hint" data-i18n="trening.failureHintEdit">Voliteľné: vyber série, ktoré plánuješ ísť do zlyhania. Skutočný výsledok môžeš zmeniť počas tréningu.</p>
         <p class="card-note" id="edit-error" hidden></p>
         <div class="modal-actions">
@@ -399,9 +400,9 @@
   <div class="modal-backdrop" id="modal-fullbody" hidden>
     <div class="modal modal-fb">
       <div class="fb-head">
-        <h3 data-i18n="fb.title">Full Body builder</h3>
-        <p class="fb-sub" data-i18n="fb.subtitle">Vyber cviky z existujúcich tréningových plánov.</p>
-        <label class="modal-label" for="fb-name" data-i18n="fb.nameLabel">Názov tréningu</label>
+        <h3 id="fb-title">Full Body builder</h3>
+        <p class="fb-sub" id="fb-sub">Vyber cviky z existujúcich tréningových plánov.</p>
+        <label class="modal-label" id="fb-name-label" for="fb-name" data-i18n="fb.nameLabel">Názov tréningu</label>
         <input type="text" class="modal-input" id="fb-name" maxlength="40" autocomplete="off">
       </div>
       <div class="fb-body" id="fb-sources"></div>
@@ -417,6 +418,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=19"></script>
+  <script src="script.js?v=20"></script>
 </body>
 </html>
