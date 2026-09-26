@@ -426,7 +426,7 @@ const I18N = {
     'common.cancel': 'Zrušiť', 'common.close': 'Zavrieť', 'common.save': 'Uložiť', 'common.ok': 'OK', 'common.delete': 'Vymazať',
     'update.available': 'Je dostupná nová verzia GymQuestu.',
     'update.now': 'Aktualizovať',
-    'app.storageError': 'Tento prehliadač odmietol uložiť dáta – zmeny sa po obnovení stránky stratia. Povol v prehliadači ukladanie dát (localStorage) a skús to znova.',
+    'app.storageError': 'Tento prehliadač odmietol uložiť dáta – zmeny sa po obnovení stránky stratia. Povol v prehliadači ukladanie dát (localStorage) a skús to znova. Ak sa uloženie stále nedarí, vyexportuj si zálohu, kým sú dáta ešte v pamäti.',
     'common.confirm': 'Potvrdenie',
     'common.confirmTitle': 'Potvrdenie',
     'achievements.first': 'Prvý tréning', 'achievements.firstDesc': 'Dokonči svoj prvý tréning',
@@ -457,6 +457,142 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP za úspechy',
     'motivacia.newAchievement': 'Nový úspech: {names}',
+
+    /* --- Telo, kalórie, jedlo a tipy --- */
+    'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
+
+    'pokrok.subProgress': 'Pokrok', 'pokrok.subBody': 'Telo', 'pokrok.subFood': 'Jedlo',
+
+    'body.summaryTitle': 'Najnovšie miery',
+    'body.unitsAria': 'Jednotky merania',
+    'body.unitsNote': 'Jednotky menia len zobrazenie. Uložené hodnoty sa nikdy neprepisujú.',
+    'body.add': '+ Pridať meranie',
+    'body.addTitle': 'Pridať meranie',
+    'body.editTitle': 'Upraviť meranie',
+    'body.deleteTitle': 'Vymazať meranie',
+    'body.deleteConfirm': 'Vymazať meranie z {date}? Toto sa nedá vrátiť.',
+    'body.dateLabel': 'Dátum',
+    'body.noteLabel': 'Poznámka (voliteľná)',
+    'body.fieldsHint': 'Ak si niečo nemeral, nechaj pole prázdne.',
+    'body.empty': 'Zatiaľ žiadne merania.',
+    'body.noValues': 'Žiadne zapísané hodnoty',
+    'body.errDate': 'Vyber platný dátum.',
+    'body.errRange': 'Skontroluj tieto hodnoty: {fields}.',
+    'body.errEmpty': 'Vyplň aspoň jednu hodnotu alebo napíš poznámku.',
+    'body.chartTitle': 'Vývoj',
+    'body.metricAria': 'Ktorá miera sa zobrazí',
+    'body.chartRange': 'Najnižšie {min} · najvyššie {max} {unit}',
+    'body.chartNeedTwo': 'Pre graf pridaj ešte jeden zápis.',
+    'body.chartAria': 'Graf vývoja, najnižšie {min}, najvyššie {max}',
+    'body.historyTitle': 'História meraní',
+    'body.storageNotice': 'Uložené dáta začínajú byť veľké a čoskoro môžu prekročiť to, čo tento prehliadač udrží. Vyexportuj si zálohu a zváž, či nepotrebuješ vymazať staré záznamy. GymQuest sám nikdy nič nemaže.',
+    'body.f.weight': 'Telesná hmotnosť',
+    'body.f.waist': 'Pás',
+    'body.f.chest': 'Hrudník',
+    'body.f.armLeft': 'Ľavé nadlaktie',
+    'body.f.armRight': 'Pravé nadlaktie',
+    'body.f.thighLeft': 'Ľavé stehno',
+    'body.f.thighRight': 'Pravé stehno',
+    'body.f.hip': 'Boky',
+
+    'calorie.title': 'Odhad dennej energie',
+    'calorie.offHint': 'Voliteľné a predvolene skryté. GymQuest nič neodhaduje, kým to sám nezapneš.',
+    'calorie.enable': 'Zobraziť odhad',
+    'calorie.disable': 'Skryť odhad',
+    'calorie.intro': 'Odhad, nie predpis. Toto nie je lekárska rada.',
+    'calorie.adultQuestion': 'Máš 18 rokov alebo viac?',
+    'calorie.adultYes': 'Mám 18 a viac',
+    'calorie.adultNo': 'Mám menej ako 18',
+    'calorie.underage': 'GymQuest nezobrazuje dospelé kalorické ciele ľuďom mladším ako 18 rokov. Telo, ktoré ešte rastie, má iné potreby a odhad stavaný pre dospelých by tu zavádzal. Ak chceš o jedle a energii vo svojom veku vedieť viac, porozprávaj sa s lekárom, výživovým poradcom alebo s rodičom.',
+    'calorie.inHeight': 'Výška',
+    'calorie.inAge': 'Vek',
+    'calorie.years': 'rokov',
+    'calorie.inSex': 'Pohlavie použité vo vzorci',
+    'calorie.sexPick': 'Neuvedené',
+    'calorie.sexMale': 'Muž',
+    'calorie.sexFemale': 'Žena',
+    'calorie.inActivity': 'Úroveň aktivity',
+    'calorie.activityPick': 'Neuvedené',
+    'calorie.actSedentary': 'Prevažne sedenie',
+    'calorie.actLight': 'Ľahká aktivita 1–3 dni v týždni',
+    'calorie.actModerate': 'Stredná aktivita 3–5 dní v týždni',
+    'calorie.actActive': 'Náročná aktivita 6–7 dní v týždni',
+    'calorie.actVery': 'Veľmi náročná aktivita alebo fyzická práca',
+    'calorie.inWeight': 'Telesná hmotnosť (z tvojich meraní)',
+    'calorie.weightFromLog': 'Použitá je tvoja najnovšia zapísaná hmotnosť z {date}.',
+    'calorie.weightMissing': 'Najprv si zapíš telesnú hmotnosť. GymQuest ju nebude hádať.',
+    'calorie.saveInputs': 'Uložiť vstupy',
+    'calorie.errAge': 'Vek musí byť medzi 1 a 120.',
+    'calorie.errHeight': 'Výška je mimo rozsahu. Skontroluj hodnotu aj jednotku.',
+    'calorie.needInputs': 'Zatiaľ chýbajú vstupy',
+    'calorie.missing': 'Ešte chýba: {list}',
+    'calorie.range': '{low}–{high} {unit} denne',
+    'calorie.bmrLine': 'Vychádza to z odhadu pokojovej spotreby približne {bmr} {unit} denne.',
+    'calorie.limit1': 'Je to priemer populácie. Tvoje skutočné potreby sa môžu výrazne líšiť.',
+    'calorie.limit2': 'Nevidí zloženie tela, zdravotné ťažkosti, lieky, tehotenstvo ani to, ako naozaj trénuješ.',
+    'calorie.limit3': 'Nie je to cieľ, ktorý treba presne trafiť, ani jedálny plán.',
+    'calorie.limit4': 'GymQuest zámerne neponúka kalorické ciele na chudnutie ani na priberanie.',
+    'calorie.limit5': 'V čomkoľvek zdravotnom alebo pri pláne na mieru sa obráť na kvalifikovaného odborníka.',
+    'calorie.formula': 'Vzorec: Mifflin-St Jeor (Mifflin MD et al., Am J Clin Nutr, 1990) pre pokojovú spotrebu, vynásobený faktorom aktivity. Výsledok je zobrazený ako rozsah ±10 %.',
+    'calorie.updated': 'Naposledy vypočítané: {when}',
+
+    'food.offHint': 'Denník jedla je voliteľný a predvolene vypnutý. GymQuest nemá žiadnu databázu potravín – všetko si zapisuješ sám.',
+    'food.enable': 'Zapnúť denník jedla',
+    'food.disable': 'Vypnúť denník jedla',
+    'food.addEntry': '+ Pridať jedlo',
+    'food.addTitle': 'Pridať jedlo',
+    'food.editEntryTitle': 'Upraviť záznam',
+    'food.newTemplateTitle': 'Nová uložená potravina',
+    'food.editTemplateTitle': 'Upraviť uloženú potravinu',
+    'food.pickSaved': 'Uložená potravina',
+    'food.pickNone': 'Žiadna – zadám hodnoty ručne',
+    'food.qtyLabel': 'Množstvo (násobok)',
+    'food.saveAsTemplate': 'Uložiť aj ako potravinu',
+    'food.nameLabel': 'Názov',
+    'food.kcalLabel': 'Energia',
+    'food.protein': 'Bielkoviny',
+    'food.carbs': 'Sacharidy',
+    'food.fat': 'Tuky',
+    'food.macroLine': 'B {p} g · S {c} g · T {f} g',
+    'food.totalsLine': '{total} · {entries}',
+    'food.entries': '{n} záznamov',
+    'food.entriesOne': '{n} záznam',
+    'food.entriesFew': '{n} záznamy',
+    'food.entriesMany': '{n} záznamu',
+    'food.entriesOther': '{n} záznamov',
+    'food.emptyDay': 'V tento deň zatiaľ nič nie je.',
+    'food.noSaved': 'Zatiaľ žiadne uložené potraviny.',
+    'food.savedTitle': 'Uložené potraviny',
+    'food.newTemplate': '+ Nová potravina',
+    'food.editTemplate': 'Upraviť uloženú potravinu',
+    'food.deleteTemplate': 'Vymazať uloženú potravinu',
+    'food.deleteTemplateConfirm': 'Vymazať „{name}“ z uložených potravín? Už zapísané záznamy si držia vlastné hodnoty.',
+    'food.editEntry': 'Upraviť záznam',
+    'food.deleteEntry': 'Vymazať záznam',
+    'food.deleteEntryConfirm': 'Vymazať „{name}“ z tohto dňa?',
+    'food.errName': 'Zadaj názov potraviny.',
+    'food.errNumber': 'Hodnoty musia byť čísla od 0 do 100000.',
+    'food.errQty': 'Množstvo musí byť väčšie ako 0 a najviac 1000.',
+    'food.disclaimer': 'Hodnoty si zapísal ty. GymQuest ich neoveruje a nemá žiadnu databázu potravín.',
+    'food.prevDay': 'Predchádzajúci deň',
+    'food.nextDay': 'Nasledujúci deň',
+
+    'tips.title': 'Ako čítať tieto údaje',
+    'tips.t1Title': 'Meraj hmotnosť stále rovnako',
+    'tips.t1Body': 'Tá istá váha, tá istá denná doba, podobné podmienky – veľa ľudí sa váži ráno pred jedlom. Pravidelnosť je dôležitejšia než ktorékoľvek jedno číslo.',
+    'tips.t2Title': 'Denné výkyvy nie sú trend',
+    'tips.t2Body': 'Hmotnosť sa hýbe s vodou, jedlom v črevách a soľou, takže sa počas dňa môže meniť. Porovnávaj týždenné priemery alebo ten istý deň počas niekoľkých týždňov – to sa už blíži k skutočnému smeru.',
+    'tips.t3Title': 'Trvanie, série, opakovania a progresívne preťaženie',
+    'tips.t3Body': 'Trvanie je, ako dlho tréning trval. Séria je jedna skupina opakovaní. Opakovania sú, koľkokrát si váhu pohol. Progresívne preťaženie znamená postupne robiť trochu viac – viac váhy, viac opakovaní alebo lepšiu techniku.',
+    'tips.t4Title': 'Čo ti odhad kalórií povie a čo nie',
+    'tips.t4Body': 'Odhaduje energiu, ktorú by mohol za deň spotrebovať priemerný človek s tvojimi mierami. Nedokáže zmerať tvoj metabolizmus a nič nehovorí o kvalite jedla ani o zdraví.',
+    'tips.t5Title': 'Čo znamenajú tvoje vlastné hodnoty',
+    'tips.t5Body': 'Sú to tvoje poznámky, nie laboratórne merania. Porcie sú odhady, etikety sa líšia a to isté jedlo môže mať v rôzne dni iné hodnoty. Hodí sa to na hľadanie vzorcov, nie na presné účtovníctvo.',
+    'tips.foodTitle': 'O hodnotách, ktoré zapisuješ',
+    'tips.f1Title': 'Tvoj zápis, tvoje čísla',
+    'tips.f1Body': 'Nič sa tu nedohľadáva ani nekontroluje. Čo napíšeš, to vidíš – súčty sú len také presné ako tvoje odhady.',
+    'tips.f2Title': 'Vzorce sú dôležitejšie než presnosť',
+    'tips.f2Body': 'Približný, ale pravidelný zápis za niekoľko týždňov povie viac než jeden starostlivo odvážený deň. Jedlo nie je niečo, čo si treba zaslúžiť alebo odtrénovať.',
   },
   en: {
     'tab.dnes': 'Today', 'tab.trening': 'Workout', 'tab.pokrok': 'Progress', 'tab.motivacia': 'Motivation', 'tab.kalendar': 'Calendar',
@@ -722,7 +858,7 @@ const I18N = {
     'common.cancel': 'Cancel', 'common.close': 'Close', 'common.save': 'Save', 'common.ok': 'OK', 'common.delete': 'Delete',
     'update.available': 'A new version of GymQuest is available.',
     'update.now': 'Update now',
-    'app.storageError': 'This browser refused to save your data — changes will be lost after a refresh. Allow site data (localStorage) in your browser and try again.',
+    'app.storageError': 'This browser refused to save your data — changes will be lost after a refresh. Allow site data (localStorage) in your browser and try again. If saving still fails, export a backup while the data is still in memory.',
     'common.confirm': 'Confirmation',
     'common.confirmTitle': 'Confirmation',
     'achievements.first': 'First Workout', 'achievements.firstDesc': 'Complete your first workout',
@@ -753,6 +889,140 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP from achievements',
     'motivacia.newAchievement': 'New achievement: {names}',
+
+    /* --- Body, calories, food and tips --- */
+    'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
+
+    'pokrok.subProgress': 'Progress', 'pokrok.subBody': 'Body', 'pokrok.subFood': 'Food',
+
+    'body.summaryTitle': 'Latest measurements',
+    'body.unitsAria': 'Measurement units',
+    'body.unitsNote': 'Units change the display only. Stored values are never rewritten.',
+    'body.add': '+ Add measurement',
+    'body.addTitle': 'Add measurement',
+    'body.editTitle': 'Edit measurement',
+    'body.deleteTitle': 'Delete measurement',
+    'body.deleteConfirm': 'Delete the measurement from {date}? This cannot be undone.',
+    'body.dateLabel': 'Date',
+    'body.noteLabel': 'Note (optional)',
+    'body.fieldsHint': 'Leave a field empty if you did not measure it.',
+    'body.empty': 'No measurements yet.',
+    'body.noValues': 'No values recorded',
+    'body.errDate': 'Pick a valid date.',
+    'body.errRange': 'Check these values: {fields}.',
+    'body.errEmpty': 'Fill in at least one value or write a note.',
+    'body.chartTitle': 'Trend',
+    'body.metricAria': 'Measurement to show',
+    'body.chartRange': 'Lowest {min} · highest {max} {unit}',
+    'body.chartNeedTwo': 'Add another entry to see a trend.',
+    'body.chartAria': 'Trend chart, lowest {min}, highest {max}',
+    'body.historyTitle': 'Measurement history',
+    'body.storageNotice': 'Your stored data is getting large and may soon exceed what this browser can keep. Export a backup and consider deleting old entries you no longer need. GymQuest never deletes anything for you.',
+    'body.f.weight': 'Body weight',
+    'body.f.waist': 'Waist',
+    'body.f.chest': 'Chest',
+    'body.f.armLeft': 'Left upper arm',
+    'body.f.armRight': 'Right upper arm',
+    'body.f.thighLeft': 'Left thigh',
+    'body.f.thighRight': 'Right thigh',
+    'body.f.hip': 'Hip',
+
+    'calorie.title': 'Daily energy estimate',
+    'calorie.offHint': 'Optional and hidden by default. GymQuest estimates nothing until you turn this on.',
+    'calorie.enable': 'Show the estimate',
+    'calorie.disable': 'Hide the estimate',
+    'calorie.intro': 'An estimate, not a prescription. This is not medical advice.',
+    'calorie.adultQuestion': 'Are you 18 or older?',
+    'calorie.adultYes': 'I am 18 or older',
+    'calorie.adultNo': 'I am under 18',
+    'calorie.underage': 'GymQuest does not show adult calorie targets to under-18s. A body that is still growing has different needs, and an estimate built for adults would be misleading here. If you want to know more about food and energy at your age, talk with a doctor, a dietitian or a parent or guardian.',
+    'calorie.inHeight': 'Height',
+    'calorie.inAge': 'Age',
+    'calorie.years': 'years',
+    'calorie.inSex': 'Sex used by the formula',
+    'calorie.sexPick': 'Not specified',
+    'calorie.sexMale': 'Male',
+    'calorie.sexFemale': 'Female',
+    'calorie.inActivity': 'Activity level',
+    'calorie.activityPick': 'Not specified',
+    'calorie.actSedentary': 'Mostly sitting',
+    'calorie.actLight': 'Light activity 1–3 days a week',
+    'calorie.actModerate': 'Moderate activity 3–5 days a week',
+    'calorie.actActive': 'Hard activity 6–7 days a week',
+    'calorie.actVery': 'Very hard activity or physical work',
+    'calorie.inWeight': 'Body weight (from your log)',
+    'calorie.weightFromLog': 'Using your latest logged weight from {date}.',
+    'calorie.weightMissing': 'Log your body weight first. GymQuest will not guess it.',
+    'calorie.saveInputs': 'Save inputs',
+    'calorie.errAge': 'Age must be between 1 and 120.',
+    'calorie.errHeight': 'Height looks out of range. Check the value and the unit.',
+    'calorie.needInputs': 'Not enough inputs yet',
+    'calorie.missing': 'Still missing: {list}',
+    'calorie.range': '{low}–{high} {unit} a day',
+    'calorie.bmrLine': 'That comes from an estimated resting rate of about {bmr} {unit} a day.',
+    'calorie.limit1': 'This is a population average. Your real needs can differ by a lot.',
+    'calorie.limit2': 'It cannot see body composition, health conditions, medication, pregnancy or how you actually train.',
+    'calorie.limit3': 'It is not a target to hit exactly, and it is not a meal plan.',
+    'calorie.limit4': 'GymQuest deliberately does not offer weight-loss or weight-gain calorie targets.',
+    'calorie.limit5': 'For anything medical, or for a plan built around you, talk to a qualified professional.',
+    'calorie.formula': 'Formula: Mifflin-St Jeor (Mifflin MD et al., Am J Clin Nutr, 1990) for resting energy, multiplied by an activity factor. The result is shown as a range of ±10%.',
+    'calorie.updated': 'Last calculated: {when}',
+
+    'food.offHint': 'The food log is optional and off by default. GymQuest has no food database – you enter everything yourself.',
+    'food.enable': 'Turn on the food log',
+    'food.disable': 'Turn off the food log',
+    'food.addEntry': '+ Add food',
+    'food.addTitle': 'Add food',
+    'food.editEntryTitle': 'Edit food entry',
+    'food.newTemplateTitle': 'New saved food',
+    'food.editTemplateTitle': 'Edit saved food',
+    'food.pickSaved': 'Saved food',
+    'food.pickNone': 'None – enter the values manually',
+    'food.qtyLabel': 'Amount (multiplier)',
+    'food.saveAsTemplate': 'Also save as a food',
+    'food.nameLabel': 'Name',
+    'food.kcalLabel': 'Energy',
+    'food.protein': 'Protein',
+    'food.carbs': 'Carbohydrates',
+    'food.fat': 'Fat',
+    'food.macroLine': 'P {p} g · C {c} g · F {f} g',
+    'food.totalsLine': '{total} · {entries}',
+    'food.entries': '{n} entries',
+    'food.entriesOne': '{n} entry',
+    'food.entriesOther': '{n} entries',
+    'food.emptyDay': 'Nothing logged for this day.',
+    'food.noSaved': 'No saved foods yet.',
+    'food.savedTitle': 'Saved foods',
+    'food.newTemplate': '+ New food',
+    'food.editTemplate': 'Edit saved food',
+    'food.deleteTemplate': 'Delete saved food',
+    'food.deleteTemplateConfirm': 'Delete “{name}” from your saved foods? Entries you already logged keep their own values.',
+    'food.editEntry': 'Edit entry',
+    'food.deleteEntry': 'Delete entry',
+    'food.deleteEntryConfirm': 'Delete “{name}” from this day?',
+    'food.errName': 'Give the food a name.',
+    'food.errNumber': 'Values must be numbers between 0 and 100000.',
+    'food.errQty': 'The amount must be greater than 0 and at most 1000.',
+    'food.disclaimer': 'You entered these values yourself. GymQuest does not verify nutrition data and has no food database.',
+    'food.prevDay': 'Previous day',
+    'food.nextDay': 'Next day',
+
+    'tips.title': 'How to read these numbers',
+    'tips.t1Title': 'Measuring body weight consistently',
+    'tips.t1Body': 'Same scale, same time of day, similar conditions – many people weigh in the morning before eating. Consistency matters far more than any single reading.',
+    'tips.t2Title': 'Day-to-day changes are not a trend',
+    'tips.t2Body': 'Weight moves with water, food in your gut and salt, so it can swing within a single day. Compare weekly averages, or the same day across several weeks, to see something closer to a real direction.',
+    'tips.t3Title': 'Duration, sets, reps and progressive overload',
+    'tips.t3Body': 'Duration is how long the session took. A set is one group of repetitions. Reps are how many times you moved the weight. Progressive overload means gradually doing a little more over time – more weight, more reps or better form.',
+    'tips.t4Title': 'What the calorie estimate can and cannot tell you',
+    'tips.t4Body': 'It estimates the energy an average person with your measurements might use in a day. It cannot measure your metabolism, and it says nothing about food quality or health.',
+    'tips.t5Title': 'What your own nutrition numbers mean',
+    'tips.t5Body': 'They are your own notes, not lab measurements. Portions are estimates, labels vary, and the same meal can differ between days. Useful for spotting patterns, not for exact accounting.',
+    'tips.foodTitle': 'About the values you enter',
+    'tips.f1Title': 'Your entry, your numbers',
+    'tips.f1Body': 'Nothing here is looked up or checked. What you type is what you see, so the totals are only as good as your estimates.',
+    'tips.f2Title': 'Patterns beat precision',
+    'tips.f2Body': 'A rough but consistent record over weeks says more than one carefully weighed day. Food is not something to earn or to pay off with training.',
   },
   es: {
     'tab.dnes': 'Hoy', 'tab.trening': 'Entrenamiento', 'tab.pokrok': 'Progreso', 'tab.motivacia': 'Motivación', 'tab.kalendar': 'Calendario',
@@ -1018,7 +1288,7 @@ const I18N = {
     'common.cancel': 'Cancelar', 'common.close': 'Cerrar', 'common.save': 'Guardar', 'common.ok': 'OK', 'common.delete': 'Eliminar',
     'update.available': 'Hay una nueva versión de GymQuest disponible.',
     'update.now': 'Actualizar ahora',
-    'app.storageError': 'Este navegador rechazó guardar tus datos — los cambios se perderán al recargar. Permite el almacenamiento del sitio (localStorage) e inténtalo de nuevo.',
+    'app.storageError': 'Este navegador rechazó guardar tus datos — los cambios se perderán al recargar. Permite el almacenamiento del sitio (localStorage) e inténtalo de nuevo. Si sigue fallando, exporta una copia mientras los datos aún están en memoria.',
     'common.confirm': 'Confirmación',
     'common.confirmTitle': 'Confirmación',
     'achievements.first': 'Primer entrenamiento', 'achievements.firstDesc': 'Completa tu primer entrenamiento',
@@ -1049,6 +1319,140 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP por logros',
     'motivacia.newAchievement': 'Nuevo logro: {names}',
+
+    /* --- Cuerpo, calorías, comida y consejos --- */
+    'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
+
+    'pokrok.subProgress': 'Progreso', 'pokrok.subBody': 'Cuerpo', 'pokrok.subFood': 'Comida',
+
+    'body.summaryTitle': 'Últimas medidas',
+    'body.unitsAria': 'Unidades de medida',
+    'body.unitsNote': 'Las unidades solo cambian lo que ves. Los valores guardados nunca se reescriben.',
+    'body.add': '+ Añadir medida',
+    'body.addTitle': 'Añadir medida',
+    'body.editTitle': 'Editar medida',
+    'body.deleteTitle': 'Eliminar medida',
+    'body.deleteConfirm': '¿Eliminar la medida del {date}? Esto no se puede deshacer.',
+    'body.dateLabel': 'Fecha',
+    'body.noteLabel': 'Nota (opcional)',
+    'body.fieldsHint': 'Deja vacío lo que no te hayas medido.',
+    'body.empty': 'Todavía no hay medidas.',
+    'body.noValues': 'Sin valores registrados',
+    'body.errDate': 'Elige una fecha válida.',
+    'body.errRange': 'Revisa estos valores: {fields}.',
+    'body.errEmpty': 'Rellena al menos un valor o escribe una nota.',
+    'body.chartTitle': 'Evolución',
+    'body.metricAria': 'Qué medida mostrar',
+    'body.chartRange': 'Más bajo {min} · más alto {max} {unit}',
+    'body.chartNeedTwo': 'Añade otra entrada para ver una tendencia.',
+    'body.chartAria': 'Gráfico de evolución, mínimo {min}, máximo {max}',
+    'body.historyTitle': 'Historial de medidas',
+    'body.storageNotice': 'Tus datos guardados se están haciendo grandes y pronto pueden superar lo que este navegador puede mantener. Exporta una copia y valora borrar entradas antiguas que ya no necesites. GymQuest nunca borra nada por ti.',
+    'body.f.weight': 'Peso corporal',
+    'body.f.waist': 'Cintura',
+    'body.f.chest': 'Pecho',
+    'body.f.armLeft': 'Brazo izquierdo',
+    'body.f.armRight': 'Brazo derecho',
+    'body.f.thighLeft': 'Muslo izquierdo',
+    'body.f.thighRight': 'Muslo derecho',
+    'body.f.hip': 'Cadera',
+
+    'calorie.title': 'Estimación de energía diaria',
+    'calorie.offHint': 'Opcional y oculta por defecto. GymQuest no estima nada hasta que tú lo actives.',
+    'calorie.enable': 'Mostrar la estimación',
+    'calorie.disable': 'Ocultar la estimación',
+    'calorie.intro': 'Una estimación, no una receta. Esto no es consejo médico.',
+    'calorie.adultQuestion': '¿Tienes 18 años o más?',
+    'calorie.adultYes': 'Tengo 18 o más',
+    'calorie.adultNo': 'Tengo menos de 18',
+    'calorie.underage': 'GymQuest no muestra objetivos calóricos de adultos a menores de 18 años. Un cuerpo que aún está creciendo tiene necesidades distintas y una estimación pensada para adultos sería engañosa aquí. Si quieres saber más sobre alimentación y energía a tu edad, habla con un médico, un dietista o tu madre, padre o tutor.',
+    'calorie.inHeight': 'Altura',
+    'calorie.inAge': 'Edad',
+    'calorie.years': 'años',
+    'calorie.inSex': 'Sexo que usa la fórmula',
+    'calorie.sexPick': 'Sin especificar',
+    'calorie.sexMale': 'Hombre',
+    'calorie.sexFemale': 'Mujer',
+    'calorie.inActivity': 'Nivel de actividad',
+    'calorie.activityPick': 'Sin especificar',
+    'calorie.actSedentary': 'Casi siempre sentado',
+    'calorie.actLight': 'Actividad ligera 1–3 días por semana',
+    'calorie.actModerate': 'Actividad moderada 3–5 días por semana',
+    'calorie.actActive': 'Actividad intensa 6–7 días por semana',
+    'calorie.actVery': 'Actividad muy intensa o trabajo físico',
+    'calorie.inWeight': 'Peso corporal (de tu registro)',
+    'calorie.weightFromLog': 'Se usa tu último peso registrado, del {date}.',
+    'calorie.weightMissing': 'Registra antes tu peso corporal. GymQuest no lo va a adivinar.',
+    'calorie.saveInputs': 'Guardar datos',
+    'calorie.errAge': 'La edad debe estar entre 1 y 120.',
+    'calorie.errHeight': 'La altura parece fuera de rango. Revisa el valor y la unidad.',
+    'calorie.needInputs': 'Todavía faltan datos',
+    'calorie.missing': 'Falta: {list}',
+    'calorie.range': '{low}–{high} {unit} al día',
+    'calorie.bmrLine': 'Sale de una tasa en reposo estimada de unos {bmr} {unit} al día.',
+    'calorie.limit1': 'Es una media de población. Tus necesidades reales pueden ser muy distintas.',
+    'calorie.limit2': 'No ve la composición corporal, enfermedades, medicación, embarazo ni cómo entrenas de verdad.',
+    'calorie.limit3': 'No es un objetivo que haya que clavar, ni un plan de comidas.',
+    'calorie.limit4': 'GymQuest no ofrece a propósito objetivos calóricos para perder o ganar peso.',
+    'calorie.limit5': 'Para cualquier tema médico o un plan hecho para ti, habla con un profesional cualificado.',
+    'calorie.formula': 'Fórmula: Mifflin-St Jeor (Mifflin MD et al., Am J Clin Nutr, 1990) para el gasto en reposo, multiplicada por un factor de actividad. El resultado se muestra como un rango de ±10 %.',
+    'calorie.updated': 'Último cálculo: {when}',
+
+    'food.offHint': 'El diario de comidas es opcional y está apagado por defecto. GymQuest no tiene base de datos de alimentos: lo apuntas todo tú.',
+    'food.enable': 'Activar el diario de comidas',
+    'food.disable': 'Desactivar el diario de comidas',
+    'food.addEntry': '+ Añadir comida',
+    'food.addTitle': 'Añadir comida',
+    'food.editEntryTitle': 'Editar entrada',
+    'food.newTemplateTitle': 'Nuevo alimento guardado',
+    'food.editTemplateTitle': 'Editar alimento guardado',
+    'food.pickSaved': 'Alimento guardado',
+    'food.pickNone': 'Ninguno: escribo los valores a mano',
+    'food.qtyLabel': 'Cantidad (multiplicador)',
+    'food.saveAsTemplate': 'Guardar también como alimento',
+    'food.nameLabel': 'Nombre',
+    'food.kcalLabel': 'Energía',
+    'food.protein': 'Proteínas',
+    'food.carbs': 'Carbohidratos',
+    'food.fat': 'Grasas',
+    'food.macroLine': 'P {p} g · C {c} g · G {f} g',
+    'food.totalsLine': '{total} · {entries}',
+    'food.entries': '{n} entradas',
+    'food.entriesOne': '{n} entrada',
+    'food.entriesOther': '{n} entradas',
+    'food.emptyDay': 'No hay nada apuntado este día.',
+    'food.noSaved': 'Todavía no hay alimentos guardados.',
+    'food.savedTitle': 'Alimentos guardados',
+    'food.newTemplate': '+ Nuevo alimento',
+    'food.editTemplate': 'Editar alimento guardado',
+    'food.deleteTemplate': 'Eliminar alimento guardado',
+    'food.deleteTemplateConfirm': '¿Eliminar «{name}» de tus alimentos guardados? Las entradas ya registradas conservan sus propios valores.',
+    'food.editEntry': 'Editar entrada',
+    'food.deleteEntry': 'Eliminar entrada',
+    'food.deleteEntryConfirm': '¿Eliminar «{name}» de este día?',
+    'food.errName': 'Ponle un nombre al alimento.',
+    'food.errNumber': 'Los valores deben ser números entre 0 y 100000.',
+    'food.errQty': 'La cantidad debe ser mayor que 0 y como máximo 1000.',
+    'food.disclaimer': 'Estos valores los has puesto tú. GymQuest no verifica datos nutricionales y no tiene base de datos de alimentos.',
+    'food.prevDay': 'Día anterior',
+    'food.nextDay': 'Día siguiente',
+
+    'tips.title': 'Cómo leer estos datos',
+    'tips.t1Title': 'Medir el peso siempre igual',
+    'tips.t1Body': 'La misma báscula, la misma hora del día, condiciones parecidas: mucha gente se pesa por la mañana antes de comer. La constancia importa mucho más que una sola cifra.',
+    'tips.t2Title': 'Los cambios de un día no son una tendencia',
+    'tips.t2Body': 'El peso se mueve con el agua, la comida en el intestino y la sal, así que puede variar dentro del mismo día. Compara medias semanales, o el mismo día de varias semanas, para ver algo más parecido a una dirección real.',
+    'tips.t3Title': 'Duración, series, repeticiones y sobrecarga progresiva',
+    'tips.t3Body': 'La duración es lo que duró la sesión. Una serie es un grupo de repeticiones. Las repeticiones son las veces que moviste el peso. La sobrecarga progresiva significa hacer poco a poco un poco más: más peso, más repeticiones o mejor técnica.',
+    'tips.t4Title': 'Qué te dice y qué no la estimación de calorías',
+    'tips.t4Body': 'Estima la energía que podría gastar al día una persona media con tus medidas. No puede medir tu metabolismo y no dice nada sobre la calidad de la comida ni sobre la salud.',
+    'tips.t5Title': 'Qué significan tus propios números',
+    'tips.t5Body': 'Son tus notas, no mediciones de laboratorio. Las porciones son estimaciones, las etiquetas varían y la misma comida puede cambiar de un día a otro. Sirve para ver patrones, no para llevar una contabilidad exacta.',
+    'tips.foodTitle': 'Sobre los valores que escribes',
+    'tips.f1Title': 'Tu entrada, tus números',
+    'tips.f1Body': 'Aquí no se consulta ni se comprueba nada. Lo que escribes es lo que ves, así que los totales valen lo que valgan tus estimaciones.',
+    'tips.f2Title': 'Los patrones importan más que la precisión',
+    'tips.f2Body': 'Un registro aproximado pero constante durante semanas dice más que un solo día pesado con precisión. La comida no es algo que haya que ganarse ni compensar con entrenamiento.',
   },
   'pt-BR': {
     'tab.dnes': 'Hoje', 'tab.trening': 'Treino', 'tab.pokrok': 'Progresso', 'tab.motivacia': 'Motivação', 'tab.kalendar': 'Calendário',
@@ -1314,7 +1718,7 @@ const I18N = {
     'common.cancel': 'Cancelar', 'common.close': 'Fechar', 'common.save': 'Salvar', 'common.ok': 'OK', 'common.delete': 'Excluir',
     'update.available': 'Uma nova versão do GymQuest está disponível.',
     'update.now': 'Atualizar agora',
-    'app.storageError': 'Este navegador recusou salvar seus dados — as mudanças serão perdidas ao recarregar. Permita o armazenamento do site (localStorage) e tente de novo.',
+    'app.storageError': 'Este navegador recusou salvar seus dados — as mudanças serão perdidas ao recarregar. Permita o armazenamento do site (localStorage) e tente de novo. Se continuar falhando, exporte um backup enquanto os dados ainda estão na memória.',
     'common.confirm': 'Confirmação',
     'common.confirmTitle': 'Confirmação',
     'achievements.first': 'Primeiro treino', 'achievements.firstDesc': 'Complete seu primeiro treino',
@@ -1345,6 +1749,140 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP por conquistas',
     'motivacia.newAchievement': 'Nova conquista: {names}',
+
+    /* --- Corpo, calorias, comida e dicas --- */
+    'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
+
+    'pokrok.subProgress': 'Progresso', 'pokrok.subBody': 'Corpo', 'pokrok.subFood': 'Comida',
+
+    'body.summaryTitle': 'Últimas medidas',
+    'body.unitsAria': 'Unidades de medida',
+    'body.unitsNote': 'As unidades mudam só a exibição. Os valores salvos nunca são reescritos.',
+    'body.add': '+ Adicionar medida',
+    'body.addTitle': 'Adicionar medida',
+    'body.editTitle': 'Editar medida',
+    'body.deleteTitle': 'Excluir medida',
+    'body.deleteConfirm': 'Excluir a medida de {date}? Isso não pode ser desfeito.',
+    'body.dateLabel': 'Data',
+    'body.noteLabel': 'Observação (opcional)',
+    'body.fieldsHint': 'Deixe vazio o que você não mediu.',
+    'body.empty': 'Ainda não há medidas.',
+    'body.noValues': 'Nenhum valor registrado',
+    'body.errDate': 'Escolha uma data válida.',
+    'body.errRange': 'Confira estes valores: {fields}.',
+    'body.errEmpty': 'Preencha pelo menos um valor ou escreva uma observação.',
+    'body.chartTitle': 'Evolução',
+    'body.metricAria': 'Qual medida mostrar',
+    'body.chartRange': 'Menor {min} · maior {max} {unit}',
+    'body.chartNeedTwo': 'Adicione outro registro para ver uma tendência.',
+    'body.chartAria': 'Gráfico de evolução, menor {min}, maior {max}',
+    'body.historyTitle': 'Histórico de medidas',
+    'body.storageNotice': 'Seus dados salvos estão ficando grandes e logo podem passar do que este navegador consegue manter. Exporte um backup e considere apagar registros antigos que você não precisa mais. O GymQuest nunca apaga nada por você.',
+    'body.f.weight': 'Peso corporal',
+    'body.f.waist': 'Cintura',
+    'body.f.chest': 'Peito',
+    'body.f.armLeft': 'Braço esquerdo',
+    'body.f.armRight': 'Braço direito',
+    'body.f.thighLeft': 'Coxa esquerda',
+    'body.f.thighRight': 'Coxa direita',
+    'body.f.hip': 'Quadril',
+
+    'calorie.title': 'Estimativa de energia diária',
+    'calorie.offHint': 'Opcional e oculta por padrão. O GymQuest não estima nada até você ativar.',
+    'calorie.enable': 'Mostrar a estimativa',
+    'calorie.disable': 'Ocultar a estimativa',
+    'calorie.intro': 'Uma estimativa, não uma receita. Isso não é orientação médica.',
+    'calorie.adultQuestion': 'Você tem 18 anos ou mais?',
+    'calorie.adultYes': 'Tenho 18 ou mais',
+    'calorie.adultNo': 'Tenho menos de 18',
+    'calorie.underage': 'O GymQuest não mostra metas calóricas de adulto para quem tem menos de 18 anos. Um corpo que ainda está crescendo tem necessidades diferentes, e uma estimativa feita para adultos seria enganosa aqui. Se quiser saber mais sobre alimentação e energia na sua idade, converse com um médico, um nutricionista ou um responsável.',
+    'calorie.inHeight': 'Altura',
+    'calorie.inAge': 'Idade',
+    'calorie.years': 'anos',
+    'calorie.inSex': 'Sexo usado pela fórmula',
+    'calorie.sexPick': 'Não informado',
+    'calorie.sexMale': 'Masculino',
+    'calorie.sexFemale': 'Feminino',
+    'calorie.inActivity': 'Nível de atividade',
+    'calorie.activityPick': 'Não informado',
+    'calorie.actSedentary': 'Quase sempre sentado',
+    'calorie.actLight': 'Atividade leve 1–3 dias por semana',
+    'calorie.actModerate': 'Atividade moderada 3–5 dias por semana',
+    'calorie.actActive': 'Atividade intensa 6–7 dias por semana',
+    'calorie.actVery': 'Atividade muito intensa ou trabalho físico',
+    'calorie.inWeight': 'Peso corporal (do seu registro)',
+    'calorie.weightFromLog': 'Usando seu peso mais recente, registrado em {date}.',
+    'calorie.weightMissing': 'Registre primeiro o seu peso corporal. O GymQuest não vai adivinhar.',
+    'calorie.saveInputs': 'Salvar dados',
+    'calorie.errAge': 'A idade deve estar entre 1 e 120.',
+    'calorie.errHeight': 'A altura parece fora da faixa. Confira o valor e a unidade.',
+    'calorie.needInputs': 'Ainda faltam dados',
+    'calorie.missing': 'Falta: {list}',
+    'calorie.range': '{low}–{high} {unit} por dia',
+    'calorie.bmrLine': 'Isso vem de uma taxa de repouso estimada em cerca de {bmr} {unit} por dia.',
+    'calorie.limit1': 'É uma média da população. Suas necessidades reais podem ser bem diferentes.',
+    'calorie.limit2': 'Não enxerga composição corporal, condições de saúde, medicamentos, gravidez nem como você treina de verdade.',
+    'calorie.limit3': 'Não é uma meta para acertar na vírgula, nem um plano alimentar.',
+    'calorie.limit4': 'O GymQuest de propósito não oferece metas calóricas para perder ou ganhar peso.',
+    'calorie.limit5': 'Para qualquer questão médica ou um plano feito para você, procure um profissional qualificado.',
+    'calorie.formula': 'Fórmula: Mifflin-St Jeor (Mifflin MD et al., Am J Clin Nutr, 1990) para o gasto em repouso, multiplicada por um fator de atividade. O resultado aparece como uma faixa de ±10 %.',
+    'calorie.updated': 'Último cálculo: {when}',
+
+    'food.offHint': 'O diário de comida é opcional e vem desligado. O GymQuest não tem banco de dados de alimentos: você anota tudo.',
+    'food.enable': 'Ligar o diário de comida',
+    'food.disable': 'Desligar o diário de comida',
+    'food.addEntry': '+ Adicionar comida',
+    'food.addTitle': 'Adicionar comida',
+    'food.editEntryTitle': 'Editar registro',
+    'food.newTemplateTitle': 'Novo alimento salvo',
+    'food.editTemplateTitle': 'Editar alimento salvo',
+    'food.pickSaved': 'Alimento salvo',
+    'food.pickNone': 'Nenhum – vou digitar os valores',
+    'food.qtyLabel': 'Quantidade (multiplicador)',
+    'food.saveAsTemplate': 'Salvar também como alimento',
+    'food.nameLabel': 'Nome',
+    'food.kcalLabel': 'Energia',
+    'food.protein': 'Proteínas',
+    'food.carbs': 'Carboidratos',
+    'food.fat': 'Gorduras',
+    'food.macroLine': 'P {p} g · C {c} g · G {f} g',
+    'food.totalsLine': '{total} · {entries}',
+    'food.entries': '{n} registros',
+    'food.entriesOne': '{n} registro',
+    'food.entriesOther': '{n} registros',
+    'food.emptyDay': 'Nada anotado neste dia.',
+    'food.noSaved': 'Ainda não há alimentos salvos.',
+    'food.savedTitle': 'Alimentos salvos',
+    'food.newTemplate': '+ Novo alimento',
+    'food.editTemplate': 'Editar alimento salvo',
+    'food.deleteTemplate': 'Excluir alimento salvo',
+    'food.deleteTemplateConfirm': 'Excluir “{name}” dos seus alimentos salvos? Os registros já lançados mantêm os próprios valores.',
+    'food.editEntry': 'Editar registro',
+    'food.deleteEntry': 'Excluir registro',
+    'food.deleteEntryConfirm': 'Excluir “{name}” deste dia?',
+    'food.errName': 'Dê um nome ao alimento.',
+    'food.errNumber': 'Os valores precisam ser números entre 0 e 100000.',
+    'food.errQty': 'A quantidade precisa ser maior que 0 e no máximo 1000.',
+    'food.disclaimer': 'Esses valores foram digitados por você. O GymQuest não verifica dados nutricionais e não tem banco de dados de alimentos.',
+    'food.prevDay': 'Dia anterior',
+    'food.nextDay': 'Próximo dia',
+
+    'tips.title': 'Como ler esses números',
+    'tips.t1Title': 'Medir o peso sempre do mesmo jeito',
+    'tips.t1Body': 'A mesma balança, a mesma hora do dia, condições parecidas – muita gente se pesa de manhã antes de comer. A constância importa muito mais do que um número isolado.',
+    'tips.t2Title': 'Variação de um dia não é tendência',
+    'tips.t2Body': 'O peso muda com água, comida no intestino e sal, então pode oscilar no mesmo dia. Compare médias semanais, ou o mesmo dia ao longo de várias semanas, para ver algo mais próximo de uma direção real.',
+    'tips.t3Title': 'Duração, séries, repetições e sobrecarga progressiva',
+    'tips.t3Body': 'Duração é quanto tempo o treino levou. Uma série é um grupo de repetições. Repetições são quantas vezes você moveu a carga. Sobrecarga progressiva é fazer um pouco mais aos poucos – mais carga, mais repetições ou melhor execução.',
+    'tips.t4Title': 'O que a estimativa de calorias diz e o que não diz',
+    'tips.t4Body': 'Ela estima a energia que uma pessoa média com as suas medidas poderia gastar num dia. Não mede o seu metabolismo e não diz nada sobre a qualidade da comida ou sobre a saúde.',
+    'tips.t5Title': 'O que significam os seus próprios números',
+    'tips.t5Body': 'São as suas anotações, não medições de laboratório. As porções são estimativas, os rótulos variam e a mesma refeição pode mudar de um dia para o outro. Serve para enxergar padrões, não para contabilidade exata.',
+    'tips.foodTitle': 'Sobre os valores que você digita',
+    'tips.f1Title': 'Seu registro, seus números',
+    'tips.f1Body': 'Nada aqui é consultado ou conferido. O que você digita é o que você vê, então os totais valem o que valem as suas estimativas.',
+    'tips.f2Title': 'Padrões valem mais que precisão',
+    'tips.f2Body': 'Um registro aproximado, mas constante ao longo das semanas, diz mais do que um único dia pesado com precisão. Comida não é algo para merecer nem para compensar com treino.',
   },
   fr: {
     'tab.dnes': 'Aujourd’hui', 'tab.trening': 'Entraînement', 'tab.pokrok': 'Progrès', 'tab.motivacia': 'Motivation', 'tab.kalendar': 'Calendrier',
@@ -1610,7 +2148,7 @@ const I18N = {
     'common.cancel': 'Annuler', 'common.close': 'Fermer', 'common.save': 'Enregistrer', 'common.ok': 'OK', 'common.delete': 'Supprimer',
     'update.available': 'Une nouvelle version de GymQuest est disponible.',
     'update.now': 'Mettre à jour',
-    'app.storageError': 'Ce navigateur a refusé d’enregistrer tes données — les changements seront perdus après un rechargement. Autorise le stockage du site (localStorage) et réessaie.',
+    'app.storageError': 'Ce navigateur a refusé d’enregistrer tes données — les changements seront perdus après un rechargement. Autorise le stockage du site (localStorage) et réessaie. Si l’enregistrement échoue encore, exporte une sauvegarde pendant que les données sont encore en mémoire.',
     'common.confirm': 'Confirmation',
     'common.confirmTitle': 'Confirmation',
     'achievements.first': 'Premier entraînement', 'achievements.firstDesc': 'Termine ton premier entraînement',
@@ -1641,6 +2179,140 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP grâce aux succès',
     'motivacia.newAchievement': 'Nouveau succès : {names}',
+
+    /* --- Corps, calories, alimentation et conseils --- */
+    'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
+
+    'pokrok.subProgress': 'Progrès', 'pokrok.subBody': 'Corps', 'pokrok.subFood': 'Alimentation',
+
+    'body.summaryTitle': 'Dernières mesures',
+    'body.unitsAria': 'Unités de mesure',
+    'body.unitsNote': 'Les unités ne changent que l’affichage. Les valeurs enregistrées ne sont jamais réécrites.',
+    'body.add': '+ Ajouter une mesure',
+    'body.addTitle': 'Ajouter une mesure',
+    'body.editTitle': 'Modifier la mesure',
+    'body.deleteTitle': 'Supprimer la mesure',
+    'body.deleteConfirm': 'Supprimer la mesure du {date} ? C’est irréversible.',
+    'body.dateLabel': 'Date',
+    'body.noteLabel': 'Note (facultatif)',
+    'body.fieldsHint': 'Laisse vide ce que tu n’as pas mesuré.',
+    'body.empty': 'Aucune mesure pour l’instant.',
+    'body.noValues': 'Aucune valeur enregistrée',
+    'body.errDate': 'Choisis une date valide.',
+    'body.errRange': 'Vérifie ces valeurs : {fields}.',
+    'body.errEmpty': 'Remplis au moins une valeur ou écris une note.',
+    'body.chartTitle': 'Évolution',
+    'body.metricAria': 'Mesure à afficher',
+    'body.chartRange': 'Minimum {min} · maximum {max} {unit}',
+    'body.chartNeedTwo': 'Ajoute une autre entrée pour voir une tendance.',
+    'body.chartAria': 'Graphique d’évolution, minimum {min}, maximum {max}',
+    'body.historyTitle': 'Historique des mesures',
+    'body.storageNotice': 'Tes données enregistrées deviennent volumineuses et pourraient bientôt dépasser ce que ce navigateur peut garder. Exporte une sauvegarde et envisage de supprimer les anciennes entrées dont tu n’as plus besoin. GymQuest ne supprime jamais rien à ta place.',
+    'body.f.weight': 'Poids corporel',
+    'body.f.waist': 'Tour de taille',
+    'body.f.chest': 'Tour de poitrine',
+    'body.f.armLeft': 'Bras gauche',
+    'body.f.armRight': 'Bras droit',
+    'body.f.thighLeft': 'Cuisse gauche',
+    'body.f.thighRight': 'Cuisse droite',
+    'body.f.hip': 'Hanches',
+
+    'calorie.title': 'Estimation de l’énergie quotidienne',
+    'calorie.offHint': 'Facultatif et masqué par défaut. GymQuest n’estime rien tant que tu ne l’actives pas.',
+    'calorie.enable': 'Afficher l’estimation',
+    'calorie.disable': 'Masquer l’estimation',
+    'calorie.intro': 'Une estimation, pas une prescription. Ce n’est pas un avis médical.',
+    'calorie.adultQuestion': 'As-tu 18 ans ou plus ?',
+    'calorie.adultYes': 'J’ai 18 ans ou plus',
+    'calorie.adultNo': 'J’ai moins de 18 ans',
+    'calorie.underage': 'GymQuest n’affiche pas d’objectifs caloriques d’adulte aux moins de 18 ans. Un corps qui grandit encore a des besoins différents, et une estimation conçue pour des adultes serait trompeuse ici. Si tu veux en savoir plus sur l’alimentation et l’énergie à ton âge, parles-en à un médecin, un diététicien ou un parent.',
+    'calorie.inHeight': 'Taille',
+    'calorie.inAge': 'Âge',
+    'calorie.years': 'ans',
+    'calorie.inSex': 'Sexe utilisé par la formule',
+    'calorie.sexPick': 'Non précisé',
+    'calorie.sexMale': 'Homme',
+    'calorie.sexFemale': 'Femme',
+    'calorie.inActivity': 'Niveau d’activité',
+    'calorie.activityPick': 'Non précisé',
+    'calorie.actSedentary': 'Surtout assis',
+    'calorie.actLight': 'Activité légère 1–3 jours par semaine',
+    'calorie.actModerate': 'Activité modérée 3–5 jours par semaine',
+    'calorie.actActive': 'Activité intense 6–7 jours par semaine',
+    'calorie.actVery': 'Activité très intense ou travail physique',
+    'calorie.inWeight': 'Poids corporel (depuis ton suivi)',
+    'calorie.weightFromLog': 'Utilise ton dernier poids enregistré, du {date}.',
+    'calorie.weightMissing': 'Enregistre d’abord ton poids corporel. GymQuest ne va pas le deviner.',
+    'calorie.saveInputs': 'Enregistrer les données',
+    'calorie.errAge': 'L’âge doit être compris entre 1 et 120.',
+    'calorie.errHeight': 'La taille semble hors plage. Vérifie la valeur et l’unité.',
+    'calorie.needInputs': 'Il manque encore des données',
+    'calorie.missing': 'Il manque : {list}',
+    'calorie.range': '{low}–{high} {unit} par jour',
+    'calorie.bmrLine': 'Cela vient d’un métabolisme de repos estimé à environ {bmr} {unit} par jour.',
+    'calorie.limit1': 'C’est une moyenne de population. Tes besoins réels peuvent beaucoup différer.',
+    'calorie.limit2': 'Elle ne voit ni la composition corporelle, ni les problèmes de santé, ni les médicaments, ni la grossesse, ni ta façon réelle de t’entraîner.',
+    'calorie.limit3': 'Ce n’est pas un objectif à atteindre au chiffre près, ni un plan de repas.',
+    'calorie.limit4': 'GymQuest ne propose volontairement aucun objectif calorique de perte ou de prise de poids.',
+    'calorie.limit5': 'Pour toute question médicale ou un plan sur mesure, adresse-toi à un professionnel qualifié.',
+    'calorie.formula': 'Formule : Mifflin-St Jeor (Mifflin MD et al., Am J Clin Nutr, 1990) pour la dépense de repos, multipliée par un facteur d’activité. Le résultat est affiché sous forme de fourchette de ±10 %.',
+    'calorie.updated': 'Dernier calcul : {when}',
+
+    'food.offHint': 'Le journal alimentaire est facultatif et désactivé par défaut. GymQuest n’a aucune base de données d’aliments : tu saisis tout toi-même.',
+    'food.enable': 'Activer le journal alimentaire',
+    'food.disable': 'Désactiver le journal alimentaire',
+    'food.addEntry': '+ Ajouter un aliment',
+    'food.addTitle': 'Ajouter un aliment',
+    'food.editEntryTitle': 'Modifier l’entrée',
+    'food.newTemplateTitle': 'Nouvel aliment enregistré',
+    'food.editTemplateTitle': 'Modifier l’aliment enregistré',
+    'food.pickSaved': 'Aliment enregistré',
+    'food.pickNone': 'Aucun – je saisis les valeurs',
+    'food.qtyLabel': 'Quantité (multiplicateur)',
+    'food.saveAsTemplate': 'Enregistrer aussi comme aliment',
+    'food.nameLabel': 'Nom',
+    'food.kcalLabel': 'Énergie',
+    'food.protein': 'Protéines',
+    'food.carbs': 'Glucides',
+    'food.fat': 'Lipides',
+    'food.macroLine': 'P {p} g · G {c} g · L {f} g',
+    'food.totalsLine': '{total} · {entries}',
+    'food.entries': '{n} entrées',
+    'food.entriesOne': '{n} entrée',
+    'food.entriesOther': '{n} entrées',
+    'food.emptyDay': 'Rien d’enregistré pour ce jour.',
+    'food.noSaved': 'Aucun aliment enregistré pour l’instant.',
+    'food.savedTitle': 'Aliments enregistrés',
+    'food.newTemplate': '+ Nouvel aliment',
+    'food.editTemplate': 'Modifier l’aliment enregistré',
+    'food.deleteTemplate': 'Supprimer l’aliment enregistré',
+    'food.deleteTemplateConfirm': 'Supprimer « {name} » de tes aliments enregistrés ? Les entrées déjà notées gardent leurs propres valeurs.',
+    'food.editEntry': 'Modifier l’entrée',
+    'food.deleteEntry': 'Supprimer l’entrée',
+    'food.deleteEntryConfirm': 'Supprimer « {name} » de ce jour ?',
+    'food.errName': 'Donne un nom à l’aliment.',
+    'food.errNumber': 'Les valeurs doivent être des nombres entre 0 et 100000.',
+    'food.errQty': 'La quantité doit être supérieure à 0 et au maximum 1000.',
+    'food.disclaimer': 'Ces valeurs, c’est toi qui les as saisies. GymQuest ne vérifie pas les données nutritionnelles et n’a aucune base de données d’aliments.',
+    'food.prevDay': 'Jour précédent',
+    'food.nextDay': 'Jour suivant',
+
+    'tips.title': 'Comment lire ces chiffres',
+    'tips.t1Title': 'Mesurer son poids toujours de la même façon',
+    'tips.t1Body': 'La même balance, la même heure, des conditions similaires – beaucoup de gens se pèsent le matin avant de manger. La régularité compte bien plus qu’un chiffre isolé.',
+    'tips.t2Title': 'Les variations d’un jour ne sont pas une tendance',
+    'tips.t2Body': 'Le poids bouge avec l’eau, les aliments dans l’intestin et le sel : il peut varier dans une même journée. Compare des moyennes hebdomadaires, ou le même jour sur plusieurs semaines, pour voir quelque chose de plus proche d’une direction réelle.',
+    'tips.t3Title': 'Durée, séries, répétitions et surcharge progressive',
+    'tips.t3Body': 'La durée, c’est le temps qu’a pris la séance. Une série est un groupe de répétitions. Les répétitions, c’est le nombre de fois où tu as déplacé la charge. La surcharge progressive, c’est faire un peu plus au fil du temps : plus de charge, plus de répétitions ou une meilleure exécution.',
+    'tips.t4Title': 'Ce que l’estimation calorique dit et ne dit pas',
+    'tips.t4Body': 'Elle estime l’énergie qu’une personne moyenne de tes mensurations pourrait dépenser en une journée. Elle ne mesure pas ton métabolisme et ne dit rien de la qualité des aliments ni de ta santé.',
+    'tips.t5Title': 'Ce que veulent dire tes propres chiffres',
+    'tips.t5Body': 'Ce sont tes notes, pas des mesures de laboratoire. Les portions sont estimées, les étiquettes varient et le même repas peut changer d’un jour à l’autre. Utile pour repérer des tendances, pas pour une comptabilité exacte.',
+    'tips.foodTitle': 'À propos des valeurs que tu saisis',
+    'tips.f1Title': 'Ton entrée, tes chiffres',
+    'tips.f1Body': 'Rien ici n’est recherché ni vérifié. Ce que tu écris est ce que tu vois : les totaux valent ce que valent tes estimations.',
+    'tips.f2Title': 'Les habitudes comptent plus que la précision',
+    'tips.f2Body': 'Un relevé approximatif mais régulier sur plusieurs semaines en dit plus qu’une seule journée pesée au gramme. La nourriture n’est pas quelque chose à mériter ni à compenser par l’entraînement.',
   },
   ar: {
     'tab.dnes': 'اليوم', 'tab.trening': 'التمرين', 'tab.pokrok': 'التقدّم', 'tab.motivacia': 'التحفيز', 'tab.kalendar': 'التقويم',
@@ -1925,7 +2597,7 @@ const I18N = {
     'common.cancel': 'إلغاء', 'common.close': 'إغلاق', 'common.save': 'حفظ', 'common.ok': 'حسنًا', 'common.delete': 'حذف',
     'update.available': 'يتوفّر إصدار جديد من GymQuest.',
     'update.now': 'التحديث الآن',
-    'app.storageError': 'رفض هذا المتصفح حفظ بياناتك — ستُفقد التغييرات بعد إعادة التحميل. اسمح بتخزين بيانات الموقع (localStorage) وحاول مرة أخرى.',
+    'app.storageError': 'رفض هذا المتصفح حفظ بياناتك — ستُفقد التغييرات بعد إعادة التحميل. اسمح بتخزين بيانات الموقع (localStorage) وحاول مرة أخرى. إذا استمر الفشل، صدّر نسخة احتياطية الآن قبل فقدان البيانات.',
     'common.confirm': 'تأكيد',
     'common.confirmTitle': 'تأكيد',
     'achievements.first': 'أول تمرين', 'achievements.firstDesc': 'أكمل أول تمرين لك',
@@ -1956,6 +2628,144 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP من الإنجازات',
     'motivacia.newAchievement': 'إنجاز جديد: {names}',
+
+    /* --- الجسم والسعرات والطعام والنصائح --- */
+    'units.kg': 'كغ', 'units.lb': 'رطل', 'units.cm': 'سم', 'units.in': 'بوصة', 'units.g': 'غ', 'units.kcal': 'سعرة',
+
+    'pokrok.subProgress': 'التقدّم', 'pokrok.subBody': 'الجسم', 'pokrok.subFood': 'الطعام',
+
+    'body.summaryTitle': 'أحدث القياسات',
+    'body.unitsAria': 'وحدات القياس',
+    'body.unitsNote': 'الوحدات تغيّر العرض فقط. القيم المحفوظة لا تُعاد كتابتها أبدًا.',
+    'body.add': '+ إضافة قياس',
+    'body.addTitle': 'إضافة قياس',
+    'body.editTitle': 'تعديل القياس',
+    'body.deleteTitle': 'حذف القياس',
+    'body.deleteConfirm': 'حذف قياس {date}؟ لا يمكن التراجع عن هذا.',
+    'body.dateLabel': 'التاريخ',
+    'body.noteLabel': 'ملاحظة (اختياري)',
+    'body.fieldsHint': 'اترك الحقل فارغًا إذا لم تقسه.',
+    'body.empty': 'لا توجد قياسات بعد.',
+    'body.noValues': 'لا توجد قيم مسجّلة',
+    'body.errDate': 'اختر تاريخًا صحيحًا.',
+    'body.errRange': 'تحقّق من هذه القيم: {fields}.',
+    'body.errEmpty': 'أدخل قيمة واحدة على الأقل أو اكتب ملاحظة.',
+    'body.chartTitle': 'التطوّر',
+    'body.metricAria': 'القياس المعروض',
+    'body.chartRange': 'الأدنى {min} · الأعلى {max} {unit}',
+    'body.chartNeedTwo': 'أضف قياسًا آخر لرؤية اتجاه.',
+    'body.chartAria': 'مخطط التطوّر، الأدنى {min}، الأعلى {max}',
+    'body.historyTitle': 'سجلّ القياسات',
+    'body.storageNotice': 'بياناتك المحفوظة تكبر وقد تتجاوز قريبًا ما يستطيع هذا المتصفح الاحتفاظ به. صدّر نسخة احتياطية وفكّر في حذف القياسات القديمة التي لم تعد تحتاجها. GymQuest لا يحذف شيئًا نيابة عنك أبدًا.',
+    'body.f.weight': 'وزن الجسم',
+    'body.f.waist': 'محيط الخصر',
+    'body.f.chest': 'محيط الصدر',
+    'body.f.armLeft': 'الذراع الأيسر',
+    'body.f.armRight': 'الذراع الأيمن',
+    'body.f.thighLeft': 'الفخذ الأيسر',
+    'body.f.thighRight': 'الفخذ الأيمن',
+    'body.f.hip': 'محيط الأرداف',
+
+    'calorie.title': 'تقدير الطاقة اليومية',
+    'calorie.offHint': 'اختياري ومخفي افتراضيًا. GymQuest لا يقدّر شيئًا حتى تشغّله بنفسك.',
+    'calorie.enable': 'إظهار التقدير',
+    'calorie.disable': 'إخفاء التقدير',
+    'calorie.intro': 'تقدير، وليس وصفة. هذه ليست نصيحة طبية.',
+    'calorie.adultQuestion': 'هل عمرك 18 سنة أو أكثر؟',
+    'calorie.adultYes': 'عمري 18 أو أكثر',
+    'calorie.adultNo': 'عمري أقل من 18',
+    'calorie.underage': 'لا يعرض GymQuest أهدافًا حرارية للبالغين لمن هم دون 18. الجسم الذي ما زال ينمو له احتياجات مختلفة، وتقدير مبني على البالغين سيكون مضلّلًا هنا. إن أردت معرفة المزيد عن الطعام والطاقة في عمرك، تحدّث مع طبيب أو أخصائي تغذية أو أحد والديك.',
+    'calorie.inHeight': 'الطول',
+    'calorie.inAge': 'العمر',
+    'calorie.years': 'سنة',
+    'calorie.inSex': 'الجنس المستخدم في المعادلة',
+    'calorie.sexPick': 'غير محدَّد',
+    'calorie.sexMale': 'ذكر',
+    'calorie.sexFemale': 'أنثى',
+    'calorie.inActivity': 'مستوى النشاط',
+    'calorie.activityPick': 'غير محدَّد',
+    'calorie.actSedentary': 'جلوس في معظم الوقت',
+    'calorie.actLight': 'نشاط خفيف 1–3 أيام في الأسبوع',
+    'calorie.actModerate': 'نشاط متوسط 3–5 أيام في الأسبوع',
+    'calorie.actActive': 'نشاط شاقّ 6–7 أيام في الأسبوع',
+    'calorie.actVery': 'نشاط شاقّ جدًا أو عمل بدني',
+    'calorie.inWeight': 'وزن الجسم (من سجلّك)',
+    'calorie.weightFromLog': 'يُستخدم آخر وزن سجّلته في {date}.',
+    'calorie.weightMissing': 'سجّل وزن جسمك أولًا. GymQuest لن يخمّنه.',
+    'calorie.saveInputs': 'حفظ البيانات',
+    'calorie.errAge': 'يجب أن يكون العمر بين 1 و120.',
+    'calorie.errHeight': 'الطول يبدو خارج النطاق. تحقّق من القيمة والوحدة.',
+    'calorie.needInputs': 'لا تزال البيانات ناقصة',
+    'calorie.missing': 'ناقص: {list}',
+    'calorie.range': '{low}–{high} {unit} يوميًا',
+    'calorie.bmrLine': 'وهذا مبني على معدّل راحة مقدَّر بنحو {bmr} {unit} يوميًا.',
+    'calorie.limit1': 'هذا متوسط سكاني. احتياجك الحقيقي قد يختلف كثيرًا.',
+    'calorie.limit2': 'لا يرى تركيب الجسم ولا الحالات الصحية ولا الأدوية ولا الحمل ولا طريقة تدريبك الفعلية.',
+    'calorie.limit3': 'ليس هدفًا يجب إصابته بدقة، وليس خطة وجبات.',
+    'calorie.limit4': 'لا يقدّم GymQuest عمدًا أهدافًا حرارية لإنقاص الوزن أو زيادته.',
+    'calorie.limit5': 'في أي أمر طبي أو خطة مصمّمة لك، راجع مختصًّا مؤهّلًا.',
+    'calorie.formula': 'المعادلة: Mifflin-St Jeor (Mifflin MD et al., Am J Clin Nutr, 1990) لطاقة الراحة، مضروبة في معامل النشاط. تُعرض النتيجة كنطاق ±10٪.',
+    'calorie.updated': 'آخر حساب: {when}',
+
+    'food.offHint': 'سجلّ الطعام اختياري ومغلق افتراضيًا. لا توجد في GymQuest أي قاعدة بيانات للأطعمة – أنت تكتب كل شيء بنفسك.',
+    'food.enable': 'تشغيل سجلّ الطعام',
+    'food.disable': 'إيقاف سجلّ الطعام',
+    'food.addEntry': '+ إضافة طعام',
+    'food.addTitle': 'إضافة طعام',
+    'food.editEntryTitle': 'تعديل الإدخال',
+    'food.newTemplateTitle': 'طعام محفوظ جديد',
+    'food.editTemplateTitle': 'تعديل الطعام المحفوظ',
+    'food.pickSaved': 'طعام محفوظ',
+    'food.pickNone': 'لا شيء – سأكتب القيم بنفسي',
+    'food.qtyLabel': 'الكمية (المضاعف)',
+    'food.saveAsTemplate': 'حفظه أيضًا كطعام',
+    'food.nameLabel': 'الاسم',
+    'food.kcalLabel': 'الطاقة',
+    'food.protein': 'البروتين',
+    'food.carbs': 'الكربوهيدرات',
+    'food.fat': 'الدهون',
+    'food.macroLine': 'ب {p} غ · ك {c} غ · د {f} غ',
+    'food.totalsLine': '{total} · {entries}',
+    'food.entries': '{n} إدخال',
+    'food.entriesZero': '{n} إدخال',
+    'food.entriesOne': 'إدخال واحد',
+    'food.entriesTwo': 'إدخالان',
+    'food.entriesFew': '{n} إدخالات',
+    'food.entriesMany': '{n} إدخالًا',
+    'food.entriesOther': '{n} إدخال',
+    'food.emptyDay': 'لا شيء مسجّل في هذا اليوم.',
+    'food.noSaved': 'لا توجد أطعمة محفوظة بعد.',
+    'food.savedTitle': 'الأطعمة المحفوظة',
+    'food.newTemplate': '+ طعام جديد',
+    'food.editTemplate': 'تعديل الطعام المحفوظ',
+    'food.deleteTemplate': 'حذف الطعام المحفوظ',
+    'food.deleteTemplateConfirm': 'حذف «{name}» من أطعمتك المحفوظة؟ الإدخالات السابقة تحتفظ بقيمها.',
+    'food.editEntry': 'تعديل الإدخال',
+    'food.deleteEntry': 'حذف الإدخال',
+    'food.deleteEntryConfirm': 'حذف «{name}» من هذا اليوم؟',
+    'food.errName': 'أعطِ الطعام اسمًا.',
+    'food.errNumber': 'يجب أن تكون القيم أرقامًا بين 0 و100000.',
+    'food.errQty': 'يجب أن تكون الكمية أكبر من 0 وبحد أقصى 1000.',
+    'food.disclaimer': 'هذه القيم كتبتها بنفسك. GymQuest لا يتحقّق من بيانات التغذية وليست لديه قاعدة بيانات أطعمة.',
+    'food.prevDay': 'اليوم السابق',
+    'food.nextDay': 'اليوم التالي',
+
+    'tips.title': 'كيف تقرأ هذه الأرقام',
+    'tips.t1Title': 'قياس الوزن بالطريقة نفسها دائمًا',
+    'tips.t1Body': 'الميزان نفسه، والوقت نفسه من اليوم، وظروف متشابهة – كثيرون يزنون أنفسهم صباحًا قبل الأكل. الانتظام أهم بكثير من رقم واحد.',
+    'tips.t2Title': 'تغيّر يوم واحد ليس اتجاهًا',
+    'tips.t2Body': 'الوزن يتحرّك مع الماء والطعام في الأمعاء والملح، لذا قد يتغيّر خلال اليوم نفسه. قارن متوسطات أسبوعية، أو اليوم نفسه عبر عدة أسابيع، لترى شيئًا أقرب إلى اتجاه حقيقي.',
+    'tips.t3Title': 'المدة والمجموعات والتكرارات والتحميل التدريجي',
+    'tips.t3Body': 'المدة هي طول الجلسة. المجموعة هي مجموعة تكرارات. التكرارات هي عدد مرات تحريكك للوزن. التحميل التدريجي يعني أن تزيد قليلًا مع الوقت: وزن أكبر، أو تكرارات أكثر، أو أداء أفضل.',
+    'tips.t4Title': 'ماذا يخبرك تقدير السعرات وماذا لا يخبرك',
+    'tips.t4Body': 'يقدّر الطاقة التي قد يستهلكها شخص متوسط بقياساتك في اليوم. لا يستطيع قياس عمليات الأيض لديك، ولا يقول شيئًا عن جودة الطعام أو الصحة.',
+    'tips.t5Title': 'ماذا تعني أرقامك الغذائية',
+    'tips.t5Body': 'هي ملاحظاتك أنت، لا قياسات مخبرية. الحصص تقديرية، والملصقات تختلف، والوجبة نفسها قد تختلف بين يوم وآخر. مفيدة لملاحظة الأنماط، لا للمحاسبة الدقيقة.',
+    'tips.foodTitle': 'عن القيم التي تكتبها',
+    'tips.f1Title': 'إدخالك، أرقامك',
+    'tips.f1Body': 'لا شيء هنا يُبحث عنه أو يُتحقّق منه. ما تكتبه هو ما تراه، فالمجاميع دقيقة بقدر تقديراتك.',
+    'tips.f2Title': 'الأنماط أهم من الدقة',
+    'tips.f2Body': 'سجلّ تقريبي لكن منتظم على مدى أسابيع يقول أكثر من يوم واحد موزون بدقة. الطعام ليس شيئًا يُستحق أو يُعوَّض بالتمرين.',
   },
 };
 
@@ -2312,17 +3122,227 @@ function defaultState() {
     excusedWeeks: [],
     goalHistory: {},     // ISO týždeň -> cieľ platný v tom týždni (snapshot pre vyhodnotenie série)
     legacyGoal: null,    // cieľ spred zavedenia snapshotov; null = nový používateľ bez histórie
+    /* Voliteľné rozšírenia (telo, jedlo, profil). Všetko začína prázdne –
+       žiadna hodnota sa nikdy neháda ani nepredplňa. */
+    measurements: [],    // telesné miery, kanonicky v kg a cm
+    foods: [],           // vlastné potraviny používateľa (šablóny)
+    foodLog: {},         // "YYYY-MM-DD" -> [záznamy]
+    profile: {
+      heightCm: null, ageYears: null, sex: null, isAdult: null, activity: null,
+      lastCalcAt: null, calcKey: null,
+    },
     settings: {
       weeklyGoal: 3, lang: 'en', restSound: false, restSoundLength: 'standard',
       customRestMinutes: 2, customRestSeconds: 30,
       /* Automatické zálohovanie: voliteľné, predvolene VYPNUTÉ. */
       autoBackup: false, autoBackupOfferedAt: null, autoBackupWorkoutCount: 0,
+      /* Jednotky telesných mier (nie váh cvikov). Voliteľné funkcie: VYPNUTÉ. */
+      bodyUnits: 'metric', foodLogEnabled: false, calorieEnabled: false,
     },
     achievements: {},
     demo: false,
     activeSession: null, // rozbehnutý tréning (trvá iba do dokončenia alebo potvrdeného resetu)
   };
 }
+
+/* ---------- Telesné miery, potraviny a profil ----------
+   Voliteľné rozšírenia. Normalizácia je NEDEŠTRUKTívna: platná hodnota zostane
+   presne taká, aká bola, neplatná sa nahradí prázdnom (null) alebo nulou.
+   Nič sa nedopočítava, nič sa neháda a žiadny záznam sa nezahadzuje. */
+
+/* Kanonické jednotky: hmotnosť v kg, obvody v cm. Zmena zobrazovaných jednotiek
+   nikdy neprepíše uložené hodnoty, takže sa staré záznamy nikdy "nepreinterpretujú". */
+const MEASURE_FIELDS = [
+  'weightKg', 'waistCm', 'chestCm', 'armLeftCm', 'armRightCm', 'thighLeftCm', 'thighRightCm', 'hipCm',
+];
+const MEASURE_LIMITS = {
+  weightKg: [1, 500],
+  waistCm: [1, 400], chestCm: [1, 400],
+  armLeftCm: [1, 400], armRightCm: [1, 400],
+  thighLeftCm: [1, 400], thighRightCm: [1, 400], hipCm: [1, 400],
+};
+const KG_PER_LB = 0.45359237;
+const CM_PER_IN = 2.54;
+
+/* Skutočný kalendárny deň (nie len tvar reťazca): 2026-02-31 neprejde. */
+function isDateKey(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = parseDate(value);
+  return Number.isFinite(d.getTime()) && localDateKey(d) === value;
+}
+
+/* Vráti číslo v medziach alebo null. Platnú hodnotu nikdy nemení. */
+function cleanMeasureValue(field, value) {
+  if (value === null || value === undefined || value === '') return null;
+  const n = Number(value);
+  const lim = MEASURE_LIMITS[field];
+  if (!Number.isFinite(n) || n < lim[0] || n > lim[1]) return null;
+  return Math.round(n * 100) / 100;
+}
+
+function cleanMeasurement(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const id = typeof raw.id === 'string' && raw.id ? raw.id : null;
+  if (!id || !isDateKey(raw.date)) return null;
+  const out = { id, date: raw.date };
+  for (const f of MEASURE_FIELDS) out[f] = cleanMeasureValue(f, raw[f]);
+  out.note = typeof raw.note === 'string' ? raw.note : '';
+  return out;   // prázdny záznam sa necháva – používateľ si ho môže vymazať sám
+}
+
+function cleanMacro(value, max) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0 || n > max) return 0;
+  return Math.round(n * 10) / 10;
+}
+
+function cleanFood(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const id = typeof raw.id === 'string' && raw.id ? raw.id : null;
+  const name = typeof raw.name === 'string' ? raw.name.trim() : '';
+  if (!id || !name) return null;
+  return {
+    id, name,
+    kcal: cleanMacro(raw.kcal, 100000),
+    protein: cleanMacro(raw.protein, 10000),
+    carbs: cleanMacro(raw.carbs, 10000),
+    fat: cleanMacro(raw.fat, 10000),
+  };
+}
+
+function cleanFoodEntry(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const id = typeof raw.id === 'string' && raw.id ? raw.id : null;
+  if (!id) return null;
+  const qtyRaw = Number(raw.qty);
+  const qty = (Number.isFinite(qtyRaw) && qtyRaw > 0 && qtyRaw <= 1000) ? Math.round(qtyRaw * 100) / 100 : 1;
+  return {
+    id,
+    foodId: typeof raw.foodId === 'string' && raw.foodId ? raw.foodId : null,
+    name: typeof raw.name === 'string' ? raw.name : '',
+    kcal: cleanMacro(raw.kcal, 1000000),
+    protein: cleanMacro(raw.protein, 100000),
+    carbs: cleanMacro(raw.carbs, 100000),
+    fat: cleanMacro(raw.fat, 100000),
+    qty,
+  };
+}
+
+function cleanFoodLog(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+  for (const key of Object.keys(raw)) {
+    if (!isDateKey(key)) continue;
+    const arr = Array.isArray(raw[key]) ? raw[key].map(cleanFoodEntry).filter(Boolean) : [];
+    if (arr.length) out[key] = arr;   // prázdny deň sa neukladá, aby dáta nerástli
+  }
+  return out;
+}
+
+function cleanProfile(raw) {
+  const base = (raw && typeof raw === 'object' && !Array.isArray(raw)) ? raw : {};
+  const h = Number(base.heightCm);
+  const a = Number(base.ageYears);
+  const t = Number(base.lastCalcAt);
+  return {
+    heightCm: (Number.isFinite(h) && h >= 50 && h <= 260) ? Math.round(h * 10) / 10 : null,
+    ageYears: (Number.isFinite(a) && a >= 1 && a <= 120) ? Math.round(a) : null,
+    sex: (base.sex === 'male' || base.sex === 'female') ? base.sex : null,
+    isAdult: (base.isAdult === true || base.isAdult === false) ? base.isAdult : null,
+    activity: ACTIVITY_LEVELS.some((x) => x.id === base.activity) ? base.activity : null,
+    lastCalcAt: (Number.isFinite(t) && t > 0) ? t : null,
+    calcKey: typeof base.calcKey === 'string' ? base.calcKey : null,
+  };
+}
+
+/* ---------- Jednotky telesných mier ---------- */
+function bodyUnits() {
+  return (state && state.settings && state.settings.bodyUnits === 'imperial') ? 'imperial' : 'metric';
+}
+
+/* kg -> zobrazovaná hmotnosť, cm -> zobrazovaná dĺžka. Zdroj je VŽDY kg/cm. */
+function weightToDisplay(kg) {
+  if (kg === null || kg === undefined) return null;
+  return bodyUnits() === 'imperial' ? kg / KG_PER_LB : kg;
+}
+function weightFromDisplay(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return Math.round((bodyUnits() === 'imperial' ? n * KG_PER_LB : n) * 100) / 100;
+}
+function lengthToDisplay(cm) {
+  if (cm === null || cm === undefined) return null;
+  return bodyUnits() === 'imperial' ? cm / CM_PER_IN : cm;
+}
+function lengthFromDisplay(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return Math.round((bodyUnits() === 'imperial' ? n * CM_PER_IN : n) * 100) / 100;
+}
+
+function weightUnitLabel() { return bodyUnits() === 'imperial' ? t('units.lb') : t('units.kg'); }
+function lengthUnitLabel() { return bodyUnits() === 'imperial' ? t('units.in') : t('units.cm'); }
+
+/* Jedno desatinné miesto, zobrazované jednotky. */
+function formatMeasure(value, kind) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return '—';
+  const shown = kind === 'weight' ? weightToDisplay(Number(value)) : lengthToDisplay(Number(value));
+  return (Math.round(shown * 10) / 10).toFixed(1);
+}
+
+/* ---------- Počítané údaje pre telo a jedlo ---------- */
+/* Chronologicky podľa dátum; pri viacerých zápisoch v ten istý deň rozhoduje
+   poradie zápisu (Array.prototype.sort je stabilný), nie náhodné id. */
+function sortedMeasurements() {
+  return [...(state.measurements || [])].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/* Chronologické body jednej miery (len vyplnené hodnoty). */
+function measureSeries(field) {
+  return sortedMeasurements()
+    .filter((m) => m[field] !== null && m[field] !== undefined)
+    .map((m) => ({ date: m.date, value: m[field] }));
+}
+
+function latestMeasurement() {
+  const list = sortedMeasurements().filter((m) => MEASURE_FIELDS.some((f) => m[f] !== null));
+  return list.length ? list[list.length - 1] : null;
+}
+
+function measurementById(id) {
+  return (state.measurements || []).find((m) => m.id === id) || null;
+}
+
+function foodById(id) {
+  return (state.foods || []).find((f) => f.id === id) || null;
+}
+
+function foodEntriesFor(dateKey) {
+  const log = state.foodLog || {};
+  return Array.isArray(log[dateKey]) ? log[dateKey] : [];
+}
+
+function foodTotals(entries) {
+  const sum = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+  for (const e of entries || []) {
+    const q = Number(e.qty) > 0 ? Number(e.qty) : 1;
+    sum.kcal += Number(e.kcal) * q;
+    sum.protein += Number(e.protein) * q;
+    sum.carbs += Number(e.carbs) * q;
+    sum.fat += Number(e.fat) * q;
+  }
+  sum.kcal = Math.round(sum.kcal);
+  sum.protein = Math.round(sum.protein * 10) / 10;
+  sum.carbs = Math.round(sum.carbs * 10) / 10;
+  sum.fat = Math.round(sum.fat * 10) / 10;
+  return sum;
+}
+
+/* Hrubý odhad veľkosti uložených dát – len na včasné varovanie, nikdy sa nemaže. */
+function storageBytes() {
+  try { return JSON.stringify(state).length; } catch (e) { return 0; }
+}
+const STORAGE_NOTICE_BYTES = 3500000;
 
 /* Rozbehnutá session: buď platný objekt, alebo null. Poškodené/neúplné dáta sa zahodia. */
 function normalizeActiveSession(raw) {
@@ -2508,6 +3528,12 @@ function migrateV2toV3(parsed) {
     achievements: (base.achievements && typeof base.achievements === 'object') ? base.achievements : {},
     demo: base.demo === true,
     activeSession: normalizeActiveSession(base.activeSession),
+    /* Voliteľné rozšírenia: stará záloha bez nich naimportuje prázdne polia.
+       Platné záznamy zostávajú presne také, aké boli. */
+    measurements: Array.isArray(base.measurements) ? base.measurements.map(cleanMeasurement).filter(Boolean) : [],
+    foods: Array.isArray(base.foods) ? base.foods.map(cleanFood).filter(Boolean) : [],
+    foodLog: cleanFoodLog(base.foodLog),
+    profile: cleanProfile(base.profile),
   };
   const goal = Math.round(Number(out.settings.weeklyGoal));
   out.settings.weeklyGoal = Math.min(GOAL_MAX, Math.max(GOAL_MIN, Number.isFinite(goal) && goal ? goal : 3));
@@ -2532,6 +3558,10 @@ function migrateV2toV3(parsed) {
   out.settings.autoBackupOfferedAt = (Number.isFinite(backupOffered) && backupOffered > 0) ? backupOffered : null;
   const backupCount = Math.round(Number(out.settings.autoBackupWorkoutCount));
   out.settings.autoBackupWorkoutCount = (Number.isFinite(backupCount) && backupCount >= 0) ? backupCount : 0;
+  /* Jednotky telesných mier a voliteľné funkcie: platí len explicitná hodnota. */
+  if (out.settings.bodyUnits !== 'imperial') out.settings.bodyUnits = 'metric';
+  if (out.settings.foodLogEnabled !== true) out.settings.foodLogEnabled = false;
+  if (out.settings.calorieEnabled !== true) out.settings.calorieEnabled = false;
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -4737,7 +5767,968 @@ function cancelEditPlan() {
 
 /* ---------- Vykreslenie: POKROK ---------- */
 
+/* ---------- Pokrok: podpohľady (Pokrok / Telo / Jedlo) ----------
+   Spodná päťkarta zostáva nezmenená; tieto tri podpohľady žijú vnútri obrazovky
+   Pokrok. Stav je len v pamäti – rovnako ako mesiac v kalendári. */
+
+let pokrokView = 'progress';
+let chartField = 'weightKg';
+let measureEditId = null;
+let foodModalMode = 'entry';
+let foodModalId = null;
+let foodDate = null;          // vybraný deň v denníku jedla (null = dnes)
+
+const MEASURE_META = [
+  { field: 'weightKg', kind: 'weight', key: 'body.f.weight' },
+  { field: 'waistCm', kind: 'length', key: 'body.f.waist' },
+  { field: 'chestCm', kind: 'length', key: 'body.f.chest' },
+  { field: 'armLeftCm', kind: 'length', key: 'body.f.armLeft' },
+  { field: 'armRightCm', kind: 'length', key: 'body.f.armRight' },
+  { field: 'thighLeftCm', kind: 'length', key: 'body.f.thighLeft' },
+  { field: 'thighRightCm', kind: 'length', key: 'body.f.thighRight' },
+  { field: 'hipCm', kind: 'length', key: 'body.f.hip' },
+];
+
+/* Aktivita: faktory používa Mifflin-St Jeor pre odhad denného výdaja energie. */
+const ACTIVITY_LEVELS = [
+  { id: 'sedentary', factor: 1.2, key: 'calorie.actSedentary' },
+  { id: 'light', factor: 1.375, key: 'calorie.actLight' },
+  { id: 'moderate', factor: 1.55, key: 'calorie.actModerate' },
+  { id: 'active', factor: 1.725, key: 'calorie.actActive' },
+  { id: 'very', factor: 1.9, key: 'calorie.actVery' },
+];
+
+function measureMeta(field) {
+  return MEASURE_META.find((m) => m.field === field) || MEASURE_META[0];
+}
+function measureLabel(field) { return t(measureMeta(field).key); }
+function measureUnit(kind) { return kind === 'weight' ? weightUnitLabel() : lengthUnitLabel(); }
+function formatMeasureValue(value, kind) {
+  return formatMeasure(value, kind) + ' ' + measureUnit(kind);
+}
+function formatWhen(ms) { return formatBackupTimestamp(ms); }
+
+/* Malý pomocník: pole s popisom (rovnaký vzhľad ako ostatné formuláre).
+   Pri type="number" musí byť typ nastavený SKÔR než hodnota – číselný input
+   odmietne nečíselnú hodnotu a ticho ju zahodí. */
+function buildField(id, labelText, value, opts) {
+  const o = opts || {};
+  const wrap = document.createElement('div');
+  wrap.className = 'field' + (o.wide ? ' field-wide' : '');
+  const label = document.createElement('label');
+  label.setAttribute('for', id);
+  label.textContent = labelText;
+  const input = document.createElement('input');
+  input.type = o.text ? 'text' : 'number';
+  input.id = id;
+  input.autocomplete = 'off';
+  if (o.text) {
+    input.maxLength = o.maxLength || 120;
+  } else {
+    input.step = o.step || '0.1';
+    input.min = '0';
+    input.inputMode = 'decimal';
+  }
+  if (value !== '' && value !== null && value !== undefined) input.value = String(value);
+  wrap.append(label, input);
+  return wrap;
+}
+
+function buildSelect(id, labelText, options, value) {
+  const wrap = document.createElement('div');
+  wrap.className = 'field field-wide';
+  const label = document.createElement('label');
+  label.setAttribute('for', id);
+  label.textContent = labelText;
+  const sel = document.createElement('select');
+  sel.id = id;
+  for (const o of options) {
+    const opt = document.createElement('option');
+    opt.value = o.value;
+    opt.textContent = o.label;
+    if (o.value === value) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  wrap.append(label, sel);
+  return wrap;
+}
+
+function setPokrokView(view) {
+  pokrokView = (view === 'body' || view === 'food') ? view : 'progress';
+  renderPokrok();
+  refreshUpdateBanner();
+}
+
+function renderPokrokSubtabs() {
+  const bar = document.getElementById('pokrok-subtabs');
+  if (!bar) return;
+  bar.querySelectorAll('.subtab').forEach((b) => {
+    const on = b.dataset.pokrok === pokrokView;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  for (const v of ['progress', 'body', 'food']) {
+    const el = document.getElementById('subview-' + v);
+    if (el) el.hidden = v !== pokrokView;
+  }
+}
+
+/* ---------- Veľkosť uložených dát (len upozornenie, nikdy sa nemaže) ---------- */
+function renderStorageNotice(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const over = storageBytes() >= STORAGE_NOTICE_BYTES;
+  el.hidden = !over;
+  if (over) el.textContent = t('body.storageNotice');
+}
+
+/* ---------- Telo: jednotky ---------- */
+function renderBodyUnits() {
+  const box = document.getElementById('body-units');
+  if (!box) return;
+  box.querySelectorAll('.unit-chip').forEach((c) => {
+    const on = c.dataset.units === bodyUnits();
+    c.classList.toggle('active', on);
+    c.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+
+function setBodyUnits(units) {
+  state.settings.bodyUnits = units === 'imperial' ? 'imperial' : 'metric';
+  saveState();
+  renderPokrok();
+}
+
+/* ---------- Telo: súhrn najnovších mier ---------- */
+function renderBodySummary() {
+  const box = document.getElementById('body-summary');
+  if (!box) return;
+  box.innerHTML = '';
+  if (!measureSeries('weightKg').length && !MEASURE_META.some((m) => measureSeries(m.field).length)) {
+    const p = document.createElement('p');
+    p.className = 'empty-state';
+    p.textContent = t('body.empty');
+    box.appendChild(p);
+    return;
+  }
+  for (const m of MEASURE_META) {
+    const series = measureSeries(m.field);
+    if (!series.length) continue;
+    const last = series[series.length - 1];
+    const prev = series.length > 1 ? series[series.length - 2] : null;
+    const row = document.createElement('div');
+    row.className = 'measure-row';
+    const name = document.createElement('span');
+    name.className = 'measure-name';
+    name.textContent = t(m.key);
+    if (prev) {
+      /* Neutrálne: nárast ani pokles nie je sám o sebe dobrý ani zlý. */
+      const nowShown = m.kind === 'weight' ? weightToDisplay(last.value) : lengthToDisplay(last.value);
+      const prevShown = m.kind === 'weight' ? weightToDisplay(prev.value) : lengthToDisplay(prev.value);
+      const diff = Math.round((nowShown - prevShown) * 10) / 10;
+      const delta = document.createElement('span');
+      delta.className = 'measure-delta';
+      delta.textContent = ' ' + (diff > 0 ? '+' : (diff < 0 ? '−' : '±'))
+        + Math.abs(diff).toFixed(1) + ' ' + measureUnit(m.kind);
+      name.appendChild(delta);
+    }
+    const val = document.createElement('span');
+    val.className = 'measure-value';
+    val.textContent = formatMeasureValue(last.value, m.kind);
+    row.append(name, val);
+    box.appendChild(row);
+  }
+}
+
+/* ---------- Telo: história meraní ---------- */
+function renderBodyHistory() {
+  const box = document.getElementById('body-history');
+  if (!box) return;
+  box.innerHTML = '';
+  const list = sortedMeasurements().slice().reverse();
+  if (!list.length) {
+    const p = document.createElement('p');
+    p.className = 'empty-state';
+    p.textContent = t('body.empty');
+    box.appendChild(p);
+    return;
+  }
+  for (const m of list) {
+    const row = document.createElement('div');
+    row.className = 'measure-entry';
+
+    const head = document.createElement('div');
+    head.className = 'measure-entry-head';
+    const date = document.createElement('span');
+    date.className = 'measure-entry-date';
+    date.textContent = formatDate(m.date);
+    const actions = document.createElement('span');
+    actions.className = 'measure-entry-actions';
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'btn-icon-sm';
+    edit.textContent = '✏️';
+    edit.title = t('body.editTitle');
+    edit.setAttribute('aria-label', t('body.editTitle'));
+    edit.addEventListener('click', () => openMeasureModal(m.id));
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'btn-icon-sm btn-icon-danger';
+    del.textContent = '🗑️';
+    del.title = t('body.deleteTitle');
+    del.setAttribute('aria-label', t('body.deleteTitle'));
+    del.addEventListener('click', () => requestDeleteMeasurement(m.id));
+    actions.append(edit, del);
+    head.append(date, actions);
+    row.appendChild(head);
+
+    const values = document.createElement('div');
+    values.className = 'measure-entry-values';
+    const parts = MEASURE_META.filter((x) => m[x.field] !== null)
+      .map((x) => measureLabel(x.field) + ' ' + formatMeasureValue(m[x.field], x.kind));
+    values.textContent = parts.length ? parts.join(' · ') : t('body.noValues');
+    row.appendChild(values);
+
+    if (m.note) {
+      const note = document.createElement('div');
+      note.className = 'measure-entry-note';
+      note.textContent = '“' + m.note + '”';
+      row.appendChild(note);
+    }
+    box.appendChild(row);
+  }
+}
+
+/* ---------- Telo: graf (vlastné SVG, žiadna knižnica) ---------- */
+function buildSparkline(series, kind) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const W = 300, H = 140, PAD = 12;
+  const vals = series.map((p) => (kind === 'weight' ? weightToDisplay(p.value) : lengthToDisplay(p.value)));
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const span = (hi - lo) || 1;
+  const n = vals.length;
+
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class', 'chart-svg');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', t('body.chartAria', {
+    n, min: (Math.round(lo * 10) / 10).toFixed(1), max: (Math.round(hi * 10) / 10).toFixed(1),
+  }));
+
+  const x = (i) => PAD + (i * (W - 2 * PAD)) / (n - 1);
+  const y = (v) => H - PAD - ((v - lo) / span) * (H - 2 * PAD);
+  const pts = vals.map((v, i) => [x(i), y(v)]);
+  const line = pts.map(([px, py], i) => (i ? 'L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1)).join(' ');
+  const area = line + ' L' + x(n - 1).toFixed(1) + ' ' + (H - PAD) + ' L' + x(0).toFixed(1) + ' ' + (H - PAD) + ' Z';
+
+  const areaEl = document.createElementNS(ns, 'path');
+  areaEl.setAttribute('class', 'chart-area');
+  areaEl.setAttribute('d', area);
+  svg.appendChild(areaEl);
+
+  const lineEl = document.createElementNS(ns, 'path');
+  lineEl.setAttribute('class', 'chart-line');
+  lineEl.setAttribute('d', line);
+  svg.appendChild(lineEl);
+
+  /* Pri veľmi dlhej histórii sa bodky vynechávajú, aby graf nebol preplnený. */
+  if (n <= 40) {
+    for (const [px, py] of pts) {
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('class', 'chart-dot');
+      dot.setAttribute('cx', px.toFixed(1));
+      dot.setAttribute('cy', py.toFixed(1));
+      dot.setAttribute('r', '2.5');
+      svg.appendChild(dot);
+    }
+  }
+  return svg;
+}
+
+function renderBodyChart() {
+  const card = document.getElementById('body-chart-card');
+  const chips = document.getElementById('body-metric-chips');
+  const box = document.getElementById('body-chart');
+  const rangeEl = document.getElementById('body-chart-range');
+  if (!card || !chips || !box || !rangeEl) return;
+
+  const withPoints = MEASURE_META.filter((m) => measureSeries(m.field).length >= 1);
+  card.hidden = withPoints.length === 0;
+  if (!withPoints.length) return;
+  if (!withPoints.some((m) => m.field === chartField)) chartField = withPoints[0].field;
+
+  chips.innerHTML = '';
+  for (const m of MEASURE_META) {
+    const series = measureSeries(m.field);
+    if (!series.length) continue;
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'metric-chip' + (chartField === m.field ? ' active' : '');
+    chip.dataset.field = m.field;
+    chip.textContent = t(m.key);
+    chip.setAttribute('aria-pressed', chartField === m.field ? 'true' : 'false');
+    chip.addEventListener('click', () => { chartField = m.field; renderBodyChart(); });
+    chips.appendChild(chip);
+  }
+
+  const meta = measureMeta(chartField);
+  const series = measureSeries(chartField);
+  box.innerHTML = '';
+  if (series.length < 2) {
+    rangeEl.textContent = t('body.chartNeedTwo');
+    return;
+  }
+  box.appendChild(buildSparkline(series, meta.kind));
+  const vals = series.map((p) => (meta.kind === 'weight' ? weightToDisplay(p.value) : lengthToDisplay(p.value)));
+  rangeEl.textContent = t('body.chartRange', {
+    min: (Math.round(Math.min(...vals) * 10) / 10).toFixed(1),
+    max: (Math.round(Math.max(...vals) * 10) / 10).toFixed(1),
+    unit: measureUnit(meta.kind),
+  });
+}
+
+/* ---------- Telo: meranie (modal) ---------- */
+function renderMeasureFields(values) {
+  const box = document.getElementById('measure-fields');
+  if (!box) return;
+  box.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'field-grid';
+  for (const m of MEASURE_META) {
+    const current = values && values[m.field] !== null && values[m.field] !== undefined
+      ? Math.round((m.kind === 'weight' ? weightToDisplay(values[m.field]) : lengthToDisplay(values[m.field])) * 10) / 10
+      : '';
+    grid.appendChild(buildField('m-' + m.field, measureLabel(m.field) + ' (' + measureUnit(m.kind) + ')', current));
+  }
+  const hint = document.createElement('p');
+  hint.className = 'field-hint field-wide';
+  hint.textContent = t('body.fieldsHint');
+  grid.appendChild(hint);
+  box.appendChild(grid);
+}
+
+function openMeasureModal(id) {
+  measureEditId = id || null;
+  const m = id ? measurementById(id) : null;
+  document.getElementById('measure-title').textContent = t(m ? 'body.editTitle' : 'body.addTitle');
+  document.getElementById('measure-date').value = m ? m.date : todayISO();
+  document.getElementById('measure-note').value = m ? m.note : '';
+  document.getElementById('measure-error').hidden = true;
+  renderMeasureFields(m);
+  document.getElementById('modal-measure').hidden = false;
+  refreshUpdateBanner();
+}
+
+function showMeasureError(msg) {
+  const el = document.getElementById('measure-error');
+  if (!el) return;
+  el.textContent = msg;
+  el.hidden = false;
+}
+
+function saveMeasure() {
+  const date = document.getElementById('measure-date').value || '';
+  if (!isDateKey(date)) { showMeasureError(t('body.errDate')); return; }
+
+  const values = {};
+  const bad = [];
+  document.querySelectorAll('#measure-fields .field input').forEach((inp) => {
+    const field = String(inp.id).slice(2);
+    const raw = inp.value.trim();
+    if (raw === '') { values[field] = null; return; }
+    const n = Number(raw);
+    const meta = measureMeta(field);
+    const limit = MEASURE_LIMITS[field];
+    const canon = (Number.isFinite(n) && n > 0)
+      ? (meta.kind === 'weight' ? weightFromDisplay(n) : lengthFromDisplay(n))
+      : null;
+    if (canon === null || canon < limit[0] || canon > limit[1]) {
+      bad.push(measureLabel(field));
+      values[field] = null;
+      return;
+    }
+    values[field] = canon;   // platná hodnota sa ukladá presne, nikdy sa neupravuje
+  });
+
+  if (bad.length) { showMeasureError(t('body.errRange', { fields: bad.join(', ') })); return; }
+  const note = document.getElementById('measure-note').value.trim();
+  if (MEASURE_FIELDS.every((f) => values[f] === null) && !note) {
+    showMeasureError(t('body.errEmpty'));
+    return;
+  }
+
+  const entry = Object.assign({ id: measureEditId || uid(), date, note }, values);
+  if (measureEditId) {
+    const at = state.measurements.findIndex((m) => m.id === measureEditId);
+    if (at >= 0) state.measurements[at] = entry;
+    else state.measurements.push(entry);
+  } else {
+    state.measurements.push(entry);
+  }
+  measureEditId = null;
+  saveState();
+  document.getElementById('modal-measure').hidden = true;
+  renderPokrok();
+  refreshUpdateBanner();
+}
+
+function requestDeleteMeasurement(id) {
+  const m = measurementById(id);
+  if (!m) return;
+  showGeneric(t('body.deleteTitle'), t('common.delete'), () => {
+    state.measurements = state.measurements.filter((x) => x.id !== id);
+    saveState();
+    renderPokrok();
+  }, t('body.deleteConfirm', { date: formatDate(m.date) }));
+}
+
+/* ---------- Kalorický odhad (voliteľný, opatrný) ---------- */
+function latestMeasuredWeightKg() {
+  const list = sortedMeasurements().filter((m) => m.weightKg !== null);
+  return list.length ? list[list.length - 1] : null;
+}
+
+function calorieMissing() {
+  const p = state.profile || {};
+  const missing = [];
+  if (p.heightCm === null) missing.push(t('calorie.inHeight'));
+  if (p.ageYears === null) missing.push(t('calorie.inAge'));
+  if (!p.sex) missing.push(t('calorie.inSex'));
+  if (!p.activity) missing.push(t('calorie.inActivity'));
+  if (!latestMeasuredWeightKg()) missing.push(t('calorie.inWeight'));
+  return missing;
+}
+
+function calorieSignature() {
+  const p = state.profile || {};
+  const w = latestMeasuredWeightKg();
+  return [p.heightCm, p.ageYears, p.sex, p.activity, w ? w.weightKg : null].join('|');
+}
+
+/* Mifflin-St Jeor (1990) × faktor aktivity. Vráti null, kým nie sú VŠETKY
+   vstupy známe – odhad sa nikdy nedopočítava z neúplných údajov. */
+function calorieEstimate() {
+  const p = state.profile || {};
+  if (p.isAdult !== true) return null;
+  const w = latestMeasuredWeightKg();
+  const act = ACTIVITY_LEVELS.find((x) => x.id === p.activity);
+  if (!w || w.weightKg === null || p.heightCm === null || p.ageYears === null || !p.sex || !act) return null;
+  const bmr = 10 * w.weightKg + 6.25 * p.heightCm - 5 * p.ageYears + (p.sex === 'male' ? 5 : -161);
+  const tdee = bmr * act.factor;
+  return { bmr: Math.round(bmr), low: Math.round((tdee * 0.9) / 10) * 10, high: Math.round((tdee * 1.1) / 10) * 10 };
+}
+
+function renderCalorieLimits() {
+  const ul = document.getElementById('calorie-limits');
+  if (!ul) return;
+  ul.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.textContent = t('calorie.limit' + i);
+    li.appendChild(span);
+    ul.appendChild(li);
+  }
+}
+
+function renderCalorieInputs() {
+  const box = document.getElementById('calorie-inputs');
+  if (!box) return;
+  const p = state.profile || {};
+  box.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'field-grid';
+
+  const imperial = bodyUnits() === 'imperial';
+  const heightShown = p.heightCm === null ? ''
+    : Math.round((imperial ? p.heightCm / CM_PER_IN : p.heightCm) * 10) / 10;
+  grid.appendChild(buildField('cal-height', t('calorie.inHeight') + ' (' + (imperial ? t('units.in') : t('units.cm')) + ')', heightShown));
+  grid.appendChild(buildField('cal-age', t('calorie.inAge') + ' (' + t('calorie.years') + ')', p.ageYears === null ? '' : p.ageYears, { step: '1' }));
+  grid.appendChild(buildSelect('cal-sex', t('calorie.inSex'), [
+    { value: '', label: t('calorie.sexPick') },
+    { value: 'male', label: t('calorie.sexMale') },
+    { value: 'female', label: t('calorie.sexFemale') },
+  ], p.sex || ''));
+  grid.appendChild(buildSelect('cal-activity', t('calorie.inActivity'),
+    [{ value: '', label: t('calorie.activityPick') }].concat(ACTIVITY_LEVELS.map((a) => ({ value: a.id, label: t(a.key) }))),
+    p.activity || ''));
+
+  const w = latestMeasuredWeightKg();
+  const wField = buildField('cal-weight', t('calorie.inWeight') + ' (' + weightUnitLabel() + ')', '', { });
+  const wInput = wField.querySelector('input');
+  wInput.disabled = true;
+  wInput.value = w ? String(Math.round((imperial ? w.weightKg / KG_PER_LB : w.weightKg) * 10) / 10) : '';
+  grid.appendChild(wField);
+  box.appendChild(grid);
+
+  const wHint = document.createElement('p');
+  wHint.className = 'card-note';
+  wHint.textContent = w
+    ? t('calorie.weightFromLog', { date: formatDate(w.date) })
+    : t('calorie.weightMissing');
+  box.appendChild(wHint);
+
+  const err = document.createElement('p');
+  err.className = 'card-note form-error';
+  err.id = 'calorie-error';
+  err.hidden = true;
+  box.appendChild(err);
+
+  const save = document.createElement('button');
+  save.type = 'button';
+  save.className = 'btn btn-primary btn-block';
+  save.id = 'btn-calorie-save';
+  save.textContent = t('calorie.saveInputs');
+  save.addEventListener('click', saveCalorieInputs);
+  box.appendChild(save);
+}
+
+function saveCalorieInputs() {
+  const err = document.getElementById('calorie-error');
+  const fail = (msg) => { if (err) { err.textContent = msg; err.hidden = false; } };
+
+  const heightRaw = document.getElementById('cal-height').value.trim();
+  const ageRaw = document.getElementById('cal-age').value.trim();
+  const sex = document.getElementById('cal-sex').value;
+  const activity = document.getElementById('cal-activity').value;
+
+  if (ageRaw !== '' && !(Number(ageRaw) >= 1 && Number(ageRaw) <= 120)) { fail(t('calorie.errAge')); return; }
+  let heightCm = null;
+  if (heightRaw !== '') {
+    const n = Number(heightRaw);
+    const cm = bodyUnits() === 'imperial' ? n * CM_PER_IN : n;
+    if (!Number.isFinite(cm) || cm < 50 || cm > 260) { fail(t('calorie.errHeight')); return; }
+    heightCm = Math.round(cm * 10) / 10;
+  }
+
+  state.profile.heightCm = heightCm;
+  state.profile.ageYears = ageRaw === '' ? null : Math.round(Number(ageRaw));
+  state.profile.sex = (sex === 'male' || sex === 'female') ? sex : null;
+  state.profile.activity = ACTIVITY_LEVELS.some((a) => a.id === activity) ? activity : null;
+  if (err) err.hidden = true;
+  saveState();
+  renderPokrok();
+}
+
+function renderCalorieCard() {
+  const card = document.getElementById('body-calorie-card');
+  const offCard = document.getElementById('calorie-off');
+  if (!card) return;
+  const on = state.settings.calorieEnabled === true;
+  card.hidden = !on;
+  if (offCard) offCard.hidden = on;
+  if (!on) return;
+
+  const p = state.profile || {};
+  const chips = document.getElementById('calorie-adult-chips');
+  if (chips) {
+    chips.querySelectorAll('.metric-chip').forEach((b) => {
+      const want = b.dataset.adult === 'yes';
+      const sel = p.isAdult === want;
+      b.classList.toggle('active', sel);
+      b.setAttribute('aria-pressed', sel ? 'true' : 'false');
+    });
+  }
+
+  const underage = document.getElementById('calorie-underage');
+  const inputs = document.getElementById('calorie-inputs');
+  const result = document.getElementById('calorie-result');
+  const range = document.getElementById('calorie-range');
+  const bmrLine = document.getElementById('calorie-bmr');
+  const updated = document.getElementById('calorie-updated');
+
+  /* Nezodpovedaná otázka: žiadne vstupy, žiadne čísla. */
+  if (p.isAdult === null) {
+    underage.hidden = true; inputs.hidden = true; result.hidden = true;
+    return;
+  }
+  /* Menej ako 18: žiadne čísla, len krátke vysvetlenie. */
+  if (p.isAdult === false) {
+    underage.hidden = false;
+    underage.textContent = t('calorie.underage');
+    inputs.hidden = true;
+    result.hidden = true;
+    return;
+  }
+
+  underage.hidden = true;
+  inputs.hidden = false;
+  renderCalorieInputs();
+
+  const est = calorieEstimate();
+  if (!est) {
+    const missing = calorieMissing();
+    result.hidden = false;
+    range.textContent = t('calorie.needInputs');
+    bmrLine.textContent = missing.length ? t('calorie.missing', { list: missing.join(', ') }) : '';
+    renderCalorieLimits();
+    updated.textContent = '';
+    return;
+  }
+
+  /* Počítadlo "naposledy vypočítané" sa obnoví len vtedy, keď sa zmenili vstupy. */
+  const sig = calorieSignature();
+  if (p.calcKey !== sig) {
+    state.profile.calcKey = sig;
+    state.profile.lastCalcAt = Date.now();
+    saveState();
+  }
+  result.hidden = false;
+  range.textContent = t('calorie.range', { low: est.low, high: est.high, unit: t('units.kcal') });
+  bmrLine.textContent = t('calorie.bmrLine', { bmr: est.bmr, unit: t('units.kcal') });
+  renderCalorieLimits();
+  updated.textContent = t('calorie.updated', { when: formatWhen(state.profile.lastCalcAt) });
+}
+
+/* ---------- Tipy ---------- */
+const TIP_KEYS = ['tips.t1', 'tips.t2', 'tips.t3', 'tips.t4', 'tips.t5'];
+const FOOD_TIP_KEYS = ['tips.f1', 'tips.f2'];
+
+function buildTips(ul, keys) {
+  ul.innerHTML = '';
+  for (const k of keys) {
+    const li = document.createElement('li');
+    const strong = document.createElement('strong');
+    strong.textContent = t(k + 'Title');
+    const span = document.createElement('span');
+    span.textContent = t(k + 'Body');
+    li.append(strong, span);
+    ul.appendChild(li);
+  }
+}
+
+function toggleTips(btnId, bodyId) {
+  const btn = document.getElementById(btnId);
+  const body = document.getElementById(bodyId);
+  if (!btn || !body) return;
+  const open = body.hidden;
+  body.hidden = !open;
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function renderTips() {
+  const body = document.getElementById('tips-body');
+  if (body && !body.dataset.built) {
+    const ul = document.createElement('ul');
+    ul.className = 'tip-list';
+    body.appendChild(ul);
+    body.dataset.built = '1';
+  }
+  if (body && body.firstChild) buildTips(body.firstChild, TIP_KEYS);
+
+  const fbody = document.getElementById('food-tips-body');
+  if (fbody && !fbody.dataset.built) {
+    const ul = document.createElement('ul');
+    ul.className = 'tip-list';
+    fbody.appendChild(ul);
+    fbody.dataset.built = '1';
+  }
+  if (fbody && fbody.firstChild) buildTips(fbody.firstChild, FOOD_TIP_KEYS);
+}
+
+/* ---------- Jedlo (voliteľný, ručne zapisovaný denník) ---------- */
+function foodDayKey() { return foodDate || todayISO(); }
+
+function renderSavedFoods() {
+  const box = document.getElementById('food-saved');
+  if (!box) return;
+  box.innerHTML = '';
+  const foods = state.foods || [];
+  if (!foods.length) {
+    const p = document.createElement('p');
+    p.className = 'empty-state';
+    p.textContent = t('food.noSaved');
+    box.appendChild(p);
+    return;
+  }
+  for (const f of foods) {
+    const row = document.createElement('div');
+    row.className = 'food-row';
+    const main = document.createElement('div');
+    main.className = 'food-row-main';
+    const name = document.createElement('div');
+    name.className = 'food-row-name';
+    name.textContent = f.name;   // vlastný názov sa nikdy neprekladá
+    const meta = document.createElement('div');
+    meta.className = 'food-row-meta';
+    meta.textContent = f.kcal + ' ' + t('units.kcal') + (f.protein || f.carbs || f.fat
+      ? ' · ' + t('food.macroLine', { p: f.protein, c: f.carbs, f: f.fat }) : '');
+    main.append(name, meta);
+    const actions = document.createElement('div');
+    actions.className = 'food-row-actions';
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'btn-icon-sm';
+    edit.textContent = '✏️';
+    edit.title = t('food.editTemplate');
+    edit.setAttribute('aria-label', t('food.editTemplate'));
+    edit.addEventListener('click', () => openFoodModal('template', f.id));
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'btn-icon-sm btn-icon-danger';
+    del.textContent = '🗑️';
+    del.title = t('food.deleteTemplate');
+    del.setAttribute('aria-label', t('food.deleteTemplate'));
+    del.addEventListener('click', () => requestDeleteFood(f.id));
+    actions.append(edit, del);
+    row.append(main, actions);
+    box.appendChild(row);
+  }
+}
+
+function renderFoodEntries() {
+  const box = document.getElementById('food-entries');
+  if (!box) return;
+  box.innerHTML = '';
+  const key = foodDayKey();
+  const entries = foodEntriesFor(key);
+  if (!entries.length) {
+    const p = document.createElement('p');
+    p.className = 'empty-state';
+    p.textContent = t('food.emptyDay');
+    box.appendChild(p);
+    return;
+  }
+  for (const e of entries) {
+    const row = document.createElement('div');
+    row.className = 'food-row';
+    const main = document.createElement('div');
+    main.className = 'food-row-main';
+    const name = document.createElement('div');
+    name.className = 'food-row-name';
+    name.textContent = e.name;
+    const meta = document.createElement('div');
+    meta.className = 'food-row-meta';
+    const q = Number(e.qty) > 0 ? Number(e.qty) : 1;
+    meta.textContent = (q === 1 ? '' : q + ' × ') + Math.round(Number(e.kcal) * q) + ' ' + t('units.kcal')
+      + ((e.protein || e.carbs || e.fat)
+        ? ' · ' + t('food.macroLine', {
+          p: Math.round(Number(e.protein) * q * 10) / 10,
+          c: Math.round(Number(e.carbs) * q * 10) / 10,
+          f: Math.round(Number(e.fat) * q * 10) / 10,
+        }) : '');
+    main.append(name, meta);
+    const actions = document.createElement('div');
+    actions.className = 'food-row-actions';
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'btn-icon-sm';
+    edit.textContent = '✏️';
+    edit.title = t('food.editEntry');
+    edit.setAttribute('aria-label', t('food.editEntry'));
+    edit.addEventListener('click', () => openFoodModal('entry', e.id));
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'btn-icon-sm btn-icon-danger';
+    del.textContent = '🗑️';
+    del.title = t('food.deleteEntry');
+    del.setAttribute('aria-label', t('food.deleteEntry'));
+    del.addEventListener('click', () => requestDeleteFoodEntry(e.id));
+    actions.append(edit, del);
+    row.append(main, actions);
+    box.appendChild(row);
+  }
+}
+
+function renderFood() {
+  const enabled = state.settings.foodLogEnabled === true;
+  const off = document.getElementById('food-off');
+  const on = document.getElementById('food-on');
+  if (!off || !on) return;
+  off.hidden = enabled;
+  on.hidden = !enabled;
+  if (!enabled) return;
+
+  const key = foodDayKey();
+  document.getElementById('food-date-label').textContent = formatDate(key);
+  const entries = foodEntriesFor(key);
+  const totals = foodTotals(entries);
+  const parts = [totals.kcal + ' ' + t('units.kcal')];
+  if (totals.protein || totals.carbs || totals.fat) {
+    parts.push(t('food.macroLine', { p: totals.protein, c: totals.carbs, f: totals.fat }));
+  }
+  document.getElementById('food-totals').textContent = t('food.totalsLine', {
+    total: parts.join(' · '),
+    entries: tPlural('food.entries', entries.length),
+  });
+  renderFoodEntries();
+  renderSavedFoods();
+}
+
+function shiftFoodDay(delta) {
+  const d = parseDate(foodDayKey());
+  d.setDate(d.getDate() + delta);
+  foodDate = localDateKey(d);
+  renderFood();
+}
+
+/* ---------- Jedlo: modal (záznam aj potravina) ---------- */
+function renderFoodFields(values) {
+  const box = document.getElementById('food-fields');
+  if (!box) return;
+  box.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'field-grid';
+  grid.appendChild(buildField('ff-name', t('food.nameLabel'), values.name, { text: true, wide: true }));
+  grid.appendChild(buildField('ff-kcal', t('food.kcalLabel') + ' (' + t('units.kcal') + ')', values.kcal, { step: '1' }));
+  grid.appendChild(buildField('ff-protein', t('food.protein') + ' (' + t('units.g') + ')', values.protein));
+  grid.appendChild(buildField('ff-carbs', t('food.carbs') + ' (' + t('units.g') + ')', values.carbs));
+  grid.appendChild(buildField('ff-fat', t('food.fat') + ' (' + t('units.g') + ')', values.fat));
+  box.appendChild(grid);
+}
+
+function openFoodModal(mode, id) {
+  foodModalMode = mode === 'template' ? 'template' : 'entry';
+  foodModalId = id || null;
+  const isTemplate = foodModalMode === 'template';
+  const key = foodDayKey();
+
+  const pickRow = document.getElementById('food-pick-row');
+  const extra = document.getElementById('food-entry-extra');
+  pickRow.hidden = isTemplate || !(state.foods || []).length;
+  extra.hidden = isTemplate;
+
+  document.getElementById('food-modal-title').textContent = t(isTemplate
+    ? (id ? 'food.editTemplateTitle' : 'food.newTemplateTitle')
+    : (id ? 'food.editEntryTitle' : 'food.addTitle'));
+
+  let values = { name: '', kcal: '', protein: '', carbs: '', fat: '' };
+  if (isTemplate && id) {
+    const f = foodById(id);
+    if (f) values = { name: f.name, kcal: f.kcal, protein: f.protein, carbs: f.carbs, fat: f.fat };
+  } else if (!isTemplate && id) {
+    const e = foodEntriesFor(key).find((x) => x.id === id);
+    if (e) values = { name: e.name, kcal: e.kcal, protein: e.protein, carbs: e.carbs, fat: e.fat };
+  }
+  renderFoodFields(values);
+
+  const pick = document.getElementById('food-pick');
+  pick.innerHTML = '';
+  const none = document.createElement('option');
+  none.value = '';
+  none.textContent = t('food.pickNone');
+  pick.appendChild(none);
+  for (const f of state.foods || []) {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = f.name + ' · ' + f.kcal + ' ' + t('units.kcal');
+    pick.appendChild(opt);
+  }
+
+  let qty = '1';
+  if (!isTemplate && id) {
+    const e = foodEntriesFor(key).find((x) => x.id === id);
+    if (e) qty = String(e.qty);
+  }
+  document.getElementById('food-qty').value = qty;
+  document.getElementById('food-save-template').checked = false;
+  document.getElementById('food-error').hidden = true;
+  document.getElementById('modal-food').hidden = false;
+  refreshUpdateBanner();
+}
+
+function saveFoodModal() {
+  const err = document.getElementById('food-error');
+  const fail = (msg) => { if (err) { err.textContent = msg; err.hidden = false; } };
+  const name = document.getElementById('ff-name').value.trim();
+  if (!name) { fail(t('food.errName')); return; }
+
+  const readNum = (id) => {
+    const raw = document.getElementById(id).value.trim();
+    if (raw === '') return 0;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : NaN;
+  };
+  const kcal = readNum('ff-kcal'), protein = readNum('ff-protein'), carbs = readNum('ff-carbs'), fat = readNum('ff-fat');
+  const okNum = (n, max) => Number.isFinite(n) && n >= 0 && n <= max;
+  if (!okNum(kcal, 100000) || !okNum(protein, 10000) || !okNum(carbs, 10000) || !okNum(fat, 10000)) {
+    fail(t('food.errNumber'));
+    return;
+  }
+
+  if (foodModalMode === 'template') {
+    if (foodModalId) {
+      const f = foodById(foodModalId);
+      if (f) Object.assign(f, { name, kcal, protein, carbs, fat });
+    } else {
+      state.foods.push({ id: uid(), name, kcal, protein, carbs, fat });
+    }
+  } else {
+    const qtyRaw = Number(document.getElementById('food-qty').value);
+    if (!Number.isFinite(qtyRaw) || qtyRaw <= 0 || qtyRaw > 1000) { fail(t('food.errQty')); return; }
+    const qty = Math.round(qtyRaw * 100) / 100;
+    const key = foodDayKey();
+    const pickId = document.getElementById('food-pick').value || null;
+    const entry = {
+      id: foodModalId || uid(),
+      foodId: foodModalId
+        ? ((foodEntriesFor(key).find((x) => x.id === foodModalId) || {}).foodId || null)
+        : (foodById(pickId) ? pickId : null),
+      name, kcal, protein, carbs, fat, qty,
+    };
+    if (!Array.isArray(state.foodLog[key])) state.foodLog[key] = [];
+    const at = foodModalId ? state.foodLog[key].findIndex((x) => x.id === foodModalId) : -1;
+    if (at >= 0) state.foodLog[key][at] = entry;
+    else state.foodLog[key].push(entry);
+
+    if (document.getElementById('food-save-template').checked) {
+      const exists = (state.foods || []).some((f) => f.name.toLowerCase() === name.toLowerCase());
+      if (!exists) state.foods.push({ id: uid(), name, kcal, protein, carbs, fat });
+    }
+  }
+
+  foodModalId = null;
+  saveState();
+  document.getElementById('modal-food').hidden = true;
+  renderPokrok();
+  refreshUpdateBanner();
+}
+
+function requestDeleteFoodEntry(id) {
+  const key = foodDayKey();
+  const entry = foodEntriesFor(key).find((x) => x.id === id);
+  if (!entry) return;
+  showGeneric(t('food.deleteEntry'), t('common.delete'), () => {
+    state.foodLog[key] = foodEntriesFor(key).filter((x) => x.id !== id);
+    if (!state.foodLog[key].length) delete state.foodLog[key];
+    saveState();
+    renderPokrok();
+  }, t('food.deleteEntryConfirm', { name: entry.name }));
+}
+
+function requestDeleteFood(id) {
+  const f = foodById(id);
+  if (!f) return;
+  showGeneric(t('food.deleteTemplate'), t('common.delete'), () => {
+    /* Záznamy v denníku si nesú vlastnú kópiu hodnôt, takže história zostáva nezmenená. */
+    state.foods = (state.foods || []).filter((x) => x.id !== id);
+    saveState();
+    renderPokrok();
+  }, t('food.deleteTemplateConfirm', { name: f.name }));
+}
+
+/* ---------- Telo + jedlo: jedno prekreslenie ---------- */
+function renderBody() {
+  renderBodyUnits();
+  renderBodySummary();
+  renderBodyChart();
+  renderCalorieCard();
+  renderBodyHistory();
+  renderTips();
+  renderStorageNotice('body-storage-notice');
+}
+
+function renderFoodView() {
+  renderFood();
+  renderTips();
+  renderStorageNotice('food-storage-notice');
+}
+
 function renderPokrok() {
+  renderPokrokSubtabs();
+  renderBody();
+  renderFoodView();
   const week = workoutsInWeek(currentWeekKey());
   const month = workoutsInMonth(currentMonthKey());
   const total = state.history.length;
@@ -5155,6 +7146,7 @@ function switchTab(tab) {
     el.classList.toggle('active', el.dataset.tab === tab);
   });
   if (tab === 'trening') renderTrening();
+  if (tab === 'pokrok') renderPokrok();
   if (tab === 'kalendar') renderKalendar();
 }
 
@@ -6576,8 +8568,81 @@ function setupEvents() {
     if (e.key !== 'Escape') return;
     const langModal = document.getElementById('modal-lang');
     if (langModal && !langModal.hidden) { hideLanguagePicker(); return; }
+    const measureModal = document.getElementById('modal-measure');
+    if (measureModal && !measureModal.hidden) { measureModal.hidden = true; refreshUpdateBanner(); return; }
+    const foodModal = document.getElementById('modal-food');
+    if (foodModal && !foodModal.hidden) { foodModal.hidden = true; refreshUpdateBanner(); return; }
     const modal = document.getElementById('modal-day');
     if (modal && !modal.hidden) closeDay();
+  });
+
+  /* ---------- Pokrok: podpohľady, telo a jedlo ---------- */
+  on('pokrok-subtabs', (e) => {
+    const btn = e.target.closest ? e.target.closest('.subtab') : null;
+    if (btn && btn.dataset.pokrok) setPokrokView(btn.dataset.pokrok);
+  });
+
+  on('body-units', (e) => {
+    const btn = e.target.closest ? e.target.closest('.unit-chip') : null;
+    if (btn && btn.dataset.units) setBodyUnits(btn.dataset.units);
+  });
+
+  on('btn-add-measure', () => openMeasureModal(null));
+  on('btn-measure-cancel', () => { document.getElementById('modal-measure').hidden = true; refreshUpdateBanner(); });
+  on('btn-measure-save', saveMeasure);
+
+  on('calorie-adult-chips', (e) => {
+    const btn = e.target.closest ? e.target.closest('.metric-chip') : null;
+    if (!btn || !btn.dataset.adult) return;
+    state.profile.isAdult = btn.dataset.adult === 'yes';
+    saveState();
+    renderPokrok();
+  });
+
+  on('btn-tips', () => toggleTips('btn-tips', 'tips-body'));
+  on('btn-food-tips', () => toggleTips('btn-food-tips', 'food-tips-body'));
+
+  on('btn-food-prev', () => shiftFoodDay(-1));
+  on('btn-food-next', () => shiftFoodDay(1));
+  on('btn-food-add', () => openFoodModal('entry', null));
+  on('btn-food-new-template', () => openFoodModal('template', null));
+  on('btn-food-cancel', () => { document.getElementById('modal-food').hidden = true; refreshUpdateBanner(); });
+  on('btn-food-save', saveFoodModal);
+
+  on('btn-food-enable', () => {
+    state.settings.foodLogEnabled = true;
+    foodDate = null;
+    saveState();
+    renderPokrok();
+  });
+  on('btn-food-disable', () => {
+    /* Vypnutie funkcie nič nemaže – záznamy zostávajú a dajú sa znovu zapnúť. */
+    state.settings.foodLogEnabled = false;
+    saveState();
+    renderPokrok();
+  });
+
+  /* Výber uloženej potraviny vyplní polia – hodnoty sa dajú pred uložením upraviť. */
+  on('food-pick', (e) => {
+    const f = foodById(e.target.value);
+    if (!f) return;
+    document.getElementById('ff-name').value = f.name;
+    document.getElementById('ff-kcal').value = String(f.kcal);
+    document.getElementById('ff-protein').value = String(f.protein);
+    document.getElementById('ff-carbs').value = String(f.carbs);
+    document.getElementById('ff-fat').value = String(f.fat);
+  });
+
+  on('btn-calorie-enable', () => {
+    state.settings.calorieEnabled = true;
+    saveState();
+    renderPokrok();
+  });
+  on('btn-calorie-disable', () => {
+    /* Skrytie nič nemaže – uložené vstupy aj odpoveď na otázku zostávajú. */
+    state.settings.calorieEnabled = false;
+    saveState();
+    renderPokrok();
   });
 
   on('btn-update', applyUpdate);
@@ -6629,7 +8694,7 @@ function isBusy() {
   if (getSession()) return true;                         // rozbehnutý aktívny tréning (meria sa jeho trvanie)
   if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
-    'modal-planchoice', 'modal-fullbody', 'modal-lang'];
+    'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg

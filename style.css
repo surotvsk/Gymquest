@@ -2465,6 +2465,251 @@ body.has-backup-banner .app-main {
   .backup-btn { width: 100%; }
 }
 
+/* ===== Podpohľady v Pokroku (Progress / Telo / Jedlo) ===== */
+
+.subtabs {
+  display: flex;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+.subtab {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  overflow-wrap: break-word;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.subtab.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.subview[hidden] { display: none; }
+
+/* ===== Prepínače jednotiek a metrík ===== */
+
+.unit-toggle { display: flex; gap: 4px; flex: 0 0 auto; }
+
+.unit-chip {
+  min-height: 34px;
+  padding: 6px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.unit-chip.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.metric-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+
+.metric-chip {
+  min-height: 36px;
+  padding: 6px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.metric-chip.active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ===== Súhrn, história a riadky meraní ===== */
+
+.measure-summary { display: flex; flex-direction: column; margin-bottom: var(--sp-3); }
+
+.measure-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-1) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.measure-row:last-child { border-bottom: none; }
+.measure-name { font-size: var(--fs-sm); color: var(--text-dim); min-width: 0; overflow-wrap: break-word; }
+.measure-value { font-size: var(--fs-md); font-weight: var(--fw-black); color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.measure-delta { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.measure-entry {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+.measure-entry:last-child { margin-bottom: 0; }
+.measure-entry-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
+.measure-entry-date { font-size: var(--fs-sm); font-weight: var(--fw-bold); }
+.measure-entry-values { font-size: var(--fs-sm); color: var(--text-dim); font-variant-numeric: tabular-nums; margin-top: 2px; overflow-wrap: break-word; }
+.measure-entry-note { font-size: var(--fs-xs); color: var(--text-faint); font-style: italic; margin-top: 2px; overflow-wrap: break-word; }
+.measure-entry-actions { display: flex; gap: var(--sp-2); flex: 0 0 auto; }
+
+/* ===== Graf – vlastné SVG, žiadna knižnica ===== */
+
+.chart-box { width: 100%; margin: var(--sp-2) 0; }
+.chart-svg { width: 100%; height: 140px; display: block; }
+.chart-area { fill: var(--accent-soft); stroke: none; }
+.chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart-dot { fill: var(--accent); }
+
+/* ===== Formulárové polia (miery, kalórie, jedlo) ===== */
+
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); margin-top: var(--sp-2); }
+.field-wide { grid-column: 1 / -1; }
+
+.field { display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: start; }
+.field label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  overflow-wrap: anywhere;
+}
+.field input, .field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  padding: 8px 10px;
+  font-variant-numeric: tabular-nums;
+}
+.field input:focus, .field select:focus { outline: none; border-color: var(--border-strong); }
+.field-hint { font-size: var(--fs-xs); color: var(--text-faint); margin-top: 2px; overflow-wrap: break-word; }
+
+.form-error { color: var(--danger); font-weight: var(--fw-bold); }
+
+.inline-check {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  text-align: start;
+}
+.inline-check input { width: 20px; height: 20px; min-height: 20px; padding: 0; flex: 0 0 auto; accent-color: var(--accent); }
+
+.modal.modal-form { text-align: start; max-height: calc(100dvh - var(--sp-5) * 2); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.modal.modal-form h3 { text-align: start; }
+
+/* ===== Denník jedla ===== */
+
+.day-nav { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.day-nav-label { font-size: var(--fs-md); font-weight: var(--fw-bold); text-align: center; min-width: 0; overflow-wrap: break-word; }
+.food-totals { font-size: var(--fs-md); font-weight: var(--fw-black); color: var(--accent); font-variant-numeric: tabular-nums; margin-bottom: var(--sp-2); overflow-wrap: break-word; }
+
+.food-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+.food-row:last-child { border-bottom: none; }
+.food-row-main { min-width: 0; flex: 1 1 auto; }
+.food-row-name { font-size: var(--fs-sm); font-weight: var(--fw-bold); overflow-wrap: break-word; }
+.food-row-meta { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
+.food-row-actions { display: flex; gap: var(--sp-2); flex: 0 0 auto; }
+
+/* ===== Tipy ===== */
+
+.tips-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  width: 100%;
+  min-height: 44px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  text-align: start;
+  cursor: pointer;
+}
+.tips-caret { color: var(--text-faint); transition: transform 0.15s ease; }
+.tips-toggle[aria-expanded="true"] .tips-caret { transform: rotate(180deg); }
+.tips-body { margin-top: var(--sp-3); }
+.tips-body[hidden] { display: none; }
+.tip-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.tip-list li { display: flex; flex-direction: column; gap: 2px; }
+.tip-list strong { font-size: var(--fs-sm); color: var(--text); }
+.tip-list span { font-size: var(--fs-sm); color: var(--text-dim); line-height: 1.5; overflow-wrap: break-word; }
+
+.calorie-range {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-black);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  margin: var(--sp-2) 0;
+  overflow-wrap: break-word;
+}
+
+/* ===== Upozornenie na veľkosť uložených dát ===== */
+
+.storage-notice {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-inline-start: 2px solid var(--accent);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  line-height: 1.5;
+  text-align: start;
+  overflow-wrap: break-word;
+}
+.storage-notice[hidden] { display: none; }
+
+@media (max-width: 300px) {
+  .field-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ===== Small screens ===== */
 
 @media (max-width: 380px) {

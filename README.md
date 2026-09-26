@@ -49,6 +49,20 @@ everything on your own device.
   previous session **of the same workout plan**.
 - **Six languages** — full **Slovak, English, Spanish, Brazilian Portuguese, French and Arabic**
   interfaces, chosen in ⚙️ Settings and switched instantly. Arabic is a complete right-to-left mode.
+- **Body measurements** — log body weight, waist, chest, both upper arms, both thighs and hips with
+  a date and an optional note, see the latest value and the change since the previous entry, and follow
+  the trend on a small built-in chart. kg/lb and cm/in, with every value stored safely in one canonical
+  unit. Purely optional, and kept separate from your exercise weights.
+- **Optional calorie estimate** — an adult-only, clearly labelled *estimate* based on the published
+  Mifflin-St Jeor equation, shown as a range, with its formula, source and limits spelled out. Hidden
+  by default. It deliberately never suggests a weight-loss or weight-gain target.
+- **Optional food log** — your own foods and meals with manually entered energy and, if you want,
+  protein, carbohydrates and fat. Reusable saved foods, daily totals, and honest labelling that the
+  numbers are yours and are not verified nutrition data. **There is no food database** — and none is
+  pretended.
+- **Plain-language explanations** — short, non-judgemental notes on measuring body weight, why daily
+  changes are not a trend, what duration / sets / reps / progressive overload mean, and what the
+  calorie estimate and your own nutrition numbers can and cannot tell you.
 - **Export and import** — back up or restore all of your data as a JSON file.
 - **Automatic backups** — opt-in JSON backup files every five workouts (at most weekly), created
   automatically on desktop and Android, and with one honest tap on iPhone. See *Automatic backups*
@@ -124,6 +138,11 @@ or reset the current workout without touching your history.
 ### Progress
 Totals for this week, this month and all time, your personal records, and the full history of
 completed workouts. Every workout in the history can be edited ✏️ or deleted 🗑️.
+
+Progress has three sub-views, chosen with the segmented control at the top — **Progress**, **Body** and
+**Food**. The bottom five-tab bar is deliberately unchanged, so the phone navigation never gets
+cramped. *Progress* is the original content described above; *Body* and *Food* are the optional
+additions described under [Body, calories, food and information](#body-calories-food-and-information).
 
 ### Motivation
 Your XP total, your level with a progress bar, and every achievement — including the 5 kg milestone
@@ -480,6 +499,122 @@ history only ever shows the recorded result.
 
 ---
 
+## Body, calories, food and information
+
+These four additions live inside the **Progress** screen as the **Body** and **Food** sub-views. They
+are strictly optional: nothing here is enabled, prefilled or guessed for you, and every one of them
+works fully offline with no backend, no account and no external service. All of it stays in your
+browser's own storage on your device.
+
+### Body — weight and measurements
+
+Optional and available right away (there is nothing to switch on). In **Progress → Body** you can log:
+
+- body weight
+- waist
+- chest
+- left and right upper arm
+- left and right thigh
+- hip
+- an optional free-text note
+
+Every entry has a **local calendar date**. You can save more than one entry for the same day — the
+model is a flat list of entries with stable ids, so nothing has to be overwritten. The screen shows, for
+each measurement you have recorded, the **latest value**, the **change since the previous entry** (as a
+plain `+1.2` / `−0.8`, deliberately with no colour coding and no "good" or "bad" judgement, because an
+increase or decrease is not automatically either), a **chronological history** you can edit ✏️ or
+delete 🗑️ (with a confirmation on delete), and a small **trend chart**.
+
+The chart is drawn with a few lines of inline SVG — there is no charting library, no CDN and no
+download. Pick which measurement to plot with the chips above it; it appears once that measurement has
+at least two entries.
+
+**Units.** Choose `kg · cm` or `lb · in` in the Body card. **Values are always stored in kilograms and
+centimetres**; the setting only changes what you type and read. Switching units therefore never
+rewrites, reinterprets or damages an existing entry — a value logged in kg is still the same value when
+you switch to lb.
+
+**Validation.** Weight must be between 1 and 500 kg and circumferences between 1 and 400 cm (converted
+from whatever unit you are using). Negative, zero, non-numeric and implausibly large values are
+rejected with a message that names the offending field, and the dialog keeps your input so you can fix
+it. A value that *is* valid is stored exactly as you entered it — never silently adjusted. A completely
+empty entry is rejected, and a date that does not exist (say `2026-02-31`) is refused.
+
+Body measurements are kept in their own collection and are never mixed with the weights you lift.
+
+**Nothing is inferred.** GymQuest does not guess your age, height, sex, weight or goals from your
+workout history, and it never prefills personal data.
+
+### Calories — optional and cautious
+
+Hidden by default. Turn it on with **Show the estimate** in **Progress → Body** and it can be hidden
+again at any time with **Hide the estimate**; hiding keeps the values you entered.
+
+- **Every input is yours.** Height, age, the sex variable the formula uses, and an activity level. The
+  **body weight is taken from your own latest logged measurement** and is clearly labelled with its
+  date. With no measurement logged, the field is empty and **no estimate is produced** — GymQuest will
+  not guess it.
+- **The adult question comes first.** You are asked whether you are 18 or older before any formula
+  input is even shown. If you are **under 18**, no numbers are displayed at all and no formula is run:
+  you get a short explanation that calorie targets for a growing body are a conversation for a doctor,
+  a dietitian or a parent, and GymQuest will not invent one. If the question is unanswered, nothing is
+  calculated.
+- **Fewer than all inputs, no number.** If anything is missing the card says what is still missing
+  instead of filling in an assumption.
+- **A range, not an instruction.** The result is shown as a range of ±10 %, labelled as an estimate.
+- **The formula and its source are printed in the app.** Resting energy from **Mifflin-St Jeor**
+  (Mifflin MD et al., *Am J Clin Nutr*, 1990) — `10 × kg + 6.25 × cm − 5 × age + 5` for male and
+  `− 161` for female — multiplied by an activity factor (1.2, 1.375, 1.55, 1.725 or 1.9) to estimate
+  daily energy expenditure.
+- **Deliberately omitted: weight-loss and weight-gain targets.** GymQuest offers no deficit or surplus
+  presets and never phrases the result as a meal plan, because the honest version of that advice depends
+  on things a formula cannot see.
+- **Its limits are listed in the app**, in plain language: it is a population average, it cannot see
+  body composition, health conditions, medication, pregnancy or how you actually train, it is not a
+  target to hit exactly, it is not a meal plan, and anything medical belongs with a qualified
+  professional.
+- **Freshness is shown.** *Last calculated* updates whenever a relevant input changes, and the estimate
+  recalculates at the same moment.
+- **Completely separate from your training rewards.** The calorie estimate and the food log write
+  nothing to XP, achievements, streaks or the weekly goal.
+
+### Food — a manual log, and nothing more
+
+Off by default. Turn it on in **Progress → Food**; turning it back off keeps every entry you logged.
+
+- Add a food with a name, energy in kcal and, optionally, protein, carbohydrates and fat, plus an
+  amount multiplier for the portion you actually ate.
+- Save any of them as a **reusable food** and pick them from a list next time. Amounts scale the energy
+  and macros for you.
+- Every day has its own totals, and you can step to the previous or next day.
+- Edit or delete entries and saved foods; deleting asks for confirmation first.
+- **History is never rewritten.** A logged entry stores its own copy of the name and values, so editing
+  or deleting a saved food later cannot change what you recorded at the time.
+
+**What GymQuest does not have, and does not pretend to have:** there is **no food database**, no
+barcode scanner, no packaged-food or restaurant database, and no synced meal tracking. All of those
+would need an online service or a backend, which would break the offline, privacy-first promise. The
+food log therefore says plainly that **you entered these values yourself and GymQuest does not verify
+nutrition data**.
+
+Those four things are possible future work, and their cost is the same each time: a remote database,
+network access, an account to sync against, and somebody to keep the data current. None of them is
+compatible with an app that stores your data only on your own device.
+
+### Information
+
+A collapsible **How to read these numbers** card in the Body sub-view (and a shorter one about logged
+values in Food) explains, in every supported language:
+
+1. how to measure body weight consistently,
+2. why day-to-day body-weight changes do not necessarily reflect a long-term trend,
+3. what workout duration, sets, reps and progressive overload mean,
+4. what the calorie estimate can and cannot tell you,
+5. what user-entered nutrition values mean.
+
+The wording is informational only. It is not personalised medical advice, and it deliberately uses no
+shame, guilt, "earned food" framing or pressure to change your weight.
+
 ## Workout duration and your active session
 
 **Duration** — pressing **Start workout** starts a session timer shown as *Workout duration*
@@ -610,6 +745,32 @@ refreshes and browser restarts.
 - On first launch, after confirming your weekly goal, **no demo data is created** — you start with a
   clean history (0 workouts, 0 XP, no achievements). You can load demo data at any time from
   ⚙️ Settings with **Load demo data**, and remove it with **Remove demo data**.
+
+### How much room there is
+
+The whole app lives in a single `localStorage` value, and browsers allow roughly **5 MB per origin**
+(Safari can be stricter). That is a lot of workouts, and it is worth knowing where it goes:
+
+| Data | per entry | 1 year | 10 years |
+|---|---|---|---|
+| Body measurement | ~170 bytes | ~60 KB (one a day) | ~600 KB |
+| Food log entry | ~130 bytes | ~475 KB (ten a day) | **~4.7 MB** |
+
+So the **food log is the only part that can realistically fill it up**, and only if you log a lot for
+many years. GymQuest never deletes anything to make room. Instead:
+
+- If a save is ever refused by the browser, a warning appears at the top of the app saying what
+  happened and pointing you at **Export data** — so you can save a file while your data is still in
+  memory.
+- Once the stored data passes roughly 3.5 MB, the **Body** and **Food** sub-views show a short notice
+  suggesting you export a backup and consider removing old entries you no longer need. Nothing is
+  pruned automatically, ever.
+
+**A browser is not a durable backup.** `localStorage` — and the internal browser caches — are part of
+your browser's profile and disappear if you clear site data, uninstall the browser or reset the device.
+Only the JSON file produced by **Export data** or **Automatic backups** exists genuinely outside
+GymQuest, which is why [recovering from one](#recovering-gymquest-from-a-backup-file) is documented
+below.
 
 ### Clearing your data
 

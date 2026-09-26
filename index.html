@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 
@@ -172,29 +172,149 @@
     <section class="screen" id="screen-pokrok" hidden>
       <h2 class="screen-title" data-i18n="tab.pokrok">Pokrok</h2>
 
-      <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-value" id="stat-week">0</span>
-          <span class="stat-label" data-i18n="pokrok.thisWeek">Tento týždeň</span>
+      <div class="subtabs" id="pokrok-subtabs" role="tablist">
+        <button type="button" class="subtab active" data-pokrok="progress" role="tab" aria-selected="true" data-i18n="pokrok.subProgress">Pokrok</button>
+        <button type="button" class="subtab" data-pokrok="body" role="tab" aria-selected="false" data-i18n="pokrok.subBody">Telo</button>
+        <button type="button" class="subtab" data-pokrok="food" role="tab" aria-selected="false" data-i18n="pokrok.subFood">Jedlo</button>
+      </div>
+
+      <!-- ---- podpohľad: Pokrok (pôvodný obsah, nezmenený) ---- -->
+      <div class="subview" id="subview-progress">
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-week">0</span>
+            <span class="stat-label" data-i18n="pokrok.thisWeek">Tento týždeň</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-month">0</span>
+            <span class="stat-label" data-i18n="pokrok.thisMonth">Tento mesiac</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-total">0</span>
+            <span class="stat-label" data-i18n="pokrok.total">Celkom</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-month">0</span>
-          <span class="stat-label" data-i18n="pokrok.thisMonth">Tento mesiac</span>
+
+        <div class="card">
+          <h3 class="card-title" data-i18n="pokrok.recordsTitle">🏆 Osobné rekordy</h3>
+          <div id="records-list"></div>
         </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-total">0</span>
-          <span class="stat-label" data-i18n="pokrok.total">Celkom</span>
+
+        <div class="card">
+          <h3 class="card-title" data-i18n="pokrok.historyTitle">📋 História tréningov</h3>
+          <div id="history-list"></div>
         </div>
       </div>
 
-      <div class="card">
-        <h3 class="card-title" data-i18n="pokrok.recordsTitle">🏆 Osobné rekordy</h3>
-        <div id="records-list"></div>
+      <!-- ---- podpohľad: Telo ---- -->
+      <div class="subview" id="subview-body" hidden>
+        <p class="storage-notice" id="body-storage-notice" hidden></p>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title" data-i18n="body.summaryTitle">Najnovšie miery</span>
+            <div class="unit-toggle" id="body-units" role="group" data-i18n-aria="body.unitsAria">
+              <button type="button" class="unit-chip" data-units="metric" aria-pressed="true">kg · cm</button>
+              <button type="button" class="unit-chip" data-units="imperial" aria-pressed="false">lb · in</button>
+            </div>
+          </div>
+          <div class="measure-summary" id="body-summary"></div>
+          <p class="card-note" data-i18n="body.unitsNote">Jednotky menia len zobrazenie. Uložené hodnoty sa nikdy neprepisujú.</p>
+          <button class="btn btn-primary btn-block" id="btn-add-measure" data-i18n="body.add">+ Pridať meranie</button>
+        </div>
+
+        <div class="card" id="body-chart-card" hidden>
+          <h3 class="card-title" data-i18n="body.chartTitle">Vývoj</h3>
+          <div class="metric-chips" id="body-metric-chips" role="group" data-i18n-aria="body.metricAria"></div>
+          <div class="chart-box" id="body-chart"></div>
+          <p class="card-note" id="body-chart-range"></p>
+        </div>
+
+        <div class="card" id="calorie-off">
+          <h3 class="card-title" data-i18n="calorie.title">Odhad dennej energie</h3>
+          <p class="card-sub" data-i18n="calorie.offHint">Voliteľné a predvolene skryté. GymQuest nič neodhaduje, kým to sám nezapneš.</p>
+          <button class="btn btn-secondary btn-block" id="btn-calorie-enable" data-i18n="calorie.enable">Zobraziť odhad</button>
+        </div>
+
+        <div class="card" id="body-calorie-card" hidden>
+          <h3 class="card-title" data-i18n="calorie.title">Odhad dennej energie</h3>
+          <p class="card-note" data-i18n="calorie.intro">Odhad, nie predpis. Toto nie je lekárska rada.</p>
+
+          <div class="setting-block">
+            <span class="card-title" data-i18n="calorie.adultQuestion">Máš 18 rokov alebo viac?</span>
+            <div class="metric-chips" id="calorie-adult-chips" role="group" data-i18n-aria="calorie.adultQuestion">
+              <button type="button" class="metric-chip" data-adult="yes" aria-pressed="false" data-i18n="calorie.adultYes">Mám 18 a viac</button>
+              <button type="button" class="metric-chip" data-adult="no" aria-pressed="false" data-i18n="calorie.adultNo">Mám menej ako 18</button>
+            </div>
+          </div>
+
+          <p class="card-note" id="calorie-underage" hidden data-i18n="calorie.underage"></p>
+
+          <div id="calorie-inputs" hidden></div>
+
+          <div id="calorie-result" hidden>
+            <p class="calorie-range" id="calorie-range"></p>
+            <p class="card-note" id="calorie-bmr"></p>
+            <ul class="tip-list" id="calorie-limits"></ul>
+            <p class="card-note" data-i18n="calorie.formula"></p>
+            <p class="card-note" id="calorie-updated"></p>
+          </div>
+
+          <button class="btn btn-secondary btn-block" id="btn-calorie-disable" data-i18n="calorie.disable">Skryť odhad</button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title" data-i18n="body.historyTitle">História meraní</h3>
+          <div id="body-history"></div>
+        </div>
+
+        <div class="card">
+          <button type="button" class="tips-toggle" id="btn-tips" aria-expanded="false" aria-controls="tips-body">
+            <span data-i18n="tips.title">Ako čítať tieto údaje</span>
+            <span class="tips-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="tips-body" id="tips-body" hidden></div>
+        </div>
       </div>
 
-      <div class="card">
-        <h3 class="card-title" data-i18n="pokrok.historyTitle">📋 História tréningov</h3>
-        <div id="history-list"></div>
+      <!-- ---- podpohľad: Jedlo ---- -->
+      <div class="subview" id="subview-food" hidden>
+        <p class="storage-notice" id="food-storage-notice" hidden></p>
+
+        <div class="card" id="food-off">
+          <p class="card-sub" data-i18n="food.offHint">Denník jedla je voliteľný a predvolene vypnutý. GymQuest nemá žiadnu databázu potravín – všetko si zapisuješ sám.</p>
+          <button class="btn btn-primary btn-block" id="btn-food-enable" data-i18n="food.enable">Zapnúť denník jedla</button>
+        </div>
+
+        <div id="food-on" hidden>
+          <div class="card">
+            <div class="day-nav">
+              <button type="button" class="btn-icon" id="btn-food-prev" data-i18n-title="food.prevDay" data-i18n-aria="food.prevDay">‹</button>
+              <span class="day-nav-label" id="food-date-label"></span>
+              <button type="button" class="btn-icon" id="btn-food-next" data-i18n-title="food.nextDay" data-i18n-aria="food.nextDay">›</button>
+            </div>
+            <p class="food-totals" id="food-totals"></p>
+            <div id="food-entries"></div>
+            <button class="btn btn-primary btn-block" id="btn-food-add" data-i18n="food.addEntry">+ Pridať jedlo</button>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title" data-i18n="food.savedTitle">Uložené potraviny</h3>
+            <div id="food-saved"></div>
+            <button class="btn btn-secondary btn-block" id="btn-food-new-template" data-i18n="food.newTemplate">+ Nová potravina</button>
+          </div>
+
+          <p class="card-note" data-i18n="food.disclaimer">Hodnoty si zapísal ty. GymQuest ich neoveruje a nemá žiadnu databázu potravín.</p>
+          <button class="btn btn-secondary btn-block" id="btn-food-disable" data-i18n="food.disable">Vypnúť denník jedla</button>
+        </div>
+
+        <div class="card">
+          <button type="button" class="tips-toggle" id="btn-food-tips" aria-expanded="false" aria-controls="food-tips-body">
+            <span data-i18n="tips.foodTitle">O zapísaných hodnotách</span>
+            <span class="tips-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="tips-body" id="food-tips-body" hidden></div>
+        </div>
       </div>
     </section>
 
@@ -388,6 +508,49 @@
     </div>
   </div>
 
+  <!-- ============ MODAL: meranie tela ============ -->
+  <div class="modal-backdrop" id="modal-measure" hidden>
+    <div class="modal modal-form">
+      <h3 id="measure-title" data-i18n="body.addTitle">Pridať meranie</h3>
+      <label class="modal-label" for="measure-date" data-i18n="body.dateLabel">Dátum</label>
+      <input type="date" class="modal-input" id="measure-date">
+      <div id="measure-fields"></div>
+      <label class="modal-label" for="measure-note" data-i18n="body.noteLabel">Poznámka (voliteľná)</label>
+      <input type="text" class="modal-input" id="measure-note" maxlength="200" autocomplete="off">
+      <p class="card-note form-error" id="measure-error" hidden></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-measure-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button class="btn btn-primary" id="btn-measure-save" data-i18n="common.save">Uložiť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: jedlo (záznam aj potravina) ============ -->
+  <div class="modal-backdrop" id="modal-food" hidden>
+    <div class="modal modal-form">
+      <h3 id="food-modal-title" data-i18n="food.addTitle">Pridať jedlo</h3>
+
+      <div id="food-pick-row" hidden>
+        <label class="modal-label" for="food-pick" data-i18n="food.pickSaved">Uložená potravina</label>
+        <select class="modal-input" id="food-pick"></select>
+      </div>
+
+      <div id="food-fields"></div>
+
+      <div id="food-entry-extra">
+        <label class="modal-label" for="food-qty" data-i18n="food.qtyLabel">Množstvo (násobok)</label>
+        <input type="number" class="modal-input" id="food-qty" min="0.01" max="1000" step="0.05" value="1" inputmode="decimal" autocomplete="off">
+        <label class="inline-check"><input type="checkbox" id="food-save-template"><span data-i18n="food.saveAsTemplate">Uložiť aj ako potravinu</span></label>
+      </div>
+
+      <p class="card-note form-error" id="food-error" hidden></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-food-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button class="btn btn-primary" id="btn-food-save" data-i18n="common.save">Uložiť</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ MODAL: generické potvrdenie ============ -->
   <div class="modal-backdrop" id="modal-generic" hidden>
     <div class="modal">
@@ -468,6 +631,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=23"></script>
+  <script src="script.js?v=24"></script>
 </body>
 </html>
