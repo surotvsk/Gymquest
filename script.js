@@ -97,11 +97,363 @@ function isBuiltinPlanLabel(id, value) {
   return value === id || (BUILTIN_PLAN_LABELS[id] || []).includes(value);
 }
 
-const BUILTIN_EXERCISE_IDS = new Set([
-  'bench-press', 'overhead-press', 'dips', 'lateral-raises',
-  'pull-ups', 'bent-over-rows', 'cable-rows', 'bicep-curls',
-  'squats', 'leg-press', 'lunges', 'leg-curls', 'calf-raises',
-]);
+/* ---------- Knižnica cvikov ----------
+   Statická štruktúra (jazykovo nezávislá). VŠETOK text žije v slovníkoch I18N
+   pod kľúčmi "exercise.<id>", "exercise.<id>.how", "exercise.<id>.mistakes"
+   a "muscle.*", "equip.*", "loc.*", "diff.*", "pattern.*", "cat.*", "altWhy.*".
+   Vďaka tomu funguje existujúci fallback t() aj kontrola verifyI18n().
+
+   `retired: true` znamená: cvik zostáva preložiteľný a zobraziteľný v starej
+   histórii, ale neponúka sa v knižnici ani medzi alternatívami. Vymazanie cviku
+   z histórie nie je nikdy automatické. */
+
+const MUSCLE_CODES = ['chest', 'back', 'shoulders', 'arms', 'legs', 'glutes', 'core'];
+/* "Full body" je iba vyhľadávací kôš, NIE svalová skupina – pozri FULL_BODY_SPREAD. */
+const BODY_BUCKETS = ['fullBody'];
+
+const EQUIPMENT_CODES = ['none', 'bands', 'dumbbells', 'pullupBar', 'bench', 'barbell', 'cableMachine'];
+/* Skratka "celá domáca posilňovňa" – rozbalí sa na tento viditeľný zoznam. */
+const HOME_GYM_SET = ['bands', 'dumbbells', 'pullupBar', 'bench', 'barbell'];
+
+const LOCATION_CODES = ['gym', 'home', 'outdoor'];
+const DIFFICULTY_CODES = ['beginner', 'intermediate', 'advanced'];
+const CATEGORY_CODES = ['strength', 'core', 'conditioning'];
+const PATTERN_CODES = ['pushH', 'pushV', 'pullV', 'pullH', 'squat', 'hinge', 'lunge',
+  'armIsolation', 'legIsolation', 'backExtension', 'coreAntiExtension', 'lateralRaise', 'conditioning'];
+
+/* Dôvody, prečo je cvik navrhnutý ako alternatíva. Kód, nie text – prekladá sa. */
+const ALT_WHY_CODES = ['samePrimaryOtherEquipment', 'samePattern', 'similarPurpose',
+  'easierVariation', 'harderVariation', 'noEquipmentVersion', 'homeVersion', 'gymVersion'];
+
+/* `alternatives` je dvojica [id, why] – dôvod sa vždy zobrazí, takže podobný cvik
+   sa nikdy nevydáva za rovnocennú náhradu. */
+const EXERCISE_LIBRARY = [
+  /* --- Existujúce zabudované cviky (ich id sa nesmie zmeniť – je v histórii) --- */
+  { id: 'bench-press', primary: 'chest', secondary: ['arms', 'shoulders'], pattern: 'pushH', category: 'strength', difficulty: 'intermediate', equipment: ['barbell', 'bench'], locations: ['gym'], diagram: 'pushH',
+    alternatives: [['push-up', 'samePrimaryOtherEquipment'], ['band-chest-press', 'homeVersion'], ['dips', 'similarPurpose']] },
+  { id: 'overhead-press', primary: 'shoulders', secondary: ['arms'], pattern: 'pushV', category: 'strength', difficulty: 'intermediate', equipment: ['barbell'], locations: ['gym'], diagram: 'pushV',
+    alternatives: [['band-shoulder-press', 'homeVersion'], ['pike-push-up', 'noEquipmentVersion'], ['lateral-raises', 'similarPurpose']] },
+  { id: 'dips', primary: 'chest', secondary: ['arms', 'shoulders'], pattern: 'pushV', category: 'strength', difficulty: 'intermediate', equipment: ['pullupBar'], locations: ['gym', 'home'], diagram: 'pushV',
+    alternatives: [['push-up', 'samePrimaryOtherEquipment'], ['diamond-push-up', 'harderVariation'], ['bench-press', 'gymVersion']] },
+  { id: 'lateral-raises', primary: 'shoulders', secondary: [], pattern: 'lateralRaise', category: 'strength', difficulty: 'beginner', equipment: ['dumbbells'], locations: ['gym', 'home'], diagram: 'lateralRaise',
+    alternatives: [['band-shoulder-press', 'samePrimaryOtherEquipment'], ['pike-push-up', 'noEquipmentVersion'], ['pull-ups', 'similarPurpose']] },
+  { id: 'pull-ups', primary: 'back', secondary: ['arms'], pattern: 'pullV', category: 'strength', difficulty: 'intermediate', equipment: ['pullupBar'], locations: ['gym', 'home', 'outdoor'], diagram: 'pullV',
+    alternatives: [['band-pulldown', 'homeVersion'], ['band-row', 'samePrimaryOtherEquipment'], ['superman', 'easierVariation']] },
+  { id: 'bent-over-rows', primary: 'back', secondary: ['arms'], pattern: 'pullH', category: 'strength', difficulty: 'intermediate', equipment: ['barbell'], locations: ['gym'], diagram: 'pullH',
+    alternatives: [['dumbbell-row', 'samePrimaryOtherEquipment'], ['band-row', 'homeVersion'], ['cable-rows', 'similarPurpose']] },
+  { id: 'cable-rows', primary: 'back', secondary: ['arms'], pattern: 'pullH', category: 'strength', difficulty: 'beginner', equipment: ['cableMachine'], locations: ['gym'], diagram: 'pullH',
+    alternatives: [['band-row', 'homeVersion'], ['dumbbell-row', 'samePrimaryOtherEquipment'], ['superman', 'noEquipmentVersion']] },
+  { id: 'bicep-curls', primary: 'arms', secondary: [], pattern: 'armIsolation', category: 'strength', difficulty: 'beginner', equipment: ['dumbbells'], locations: ['gym', 'home'], diagram: 'armIsolation',
+    alternatives: [['hammer-curl', 'similarPurpose'], ['band-bicep-curl', 'homeVersion'], ['band-row', 'similarPurpose']] },
+  { id: 'squats', primary: 'legs', secondary: ['glutes', 'core'], pattern: 'squat', category: 'strength', difficulty: 'intermediate', equipment: ['barbell'], locations: ['gym'], diagram: 'squat',
+    alternatives: [['bodyweight-squat', 'noEquipmentVersion'], ['leg-press', 'samePrimaryOtherEquipment'], ['split-squat', 'harderVariation']] },
+  { id: 'leg-press', primary: 'legs', secondary: ['glutes'], pattern: 'squat', category: 'strength', difficulty: 'beginner', equipment: ['cableMachine'], locations: ['gym'], diagram: 'squat',
+    alternatives: [['bodyweight-squat', 'homeVersion'], ['squats', 'similarPurpose'], ['split-squat', 'samePrimaryOtherEquipment']] },
+  { id: 'lunges', primary: 'legs', secondary: ['glutes'], pattern: 'lunge', category: 'strength', difficulty: 'beginner', equipment: ['dumbbells'], locations: ['gym', 'home', 'outdoor'], diagram: 'lunge',
+    alternatives: [['split-squat', 'homeVersion'], ['bodyweight-squat', 'samePrimaryOtherEquipment'], ['step-up', 'similarPurpose']] },
+  { id: 'leg-curls', primary: 'legs', secondary: [], pattern: 'legIsolation', category: 'strength', difficulty: 'beginner', equipment: ['cableMachine'], locations: ['gym'], diagram: 'legIsolation',
+    alternatives: [['glute-bridge', 'similarPurpose'], ['single-leg-glute-bridge', 'similarPurpose']] },
+  { id: 'calf-raises', primary: 'legs', secondary: [], pattern: 'legIsolation', category: 'strength', difficulty: 'beginner', equipment: ['none'], locations: ['gym', 'home', 'outdoor'], diagram: 'calfRaise',
+    alternatives: [['bodyweight-squat', 'samePrimaryOtherEquipment'], ['step-up', 'similarPurpose'], ['split-squat', 'similarPurpose']] },
+
+  /* --- Domáce a outdoorové doplnenie (bez náčinia, s gumou, s jednoručkami) --- */
+  { id: 'push-up', primary: 'chest', secondary: ['arms', 'shoulders'], pattern: 'pushH', category: 'strength', difficulty: 'beginner', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'pushH',
+    alternatives: [['band-chest-press', 'samePrimaryOtherEquipment'], ['bench-press', 'gymVersion'], ['diamond-push-up', 'harderVariation']] },
+  { id: 'band-chest-press', primary: 'chest', secondary: ['arms', 'shoulders'], pattern: 'pushH', category: 'strength', difficulty: 'beginner', equipment: ['bands'], locations: ['gym', 'home', 'outdoor'], diagram: 'pushH',
+    alternatives: [['push-up', 'noEquipmentVersion'], ['bench-press', 'gymVersion'], ['band-shoulder-press', 'similarPurpose']] },
+  { id: 'band-pulldown', primary: 'back', secondary: ['arms'], pattern: 'pullV', category: 'strength', difficulty: 'beginner', equipment: ['bands'], locations: ['gym', 'home', 'outdoor'], diagram: 'pullV',
+    alternatives: [['pull-ups', 'harderVariation'], ['band-row', 'samePrimaryOtherEquipment'], ['cable-rows', 'gymVersion']] },
+  { id: 'band-row', primary: 'back', secondary: ['arms'], pattern: 'pullH', category: 'strength', difficulty: 'beginner', equipment: ['bands'], locations: ['gym', 'home', 'outdoor'], diagram: 'pullH',
+    alternatives: [['dumbbell-row', 'samePrimaryOtherEquipment'], ['superman', 'noEquipmentVersion'], ['cable-rows', 'gymVersion']] },
+  { id: 'dumbbell-row', primary: 'back', secondary: ['arms'], pattern: 'pullH', category: 'strength', difficulty: 'beginner', equipment: ['dumbbells'], locations: ['gym', 'home'], diagram: 'pullH',
+    alternatives: [['band-row', 'samePrimaryOtherEquipment'], ['superman', 'noEquipmentVersion'], ['bent-over-rows', 'similarPurpose']] },
+  { id: 'superman', primary: 'back', secondary: ['glutes'], pattern: 'backExtension', category: 'strength', difficulty: 'beginner', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'backExtension',
+    alternatives: [['dead-bug', 'samePattern'], ['glute-bridge', 'samePrimaryOtherEquipment'], ['band-row', 'similarPurpose']] },
+  { id: 'pike-push-up', primary: 'shoulders', secondary: ['arms'], pattern: 'pushV', category: 'strength', difficulty: 'intermediate', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'pushV',
+    alternatives: [['band-shoulder-press', 'samePrimaryOtherEquipment'], ['overhead-press', 'gymVersion'], ['push-up', 'easierVariation']] },
+  { id: 'band-shoulder-press', primary: 'shoulders', secondary: ['arms'], pattern: 'pushV', category: 'strength', difficulty: 'beginner', equipment: ['bands'], locations: ['gym', 'home', 'outdoor'], diagram: 'pushV',
+    alternatives: [['pike-push-up', 'noEquipmentVersion'], ['overhead-press', 'gymVersion'], ['lateral-raises', 'similarPurpose']] },
+  { id: 'hammer-curl', primary: 'arms', secondary: [], pattern: 'armIsolation', category: 'strength', difficulty: 'beginner', equipment: ['dumbbells'], locations: ['gym', 'home'], diagram: 'armIsolation',
+    alternatives: [['band-bicep-curl', 'samePrimaryOtherEquipment'], ['bicep-curls', 'similarPurpose'], ['band-row', 'similarPurpose']] },
+  { id: 'diamond-push-up', primary: 'arms', secondary: ['chest', 'shoulders'], pattern: 'pushH', category: 'strength', difficulty: 'intermediate', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'pushH',
+    alternatives: [['push-up', 'easierVariation'], ['band-bicep-curl', 'samePrimaryOtherEquipment'], ['dips', 'gymVersion']] },
+  { id: 'band-bicep-curl', primary: 'arms', secondary: [], pattern: 'armIsolation', category: 'strength', difficulty: 'beginner', equipment: ['bands'], locations: ['gym', 'home', 'outdoor'], diagram: 'armIsolation',
+    alternatives: [['bicep-curls', 'gymVersion'], ['hammer-curl', 'samePrimaryOtherEquipment'], ['band-row', 'similarPurpose']] },
+  { id: 'bodyweight-squat', primary: 'legs', secondary: ['glutes', 'core'], pattern: 'squat', category: 'strength', difficulty: 'beginner', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'squat',
+    alternatives: [['squats', 'gymVersion'], ['split-squat', 'harderVariation'], ['leg-press', 'gymVersion']] },
+  { id: 'split-squat', primary: 'legs', secondary: ['glutes'], pattern: 'lunge', category: 'strength', difficulty: 'intermediate', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'lunge',
+    alternatives: [['lunges', 'samePrimaryOtherEquipment'], ['bodyweight-squat', 'easierVariation'], ['step-up', 'similarPurpose']] },
+  { id: 'step-up', primary: 'legs', secondary: ['glutes'], pattern: 'lunge', category: 'strength', difficulty: 'beginner', equipment: ['bench'], locations: ['gym', 'home', 'outdoor'], diagram: 'lunge',
+    alternatives: [['split-squat', 'noEquipmentVersion'], ['lunges', 'samePrimaryOtherEquipment'], ['bodyweight-squat', 'easierVariation']] },
+  { id: 'glute-bridge', primary: 'glutes', secondary: ['legs', 'core'], pattern: 'hinge', category: 'strength', difficulty: 'beginner', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'bridge',
+    alternatives: [['hip-thrust', 'harderVariation'], ['single-leg-glute-bridge', 'harderVariation'], ['leg-curls', 'gymVersion']] },
+  { id: 'hip-thrust', primary: 'glutes', secondary: ['legs'], pattern: 'hinge', category: 'strength', difficulty: 'intermediate', equipment: ['bench'], locations: ['gym', 'home'], diagram: 'bridge',
+    alternatives: [['glute-bridge', 'easierVariation'], ['single-leg-glute-bridge', 'samePrimaryOtherEquipment'], ['squats', 'similarPurpose']] },
+  { id: 'single-leg-glute-bridge', primary: 'glutes', secondary: ['legs', 'core'], pattern: 'hinge', category: 'strength', difficulty: 'intermediate', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'bridge',
+    alternatives: [['glute-bridge', 'easierVariation'], ['hip-thrust', 'samePrimaryOtherEquipment'], ['leg-curls', 'gymVersion']] },
+  { id: 'plank', primary: 'core', secondary: ['shoulders', 'glutes'], pattern: 'coreAntiExtension', category: 'core', difficulty: 'beginner', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'coreAntiExtension',
+    alternatives: [['dead-bug', 'easierVariation'], ['superman', 'samePrimaryOtherEquipment'], ['burpee', 'harderVariation']] },
+  { id: 'dead-bug', primary: 'core', secondary: [], pattern: 'coreAntiExtension', category: 'core', difficulty: 'beginner', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'coreAntiExtension',
+    alternatives: [['plank', 'harderVariation'], ['superman', 'samePrimaryOtherEquipment'], ['glute-bridge', 'similarPurpose']] },
+  { id: 'burpee', primary: 'core', secondary: ['chest', 'legs', 'shoulders'], pattern: 'conditioning', category: 'conditioning', difficulty: 'intermediate', equipment: ['none'], locations: ['home', 'outdoor', 'gym'], diagram: 'conditioning',
+    alternatives: [['push-up', 'similarPurpose'], ['bodyweight-squat', 'similarPurpose'], ['plank', 'samePrimaryOtherEquipment']] },
+];
+
+/* Id zabudovaných cvikov = kľúče knižnice. Cvik označený `retired` zostáva
+   v množine (a teda preložiteľný), len sa už neponúka. */
+const BUILTIN_EXERCISE_IDS = new Set(EXERCISE_LIBRARY.map((e) => e.id));
+
+/* ---------- Knižnica: prístup a filtrovanie (jazykovo nezávislé kódy) ---------- */
+
+function libraryEntry(id) {
+  if (!id) return null;
+  return EXERCISE_LIBRARY.find((e) => e.id === id) || null;
+}
+
+/* Cviky ponúkané v knižnici – vyradené cviky sa neukazujú, ale zostávajú preložiteľné. */
+function libraryAll() {
+  return EXERCISE_LIBRARY.filter((e) => !e.retired);
+}
+
+/* Metaúdaje cviku: pre zabudovaný cvik z knižnice, pre vlastný cvik null.
+   Vlastný cvik sa NIKDY nezhoduje podľa názvu – iba podľa stabilného id. */
+function exerciseMetaOf(ex) {
+  const id = builtinExerciseId(ex);
+  return id ? libraryEntry(id) : null;
+}
+
+/* Je cvik dostupný s týmto vybavením?
+   null = používateľ ešte nič nezadal → nefiltrujeme (nič netvrdíme).
+   ['none'] = používateľ zvolil "bez náčinia" → iba cviky bez náčinia.
+   Inak: cvik bez náčinia ide VŽDY (guma predsa neberie vlastnú váhu tela),
+   pri ostatných musí platiť každá požiadavka. */
+function equipmentSatisfied(entry, selected) {
+  if (!entry) return true;
+  if (!Array.isArray(selected)) return true;
+  const bodyweightOnly = entry.equipment.length === 1 && entry.equipment[0] === 'none';
+  if (selected.includes('none')) return bodyweightOnly;
+  return bodyweightOnly || entry.equipment.every((e) => selected.includes(e));
+}
+
+/* Lokalita: cvik musí byť v danej lokalite použiteľný. */
+function locationSatisfied(entry, location) {
+  if (!entry || !location) return true;
+  return entry.locations.includes(location);
+}
+
+/* Voľný kôš "Full body": vráti rozumný výber naprieč skupinami – NIKDY netvrdí,
+   že každý cvik trénuje celé telo. Pre každú skupinu vyberie prvý dostupný cvik
+   a na konci pridá jeden cvik na stred tela. */
+function fullBodySpread(list) {
+  const out = [];
+  const seen = new Set();
+  for (const entry of list) {
+    if (entry.primary === 'core') continue;   // stred tela má vlastnú skupinu nižšie
+    if (seen.has(entry.primary)) continue;
+    seen.add(entry.primary);
+    out.push(entry);
+  }
+  const core = list.find((e) => e.primary === 'core');
+  if (core) out.push(core);
+  return out;
+}
+
+/* Alternatívy k cviku: vlastné odporúčania + doplnenie podľa rovnakého vzorca.
+   Vždy nesie dôvod (kód) a NIKDY sa nevydáva za rovnocennú náhradu. */
+function alternativesFor(id, opts) {
+  const o = opts || {};
+  const base = libraryEntry(id);
+  if (!base) return [];
+  const out = [];
+  const seen = new Set([id]);
+  const push = (entry, why, viaPattern) => {
+    if (!entry || seen.has(entry.id)) return;
+    if (!equipmentSatisfied(entry, o.equipment)) return;
+    if (o.location && !locationSatisfied(entry, o.location)) return;
+    if (o.id !== undefined && entry.id === o.id) return;
+    seen.add(entry.id);
+    out.push({ entry, why, viaPattern: !!viaPattern });
+  };
+  for (const [altId, why] of base.alternatives) push(libraryEntry(altId), why, false);
+  if (o.includePattern !== false) {
+    for (const entry of libraryAll()) {
+      if (entry.pattern === base.pattern && entry.primary === base.primary) push(entry, 'samePattern', true);
+    }
+  }
+  return out;
+}
+
+/* Domáce alternatívy: to isté, ale len to, čo naozaj ide mimo posilňovne. */
+function homeAlternativesFor(id, selected) {
+  return alternativesFor(id, { equipment: selected, includePattern: true })
+    .filter((a) => a.entry.locations.includes('home') || a.entry.locations.includes('outdoor'));
+}
+
+/* Textový popis náčinia cviku pre zobrazenie. */
+function equipmentLabelOf(entry) {
+  return (entry.equipment || []).map((e) => t('equip.' + e)).join(' · ') || t('equip.none');
+}
+
+/* Vybavenie používateľa: null = ešte nezadané (nič netvrdíme, nefiltrujeme).
+   "Bez náčinia" je voľba filtra, nie náčinie – preto je vždy samotné. */
+function normalizeEquipment(value) {
+  if (value === null || value === undefined) return null;
+  if (!Array.isArray(value)) return null;
+  const out = [];
+  for (const v of value) {
+    if (typeof v === 'string' && EQUIPMENT_CODES.includes(v) && !out.includes(v)) out.push(v);
+  }
+  if (!out.length) return null;
+  if (out.includes('none')) return ['none'];
+  return out;
+}
+
+function availableEquipment() {
+  return normalizeEquipment(state && state.settings ? state.settings.availableEquipment : null);
+}
+
+function setAvailableEquipment(list) {
+  state.settings.availableEquipment = normalizeEquipment(list);
+  saveState();
+  renderAll();
+  /* Otvorená knižnica aj detail cviku musia zareagovať okamžite. */
+  if (isOpen('modal-library')) renderLibrary();
+  if (isOpen('modal-exercise')) renderExerciseSheet();
+}
+
+/* Prepne jedno náčinie v zozname používateľa (s exkluzívnym pravidlom pre "none"). */
+function toggleEquipment(code) {
+  if (!EQUIPMENT_CODES.includes(code)) return;
+  const current = availableEquipment();
+  if (code === 'none') {
+    setAvailableEquipment(current && current.length === 1 && current[0] === 'none' ? null : ['none']);
+    return;
+  }
+  const base = (current || []).filter((c) => c !== 'none');
+  const at = base.indexOf(code);
+  if (at >= 0) base.splice(at, 1); else base.push(code);
+  setAvailableEquipment(base);
+}
+
+/* Skratka "celá domáca posilňovňa" – rozbalí sa na viditeľný zoznam náčinia. */
+function toggleHomeGym() {
+  const current = (availableEquipment() || []).filter((c) => c !== 'none');
+  const all = HOME_GYM_SET.every((c) => current.includes(c));
+  setAvailableEquipment(all ? current.filter((c) => !HOME_GYM_SET.includes(c)) : HOME_GYM_SET.slice());
+}
+
+function homeGymSelected() {
+  const current = availableEquipment() || [];
+  return HOME_GYM_SET.every((c) => current.includes(c));
+}
+
+/* ---------- Schémy telesnej polohy (vlastné SVG, žiadna knižnica) ----------
+   Pre každý vzorec pohybu je jedna schematická kresba: východisková poloha (sivá)
+   a koncová poloha (oranžová). Je to PÔVODNÉ dielo vytvorené pre tento projekt
+   a je uložené priamo v kóde, takže sa načítava offline a nič sa neodkiaľ
+   nesťahuje ani nelicencuje. Je to schéma polohy tela, NIE fotografia ani video. */
+
+const FIG_NS = 'http://www.w3.org/2000/svg';
+
+/* Poloha je bočný pohľad. Súradnice sú v priestore 200×120, zem je na y = 104. */
+function pose(neck, head, hip, knee, ankle, elbow, hand) {
+  return { neck, head, hip, knee, ankle, elbow, hand };
+}
+
+const PATTERN_POSES = {
+  pushH: {
+    start: pose([80, 74], [92, 72], [48, 80], [30, 84], [14, 88], [82, 88], [88, 100]),
+    end: pose([80, 60], [92, 58], [48, 66], [30, 70], [14, 74], [80, 76], [88, 100]),
+  },
+  pushV: {
+    start: pose([72, 40], [72, 30], [72, 68], [70, 86], [68, 104], [86, 50], [80, 40]),
+    end: pose([72, 40], [72, 30], [72, 68], [70, 86], [68, 104], [74, 22], [72, 10]),
+  },
+  pullV: {
+    start: pose([72, 52], [64, 44], [72, 76], [74, 90], [76, 104], [72, 30], [72, 14]),
+    end: pose([72, 36], [64, 28], [72, 60], [74, 74], [76, 88], [76, 26], [72, 14]),
+  },
+  pullH: {
+    start: pose([82, 50], [92, 44], [40, 66], [34, 84], [30, 104], [94, 64], [106, 76]),
+    end: pose([82, 50], [92, 44], [40, 66], [34, 84], [30, 104], [64, 62], [56, 70]),
+  },
+  squat: {
+    start: pose([72, 36], [72, 26], [72, 66], [72, 86], [70, 104], [86, 52], [88, 62]),
+    end: pose([74, 50], [76, 40], [56, 72], [84, 84], [70, 104], [88, 62], [90, 72]),
+  },
+  lunge: {
+    start: pose([76, 38], [76, 28], [76, 66], [76, 86], [74, 104], [90, 54], [92, 64]),
+    end: pose([76, 54], [76, 44], [70, 74], [94, 80], [74, 104], [90, 70], [92, 80]),
+  },
+  bridge: {
+    start: pose([38, 80], [28, 78], [64, 86], [88, 78], [106, 102], [40, 94], [30, 94]),
+    end: pose([38, 80], [28, 78], [64, 66], [88, 70], [106, 102], [40, 94], [30, 94]),
+  },
+  armIsolation: {
+    start: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 58], [86, 80]),
+    end: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 58], [82, 42]),
+  },
+  legIsolation: {
+    start: pose([38, 68], [34, 58], [42, 82], [74, 82], [104, 82], [46, 80], [58, 82]),
+    end: pose([38, 68], [34, 58], [42, 82], [74, 82], [78, 62], [46, 80], [58, 82]),
+  },
+  calfRaise: {
+    start: pose([70, 36], [70, 26], [70, 64], [70, 84], [68, 104], [84, 52], [86, 62]),
+    end: pose([70, 28], [70, 18], [70, 56], [70, 76], [68, 96], [84, 44], [86, 54]),
+  },
+  backExtension: {
+    start: pose([42, 86], [30, 86], [70, 86], [96, 86], [118, 86], [40, 96], [24, 96]),
+    end: pose([42, 80], [28, 72], [70, 86], [96, 86], [118, 74], [40, 76], [22, 66]),
+  },
+  /* Statická výdrž: jedna poloha, žiadna šípka – nič sa nehýbe. */
+  coreAntiExtension: {
+    start: pose([84, 74], [96, 72], [50, 78], [32, 84], [14, 90], [86, 94], [96, 102]),
+  },
+  lateralRaise: {
+    start: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 52], [76, 64]),
+    end: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 48], [98, 48]),
+  },
+  conditioning: {
+    start: pose([84, 74], [96, 72], [50, 78], [32, 84], [14, 90], [80, 90], [84, 102]),
+    end: pose([72, 36], [72, 26], [72, 64], [72, 84], [70, 104], [86, 50], [86, 20]),
+  },
+};
+
+function figEl(name, attrs) {
+  const el = document.createElementNS(FIG_NS, name);
+  for (const k of Object.keys(attrs)) el.setAttribute(k, attrs[k]);
+  return el;
+}
+
+function drawPose(parent, p, cls) {
+  const seg = (a, b) => parent.appendChild(figEl('line', {
+    x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: cls,
+  }));
+  seg(p.neck, p.hip);
+  seg(p.neck, p.elbow);
+  seg(p.elbow, p.hand);
+  seg(p.hip, p.knee);
+  seg(p.knee, p.ankle);
+  parent.appendChild(figEl('circle', { cx: p.head[0], cy: p.head[1], r: 7, class: cls + '-head' }));
+  parent.appendChild(figEl('circle', { cx: p.neck[0], cy: p.neck[1], r: 2.5, class: cls + '-joint' }));
+  parent.appendChild(figEl('circle', { cx: p.hip[0], cy: p.hip[1], r: 2.5, class: cls + '-joint' }));
+}
+
+function buildPatternDiagram(pattern) {
+  const key = PATTERN_POSES[pattern] ? pattern : 'pushH';
+  const data = PATTERN_POSES[key];
+  const svg = figEl('svg', {
+    class: 'fig-svg', viewBox: '0 0 200 120', role: 'img',
+    'aria-label': t('exercise.diagramCaption') + ': ' + t('pattern.' + key),
+  });
+  svg.appendChild(figEl('line', { x1: 8, y1: 104, x2: 192, y2: 104, class: 'fig-ground' }));
+  drawPose(svg, data.start, 'fig-a');
+  if (data.end) {
+    drawPose(svg, data.end, 'fig-b');
+    svg.appendChild(figEl('path', { d: 'M74 114 L124 114 M116 110 L124 114 L116 118', class: 'fig-arrow' }));
+  }
+  return svg;
+}
 
 // maps both SK and EN built-in names -> stable id (for migration + milestone display)
 const BUILTIN_NAME_TO_ID = {
@@ -157,6 +509,15 @@ function exerciseDisplayName(ex) {
 function recordedNameToDisplay(name) {
   const id = BUILTIN_NAME_TO_ID[name];
   return id ? t('exercise.' + id) : name;
+}
+
+/* Názov cviku zapísaný do histórie. Pre zabudovaný cvik je to neutrálny anglický
+   záznam (referenčný slovník), takže história zostane čitateľná aj vtedy, keď sa
+   neskôr zmení preklad alebo sa cvik z knižnice vyradí. */
+function recordedExerciseName(ex) {
+  const id = builtinExerciseId(ex);
+  if (id) return (I18N.en && I18N.en['exercise.' + id]) || ex.name || id;
+  return String(ex.name == null ? '' : ex.name);
 }
 
 /* ---------- Preklady (sk / en) ---------- */
@@ -457,6 +818,181 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP za úspechy',
     'motivacia.newAchievement': 'Nový úspech: {names}',
+
+    /* --- Knižnica cvikov: štítky, filtre, postup a technika --- */
+    'muscle.chest': 'Hrudník', 'muscle.back': 'Chrbát', 'muscle.shoulders': 'Ramená', 'muscle.arms': 'Ruky',
+    'muscle.legs': 'Nohy', 'muscle.glutes': 'Zadok', 'muscle.core': 'Stred tela', 'muscle.fullBody': 'Celé telo',
+
+    'equip.none': 'Bez náčinia', 'equip.bands': 'Gumy', 'equip.dumbbells': 'Jednoručky',
+    'equip.pullupBar': 'Hrazda (alebo bradlá)', 'equip.bench': 'Nastaviteľná lavica',
+    'equip.barbell': 'Veľká tyč', 'equip.cableMachine': 'Stroj (kladka alebo na kotúče)',
+
+    'loc.gym': 'Posilňovňa', 'loc.home': 'Doma', 'loc.outdoor': 'Vonku',
+
+    'diff.beginner': 'Začiatočník', 'diff.intermediate': 'Mierne pokročilý', 'diff.advanced': 'Pokročilý',
+
+    'cat.strength': 'Sila', 'cat.core': 'Stred tela', 'cat.conditioning': 'Kondícia',
+
+    'pattern.pushH': 'Tlak vodorovne', 'pattern.pushV': 'Tlak nad hlavu', 'pattern.pullV': 'Ťah zhora',
+    'pattern.pullH': 'Ťah vodorovne', 'pattern.squat': 'Drep', 'pattern.hinge': 'Predklon v bedrách',
+    'pattern.lunge': 'Výpad alebo krok', 'pattern.armIsolation': 'Izolácia lakťa',
+    'pattern.legIsolation': 'Izolácia kolena a členka', 'pattern.backExtension': 'Záklon chrbta',
+    'pattern.coreAntiExtension': 'Stabilita stredu tela', 'pattern.lateralRaise': 'Upažovanie',
+    'pattern.conditioning': 'Kondícia',
+
+    'altWhy.samePrimaryOtherEquipment': 'rovnaký hlavný sval, iné náčinie',
+    'altWhy.samePattern': 'rovnaký vzorec pohybu',
+    'altWhy.similarPurpose': 'podobný účel',
+    'altWhy.easierVariation': 'ľahšia varianta',
+    'altWhy.harderVariation': 'ťažšia varianta',
+    'altWhy.noEquipmentVersion': 'varianta bez náčinia',
+    'altWhy.homeVersion': 'domáca varianta',
+    'altWhy.gymVersion': 'verzia do posilňovne',
+
+    'library.open': '📚 Knižnica cvikov',
+    'library.title': 'Knižnica cvikov',
+    'library.discoverTitle': 'Čo chceš trénovať?',
+    'library.whereTitle': 'Kde trénuješ?',
+    'library.searchPlaceholder': 'Hľadaj podľa názvu cviku',
+    'library.searchLabel': 'Hľadať cviky',
+    'library.filters': 'Filtre',
+    'library.filterDifficulty': 'Náročnosť',
+    'library.filterPattern': 'Vzorec pohybu',
+    'library.filterCategory': 'Typ cviku',
+    'library.myEquipment': 'Moje náčinie',
+    'library.equipmentHint': '„Bez náčinia“ je voľba filtra, nie náčinie – nedá sa skombinovať s ničím iným.',
+    'library.equipmentUnset': 'Povedz GymQuestu, čo máš, a ukáže len cviky, ktoré naozaj vieš spraviť.',
+    'library.fullHomeGym': 'Celá domáca posilňovňa',
+    'library.fullBodyHint': 'Výber naprieč hlavnými svalovými skupinami – nie jeden cvik, ktorý trénuje všetko.',
+    'library.reset': 'Zrušiť filtre',
+    'library.results': 'Nájdené cviky ({n})',
+    'library.empty': 'Tomuto filtru nezodpovedá žiadny cvik.',
+    'library.emptyHint': 'Skús odobrať filter alebo zmeň, kde trénuješ.',
+    'library.close': 'Zavrieť',
+    'library.filterAll': 'Všetko',
+    'library.myOwn': 'Tvoje vlastné cviky',
+
+    'exercise.primary': 'Hlavný sval',
+    'exercise.secondary': 'Vedľajšie svaly',
+    'exercise.noneSecondary': 'Žiadne uvedené',
+    'exercise.equipmentNeeded': 'Potrebné náčinie',
+    'exercise.locationsTitle': 'Kde to ide',
+    'exercise.patternLabel': 'Vzorec pohybu',
+    'exercise.difficultyLabel': 'Náročnosť',
+    'exercise.howTitle': 'Ako na to',
+    'exercise.mistakesTitle': 'Časté chyby a technické poznámky',
+    'exercise.alternativesTitle': 'Podobné cviky',
+    'exercise.alternativesWhy': 'Prečo navrhnuté',
+    'exercise.noAlternatives': 'V knižnici nie je iný cvik, ktorý by bol dosť podobný na to, aby sa dal navrhnúť.',
+    'exercise.replaceDuplicate': 'Tento plán uvádza ten istý cvik viackrát, takže ich GymQuest nedokáže bezpečne rozlíšiť. Najprv jeden z nich v editore premenuj alebo vymaž.',
+    'exercise.homeTitle': 'Domáce alternatívy',
+    'exercise.homeNone': 'Pre tvoje náčinie sa nenašla vhodná alternatíva. Zmeň, čo máš, alebo si prejdi knižnicu.',
+    'exercise.diagramCaption': 'Poloha tela — schéma',
+    'exercise.diagramNote': 'Zjednodušená kresba polohy tela, nie fotografia ani video. Hlavným návodom sú písané kroky vyššie.',
+    'exercise.disclaimer': 'Všeobecné informácie, nie lekárska rada a nie lekárske odporúčanie pri zranení.',
+    'exercise.notInLibrary': 'Toto je tvoj vlastný cvik, takže o ňom GymQuest nemá údaje z knižnice.',
+    'exercise.addToPlan': 'Pridať do plánu',
+    'exercise.inPlanAlready': 'Už je v tomto pláne',
+    'exercise.replace': 'Vymeniť cvik',
+    'exercise.replaceTitle': 'Vymeniť cvik',
+    'exercise.replaceHint': 'Vyber, čo budeš robiť namiesto toho. Nič, čo je už zapísané, sa nestratí.',
+    'exercise.replaceNoneDone': 'Zatiaľ nie je zapísaná žiadna séria. {old} bude vymenený na zvyšok tohto tréningu.',
+    'exercise.replaceSomeDone': '{done} z {total} sérií je už zapísaných pre {old}. Tie zostanú zapísané pod {old} a {next} sa pridá na zvyšok práce.',
+    'exercise.replaceConfirm': 'Vymeniť',
+    'exercise.replacedNote': 'Vymenené za {name}',
+    'exercise.replacedAfter': '{n} sérií zapísaných pred zmenou',
+    'exercise.replacesNote': 'Nahrádza {name}',
+    'exercise.undoReplace': 'Vrátiť výmenu',
+    'exercise.undoDiscard': 'Pre {name} je už zapísaných {n} sérií. Vrátením sa zahodia.',
+    'exercise.undoConfirm': 'Vrátiť',
+
+    'exercise.bench-press.how': 'Ľahni si na lavicu, chodidlá na zemi, lopatky stiahnuté k sebe. Spusti tyč na stred hrudníka a vytlač ju späť nad ramená.',
+    'exercise.bench-press.mistakes': 'Odrazenie tyče od hrudníka a lakte vytočené rovno do strán.',
+    'exercise.overhead-press.how': 'Stoj s tyčou na úrovni ramien, ruky tesne za ramenami. Vytlač nad hlavu, kým nie sú ruky rovné, potom späť na ramená.',
+    'exercise.overhead-press.mistakes': 'Záklon, z ktorého sa stane tlak na šikmej lavici, a zadržaný dych počas celej série.',
+    'exercise.dips.how': 'Podopri sa na bradlách s rovnými rukami. Spúšťaj sa, kým nie sú ramená približne v úrovni lakťov, potom vytlač späť nahor.',
+    'exercise.dips.mistakes': 'Príliš hlboký spád a ramená vytiahnuté k ušiam.',
+    'exercise.lateral-raises.how': 'Stoj s jednoručkami pri tele a mierne pokrčenými lakťami. Vzpažuj do úrovne ramien, potom pomaly spúšťaj.',
+    'exercise.lateral-raises.mistakes': 'Rozhýbanie váh a nadvihovanie ramien namiesto vzpažovania.',
+    'exercise.pull-ups.how': 'Vis na hrazde, ruky o niečo širšie než ramená. Ťahaj sa, kým nie je brada nad hrazdou, potom sa spúšťaj až dole.',
+    'exercise.pull-ups.mistakes': 'Kopanie a hojdanie sa nahor a zastavenie v polovici cesty dole.',
+    'exercise.bent-over-rows.how': 'Predkloň sa s rovným chrbtom a nechaj tyč visieť pod ramenami. Ťahaj ju k bruchu, potom pomaly späť.',
+    'exercise.bent-over-rows.mistakes': 'Guľatý chrbát a narovnávanie trupu počas série.',
+    'exercise.cable-rows.how': 'Sadni si vzpriamene, chodidlá zapreté, rukoväť v oboch rukách. Ťahaj k bruchu, hrudník pritom drž na mieste, potom pomaly pusti späť.',
+    'exercise.cable-rows.mistakes': 'Nakláňanie trupu dopredu a dozadu a ťahanie so zohnutými zápästiami.',
+    'exercise.bicep-curls.how': 'Stoj s jednoručkami pri tele, dlane dopredu. Zdvihni k ramenám, potom pomaly a úplne spusti.',
+    'exercise.bicep-curls.mistakes': 'Rozhýbanie tela a zastavenie v polovici spúšťania.',
+    'exercise.squats.how': 'S tyčou na hornej časti chrbta zatlač bedrá dozadu a pokrč kolená, kým nie sú stehná približne vodorovne, potom sa postav.',
+    'exercise.squats.mistakes': 'Kolená padajúce dovnútra a prepadnutý hrudník dopredu.',
+    'exercise.leg-press.how': 'Sadni si s chodidlami na plošine približne na šírku bokov. Spúšťaj plošinu, kým sa kolená nedostanú blízko k hrudníku, potom odtláčaj bez zamykania kolien.',
+    'exercise.leg-press.mistakes': 'Kolená padajúce dovnútra a dvíhanie zadku zo sedadla.',
+    'exercise.lunges.how': 'Vykroč vpred a spúšťaj sa, kým nie sú obe kolená pokrčené a zadné koleno blízko zeme, potom sa vytlač späť.',
+    'exercise.lunges.mistakes': 'Príliš krátky krok a predné koleno idúce ďaleko za špičku.',
+    'exercise.leg-curls.how': 'Nastav vankúš tesne nad päty a zakopávaj päty k zadku, potom pomaly spúšťaj.',
+    'exercise.leg-curls.mistakes': 'Dvíhanie bokov z vankúša a púšťanie váhy na ceste späť.',
+    'exercise.calf-raises.how': 'Postav sa špičkami na schod, päty voľne. Vytlač sa čo najvyššie, vydrž a potom spusť päty pod úroveň schodu.',
+    'exercise.calf-raises.mistakes': 'Nadskakovanie dole a pokrčenie kolien, aby to bolo ľahšie.',
+
+    'exercise.push-up': 'Klik',
+    'exercise.push-up.how': 'Ruky pod ramenami, telo v jednej priamke od hlavy po päty. Spúšťaj hrudník k zemi, potom sa vytlač späť nahor.',
+    'exercise.push-up.mistakes': 'Prepadnuté alebo vystrčené boky a zastavenie v polovici cesty dole.',
+    'exercise.band-chest-press': 'Tlak s gumou',
+    'exercise.band-chest-press.how': 'Zakotvi gumu za sebou vo výške hrudníka a chyť jeden koniec do každej ruky. Tlač dopredu, kým nie sú ruky rovné, potom pomaly späť.',
+    'exercise.band-chest-press.mistakes': 'Príliš krátka guma, z ktorej sa stane krčenie ramien, a nechanie gumy švihnúť späť.',
+    'exercise.band-pulldown': 'Sťahovanie gumy zhora',
+    'exercise.band-pulldown.how': 'Zakotvi gumu hore, chyť konce do rúk a začni s rukami nad hlavou. Ťahaj lakte dole k telu, kým sa ruky nedostanú do výšky hrudníka.',
+    'exercise.band-pulldown.mistakes': 'Záklon, ktorým sa guma rozhýbe namiesto ťahania chrbtom, a nadvihovanie ramien.',
+    'exercise.band-row': 'Príťahy s gumou',
+    'exercise.band-row.how': 'Zakotvi gumu vo výške hrudníka a chyť konce do rúk. Ťahaj lakte dozadu popri tele, hrudník drž na mieste, potom pomaly pusti späť.',
+    'exercise.band-row.mistakes': 'Hojdanie trupu pre zotrvačnosť a zvaľovanie ramien dopredu na konci.',
+    'exercise.dumbbell-row': 'Príťahy s jednoručkou',
+    'exercise.dumbbell-row.how': 'Podopri sa jednou rukou o lavicu a druhá ruka visí s jednoručkou. Ťahaj lakeť dozadu k boku, vydrž a potom pomaly spusť.',
+    'exercise.dumbbell-row.mistakes': 'Otáčanie trupu pri zdvihu a ťahanie prevažne bicepsom.',
+    'exercise.superman': 'Superman',
+    'exercise.superman.how': 'Ľahni si na brucho s vystretými rukami. Nadvihni ruky, hrudník a nohy o pár centimetrov, chvíľu vydrž a potom pomaly spusť.',
+    'exercise.superman.mistakes': 'Záklon hlavy dozadu a dvíhanie tak vysoko, že začne bolieť spodný chrbát.',
+    'exercise.pike-push-up': 'Klik vo V',
+    'exercise.pike-push-up.how': 'Z klieku prejdi chodidlami bližšie a nadvihni boky tak, aby telo tvorilo obrátené V. Spúšťaj temeno hlavy k zemi, potom sa vytlač späť.',
+    'exercise.pike-push-up.mistakes': 'Lakte vytočené do strán a spadnuté boky, z ktorých sa stane obyčajný klik.',
+    'exercise.band-shoulder-press': 'Tlak nad hlavu s gumou',
+    'exercise.band-shoulder-press.how': 'Stúpni na gumu jednou nohou a chyť konce vo výške ramien. Tlač nad hlavu, kým nie sú ruky rovné, potom pomaly spusť.',
+    'exercise.band-shoulder-press.mistakes': 'Prehýbanie v spodnom chrbte a príliš silná guma, cez ktorú sa pohyb zastaví.',
+    'exercise.hammer-curl': 'Kladivové zdvihy',
+    'exercise.hammer-curl.how': 'Drž jednoručky pri tele, dlane smerujú k sebe. Zdvihni bez toho, aby lakte ušli dopredu, potom pomaly spusť.',
+    'exercise.hammer-curl.mistakes': 'Rozhupovanie bokmi a púšťanie váh namiesto spúšťania.',
+    'exercise.diamond-push-up': 'Klik s rukami k sebe',
+    'exercise.diamond-push-up.how': 'Daj ruky k sebe pod hrudník tak, aby sa palce a ukazováky dotýkali. Drž lakte pri tele, spúšťaj sa a vytlač späť.',
+    'exercise.diamond-push-up.mistakes': 'Lakte vytočené do strán a ruky príliš vpredu, čo namáha zápästia.',
+    'exercise.band-bicep-curl': 'Bicepsové zdvihy s gumou',
+    'exercise.band-bicep-curl.how': 'Stúpni na gumu a chyť konce dlaňami nahor. Zdvihni ruky k ramenám, potom pomaly spusť.',
+    'exercise.band-bicep-curl.mistakes': 'Lakte ušlé dopredu a záklon, ktorým dokončuješ pohyb.',
+    'exercise.bodyweight-squat': 'Drep s vlastnou váhou',
+    'exercise.bodyweight-squat.how': 'Stoj s chodidlami približne na šírku ramien. Zatlač bedrá dozadu a pokrč kolená, kým nie sú stehná približne vodorovne, potom sa postav.',
+    'exercise.bodyweight-squat.mistakes': 'Kolená padajúce dovnútra a dvíhanie piat zo zeme.',
+    'exercise.split-squat': 'Drep v roznožení',
+    'exercise.split-squat.how': 'Stoj v roznožení s jednou nohou vzadu. Spúšťaj sa priamo dole, kým sa zadné koleno nedostane blízko zeme, potom sa vytlač cez prednú nohu.',
+    'exercise.split-squat.mistakes': 'Príliš úzky postoj, z ktorého sa stane skúška rovnováhy, a odrážanie zadnou nohou.',
+    'exercise.step-up': 'Výstup na schod',
+    'exercise.step-up.how': 'Postav celé chodidlo na pevný schod alebo lavicu. Vytlač sa cez to chodidlo nahor, potom sa tou istou nohou pomaly spusť.',
+    'exercise.step-up.mistakes': 'Odrážanie zadnou nohou a príliš vysoký schod, pri ktorom sa koleno vybočí dovnútra.',
+    'exercise.glute-bridge': 'Zdvíhanie bokov',
+    'exercise.glute-bridge.how': 'Ľahni si na chrbát, kolená pokrčené, chodidlá na zemi. Stiahni zadok a zdvihni boky, kým kolená, boky a ramená netvoria priamku, potom spusť.',
+    'exercise.glute-bridge.mistakes': 'Prehýbanie v spodnom chrbte namiesto stiahnutia zadku a tlak len cez špičky.',
+    'exercise.hip-thrust': 'Zdvíhanie bokov o lavicu',
+    'exercise.hip-thrust.how': 'Opieraj sa hornou časťou chrbta o lavicu, chodidlá na zemi. Zdvihni boky, kým telo nie je v rovine, vydrž a potom pomaly spusť.',
+    'exercise.hip-thrust.mistakes': 'Prílišné prehnutie v spodnom chrbte hore a kĺzajúce chodidlá.',
+    'exercise.single-leg-glute-bridge': 'Zdvíhanie bokov na jednej nohe',
+    'exercise.single-leg-glute-bridge.how': 'Ľahni si na chrbát, jedno koleno pokrč s chodidlom na zemi a druhá noha je vo vzduchu. Zdvihni boky len tou pracovnou nohou, potom pomaly spusť.',
+    'exercise.single-leg-glute-bridge.mistakes': 'Nakláňanie bokov na jednu stranu a tlačenie tak silno, že prácu prevezme spodný chrbát.',
+    'exercise.plank': 'Plank',
+    'exercise.plank.how': 'Opieraj sa o predlaktia a špičky, telo v jednej priamke. Stiahni zadok, drž rebrá dole a vydrž plánovaný čas.',
+    'exercise.plank.mistakes': 'Prepadnuté alebo vystrčené boky a zadržiavanie dychu.',
+    'exercise.dead-bug': 'Mŕtvy chrobák',
+    'exercise.dead-bug.how': 'Ľahni si na chrbát s rukami hore a kolenami pokrčenými nad bokmi. Pomaly spúšťaj jednu ruku a opačnú nohu, vráť ich a vymeň strany.',
+    'exercise.dead-bug.mistakes': 'Dvíhanie spodného chrbta zo zeme a príliš rýchly pohyb, ktorý nedokážeš kontrolovať.',
+    'exercise.burpee': 'Burpee',
+    'exercise.burpee.how': 'Zo stoja polož ruky na zem a prekroč alebo preskoč nohami do planku. Vráť nohy späť a postav sa alebo vyskoč.',
+    'exercise.burpee.mistakes': 'Doskok s rovnými nohami a prepadnuté boky v planku.',
 
     /* --- Telo, kalórie, jedlo a tipy --- */
     'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
@@ -890,6 +1426,183 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP from achievements',
     'motivacia.newAchievement': 'New achievement: {names}',
 
+    /* --- Exercise library: labels, filters, flow and technique notes --- */
+    'muscle.chest': 'Chest', 'muscle.back': 'Back', 'muscle.shoulders': 'Shoulders', 'muscle.arms': 'Arms',
+    'muscle.legs': 'Legs', 'muscle.glutes': 'Glutes', 'muscle.core': 'Core', 'muscle.fullBody': 'Full body',
+
+    'equip.none': 'No equipment', 'equip.bands': 'Resistance bands', 'equip.dumbbells': 'Dumbbells',
+    'equip.pullupBar': 'Pull-up bar (or dip bars)', 'equip.bench': 'Adjustable bench',
+    'equip.barbell': 'Barbell', 'equip.cableMachine': 'Machine (cable or plate-loaded)',
+
+    'loc.gym': 'Gym', 'loc.home': 'Home', 'loc.outdoor': 'Outdoors',
+
+    'diff.beginner': 'Beginner', 'diff.intermediate': 'Intermediate', 'diff.advanced': 'Advanced',
+
+    'cat.strength': 'Strength', 'cat.core': 'Core', 'cat.conditioning': 'Conditioning',
+
+    'pattern.pushH': 'Horizontal push', 'pattern.pushV': 'Vertical push', 'pattern.pullV': 'Vertical pull',
+    'pattern.pullH': 'Horizontal pull', 'pattern.squat': 'Squat', 'pattern.hinge': 'Hip hinge',
+    'pattern.lunge': 'Lunge or step', 'pattern.armIsolation': 'Elbow isolation',
+    'pattern.legIsolation': 'Knee and ankle isolation', 'pattern.backExtension': 'Back extension',
+    'pattern.coreAntiExtension': 'Core stability', 'pattern.lateralRaise': 'Lateral raise',
+    'pattern.conditioning': 'Conditioning',
+
+    'altWhy.samePrimaryOtherEquipment': 'same primary muscle, different equipment',
+    'altWhy.samePattern': 'same movement pattern',
+    'altWhy.similarPurpose': 'similar purpose',
+    'altWhy.easierVariation': 'easier variation',
+    'altWhy.harderVariation': 'more challenging variation',
+    'altWhy.noEquipmentVersion': 'no-equipment version',
+    'altWhy.homeVersion': 'home version',
+    'altWhy.gymVersion': 'gym version',
+
+    'library.open': '📚 Exercise library',
+    'library.title': 'Exercise library',
+    'library.discoverTitle': 'What do you want to train?',
+    'library.whereTitle': 'Where are you training?',
+    'library.searchPlaceholder': 'Search by exercise name',
+    'library.searchLabel': 'Search exercises',
+    'library.filters': 'Filters',
+    'library.filterDifficulty': 'Difficulty',
+    'library.filterPattern': 'Movement pattern',
+    'library.filterCategory': 'Exercise type',
+    'library.myEquipment': 'My equipment',
+    'library.equipmentHint': '“No equipment” is a filter choice, not equipment – it cannot be combined with anything else.',
+    'library.equipmentUnset': 'Tell GymQuest what you have and it will only show exercises you can actually do.',
+    'library.fullHomeGym': 'Full home gym',
+    'library.fullBodyHint': 'A spread across the major muscle groups – not one exercise that trains everything.',
+    'library.reset': 'Reset filters',
+    'library.results': 'Matching exercises ({n})',
+    'library.empty': 'No exercise matches these filters.',
+    'library.emptyHint': 'Try removing a filter, or change where you are training.',
+    'library.close': 'Close',
+    'library.filterAll': 'All',
+    'library.myOwn': 'Your own exercises',
+
+    'exercise.primary': 'Primary muscle',
+    'exercise.secondary': 'Secondary muscles',
+    'exercise.noneSecondary': 'None listed',
+    'exercise.equipmentNeeded': 'Equipment needed',
+    'exercise.locationsTitle': 'Where you can do it',
+    'exercise.patternLabel': 'Movement pattern',
+    'exercise.difficultyLabel': 'Difficulty',
+    'exercise.howTitle': 'How to do it',
+    'exercise.mistakesTitle': 'Common mistakes & technique notes',
+    'exercise.alternativesTitle': 'Similar exercises',
+    'exercise.alternativesWhy': 'Why suggested',
+    'exercise.noAlternatives': 'No other exercise in the library matches this one closely enough to suggest.',
+    'exercise.replaceDuplicate': 'This plan lists the same exercise more than once, so GymQuest cannot tell the two apart safely. Rename or remove one of them in the plan editor first.',
+    'exercise.homeTitle': 'Home alternatives',
+    'exercise.homeNone': 'No suitable alternative for your equipment. Change what you have, or browse the library.',
+    'exercise.diagramCaption': 'Body position — schematic',
+    'exercise.diagramNote': 'A simplified drawing of the body position, not a photo or video. The written steps are the main guidance.',
+    'exercise.disclaimer': 'General information, not medical advice, and not a medical recommendation for an injury.',
+    'exercise.notInLibrary': 'This is your own exercise, so GymQuest has no library information for it.',
+    'exercise.addToPlan': 'Add to plan',
+    'exercise.inPlanAlready': 'Already in this plan',
+    'exercise.replace': 'Replace exercise',
+    'exercise.replaceTitle': 'Replace exercise',
+    'exercise.replaceHint': 'Choose what you will do instead. Nothing already recorded is lost.',
+    'exercise.replaceNoneDone': 'No sets recorded yet. {old} will be replaced for the rest of this session.',
+    'exercise.replaceSomeDone': '{done} of {total} sets are already recorded for {old}. Those stay recorded under {old}, and {next} is added for the remaining work.',
+    'exercise.replaceConfirm': 'Replace',
+    'exercise.replacedNote': 'Replaced by {name}',
+    'exercise.replacedAfter': '{n} sets recorded before the change',
+    'exercise.replacesNote': 'Replaces {name}',
+    'exercise.undoReplace': 'Undo replacement',
+    'exercise.undoDiscard': '{name} already has {n} sets recorded. Undoing will discard them.',
+    'exercise.undoConfirm': 'Undo',
+
+    /* Existing built-in exercises: technique and common mistakes */
+    'exercise.bench-press.how': 'Lie on the bench with the feet planted and the shoulder blades pulled together. Lower the bar to mid-chest, then press it back over the shoulders.',
+    'exercise.bench-press.mistakes': 'Bouncing the bar off the chest, and letting the elbows flare straight out to the sides.',
+    'exercise.overhead-press.how': 'Stand with the bar at shoulder height, hands just outside the shoulders. Press overhead until the arms are straight, then lower back to the shoulders.',
+    'exercise.overhead-press.mistakes': 'Leaning back so it becomes an incline press, and holding your breath through the whole set.',
+    'exercise.dips.how': 'Support yourself on parallel bars with the arms straight. Lower until the shoulders are about level with the elbows, then press back up.',
+    'exercise.dips.mistakes': 'Dropping too deep, and shrugging the shoulders up towards the ears.',
+    'exercise.lateral-raises.how': 'Stand with the dumbbells at your sides and a slight bend in the elbows. Lift the arms out to shoulder height, then lower slowly.',
+    'exercise.lateral-raises.mistakes': 'Swinging the weights up, and shrugging the shoulders instead of lifting with the arms.',
+    'exercise.pull-ups.how': 'Hang from the bar with the hands slightly wider than the shoulders. Pull until the chin is over the bar, then lower all the way down.',
+    'exercise.pull-ups.mistakes': 'Kicking and swinging to get up, and stopping halfway on the way down.',
+    'exercise.bent-over-rows.how': 'Hinge forward with a flat back and let the bar hang below the shoulders. Pull it towards your belly, then lower it under control.',
+    'exercise.bent-over-rows.mistakes': 'Rounding the lower back, and standing more upright as the set goes on.',
+    'exercise.cable-rows.how': 'Sit tall with the feet braced and the handle in both hands. Pull towards the belly while the chest stays still, then let it return slowly.',
+    'exercise.cable-rows.mistakes': 'Leaning back and forth to move the handle, and pulling with the wrists bent.',
+    'exercise.bicep-curls.how': 'Stand with the dumbbells at your sides, palms facing forward. Curl up towards the shoulders, then lower slowly all the way.',
+    'exercise.bicep-curls.mistakes': 'Swinging the body to lift the weight, and stopping the lowering halfway.',
+    'exercise.squats.how': 'With the bar on your upper back, push the hips back and bend the knees until the thighs are roughly parallel to the floor, then stand up.',
+    'exercise.squats.mistakes': 'Letting the knees cave inwards, and letting the chest collapse forward.',
+    'exercise.leg-press.how': 'Sit with the feet flat on the platform about hip-width apart. Lower it until the knees come near the chest, then press away without locking the knees.',
+    'exercise.leg-press.mistakes': 'Letting the knees fall inwards, and lifting the hips off the seat.',
+    'exercise.lunges.how': 'Step forward and lower until both knees are bent and the back knee is close to the floor, then push back to standing.',
+    'exercise.lunges.mistakes': 'Taking a step that is too short, and letting the front knee travel far past the toes.',
+    'exercise.leg-curls.how': 'Set the pad just above the heels and curl your heels towards your glutes, then lower slowly.',
+    'exercise.leg-curls.mistakes': 'Lifting the hips off the pad, and letting the weight drop on the way back.',
+    'exercise.calf-raises.how': 'Stand with the balls of the feet on a step and the heels free. Rise as high as you can, pause, then lower the heels below the step.',
+    'exercise.calf-raises.mistakes': 'Bouncing at the bottom, and bending the knees to make it easier.',
+
+    /* New library exercises: name, technique and common mistakes */
+    'exercise.push-up': 'Push-up',
+    'exercise.push-up.how': 'Hands under the shoulders and the body in one straight line from head to heels. Lower the chest towards the floor, then press back up.',
+    'exercise.push-up.mistakes': 'Letting the hips sag or lift, and stopping halfway down.',
+    'exercise.band-chest-press': 'Band chest press',
+    'exercise.band-chest-press.how': 'Anchor the band behind you at chest height and hold one end in each hand. Press forward until the arms are straight, then return slowly.',
+    'exercise.band-chest-press.mistakes': 'Using a band short enough that the move becomes a shrug, and letting it snap back.',
+    'exercise.band-pulldown': 'Band pulldown',
+    'exercise.band-pulldown.how': 'Anchor the band high, hold one end in each hand and start with the arms overhead. Pull the elbows down towards your sides until the hands reach chest height.',
+    'exercise.band-pulldown.mistakes': 'Leaning back to move the band instead of pulling with the back, and shrugging the shoulders.',
+    'exercise.band-row': 'Band row',
+    'exercise.band-row.how': 'Anchor the band at chest height and hold one end in each hand. Pull the elbows back past your sides while the chest stays still, then return slowly.',
+    'exercise.band-row.mistakes': 'Rocking the torso for momentum, and letting the shoulders roll forward at the end.',
+    'exercise.dumbbell-row': 'Dumbbell row',
+    'exercise.dumbbell-row.how': 'Support one hand on a bench and let the other arm hang with the dumbbell. Pull the elbow back towards your hip, pause, then lower under control.',
+    'exercise.dumbbell-row.mistakes': 'Twisting the torso to lift the weight, and pulling mostly with the biceps.',
+    'exercise.superman': 'Superman',
+    'exercise.superman.how': 'Lie face down with the arms extended. Lift the arms, chest and legs a few centimetres, hold for a moment, then lower slowly.',
+    'exercise.superman.mistakes': 'Cranking the neck back, and lifting so high that the lower back aches.',
+    'exercise.pike-push-up': 'Pike push-up',
+    'exercise.pike-push-up.how': 'From a push-up position, walk the feet in and lift the hips so the body forms an inverted V. Lower the top of your head towards the floor, then press back up.',
+    'exercise.pike-push-up.mistakes': 'Letting the elbows flare out, and dropping the hips so it becomes a normal push-up.',
+    'exercise.band-shoulder-press': 'Band shoulder press',
+    'exercise.band-shoulder-press.how': 'Stand on the band with one foot and hold the ends at shoulder height. Press overhead until the arms are straight, then lower slowly.',
+    'exercise.band-shoulder-press.mistakes': 'Arching the lower back to press higher, and choosing a band so heavy the movement stalls.',
+    'exercise.hammer-curl': 'Hammer curl',
+    'exercise.hammer-curl.how': 'Hold the dumbbells at your sides with the palms facing each other. Curl up without letting the elbows drift forward, then lower slowly.',
+    'exercise.hammer-curl.mistakes': 'Swinging the hips, and dropping the weights instead of lowering them.',
+    'exercise.diamond-push-up': 'Diamond push-up',
+    'exercise.diamond-push-up.how': 'Place the hands together under the chest so the thumbs and index fingers touch. Keep the elbows close to the body as you lower and press back up.',
+    'exercise.diamond-push-up.mistakes': 'Letting the elbows flare out, and placing the hands so far forward that the wrists are strained.',
+    'exercise.band-bicep-curl': 'Band bicep curl',
+    'exercise.band-bicep-curl.how': 'Stand on the band and hold one end in each hand with the palms facing up. Curl the hands towards the shoulders, then lower slowly.',
+    'exercise.band-bicep-curl.mistakes': 'Letting the elbows travel forward, and leaning back to finish the movement.',
+    'exercise.bodyweight-squat': 'Bodyweight squat',
+    'exercise.bodyweight-squat.how': 'Stand with the feet about shoulder-width apart. Push the hips back and bend the knees until the thighs are roughly parallel to the floor, then stand up.',
+    'exercise.bodyweight-squat.mistakes': 'Letting the knees collapse inwards, and lifting the heels off the floor.',
+    'exercise.split-squat': 'Split squat',
+    'exercise.split-squat.how': 'Stand in a split stance with one foot behind you. Lower straight down until the back knee is near the floor, then press up through the front foot.',
+    'exercise.split-squat.mistakes': 'Standing so narrow that it becomes a balance test, and pushing off the back foot.',
+    'exercise.step-up': 'Step-up',
+    'exercise.step-up.how': 'Place one whole foot on a stable step or bench. Press through that foot to stand up on it, then lower yourself slowly with the same leg.',
+    'exercise.step-up.mistakes': 'Pushing off the back foot, and using a step so high that the knee caves in.',
+    'exercise.glute-bridge': 'Glute bridge',
+    'exercise.glute-bridge.how': 'Lie on your back with the knees bent and the feet flat. Squeeze the glutes to lift the hips until knees, hips and shoulders form a line, then lower.',
+    'exercise.glute-bridge.mistakes': 'Arching the lower back instead of squeezing the glutes, and pushing only through the toes.',
+    'exercise.hip-thrust': 'Hip thrust',
+    'exercise.hip-thrust.how': 'Rest the upper back on a bench with the feet flat on the floor. Lift the hips until the body is level, pause, then lower under control.',
+    'exercise.hip-thrust.mistakes': 'Overextending the lower back at the top, and letting the feet slide away.',
+    'exercise.single-leg-glute-bridge': 'Single-leg glute bridge',
+    'exercise.single-leg-glute-bridge.how': 'Lie on your back, bend one knee with the foot flat and hold the other leg off the floor. Lift the hips with the working leg only, then lower slowly.',
+    'exercise.single-leg-glute-bridge.mistakes': 'Letting the hips tilt to one side, and pushing so hard that the lower back takes over.',
+    'exercise.plank': 'Plank',
+    'exercise.plank.how': 'Rest on the forearms and toes with the body in one straight line. Squeeze the glutes, keep the ribs down, and hold for the planned time.',
+    'exercise.plank.mistakes': 'Letting the hips sag or pike up, and holding your breath.',
+    'exercise.dead-bug': 'Dead bug',
+    'exercise.dead-bug.how': 'Lie on your back with the arms up and the knees bent over the hips. Lower one arm and the opposite leg slowly, return them, then swap sides.',
+    'exercise.dead-bug.mistakes': 'Letting the lower back lift off the floor, and moving faster than you can control.',
+    'exercise.burpee': 'Burpee',
+    'exercise.burpee.how': 'From standing, place the hands down and step or jump the feet back to a plank. Bring the feet back in, then stand or jump up.',
+    'exercise.burpee.mistakes': 'Landing with straight legs, and letting the hips sag in the plank position.',
+
     /* --- Body, calories, food and tips --- */
     'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
 
@@ -1319,6 +2032,181 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP por logros',
     'motivacia.newAchievement': 'Nuevo logro: {names}',
+
+    /* --- Biblioteca de ejercicios --- */
+    'muscle.chest': 'Pecho', 'muscle.back': 'Espalda', 'muscle.shoulders': 'Hombros', 'muscle.arms': 'Brazos',
+    'muscle.legs': 'Piernas', 'muscle.glutes': 'Glúteos', 'muscle.core': 'Core', 'muscle.fullBody': 'Cuerpo completo',
+
+    'equip.none': 'Sin equipo', 'equip.bands': 'Bandas elásticas', 'equip.dumbbells': 'Mancuernas',
+    'equip.pullupBar': 'Barra de dominadas (o paralelas)', 'equip.bench': 'Banco ajustable',
+    'equip.barbell': 'Barra', 'equip.cableMachine': 'Máquina (polea o de placas)',
+
+    'loc.gym': 'Gimnasio', 'loc.home': 'Casa', 'loc.outdoor': 'Exterior',
+
+    'diff.beginner': 'Principiante', 'diff.intermediate': 'Intermedio', 'diff.advanced': 'Avanzado',
+
+    'cat.strength': 'Fuerza', 'cat.core': 'Core', 'cat.conditioning': 'Acondicionamiento',
+
+    'pattern.pushH': 'Empuje horizontal', 'pattern.pushV': 'Empuje vertical', 'pattern.pullV': 'Tracción vertical',
+    'pattern.pullH': 'Tracción horizontal', 'pattern.squat': 'Sentadilla', 'pattern.hinge': 'Bisagra de cadera',
+    'pattern.lunge': 'Zancada o paso', 'pattern.armIsolation': 'Aislamiento de codo',
+    'pattern.legIsolation': 'Aislamiento de rodilla y tobillo', 'pattern.backExtension': 'Extensión de espalda',
+    'pattern.coreAntiExtension': 'Estabilidad del core', 'pattern.lateralRaise': 'Elevación lateral',
+    'pattern.conditioning': 'Acondicionamiento',
+
+    'altWhy.samePrimaryOtherEquipment': 'mismo músculo principal, otro equipo',
+    'altWhy.samePattern': 'mismo patrón de movimiento',
+    'altWhy.similarPurpose': 'propósito similar',
+    'altWhy.easierVariation': 'variante más fácil',
+    'altWhy.harderVariation': 'variante más exigente',
+    'altWhy.noEquipmentVersion': 'versión sin equipo',
+    'altWhy.homeVersion': 'versión para casa',
+    'altWhy.gymVersion': 'versión de gimnasio',
+
+    'library.open': '📚 Biblioteca de ejercicios',
+    'library.title': 'Biblioteca de ejercicios',
+    'library.discoverTitle': '¿Qué quieres entrenar?',
+    'library.whereTitle': '¿Dónde entrenas?',
+    'library.searchPlaceholder': 'Busca por nombre del ejercicio',
+    'library.searchLabel': 'Buscar ejercicios',
+    'library.filters': 'Filtros',
+    'library.filterDifficulty': 'Dificultad',
+    'library.filterPattern': 'Patrón de movimiento',
+    'library.filterCategory': 'Tipo de ejercicio',
+    'library.myEquipment': 'Mi equipo',
+    'library.equipmentHint': '«Sin equipo» es una opción de filtro, no un equipo: no se puede combinar con nada más.',
+    'library.equipmentUnset': 'Dile a GymQuest qué tienes y solo mostrará ejercicios que puedas hacer de verdad.',
+    'library.fullHomeGym': 'Gimnasio en casa completo',
+    'library.fullBodyHint': 'Una selección repartida entre los grupos musculares principales, no un ejercicio que entrene todo.',
+    'library.reset': 'Quitar filtros',
+    'library.results': 'Ejercicios encontrados ({n})',
+    'library.empty': 'Ningún ejercicio coincide con estos filtros.',
+    'library.emptyHint': 'Prueba a quitar un filtro o cambia dónde entrenas.',
+    'library.close': 'Cerrar',
+    'library.filterAll': 'Todo',
+    'library.myOwn': 'Tus propios ejercicios',
+
+    'exercise.primary': 'Músculo principal',
+    'exercise.secondary': 'Músculos secundarios',
+    'exercise.noneSecondary': 'Ninguno indicado',
+    'exercise.equipmentNeeded': 'Equipo necesario',
+    'exercise.locationsTitle': 'Dónde puedes hacerlo',
+    'exercise.patternLabel': 'Patrón de movimiento',
+    'exercise.difficultyLabel': 'Dificultad',
+    'exercise.howTitle': 'Cómo se hace',
+    'exercise.mistakesTitle': 'Errores frecuentes y notas técnicas',
+    'exercise.alternativesTitle': 'Ejercicios similares',
+    'exercise.alternativesWhy': 'Por qué se sugiere',
+    'exercise.noAlternatives': 'Ningún otro ejercicio de la biblioteca se parece lo suficiente como para sugerirlo.',
+    'exercise.replaceDuplicate': 'Este plan repite el mismo ejercicio más de una vez, así que GymQuest no puede distinguirlos con seguridad. Renombra o elimina uno de ellos en el editor del plan.',
+    'exercise.homeTitle': 'Alternativas en casa',
+    'exercise.homeNone': 'No hay una alternativa adecuada para tu equipo. Cambia lo que tienes o explora la biblioteca.',
+    'exercise.diagramCaption': 'Posición del cuerpo — esquema',
+    'exercise.diagramNote': 'Dibujo simplificado de la posición del cuerpo, no una foto ni un vídeo. La guía principal son los pasos escritos.',
+    'exercise.disclaimer': 'Información general, no consejo médico ni una recomendación médica para una lesión.',
+    'exercise.notInLibrary': 'Este es un ejercicio tuyo, así que GymQuest no tiene información de la biblioteca sobre él.',
+    'exercise.addToPlan': 'Añadir al plan',
+    'exercise.inPlanAlready': 'Ya está en este plan',
+    'exercise.replace': 'Sustituir ejercicio',
+    'exercise.replaceTitle': 'Sustituir ejercicio',
+    'exercise.replaceHint': 'Elige qué harás en su lugar. Nada de lo ya registrado se pierde.',
+    'exercise.replaceNoneDone': 'Todavía no hay series registradas. {old} se sustituirá durante el resto de esta sesión.',
+    'exercise.replaceSomeDone': '{done} de {total} series ya están registradas para {old}. Esas siguen registradas bajo {old} y {next} se añade para el trabajo que queda.',
+    'exercise.replaceConfirm': 'Sustituir',
+    'exercise.replacedNote': 'Sustituido por {name}',
+    'exercise.replacedAfter': '{n} series registradas antes del cambio',
+    'exercise.replacesNote': 'Sustituye a {name}',
+    'exercise.undoReplace': 'Deshacer la sustitución',
+    'exercise.undoDiscard': '{name} ya tiene {n} series registradas. Si deshaces, se descartarán.',
+    'exercise.undoConfirm': 'Deshacer',
+
+    'exercise.bench-press.how': 'Túmbate en el banco con los pies apoyados y los omóplatos juntos. Baja la barra a media altura del pecho y empuja de nuevo sobre los hombros.',
+    'exercise.bench-press.mistakes': 'Rebotar la barra en el pecho y dejar que los codos se abran del todo a los lados.',
+    'exercise.overhead-press.how': 'De pie con la barra a la altura de los hombros y las manos justo por fuera. Empuja por encima de la cabeza hasta estirar los brazos y baja de nuevo a los hombros.',
+    'exercise.overhead-press.mistakes': 'Echarse atrás hasta convertirlo en un press inclinado y aguantar la respiración toda la serie.',
+    'exercise.dips.how': 'Apóyate en las paralelas con los brazos estirados. Baja hasta que los hombros queden a la altura de los codos y empuja de nuevo.',
+    'exercise.dips.mistakes': 'Bajar demasiado y encoger los hombros hacia las orejas.',
+    'exercise.lateral-raises.how': 'De pie con las mancuernas a los lados y los codos algo flexionados. Sube los brazos hasta la altura de los hombros y baja despacio.',
+    'exercise.lateral-raises.mistakes': 'Impulsar las mancuernas y encoger los hombros en vez de elevar los brazos.',
+    'exercise.pull-ups.how': 'Cuélgate de la barra con las manos algo más anchas que los hombros. Tira hasta pasar la barbilla por encima y baja del todo.',
+    'exercise.pull-ups.mistakes': 'Darse impulso con las piernas y quedarse a mitad de camino al bajar.',
+    'exercise.bent-over-rows.how': 'Inclínate con la espalda recta y deja que la barra cuelgue bajo los hombros. Tira hacia el abdomen y baja con control.',
+    'exercise.bent-over-rows.mistakes': 'Redondear la zona lumbar e irse incorporando a medida que avanza la serie.',
+    'exercise.cable-rows.how': 'Siéntate erguido con los pies apoyados y el agarre en ambas manos. Tira hacia el abdomen sin mover el pecho y deja volver despacio.',
+    'exercise.cable-rows.mistakes': 'Balancearse adelante y atrás para mover el agarre y tirar con las muñecas dobladas.',
+    'exercise.bicep-curls.how': 'De pie con las mancuernas a los lados y las palmas hacia delante. Sube hacia los hombros y baja despacio hasta abajo.',
+    'exercise.bicep-curls.mistakes': 'Balancear el cuerpo para subir el peso y cortar la bajada a medias.',
+    'exercise.squats.how': 'Con la barra en la parte alta de la espalda, lleva las caderas atrás y flexiona las rodillas hasta que los muslos queden casi paralelos al suelo, luego levántate.',
+    'exercise.squats.mistakes': 'Dejar que las rodillas se metan hacia dentro y que el pecho se caiga hacia delante.',
+    'exercise.leg-press.how': 'Siéntate con los pies planos en la plataforma, a la anchura de las caderas. Baja hasta que las rodillas se acerquen al pecho y empuja sin bloquear las rodillas.',
+    'exercise.leg-press.mistakes': 'Dejar que las rodillas caigan hacia dentro y levantar las caderas del asiento.',
+    'exercise.lunges.how': 'Da un paso al frente y baja hasta que las dos rodillas estén flexionadas y la de atrás quede cerca del suelo, luego empuja para volver de pie.',
+    'exercise.lunges.mistakes': 'Dar un paso demasiado corto y dejar que la rodilla delantera se vaya muy por delante de la punta del pie.',
+    'exercise.leg-curls.how': 'Coloca el rodillo justo por encima de los talones y lleva los talones hacia los glúteos, luego baja despacio.',
+    'exercise.leg-curls.mistakes': 'Levantar las caderas del rodillo y dejar caer el peso al volver.',
+    'exercise.calf-raises.how': 'Ponte con la parte delantera del pie en un escalón y los talones al aire. Sube todo lo que puedas, haz una pausa y baja los talones por debajo del escalón.',
+    'exercise.calf-raises.mistakes': 'Rebotar abajo y doblar las rodillas para que cueste menos.',
+
+    'exercise.push-up': 'Flexión',
+    'exercise.push-up.how': 'Manos bajo los hombros y el cuerpo en línea recta de la cabeza a los talones. Baja el pecho hacia el suelo y empuja de nuevo.',
+    'exercise.push-up.mistakes': 'Dejar que las caderas se hundan o se levanten y parar a medio camino.',
+    'exercise.band-chest-press': 'Press de pecho con banda',
+    'exercise.band-chest-press.how': 'Ancla la banda detrás de ti a la altura del pecho y sujeta un extremo en cada mano. Empuja al frente hasta estirar los brazos y vuelve despacio.',
+    'exercise.band-chest-press.mistakes': 'Usar una banda tan corta que el movimiento se convierta en un encogimiento de hombros y dejarla volver de golpe.',
+    'exercise.band-pulldown': 'Jalón con banda',
+    'exercise.band-pulldown.how': 'Ancla la banda arriba, sujeta un extremo en cada mano y empieza con los brazos por encima de la cabeza. Lleva los codos hacia los costados hasta que las manos lleguen a la altura del pecho.',
+    'exercise.band-pulldown.mistakes': 'Echarse atrás para mover la banda en vez de tirar con la espalda y encoger los hombros.',
+    'exercise.band-row': 'Remo con banda',
+    'exercise.band-row.how': 'Ancla la banda a la altura del pecho y sujeta un extremo en cada mano. Lleva los codos atrás pasando los costados sin mover el pecho y vuelve despacio.',
+    'exercise.band-row.mistakes': 'Balancear el tronco para coger impulso y dejar que los hombros se vayan adelante al final.',
+    'exercise.dumbbell-row': 'Remo con mancuerna',
+    'exercise.dumbbell-row.how': 'Apoya una mano en el banco y deja colgar la mancuerna con la otra. Lleva el codo atrás hacia la cadera, haz una pausa y baja con control.',
+    'exercise.dumbbell-row.mistakes': 'Girar el tronco para levantar el peso y tirar sobre todo con el bíceps.',
+    'exercise.superman': 'Superman',
+    'exercise.superman.how': 'Túmbate boca abajo con los brazos estirados. Levanta brazos, pecho y piernas unos centímetros, aguanta un momento y baja despacio.',
+    'exercise.superman.mistakes': 'Echar la cabeza atrás y subir tanto que la zona lumbar moleste.',
+    'exercise.pike-push-up': 'Flexión en pica',
+    'exercise.pike-push-up.how': 'Desde la posición de flexión, acerca los pies y sube las caderas para formar una V invertida. Baja la coronilla hacia el suelo y empuja de nuevo.',
+    'exercise.pike-push-up.mistakes': 'Abrir los codos hacia los lados y bajar las caderas hasta convertirlo en una flexión normal.',
+    'exercise.band-shoulder-press': 'Press de hombros con banda',
+    'exercise.band-shoulder-press.how': 'Pisa la banda con un pie y sujeta los extremos a la altura de los hombros. Empuja por encima de la cabeza hasta estirar los brazos y baja despacio.',
+    'exercise.band-shoulder-press.mistakes': 'Arquear la zona lumbar para empujar más alto y elegir una banda tan fuerte que el movimiento se bloquee.',
+    'exercise.hammer-curl': 'Curl martillo',
+    'exercise.hammer-curl.how': 'Sujeta las mancuernas a los lados con las palmas mirándose. Sube sin dejar que los codos se vayan adelante y baja despacio.',
+    'exercise.hammer-curl.mistakes': 'Impulsarse con las caderas y soltar las mancuernas en vez de bajarlas.',
+    'exercise.diamond-push-up': 'Flexión diamante',
+    'exercise.diamond-push-up.how': 'Junta las manos bajo el pecho de forma que los pulgares y los índices se toquen. Mantén los codos cerca del cuerpo al bajar y empuja de nuevo.',
+    'exercise.diamond-push-up.mistakes': 'Abrir los codos y colocar las manos tan adelante que las muñecas se fuercen.',
+    'exercise.band-bicep-curl': 'Curl de bíceps con banda',
+    'exercise.band-bicep-curl.how': 'Pisa la banda y sujeta un extremo en cada mano con las palmas hacia arriba. Sube las manos hacia los hombros y baja despacio.',
+    'exercise.band-bicep-curl.mistakes': 'Dejar que los codos se vayan adelante y echarse atrás para terminar el movimiento.',
+    'exercise.bodyweight-squat': 'Sentadilla sin peso',
+    'exercise.bodyweight-squat.how': 'De pie con los pies a la anchura de los hombros. Lleva las caderas atrás y flexiona las rodillas hasta que los muslos queden casi paralelos al suelo, luego levántate.',
+    'exercise.bodyweight-squat.mistakes': 'Dejar que las rodillas se metan hacia dentro y levantar los talones del suelo.',
+    'exercise.split-squat': 'Sentadilla búlgara sin apoyo',
+    'exercise.split-squat.how': 'Colócate en zancada con un pie detrás. Baja en vertical hasta que la rodilla de atrás quede cerca del suelo y empuja con el pie delantero.',
+    'exercise.split-squat.mistakes': 'Colocarte tan estrecho que se convierta en un ejercicio de equilibrio y empujar con el pie de atrás.',
+    'exercise.step-up': 'Subida al cajón',
+    'exercise.step-up.how': 'Apoya todo el pie en un escalón o banco estable. Empuja con ese pie para subir y bájate despacio con la misma pierna.',
+    'exercise.step-up.mistakes': 'Impulsarse con el pie de atrás y usar un escalón tan alto que la rodilla se meta hacia dentro.',
+    'exercise.glute-bridge': 'Puente de glúteos',
+    'exercise.glute-bridge.how': 'Túmbate boca arriba con las rodillas flexionadas y los pies planos. Aprieta los glúteos para subir las caderas hasta que rodillas, caderas y hombros formen una línea, luego baja.',
+    'exercise.glute-bridge.mistakes': 'Arquear la zona lumbar en vez de apretar los glúteos y empujar solo con la punta de los pies.',
+    'exercise.hip-thrust': 'Empuje de cadera',
+    'exercise.hip-thrust.how': 'Apoya la parte alta de la espalda en un banco con los pies planos en el suelo. Sube las caderas hasta que el cuerpo quede nivelado, haz una pausa y baja con control.',
+    'exercise.hip-thrust.mistakes': 'Arquear en exceso la zona lumbar arriba y dejar que los pies se deslicen.',
+    'exercise.single-leg-glute-bridge': 'Puente de glúteos a una pierna',
+    'exercise.single-leg-glute-bridge.how': 'Túmbate boca arriba, flexiona una rodilla con el pie plano y mantén la otra pierna en el aire. Sube las caderas solo con la pierna de apoyo y baja despacio.',
+    'exercise.single-leg-glute-bridge.mistakes': 'Dejar que las caderas se inclinen hacia un lado y empujar tanto que la zona lumbar se encargue del trabajo.',
+    'exercise.plank': 'Plancha',
+    'exercise.plank.how': 'Apóyate en los antebrazos y las puntas de los pies con el cuerpo en línea recta. Aprieta los glúteos, mantén las costillas abajo y aguanta el tiempo previsto.',
+    'exercise.plank.mistakes': 'Dejar que las caderas se hundan o se levanten y aguantar la respiración.',
+    'exercise.dead-bug': 'Bicho muerto',
+    'exercise.dead-bug.how': 'Túmbate boca arriba con los brazos arriba y las rodillas flexionadas sobre las caderas. Baja despacio un brazo y la pierna contraria, vuelve y cambia de lado.',
+    'exercise.dead-bug.mistakes': 'Despegar la zona lumbar del suelo y moverte más rápido de lo que puedes controlar.',
+    'exercise.burpee': 'Burpee',
+    'exercise.burpee.how': 'De pie, apoya las manos en el suelo y lleva los pies atrás a una plancha, andando o saltando. Vuelve con los pies y levántate o salta.',
+    'exercise.burpee.mistakes': 'Aterrizar con las piernas estiradas y dejar que las caderas se hundan en la plancha.',
 
     /* --- Cuerpo, calorías, comida y consejos --- */
     'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
@@ -1750,6 +2638,181 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP por conquistas',
     'motivacia.newAchievement': 'Nova conquista: {names}',
 
+    /* --- Biblioteca de exercícios --- */
+    'muscle.chest': 'Peito', 'muscle.back': 'Costas', 'muscle.shoulders': 'Ombros', 'muscle.arms': 'Braços',
+    'muscle.legs': 'Pernas', 'muscle.glutes': 'Glúteos', 'muscle.core': 'Centro do corpo', 'muscle.fullBody': 'Corpo inteiro',
+
+    'equip.none': 'Sem equipamento', 'equip.bands': 'Faixas elásticas', 'equip.dumbbells': 'Halteres',
+    'equip.pullupBar': 'Barra fixa (ou barras paralelas)', 'equip.bench': 'Banco ajustável',
+    'equip.barbell': 'Barra', 'equip.cableMachine': 'Máquina (polia ou de placas)',
+
+    'loc.gym': 'Academia', 'loc.home': 'Casa', 'loc.outdoor': 'Ao ar livre',
+
+    'diff.beginner': 'Iniciante', 'diff.intermediate': 'Intermediário', 'diff.advanced': 'Avançado',
+
+    'cat.strength': 'Força', 'cat.core': 'Centro do corpo', 'cat.conditioning': 'Condicionamento',
+
+    'pattern.pushH': 'Empurrar na horizontal', 'pattern.pushV': 'Empurrar acima da cabeça', 'pattern.pullV': 'Puxar de cima',
+    'pattern.pullH': 'Puxar na horizontal', 'pattern.squat': 'Agachamento', 'pattern.hinge': 'Dobradiça de quadril',
+    'pattern.lunge': 'Avanço ou passo', 'pattern.armIsolation': 'Isolamento de cotovelo',
+    'pattern.legIsolation': 'Isolamento de joelho e tornozelo', 'pattern.backExtension': 'Extensão de coluna',
+    'pattern.coreAntiExtension': 'Estabilidade do centro', 'pattern.lateralRaise': 'Elevação lateral',
+    'pattern.conditioning': 'Condicionamento',
+
+    'altWhy.samePrimaryOtherEquipment': 'mesmo músculo principal, equipamento diferente',
+    'altWhy.samePattern': 'mesmo padrão de movimento',
+    'altWhy.similarPurpose': 'objetivo parecido',
+    'altWhy.easierVariation': 'variação mais fácil',
+    'altWhy.harderVariation': 'variação mais difícil',
+    'altWhy.noEquipmentVersion': 'versão sem equipamento',
+    'altWhy.homeVersion': 'versão para casa',
+    'altWhy.gymVersion': 'versão de academia',
+
+    'library.open': '📚 Biblioteca de exercícios',
+    'library.title': 'Biblioteca de exercícios',
+    'library.discoverTitle': 'O que você quer treinar?',
+    'library.whereTitle': 'Onde você treina?',
+    'library.searchPlaceholder': 'Buscar pelo nome do exercício',
+    'library.searchLabel': 'Buscar exercícios',
+    'library.filters': 'Filtros',
+    'library.filterDifficulty': 'Nível',
+    'library.filterPattern': 'Padrão de movimento',
+    'library.filterCategory': 'Tipo de exercício',
+    'library.myEquipment': 'Meu equipamento',
+    'library.equipmentHint': '“Sem equipamento” é uma opção de filtro, não um equipamento – não pode ser combinada com mais nada.',
+    'library.equipmentUnset': 'Diga ao GymQuest o que você tem e ele mostra só exercícios que você consegue fazer de verdade.',
+    'library.fullHomeGym': 'Academia em casa completa',
+    'library.fullBodyHint': 'Uma seleção distribuída entre os principais grupos musculares – não um exercício que treina tudo.',
+    'library.reset': 'Limpar filtros',
+    'library.results': 'Exercícios encontrados ({n})',
+    'library.empty': 'Nenhum exercício corresponde a estes filtros.',
+    'library.emptyHint': 'Tente tirar um filtro ou mude onde você treina.',
+    'library.close': 'Fechar',
+    'library.filterAll': 'Tudo',
+    'library.myOwn': 'Seus próprios exercícios',
+
+    'exercise.primary': 'Músculo principal',
+    'exercise.secondary': 'Músculos secundários',
+    'exercise.noneSecondary': 'Nenhum indicado',
+    'exercise.equipmentNeeded': 'Equipamento necessário',
+    'exercise.locationsTitle': 'Onde dá para fazer',
+    'exercise.patternLabel': 'Padrão de movimento',
+    'exercise.difficultyLabel': 'Nível',
+    'exercise.howTitle': 'Como fazer',
+    'exercise.mistakesTitle': 'Erros comuns e observações técnicas',
+    'exercise.alternativesTitle': 'Exercícios parecidos',
+    'exercise.alternativesWhy': 'Por que foi sugerido',
+    'exercise.noAlternatives': 'Nenhum outro exercício da biblioteca é parecido o bastante para ser sugerido.',
+    'exercise.replaceDuplicate': 'Este plano lista o mesmo exercício mais de uma vez, então o GymQuest não consegue diferenciá-los com segurança. Renomeie ou remova um deles no editor do plano.',
+    'exercise.homeTitle': 'Alternativas em casa',
+    'exercise.homeNone': 'Não há alternativa adequada para o seu equipamento. Mude o que você tem ou explore a biblioteca.',
+    'exercise.diagramCaption': 'Posição do corpo — esquema',
+    'exercise.diagramNote': 'Desenho simplificado da posição do corpo, não é foto nem vídeo. O guia principal são os passos escritos.',
+    'exercise.disclaimer': 'Informação geral, não é orientação médica nem recomendação médica para uma lesão.',
+    'exercise.notInLibrary': 'Este é um exercício seu, então o GymQuest não tem informações da biblioteca sobre ele.',
+    'exercise.addToPlan': 'Adicionar ao plano',
+    'exercise.inPlanAlready': 'Já está neste plano',
+    'exercise.replace': 'Trocar exercício',
+    'exercise.replaceTitle': 'Trocar exercício',
+    'exercise.replaceHint': 'Escolha o que você vai fazer no lugar. Nada do que já foi registrado se perde.',
+    'exercise.replaceNoneDone': 'Ainda não há séries registradas. {old} será trocado pelo resto desta sessão.',
+    'exercise.replaceSomeDone': '{done} de {total} séries já estão registradas para {old}. Elas continuam registradas em {old} e {next} entra para o trabalho que falta.',
+    'exercise.replaceConfirm': 'Trocar',
+    'exercise.replacedNote': 'Trocado por {name}',
+    'exercise.replacedAfter': '{n} séries registradas antes da troca',
+    'exercise.replacesNote': 'Substitui {name}',
+    'exercise.undoReplace': 'Desfazer a troca',
+    'exercise.undoDiscard': '{name} já tem {n} séries registradas. Se desfizer, elas serão descartadas.',
+    'exercise.undoConfirm': 'Desfazer',
+
+    'exercise.bench-press.how': 'Deite no banco com os pés apoiados e as escápulas juntas. Desça a barra até a metade do peito e empurre de volta sobre os ombros.',
+    'exercise.bench-press.mistakes': 'Quicar a barra no peito e deixar os cotovelos abrirem totalmente para os lados.',
+    'exercise.overhead-press.how': 'Em pé com a barra na altura dos ombros e as mãos um pouco mais afastadas. Empurre acima da cabeça até os braços esticarem e desça de volta aos ombros.',
+    'exercise.overhead-press.mistakes': 'Inclinar o tronco para trás até virar um supino inclinado e segurar a respiração a série toda.',
+    'exercise.dips.how': 'Apoie-se nas barras paralelas com os braços esticados. Desça até os ombros ficarem na altura dos cotovelos e empurre de volta.',
+    'exercise.dips.mistakes': 'Descer fundo demais e subir os ombros em direção às orelhas.',
+    'exercise.lateral-raises.how': 'Em pé com os halteres ao lado do corpo e os cotovelos levemente flexionados. Eleve os braços até a altura dos ombros e desça devagar.',
+    'exercise.lateral-raises.mistakes': 'Impulsionar os halteres e encolher os ombros em vez de elevar os braços.',
+    'exercise.pull-ups.how': 'Pendure-se na barra com as mãos um pouco mais afastadas que os ombros. Puxe até o queixo passar da barra e desça até o fim.',
+    'exercise.pull-ups.mistakes': 'Dar impulso com as pernas e parar no meio da descida.',
+    'exercise.bent-over-rows.how': 'Incline o tronco com a coluna reta e deixe a barra pendurada abaixo dos ombros. Puxe em direção à barriga e desça com controle.',
+    'exercise.bent-over-rows.mistakes': 'Arredondar a lombar e ir levantando o tronco conforme a série avança.',
+    'exercise.cable-rows.how': 'Sente-se ereto com os pés apoiados e a alça nas duas mãos. Puxe em direção à barriga sem mexer o peito e deixe voltar devagar.',
+    'exercise.cable-rows.mistakes': 'Balançar o tronco para frente e para trás e puxar com os punhos dobrados.',
+    'exercise.bicep-curls.how': 'Em pé com os halteres ao lado do corpo e as palmas para frente. Suba até os ombros e desça devagar até o fim.',
+    'exercise.bicep-curls.mistakes': 'Balançar o corpo para subir o peso e cortar a descida pela metade.',
+    'exercise.squats.how': 'Com a barra na parte alta das costas, leve o quadril para trás e dobre os joelhos até as coxas ficarem quase paralelas ao chão, depois levante.',
+    'exercise.squats.mistakes': 'Deixar os joelhos caírem para dentro e o peito desabar para frente.',
+    'exercise.leg-press.how': 'Sente-se com os pés apoiados na plataforma na largura do quadril. Desça até os joelhos chegarem perto do peito e empurre sem travar os joelhos.',
+    'exercise.leg-press.mistakes': 'Deixar os joelhos caírem para dentro e levantar o quadril do assento.',
+    'exercise.lunges.how': 'Dê um passo à frente e desça até os dois joelhos ficarem dobrados e o de trás perto do chão, depois empurre para voltar em pé.',
+    'exercise.lunges.mistakes': 'Dar um passo curto demais e deixar o joelho da frente passar muito da ponta do pé.',
+    'exercise.leg-curls.how': 'Ajuste o rolo logo acima dos calcanhares e leve os calcanhares em direção aos glúteos, depois desça devagar.',
+    'exercise.leg-curls.mistakes': 'Levantar o quadril do apoio e deixar o peso cair na volta.',
+    'exercise.calf-raises.how': 'Fique com a parte da frente dos pés em um degrau e os calcanhares livres. Suba o máximo que conseguir, faça uma pausa e desça os calcanhares abaixo do degrau.',
+    'exercise.calf-raises.mistakes': 'Quicar embaixo e dobrar os joelhos para ficar mais fácil.',
+
+    'exercise.push-up': 'Flexão de braço',
+    'exercise.push-up.how': 'Mãos abaixo dos ombros e o corpo em linha reta da cabeça aos calcanhares. Desça o peito em direção ao chão e empurre de volta.',
+    'exercise.push-up.mistakes': 'Deixar o quadril afundar ou subir e parar no meio da descida.',
+    'exercise.band-chest-press': 'Supino com faixa elástica',
+    'exercise.band-chest-press.how': 'Prenda a faixa atrás de você na altura do peito e segure uma ponta em cada mão. Empurre à frente até os braços esticarem e volte devagar.',
+    'exercise.band-chest-press.mistakes': 'Usar uma faixa tão curta que o movimento vira encolhimento de ombros e deixar a faixa voltar de uma vez.',
+    'exercise.band-pulldown': 'Puxada com faixa elástica',
+    'exercise.band-pulldown.how': 'Prenda a faixa no alto, segure uma ponta em cada mão e comece com os braços acima da cabeça. Puxe os cotovelos para baixo junto ao corpo até as mãos chegarem na altura do peito.',
+    'exercise.band-pulldown.mistakes': 'Inclinar o tronco para trás para mover a faixa em vez de puxar com as costas e encolher os ombros.',
+    'exercise.band-row': 'Remada com faixa elástica',
+    'exercise.band-row.how': 'Prenda a faixa na altura do peito e segure uma ponta em cada mão. Puxe os cotovelos para trás passando o corpo sem mexer o peito e volte devagar.',
+    'exercise.band-row.mistakes': 'Balançar o tronco para pegar impulso e deixar os ombros rolarem para frente no fim.',
+    'exercise.dumbbell-row': 'Remada com halter',
+    'exercise.dumbbell-row.how': 'Apoie uma mão no banco e deixe o outro braço pendurado com o halter. Puxe o cotovelo para trás em direção ao quadril, faça uma pausa e desça com controle.',
+    'exercise.dumbbell-row.mistakes': 'Torcer o tronco para levantar o peso e puxar quase só com o bíceps.',
+    'exercise.superman': 'Superman',
+    'exercise.superman.how': 'Deite de barriga para baixo com os braços estendidos. Levante braços, peito e pernas alguns centímetros, segure um instante e desça devagar.',
+    'exercise.superman.mistakes': 'Jogar a cabeça para trás e subir tanto que a lombar reclama.',
+    'exercise.pike-push-up': 'Flexão em pike',
+    'exercise.pike-push-up.how': 'Saindo da flexão, aproxime os pés e suba o quadril até o corpo formar um V invertido. Desça o topo da cabeça em direção ao chão e empurre de volta.',
+    'exercise.pike-push-up.mistakes': 'Abrir os cotovelos para os lados e baixar o quadril até virar uma flexão comum.',
+    'exercise.band-shoulder-press': 'Desenvolvimento com faixa elástica',
+    'exercise.band-shoulder-press.how': 'Pise na faixa com um pé e segure as pontas na altura dos ombros. Empurre acima da cabeça até os braços esticarem e desça devagar.',
+    'exercise.band-shoulder-press.mistakes': 'Arquear a lombar para empurrar mais alto e escolher uma faixa tão forte que o movimento trava.',
+    'exercise.hammer-curl': 'Rosca martelo',
+    'exercise.hammer-curl.how': 'Segure os halteres ao lado do corpo com as palmas viradas uma para a outra. Suba sem deixar os cotovelos irem para frente e desça devagar.',
+    'exercise.hammer-curl.mistakes': 'Impulsionar com o quadril e largar os halteres em vez de descer.',
+    'exercise.diamond-push-up': 'Flexão diamante',
+    'exercise.diamond-push-up.how': 'Junte as mãos abaixo do peito de forma que polegares e indicadores se toquem. Mantenha os cotovelos junto ao corpo ao descer e empurre de volta.',
+    'exercise.diamond-push-up.mistakes': 'Abrir os cotovelos e colocar as mãos tão à frente que os punhos ficam forçados.',
+    'exercise.band-bicep-curl': 'Rosca com faixa elástica',
+    'exercise.band-bicep-curl.how': 'Pise na faixa e segure uma ponta em cada mão com as palmas para cima. Suba as mãos em direção aos ombros e desça devagar.',
+    'exercise.band-bicep-curl.mistakes': 'Deixar os cotovelos irem para frente e inclinar o tronco para terminar o movimento.',
+    'exercise.bodyweight-squat': 'Agachamento sem peso',
+    'exercise.bodyweight-squat.how': 'Em pé com os pés na largura dos ombros. Leve o quadril para trás e dobre os joelhos até as coxas ficarem quase paralelas ao chão, depois levante.',
+    'exercise.bodyweight-squat.mistakes': 'Deixar os joelhos caírem para dentro e levantar os calcanhares do chão.',
+    'exercise.split-squat': 'Agachamento unilateral',
+    'exercise.split-squat.how': 'Fique em passo com um pé atrás. Desça na vertical até o joelho de trás chegar perto do chão e empurre pela perna da frente.',
+    'exercise.split-squat.mistakes': 'Ficar estreito demais, virando exercício de equilíbrio, e empurrar com a perna de trás.',
+    'exercise.step-up': 'Subida no banco',
+    'exercise.step-up.how': 'Apoie o pé inteiro em um degrau ou banco firme. Empurre por esse pé para subir e desça devagar com a mesma perna.',
+    'exercise.step-up.mistakes': 'Impulsionar com o pé de trás e usar um degrau tão alto que o joelho cai para dentro.',
+    'exercise.glute-bridge': 'Elevação de quadril',
+    'exercise.glute-bridge.how': 'Deite de costas com os joelhos dobrados e os pés apoiados. Aperte os glúteos para subir o quadril até joelhos, quadril e ombros formarem uma linha, depois desça.',
+    'exercise.glute-bridge.mistakes': 'Arquear a lombar em vez de apertar os glúteos e empurrar só com as pontas dos pés.',
+    'exercise.hip-thrust': 'Elevação pélvica com banco',
+    'exercise.hip-thrust.how': 'Apoie a parte alta das costas em um banco com os pés no chão. Suba o quadril até o corpo ficar nivelado, faça uma pausa e desça com controle.',
+    'exercise.hip-thrust.mistakes': 'Estender demais a lombar em cima e deixar os pés escorregarem.',
+    'exercise.single-leg-glute-bridge': 'Elevação de quadril em uma perna',
+    'exercise.single-leg-glute-bridge.how': 'Deite de costas, dobre um joelho com o pé apoiado e mantenha a outra perna no ar. Suba o quadril só com a perna de apoio e desça devagar.',
+    'exercise.single-leg-glute-bridge.mistakes': 'Deixar o quadril inclinar para um lado e empurrar tanto que a lombar assume o trabalho.',
+    'exercise.plank': 'Prancha',
+    'exercise.plank.how': 'Apoie-se nos antebraços e nas pontas dos pés com o corpo em linha reta. Aperte os glúteos, mantenha as costelas para baixo e segure o tempo previsto.',
+    'exercise.plank.mistakes': 'Deixar o quadril afundar ou subir e prender a respiração.',
+    'exercise.dead-bug': 'Inseto morto',
+    'exercise.dead-bug.how': 'Deite de costas com os braços para cima e os joelhos dobrados sobre o quadril. Desça devagar um braço e a perna oposta, volte e troque de lado.',
+    'exercise.dead-bug.mistakes': 'Descolar a lombar do chão e se mover mais rápido do que você consegue controlar.',
+    'exercise.burpee': 'Burpee',
+    'exercise.burpee.how': 'Em pé, coloque as mãos no chão e leve os pés para trás até a prancha, andando ou saltando. Traga os pés de volta e levante-se ou salte.',
+    'exercise.burpee.mistakes': 'Aterrissar com as pernas esticadas e deixar o quadril afundar na prancha.',
+
     /* --- Corpo, calorias, comida e dicas --- */
     'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
 
@@ -2179,6 +3242,181 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP grâce aux succès',
     'motivacia.newAchievement': 'Nouveau succès : {names}',
+
+    /* --- Bibliothèque d’exercices --- */
+    'muscle.chest': 'Pectoraux', 'muscle.back': 'Dos', 'muscle.shoulders': 'Épaules', 'muscle.arms': 'Bras',
+    'muscle.legs': 'Jambes', 'muscle.glutes': 'Fessiers', 'muscle.core': 'Gainage', 'muscle.fullBody': 'Corps entier',
+
+    'equip.none': 'Sans matériel', 'equip.bands': 'Élastiques', 'equip.dumbbells': 'Haltères',
+    'equip.pullupBar': 'Barre de traction (ou barres parallèles)', 'equip.bench': 'Banc réglable',
+    'equip.barbell': 'Barre', 'equip.cableMachine': 'Machine (poulie ou à plaques)',
+
+    'loc.gym': 'Salle de sport', 'loc.home': 'Maison', 'loc.outdoor': 'Extérieur',
+
+    'diff.beginner': 'Débutant', 'diff.intermediate': 'Intermédiaire', 'diff.advanced': 'Avancé',
+
+    'cat.strength': 'Force', 'cat.core': 'Gainage', 'cat.conditioning': 'Cardio',
+
+    'pattern.pushH': 'Poussée horizontale', 'pattern.pushV': 'Poussée verticale', 'pattern.pullV': 'Tirage vertical',
+    'pattern.pullH': 'Tirage horizontal', 'pattern.squat': 'Squat', 'pattern.hinge': 'Charnière de hanche',
+    'pattern.lunge': 'Fente ou montée', 'pattern.armIsolation': 'Isolation du coude',
+    'pattern.legIsolation': 'Isolation du genou et de la cheville', 'pattern.backExtension': 'Extension du dos',
+    'pattern.coreAntiExtension': 'Stabilité du tronc', 'pattern.lateralRaise': 'Élévation latérale',
+    'pattern.conditioning': 'Conditionnement',
+
+    'altWhy.samePrimaryOtherEquipment': 'même muscle principal, matériel différent',
+    'altWhy.samePattern': 'même schéma de mouvement',
+    'altWhy.similarPurpose': 'objectif similaire',
+    'altWhy.easierVariation': 'variante plus facile',
+    'altWhy.harderVariation': 'variante plus difficile',
+    'altWhy.noEquipmentVersion': 'version sans matériel',
+    'altWhy.homeVersion': 'version maison',
+    'altWhy.gymVersion': 'version salle',
+
+    'library.open': '📚 Bibliothèque d’exercices',
+    'library.title': 'Bibliothèque d’exercices',
+    'library.discoverTitle': 'Qu’est-ce que tu veux travailler ?',
+    'library.whereTitle': 'Où t’entraînes-tu ?',
+    'library.searchPlaceholder': 'Chercher par nom d’exercice',
+    'library.searchLabel': 'Rechercher des exercices',
+    'library.filters': 'Filtres',
+    'library.filterDifficulty': 'Difficulté',
+    'library.filterPattern': 'Schéma de mouvement',
+    'library.filterCategory': 'Type d’exercice',
+    'library.myEquipment': 'Mon matériel',
+    'library.equipmentHint': '« Sans matériel » est un choix de filtre, pas du matériel : il ne se combine avec rien d’autre.',
+    'library.equipmentUnset': 'Dis à GymQuest ce que tu as : il n’affichera que des exercices que tu peux vraiment faire.',
+    'library.fullHomeGym': 'Salle à la maison complète',
+    'library.fullBodyHint': 'Une sélection répartie sur les grands groupes musculaires, pas un exercice qui travaille tout.',
+    'library.reset': 'Retirer les filtres',
+    'library.results': 'Exercices trouvés ({n})',
+    'library.empty': 'Aucun exercice ne correspond à ces filtres.',
+    'library.emptyHint': 'Enlève un filtre ou change l’endroit où tu t’entraînes.',
+    'library.close': 'Fermer',
+    'library.filterAll': 'Tout',
+    'library.myOwn': 'Tes propres exercices',
+
+    'exercise.primary': 'Muscle principal',
+    'exercise.secondary': 'Muscles secondaires',
+    'exercise.noneSecondary': 'Aucun indiqué',
+    'exercise.equipmentNeeded': 'Matériel nécessaire',
+    'exercise.locationsTitle': 'Où tu peux le faire',
+    'exercise.patternLabel': 'Schéma de mouvement',
+    'exercise.difficultyLabel': 'Difficulté',
+    'exercise.howTitle': 'Comment le faire',
+    'exercise.mistakesTitle': 'Erreurs fréquentes et notes techniques',
+    'exercise.alternativesTitle': 'Exercices similaires',
+    'exercise.alternativesWhy': 'Pourquoi suggéré',
+    'exercise.noAlternatives': 'Aucun autre exercice de la bibliothèque ne ressemble assez à celui-ci pour être suggéré.',
+    'exercise.replaceDuplicate': 'Ce plan liste le même exercice plusieurs fois : GymQuest ne peut donc pas les distinguer de façon sûre. Renomme ou supprime l’un des deux dans l’éditeur du plan.',
+    'exercise.homeTitle': 'Alternatives à la maison',
+    'exercise.homeNone': 'Aucune alternative adaptée à ton matériel. Change ce que tu as ou parcours la bibliothèque.',
+    'exercise.diagramCaption': 'Position du corps — schéma',
+    'exercise.diagramNote': 'Dessin simplifié de la position du corps, ni photo ni vidéo. Les étapes écrites restent la référence.',
+    'exercise.disclaimer': 'Informations générales, ni avis médical ni recommandation médicale en cas de blessure.',
+    'exercise.notInLibrary': 'C’est ton propre exercice : GymQuest n’a donc aucune fiche de bibliothèque pour lui.',
+    'exercise.addToPlan': 'Ajouter au plan',
+    'exercise.inPlanAlready': 'Déjà dans ce plan',
+    'exercise.replace': 'Remplacer l’exercice',
+    'exercise.replaceTitle': 'Remplacer l’exercice',
+    'exercise.replaceHint': 'Choisis ce que tu feras à la place. Rien de ce qui est déjà noté n’est perdu.',
+    'exercise.replaceNoneDone': 'Aucune série notée pour l’instant. {old} sera remplacé pour le reste de cette séance.',
+    'exercise.replaceSomeDone': '{done} séries sur {total} sont déjà notées pour {old}. Elles restent notées sous {old}, et {next} est ajouté pour le travail restant.',
+    'exercise.replaceConfirm': 'Remplacer',
+    'exercise.replacedNote': 'Remplacé par {name}',
+    'exercise.replacedAfter': '{n} séries notées avant le changement',
+    'exercise.replacesNote': 'Remplace {name}',
+    'exercise.undoReplace': 'Annuler le remplacement',
+    'exercise.undoDiscard': '{name} a déjà {n} séries notées. En annulant, elles seront perdues.',
+    'exercise.undoConfirm': 'Annuler',
+
+    'exercise.bench-press.how': 'Allonge-toi sur le banc, pieds au sol et omoplates serrées. Descends la barre au milieu du torse, puis repousse-la au-dessus des épaules.',
+    'exercise.bench-press.mistakes': 'Faire rebondir la barre sur la poitrine et laisser les coudes s’ouvrir complètement sur les côtés.',
+    'exercise.overhead-press.how': 'Debout, la barre à hauteur d’épaules et les mains juste à l’extérieur. Pousse au-dessus de la tête jusqu’à tendre les bras, puis redescends aux épaules.',
+    'exercise.overhead-press.mistakes': 'Te pencher en arrière jusqu’à transformer le mouvement en développé incliné et bloquer ta respiration toute la série.',
+    'exercise.dips.how': 'Suspends-toi sur les barres parallèles, bras tendus. Descends jusqu’à ce que les épaules arrivent à hauteur des coudes, puis repousse.',
+    'exercise.dips.mistakes': 'Descendre trop bas et remonter les épaules vers les oreilles.',
+    'exercise.lateral-raises.how': 'Debout, haltères le long du corps et coudes légèrement fléchis. Monte les bras jusqu’à hauteur d’épaules, puis redescends lentement.',
+    'exercise.lateral-raises.mistakes': 'Balancer les haltères et hausser les épaules au lieu d’élever les bras.',
+    'exercise.pull-ups.how': 'Suspends-toi à la barre, mains un peu plus larges que les épaules. Tire jusqu’à passer le menton au-dessus, puis descends complètement.',
+    'exercise.pull-ups.mistakes': 'Donner des coups de jambes pour monter et t’arrêter à mi-descente.',
+    'exercise.bent-over-rows.how': 'Penche-toi le dos droit et laisse la barre pendre sous les épaules. Tire vers le ventre, puis redescends avec contrôle.',
+    'exercise.bent-over-rows.mistakes': 'Arrondir le bas du dos et te redresser au fil de la série.',
+    'exercise.cable-rows.how': 'Assieds-toi bien droit, pieds calés et poignée dans les deux mains. Tire vers le ventre sans bouger la poitrine, puis laisse revenir lentement.',
+    'exercise.cable-rows.mistakes': 'Te balancer d’avant en arrière pour déplacer la poignée et tirer les poignets fléchis.',
+    'exercise.bicep-curls.how': 'Debout, haltères le long du corps et paumes vers l’avant. Monte vers les épaules, puis redescends lentement jusqu’en bas.',
+    'exercise.bicep-curls.mistakes': 'Balancer le corps pour monter la charge et couper la descente à moitié.',
+    'exercise.squats.how': 'Barre sur le haut du dos, pousse les hanches en arrière et fléchis les genoux jusqu’à ce que les cuisses soient presque parallèles au sol, puis remonte.',
+    'exercise.squats.mistakes': 'Laisser les genoux rentrer vers l’intérieur et la poitrine s’effondrer vers l’avant.',
+    'exercise.leg-press.how': 'Assieds-toi, pieds à plat sur la plateforme à largeur de bassin. Descends jusqu’à ce que les genoux approchent la poitrine, puis pousse sans verrouiller les genoux.',
+    'exercise.leg-press.mistakes': 'Laisser les genoux tomber vers l’intérieur et décoller les hanches du siège.',
+    'exercise.lunges.how': 'Avance d’un pas et descends jusqu’à ce que les deux genoux soient fléchis et celui de derrière proche du sol, puis pousse pour revenir debout.',
+    'exercise.lunges.mistakes': 'Faire un pas trop court et laisser le genou avant dépasser largement la pointe du pied.',
+    'exercise.leg-curls.how': 'Place le rouleau juste au-dessus des talons et ramène les talons vers les fessiers, puis redescends lentement.',
+    'exercise.leg-curls.mistakes': 'Décoller les hanches du rouleau et laisser la charge tomber au retour.',
+    'exercise.calf-raises.how': 'Place l’avant des pieds sur une marche, talons dans le vide. Monte le plus haut possible, marque une pause, puis descends les talons sous la marche.',
+    'exercise.calf-raises.mistakes': 'Rebondir en bas et plier les genoux pour rendre l’exercice plus facile.',
+
+    'exercise.push-up': 'Pompe',
+    'exercise.push-up.how': 'Mains sous les épaules, corps aligné de la tête aux talons. Descends la poitrine vers le sol, puis repousse.',
+    'exercise.push-up.mistakes': 'Laisser les hanches s’affaisser ou monter, et t’arrêter à mi-descente.',
+    'exercise.band-chest-press': 'Développé élastique',
+    'exercise.band-chest-press.how': 'Fixe l’élastique derrière toi à hauteur de poitrine et saisis une extrémité dans chaque main. Pousse vers l’avant jusqu’à tendre les bras, puis reviens lentement.',
+    'exercise.band-chest-press.mistakes': 'Utiliser un élastique si court que le mouvement devient une haussement d’épaules, et le laisser revenir d’un coup.',
+    'exercise.band-pulldown': 'Tirage vertical à l’élastique',
+    'exercise.band-pulldown.how': 'Fixe l’élastique en hauteur, saisis une extrémité dans chaque main et pars les bras au-dessus de la tête. Ramène les coudes vers le buste jusqu’à ce que les mains arrivent à hauteur de poitrine.',
+    'exercise.band-pulldown.mistakes': 'Te pencher en arrière pour bouger l’élastique au lieu de tirer avec le dos, et hausser les épaules.',
+    'exercise.band-row': 'Rowing à l’élastique',
+    'exercise.band-row.how': 'Fixe l’élastique à hauteur de poitrine et saisis une extrémité dans chaque main. Tire les coudes en arrière le long du corps sans bouger la poitrine, puis reviens lentement.',
+    'exercise.band-row.mistakes': 'Balancer le buste pour prendre de l’élan et laisser les épaules s’enrouler à la fin.',
+    'exercise.dumbbell-row': 'Rowing haltère',
+    'exercise.dumbbell-row.how': 'Appuie une main sur le banc et laisse l’autre bras pendre avec l’haltère. Tire le coude vers la hanche, marque une pause, puis redescends avec contrôle.',
+    'exercise.dumbbell-row.mistakes': 'Faire pivoter le buste pour monter la charge et tirer surtout avec le biceps.',
+    'exercise.superman': 'Superman',
+    'exercise.superman.how': 'Allonge-toi sur le ventre, bras tendus. Soulève bras, poitrine et jambes de quelques centimètres, tiens un instant, puis redescends lentement.',
+    'exercise.superman.mistakes': 'Renverser la tête en arrière et monter si haut que le bas du dos tire.',
+    'exercise.pike-push-up': 'Pompe en piqué',
+    'exercise.pike-push-up.how': 'Depuis la position de pompe, rapproche les pieds et monte les hanches pour former un V inversé. Descends le sommet du crâne vers le sol, puis repousse.',
+    'exercise.pike-push-up.mistakes': 'Ouvrir les coudes sur les côtés et laisser les hanches descendre jusqu’à transformer le mouvement en pompe classique.',
+    'exercise.band-shoulder-press': 'Développé épaules à l’élastique',
+    'exercise.band-shoulder-press.how': 'Pose un pied sur l’élastique et tiens les extrémités à hauteur d’épaules. Pousse au-dessus de la tête jusqu’à tendre les bras, puis redescends lentement.',
+    'exercise.band-shoulder-press.mistakes': 'Cambrer le bas du dos pour pousser plus haut et choisir un élastique si fort que le mouvement se bloque.',
+    'exercise.hammer-curl': 'Curl marteau',
+    'exercise.hammer-curl.how': 'Tiens les haltères le long du corps, paumes face à face. Monte sans laisser les coudes partir vers l’avant, puis redescends lentement.',
+    'exercise.hammer-curl.mistakes': 'Donner un élan avec les hanches et laisser tomber les haltères au lieu de les accompagner.',
+    'exercise.diamond-push-up': 'Pompe diamant',
+    'exercise.diamond-push-up.how': 'Joins les mains sous la poitrine de façon à ce que pouces et index se touchent. Garde les coudes près du corps en descendant et repousse.',
+    'exercise.diamond-push-up.mistakes': 'Ouvrir les coudes et placer les mains si loin devant que les poignets sont mis à l’épreuve.',
+    'exercise.band-bicep-curl': 'Curl biceps à l’élastique',
+    'exercise.band-bicep-curl.how': 'Pose un pied sur l’élastique et saisis une extrémité dans chaque main, paumes vers le haut. Monte les mains vers les épaules, puis redescends lentement.',
+    'exercise.band-bicep-curl.mistakes': 'Laisser les coudes partir vers l’avant et te pencher en arrière pour finir le mouvement.',
+    'exercise.bodyweight-squat': 'Squat au poids du corps',
+    'exercise.bodyweight-squat.how': 'Debout, pieds à largeur d’épaules. Pousse les hanches en arrière et fléchis les genoux jusqu’à ce que les cuisses soient presque parallèles au sol, puis remonte.',
+    'exercise.bodyweight-squat.mistakes': 'Laisser les genoux rentrer vers l’intérieur et décoller les talons du sol.',
+    'exercise.split-squat': 'Squat partagé',
+    'exercise.split-squat.how': 'Place-toi en fente avec un pied derrière. Descends bien droit jusqu’à ce que le genou arrière approche le sol, puis pousse avec la jambe avant.',
+    'exercise.split-squat.mistakes': 'Te placer trop étroit, ce qui en fait un exercice d’équilibre, et pousser avec la jambe arrière.',
+    'exercise.step-up': 'Montée sur banc',
+    'exercise.step-up.how': 'Pose le pied entier sur une marche ou un banc stable. Pousse avec ce pied pour monter, puis redescends lentement avec la même jambe.',
+    'exercise.step-up.mistakes': 'Pousser avec le pied arrière et utiliser une marche si haute que le genou rentre vers l’intérieur.',
+    'exercise.glute-bridge': 'Pont fessier',
+    'exercise.glute-bridge.how': 'Allonge-toi sur le dos, genoux fléchis et pieds à plat. Serre les fessiers pour monter les hanches jusqu’à ce que genoux, hanches et épaules forment une ligne, puis redescends.',
+    'exercise.glute-bridge.mistakes': 'Cambrer le bas du dos au lieu de serrer les fessiers et pousser uniquement sur la pointe des pieds.',
+    'exercise.hip-thrust': 'Hip thrust',
+    'exercise.hip-thrust.how': 'Appuie le haut du dos sur un banc, pieds à plat au sol. Monte les hanches jusqu’à ce que le corps soit à l’horizontale, marque une pause, puis redescends avec contrôle.',
+    'exercise.hip-thrust.mistakes': 'Trop cambrer le bas du dos en haut et laisser les pieds glisser.',
+    'exercise.single-leg-glute-bridge': 'Pont fessier sur une jambe',
+    'exercise.single-leg-glute-bridge.how': 'Allonge-toi sur le dos, fléchis un genou pied à plat et garde l’autre jambe en l’air. Monte les hanches avec la jambe d’appui seule, puis redescends lentement.',
+    'exercise.single-leg-glute-bridge.mistakes': 'Laisser les hanches basculer d’un côté et pousser si fort que le bas du dos prend le relais.',
+    'exercise.plank': 'Planche',
+    'exercise.plank.how': 'Appuie-toi sur les avant-bras et la pointe des pieds, corps aligné. Serre les fessiers, garde les côtes basses et tiens le temps prévu.',
+    'exercise.plank.mistakes': 'Laisser les hanches s’affaisser ou monter, et retenir ta respiration.',
+    'exercise.dead-bug': 'Dead bug',
+    'exercise.dead-bug.how': 'Allonge-toi sur le dos, bras vers le haut et genoux fléchis au-dessus des hanches. Descends lentement un bras et la jambe opposée, ramène-les, puis change de côté.',
+    'exercise.dead-bug.mistakes': 'Décoller le bas du dos du sol et bouger plus vite que tu ne peux contrôler.',
+    'exercise.burpee': 'Burpee',
+    'exercise.burpee.how': 'Debout, pose les mains au sol et envoie les pieds en arrière en planche, en marchant ou en sautant. Ramène les pieds, puis relève-toi ou saute.',
+    'exercise.burpee.mistakes': 'Atterrir jambes tendues et laisser les hanches s’affaisser en planche.',
 
     /* --- Corps, calories, alimentation et conseils --- */
     'units.kg': 'kg', 'units.lb': 'lb', 'units.cm': 'cm', 'units.in': 'in', 'units.g': 'g', 'units.kcal': 'kcal',
@@ -2628,6 +3866,181 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP من الإنجازات',
     'motivacia.newAchievement': 'إنجاز جديد: {names}',
+
+    /* --- مكتبة التمارين --- */
+    'muscle.chest': 'الصدر', 'muscle.back': 'الظهر', 'muscle.shoulders': 'الكتفان', 'muscle.arms': 'الذراعان',
+    'muscle.legs': 'الساقان', 'muscle.glutes': 'الأرداف', 'muscle.core': 'منتصف الجسم', 'muscle.fullBody': 'الجسم كامل',
+
+    'equip.none': 'بدون أدوات', 'equip.bands': 'أشرطة مقاومة', 'equip.dumbbells': 'دمبل',
+    'equip.pullupBar': 'عقلة (أو متوازي)', 'equip.bench': 'مقعد قابل للتعديل',
+    'equip.barbell': 'بار حديدي', 'equip.cableMachine': 'جهاز (بكرة أو أوزان)',
+
+    'loc.gym': 'الصالة', 'loc.home': 'المنزل', 'loc.outdoor': 'الخارج',
+
+    'diff.beginner': 'مبتدئ', 'diff.intermediate': 'متوسط', 'diff.advanced': 'متقدّم',
+
+    'cat.strength': 'قوة', 'cat.core': 'منتصف الجسم', 'cat.conditioning': 'لياقة',
+
+    'pattern.pushH': 'دفع أفقي', 'pattern.pushV': 'دفع علوي', 'pattern.pullV': 'سحب علوي',
+    'pattern.pullH': 'سحب أفقي', 'pattern.squat': 'قرفصاء', 'pattern.hinge': 'ثني الورك',
+    'pattern.lunge': 'اندفاع أو صعود', 'pattern.armIsolation': 'عزل الكوع',
+    'pattern.legIsolation': 'عزل الركبة والكاحل', 'pattern.backExtension': 'بسط الظهر',
+    'pattern.coreAntiExtension': 'ثبات منتصف الجسم', 'pattern.lateralRaise': 'رفرفة جانبية',
+    'pattern.conditioning': 'تمارين لياقة',
+
+    'altWhy.samePrimaryOtherEquipment': 'نفس العضلة الرئيسية بأداة مختلفة',
+    'altWhy.samePattern': 'نفس نمط الحركة',
+    'altWhy.similarPurpose': 'هدف مشابه',
+    'altWhy.easierVariation': 'نسخة أسهل',
+    'altWhy.harderVariation': 'نسخة أصعب',
+    'altWhy.noEquipmentVersion': 'نسخة بدون أدوات',
+    'altWhy.homeVersion': 'نسخة منزلية',
+    'altWhy.gymVersion': 'نسخة الصالة',
+
+    'library.open': '📚 مكتبة التمارين',
+    'library.title': 'مكتبة التمارين',
+    'library.discoverTitle': 'ماذا تريد أن تتمرّن؟',
+    'library.whereTitle': 'أين تتدرّب؟',
+    'library.searchPlaceholder': 'ابحث باسم التمرين',
+    'library.searchLabel': 'البحث عن تمارين',
+    'library.filters': 'الفلاتر',
+    'library.filterDifficulty': 'المستوى',
+    'library.filterPattern': 'نمط الحركة',
+    'library.filterCategory': 'نوع التمرين',
+    'library.myEquipment': 'أدواتي',
+    'library.equipmentHint': '«بدون أدوات» خيار فلترة وليس أداة – لا يمكن جمعه مع أي شيء آخر.',
+    'library.equipmentUnset': 'أخبر GymQuest بما لديك، وسيعرض تمارين يمكنك أداؤها فعلًا فقط.',
+    'library.fullHomeGym': 'صالة منزلية كاملة',
+    'library.fullBodyHint': 'اختيار موزّع على مجموعات العضلات الرئيسية – وليس تمرينًا واحدًا يدرّب كل شيء.',
+    'library.reset': 'إزالة الفلاتر',
+    'library.results': 'التمارين المطابقة ({n})',
+    'library.empty': 'لا يوجد تمرين يطابق هذه الفلاتر.',
+    'library.emptyHint': 'جرّب إزالة فلتر أو غيّر المكان الذي تتدرّب فيه.',
+    'library.close': 'إغلاق',
+    'library.filterAll': 'الكل',
+    'library.myOwn': 'تمارينك الخاصة',
+
+    'exercise.primary': 'العضلة الرئيسية',
+    'exercise.secondary': 'العضلات الثانوية',
+    'exercise.noneSecondary': 'لا يوجد',
+    'exercise.equipmentNeeded': 'الأدوات المطلوبة',
+    'exercise.locationsTitle': 'أين يمكن أداؤه',
+    'exercise.patternLabel': 'نمط الحركة',
+    'exercise.difficultyLabel': 'المستوى',
+    'exercise.howTitle': 'كيف تؤدّيه',
+    'exercise.mistakesTitle': 'أخطاء شائعة وملاحظات فنية',
+    'exercise.alternativesTitle': 'تمارين مشابهة',
+    'exercise.alternativesWhy': 'سبب الاقتراح',
+    'exercise.noAlternatives': 'لا يوجد تمرين آخر في المكتبة قريب بما يكفي ليُقترح.',
+    'exercise.replaceDuplicate': 'هذه الخطة تكرّر التمرين نفسه أكثر من مرة، لذا لا يستطيع GymQuest التمييز بينهما بأمان. أعد تسمية أحدهما أو احذفه من محرّر الخطة.',
+    'exercise.homeTitle': 'بدائل منزلية',
+    'exercise.homeNone': 'لا يوجد بديل مناسب لأدواتك. غيّر ما لديك أو تصفّح المكتبة.',
+    'exercise.diagramCaption': 'وضع الجسم — رسم تخطيطي',
+    'exercise.diagramNote': 'رسم مبسّط لوضع الجسم، وليس صورة أو فيديو. الخطوات المكتوبة هي الدليل الأساسي.',
+    'exercise.disclaimer': 'معلومات عامة، وليست نصيحة طبية ولا توصية طبية لإصابة.',
+    'exercise.notInLibrary': 'هذا تمرينك الخاص، فلا توجد في GymQuest معلومات مكتبة عنه.',
+    'exercise.addToPlan': 'إضافة إلى الخطة',
+    'exercise.inPlanAlready': 'موجود في هذه الخطة',
+    'exercise.replace': 'استبدال التمرين',
+    'exercise.replaceTitle': 'استبدال التمرين',
+    'exercise.replaceHint': 'اختر ما ستفعله بدلًا منه. لا شيء مما سُجّل سيضيع.',
+    'exercise.replaceNoneDone': 'لم تُسجَّل أي سلسلة بعد. سيُستبدل {old} لبقية هذه الجلسة.',
+    'exercise.replaceSomeDone': '{done} من {total} سلسلة مسجّلة بالفعل لـ {old}. ستبقى مسجّلة تحت {old}، ويُضاف {next} للعمل المتبقي.',
+    'exercise.replaceConfirm': 'استبدال',
+    'exercise.replacedNote': 'مستبدل بـ {name}',
+    'exercise.replacedAfter': '{n} سلسلة مسجّلة قبل التغيير',
+    'exercise.replacesNote': 'يحلّ محل {name}',
+    'exercise.undoReplace': 'التراجع عن الاستبدال',
+    'exercise.undoDiscard': '{name} لديه {n} سلسلة مسجّلة بالفعل. التراجع سيحذفها.',
+    'exercise.undoConfirm': 'تراجع',
+
+    'exercise.bench-press.how': 'استلقِ على المقعد والقدمان ثابتتان ولوحا الكتف مضمومان. أنزل البار إلى منتصف الصدر ثم ادفعه عائدًا فوق الكتفين.',
+    'exercise.bench-press.mistakes': 'ارتداد البار عن الصدر وفتح المرفقين تمامًا إلى الجانبين.',
+    'exercise.overhead-press.how': 'قف والبار عند مستوى الكتفين واليدان أوسع قليلًا. ادفع فوق الرأس حتى تستقيم الذراعان ثم أنزل إلى الكتفين.',
+    'exercise.overhead-press.mistakes': 'الميل للخلف حتى يصبح تمرين ضغط مائل، وحبس النفس طوال المجموعة.',
+    'exercise.dips.how': 'اسند نفسك على المتوازي والذراعان مستقيمتان. انزل حتى يصبح الكتفان بمستوى المرفقين ثم ادفع عائدًا.',
+    'exercise.dips.mistakes': 'النزول أعمق من اللازم ورفع الكتفين نحو الأذنين.',
+    'exercise.lateral-raises.how': 'قف والدمبل بجانب الجسم والمرفقان مثنيان قليلًا. ارفع الذراعين إلى مستوى الكتف ثم أنزل ببطء.',
+    'exercise.lateral-raises.mistakes': 'تأرجح الأوزان ورفع الكتفين بدل رفع الذراعين.',
+    'exercise.pull-ups.how': 'تعلّق بالعقلة واليدان أوسع قليلًا من الكتفين. اسحب حتى يتجاوز الذقن العقلة ثم انزل حتى النهاية.',
+    'exercise.pull-ups.mistakes': 'الدفع بالأرجل والتأرجح للصعود والتوقف في منتصف النزول.',
+    'exercise.bent-over-rows.how': 'انحنِ للأمام بظهر مستقيم واترك البار معلّقًا تحت الكتفين. اسحبه نحو البطن ثم أنزله بتحكّم.',
+    'exercise.bent-over-rows.mistakes': 'تقويس أسفل الظهر والاعتدال تدريجيًا أثناء المجموعة.',
+    'exercise.cable-rows.how': 'اجلس مستقيمًا والقدمان مثبّتان والمقبض في اليدين. اسحب نحو البطن دون تحريك الصدر ثم دع المقبض يعود ببطء.',
+    'exercise.cable-rows.mistakes': 'التأرجح للأمام والخلف لتحريك المقبض والسحب برسغين مثنيين.',
+    'exercise.bicep-curls.how': 'قف والدمبل بجانب الجسم والراحتان للأمام. ارفع نحو الكتفين ثم أنزل ببطء حتى النهاية.',
+    'exercise.bicep-curls.mistakes': 'تأرجح الجسم لرفع الوزن والتوقف في منتصف النزول.',
+    'exercise.squats.how': 'والبار على أعلى الظهر، ادفع الوركين للخلف واثنِ الركبتين حتى تصبح الفخذان موازيتين للأرض تقريبًا ثم قف.',
+    'exercise.squats.mistakes': 'انطباق الركبتين للداخل وانهيار الصدر للأمام.',
+    'exercise.leg-press.how': 'اجلس والقدمان مسطّحتان على المنصة بعرض الوركين. أنزل المنصة حتى تقترب الركبتان من الصدر ثم ادفع دون قفل الركبتين.',
+    'exercise.leg-press.mistakes': 'سقوط الركبتين للداخل ورفع الوركين عن المقعد.',
+    'exercise.lunges.how': 'اخطُ خطوة للأمام وانزل حتى تنثني الركبتان وتقترب الركبة الخلفية من الأرض ثم ادفع للعودة واقفًا.',
+    'exercise.lunges.mistakes': 'خطوة قصيرة جدًا وانتقال الركبة الأمامية بعيدًا أمام أطراف الأصابع.',
+    'exercise.leg-curls.how': 'اضبط الوسادة فوق الكعبين مباشرة واسحب الكعبين نحو الأرداف ثم أنزل ببطء.',
+    'exercise.leg-curls.mistakes': 'رفع الوركين عن الوسادة وإسقاط الوزن في طريق العودة.',
+    'exercise.calf-raises.how': 'قف ومقدمة القدمين على درجة والكعبان حرّان. ارتفع بأقصى ما تستطيع ثم توقّف لحظة وأنزل الكعبين تحت الدرجة.',
+    'exercise.calf-raises.mistakes': 'الارتداد في الأسفل وثني الركبتين لتسهيل الحركة.',
+
+    'exercise.push-up': 'تمرين الضغط',
+    'exercise.push-up.how': 'اليدان تحت الكتفين والجسم على خط مستقيم من الرأس إلى الكعبين. أنزل الصدر نحو الأرض ثم ادفع عائدًا.',
+    'exercise.push-up.mistakes': 'هبوط الوركين أو ارتفاعهما والتوقف في منتصف النزول.',
+    'exercise.band-chest-press': 'ضغط الصدر بالمطاط',
+    'exercise.band-chest-press.how': 'ثبّت المطاط خلفك عند مستوى الصدر وامسك طرفًا في كل يد. ادفع للأمام حتى تستقيم الذراعان ثم عُد ببطء.',
+    'exercise.band-chest-press.mistakes': 'استخدام مطاط قصير جدًا حتى تتحول الحركة إلى رفع كتفين، وترك المطاط يرتد بسرعة.',
+    'exercise.band-pulldown': 'سحب المطاط من الأعلى',
+    'exercise.band-pulldown.how': 'ثبّت المطاط في الأعلى وامسك طرفًا في كل يد وابدأ والذراعان فوق الرأس. اسحب المرفقين نحو الجانبين حتى تصبح اليدان عند مستوى الصدر.',
+    'exercise.band-pulldown.mistakes': 'الميل للخلف لتحريك المطاط بدل السحب بالظهر ورفع الكتفين.',
+    'exercise.band-row': 'سحب المطاط أفقيًا',
+    'exercise.band-row.how': 'ثبّت المطاط عند مستوى الصدر وامسك طرفًا في كل يد. اسحب المرفقين للخلف بمحاذاة الجسم دون تحريك الصدر ثم عُد ببطء.',
+    'exercise.band-row.mistakes': 'تأرجح الجذع لأخذ اندفاع وانحناء الكتفين للأمام في النهاية.',
+    'exercise.dumbbell-row': 'سحب الدمبل',
+    'exercise.dumbbell-row.how': 'اسند يدًا واحدة على المقعد واترك الذراع الأخرى معلّقة بالدمبل. اسحب المرفق للخلف نحو الورك ثم توقّف لحظة وأنزل بتحكّم.',
+    'exercise.dumbbell-row.mistakes': 'تدوير الجذع لرفع الوزن والسحب بالبايسبس أساسًا.',
+    'exercise.superman': 'سوبرمان',
+    'exercise.superman.how': 'استلقِ على بطنك والذراعان ممدودتان. ارفع الذراعين والصدر والساقين بضعة سنتيمترات، اثبت لحظة ثم أنزل ببطء.',
+    'exercise.superman.mistakes': 'إرجاع الرأس للخلف والرفع لدرجة تؤلم أسفل الظهر.',
+    'exercise.pike-push-up': 'ضغط بشكل V',
+    'exercise.pike-push-up.how': 'من وضع الضغط، قرّب القدمين وارفع الوركين حتى يشكّل الجسم حرف V مقلوبًا. أنزل أعلى الرأس نحو الأرض ثم ادفع عائدًا.',
+    'exercise.pike-push-up.mistakes': 'فتح المرفقين للجانبين وهبوط الوركين حتى يصبح التمرين ضغطًا عاديًا.',
+    'exercise.band-shoulder-press': 'ضغط الكتف بالمطاط',
+    'exercise.band-shoulder-press.how': 'قف على المطاط بقدم واحدة وامسك الطرفين عند مستوى الكتف. ادفع فوق الرأس حتى تستقيم الذراعان ثم أنزل ببطء.',
+    'exercise.band-shoulder-press.mistakes': 'تقويس أسفل الظهر للدفع أعلى واختيار مطاط قوي لدرجة توقف الحركة.',
+    'exercise.hammer-curl': 'مرجحة المطرقة',
+    'exercise.hammer-curl.how': 'امسك الدمبل بجانب الجسم والراحتان متقابلتان. ارفع دون أن يتقدّم المرفقان للأمام ثم أنزل ببطء.',
+    'exercise.hammer-curl.mistakes': 'الدفع بالوركين وإسقاط الوزن بدل إنزاله.',
+    'exercise.diamond-push-up': 'ضغط الماسة',
+    'exercise.diamond-push-up.how': 'اجمع اليدين تحت الصدر بحيث يتلامس الإبهامان والسبابتان. أبقِ المرفقين قريبين من الجسم أثناء النزول ثم ادفع عائدًا.',
+    'exercise.diamond-push-up.mistakes': 'فتح المرفقين ووضع اليدين بعيدًا للأمام بما يجهد الرسغين.',
+    'exercise.band-bicep-curl': 'مرجحة البايسبس بالمطاط',
+    'exercise.band-bicep-curl.how': 'قف على المطاط وامسك طرفًا في كل يد والراحتان للأعلى. ارفع اليدين نحو الكتفين ثم أنزل ببطء.',
+    'exercise.band-bicep-curl.mistakes': 'تقدّم المرفقين للأمام والميل للخلف لإكمال الحركة.',
+    'exercise.bodyweight-squat': 'قرفصاء بوزن الجسم',
+    'exercise.bodyweight-squat.how': 'قف والقدمان بعرض الكتفين تقريبًا. ادفع الوركين للخلف واثنِ الركبتين حتى تصبح الفخذان موازيتين للأرض تقريبًا ثم قف.',
+    'exercise.bodyweight-squat.mistakes': 'انطباق الركبتين للداخل ورفع الكعبين عن الأرض.',
+    'exercise.split-squat': 'قرفصاء بقدمين متباعدتين',
+    'exercise.split-squat.how': 'قف بوضعية متباعدة وإحدى القدمين خلفك. انزل مباشرة حتى تقترب الركبة الخلفية من الأرض ثم ادفع بالقدم الأمامية.',
+    'exercise.split-squat.mistakes': 'الوقوف بضيق شديد حتى يصبح تمرين توازن، والدفع بالقدم الخلفية.',
+    'exercise.step-up': 'الصعود على درجة',
+    'exercise.step-up.how': 'ضع القدم كاملة على درجة أو مقعد ثابت. ادفع بتلك القدم لتصعد عليه ثم انزل ببطء بالقدم نفسها.',
+    'exercise.step-up.mistakes': 'الدفع بالقدم الخلفية واستخدام درجة عالية جدًا تنطبق عندها الركبة للداخل.',
+    'exercise.glute-bridge': 'رفع الوركين',
+    'exercise.glute-bridge.how': 'استلقِ على ظهرك والركبتان مثنيتان والقدمان مسطّحتان. اضغط الأرداف لرفع الوركين حتى تصبح الركبتان والوركان والكتفان على خط واحد ثم انزل.',
+    'exercise.glute-bridge.mistakes': 'تقويس أسفل الظهر بدل ضغط الأرداف والدفع بأطراف الأصابع فقط.',
+    'exercise.hip-thrust': 'رفع الوركين على مقعد',
+    'exercise.hip-thrust.how': 'اسند أعلى الظهر على مقعد والقدمان مسطّحتان على الأرض. ارفع الوركين حتى يصبح الجسم مستويًا، اثبت لحظة ثم انزل بتحكّم.',
+    'exercise.hip-thrust.mistakes': 'المبالغة في تقويس أسفل الظهر في الأعلى وانزلاق القدمين.',
+    'exercise.single-leg-glute-bridge': 'رفع الوركين على ساق واحدة',
+    'exercise.single-leg-glute-bridge.how': 'استلقِ على ظهرك واثنِ ركبة واحدة والقدم مسطّحة وأبقِ الساق الأخرى في الهواء. ارفع الوركين بالساق العاملة فقط ثم انزل ببطء.',
+    'exercise.single-leg-glute-bridge.mistakes': 'ميل الوركين إلى جهة واحدة والدفع بقوة حتى يتولى أسفل الظهر العمل.',
+    'exercise.plank': 'بلانك',
+    'exercise.plank.how': 'ارتكز على الساعدين وأطراف القدمين والجسم على خط مستقيم. اضغط الأرداف وأبقِ الأضلاع للأسفل واثبت للمدة المخططة.',
+    'exercise.plank.mistakes': 'هبوط الوركين أو ارتفاعهما وحبس النفس.',
+    'exercise.dead-bug': 'الخنفساء الميتة',
+    'exercise.dead-bug.how': 'استلقِ على ظهرك والذراعان للأعلى والركبتان مثنيتان فوق الوركين. أنزل ذراعًا واحدة والساق المعاكسة ببطء ثم أعدهما وبدّل الجانبين.',
+    'exercise.dead-bug.mistakes': 'ارتفاع أسفل الظهر عن الأرض والتحرك بسرعة أكبر مما تستطيع التحكم فيه.',
+    'exercise.burpee': 'بيربي',
+    'exercise.burpee.how': 'من الوقوف، ضع اليدين على الأرض واخطُ أو اقفز بالقدمين للخلف إلى وضع البلانك. أعِد القدمين ثم قف أو اقفز للأعلى.',
+    'exercise.burpee.mistakes': 'الهبوط بساقين مستقيمتين وهبوط الوركين في وضع البلانك.',
 
     /* --- الجسم والسعرات والطعام والنصائح --- */
     'units.kg': 'كغ', 'units.lb': 'رطل', 'units.cm': 'سم', 'units.in': 'بوصة', 'units.g': 'غ', 'units.kcal': 'سعرة',
@@ -3138,6 +4551,8 @@ function defaultState() {
       autoBackup: false, autoBackupOfferedAt: null, autoBackupWorkoutCount: 0,
       /* Jednotky telesných mier (nie váh cvikov). Voliteľné funkcie: VYPNUTÉ. */
       bodyUnits: 'metric', foodLogEnabled: false, calorieEnabled: false,
+      /* Vybavenie, ktoré má používateľ k dispozícii. null = zatiaľ nezadané. */
+      availableEquipment: null,
     },
     achievements: {},
     demo: false,
@@ -3344,6 +4759,34 @@ function storageBytes() {
 }
 const STORAGE_NOTICE_BYTES = 3500000;
 
+/* Cvik, ktorým bol planovy cvik nahradený počas tréningu. Prísna normalizácia:
+   poškodený krok sa zahodí, platný zostáva presne taký, aký bol. */
+function normalizeSubstituteExercise(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const sets = Math.round(Number(raw.sets));
+  const reps = Math.round(Number(raw.reps));
+  const weight = Number(raw.weight);
+  if (!Number.isFinite(sets) || sets < 1 || sets > 99) return null;
+  if (!Number.isFinite(reps) || reps < 1 || reps > 99) return null;
+  if (!Number.isFinite(weight) || weight < 0 || weight > 999) return null;
+  const sessionKey = typeof raw.sessionKey === 'string' && raw.sessionKey ? raw.sessionKey : null;
+  if (!sessionKey) return null;
+  const hasId = typeof raw.id === 'string' && BUILTIN_EXERCISE_IDS.has(raw.id);
+  const name = typeof raw.name === 'string' ? raw.name : '';
+  if (!hasId && !name) return null;
+  const out = {
+    name, sets, reps, weight: Math.round(weight * 10) / 10,
+    plannedFailureSets: cleanFailureSets(raw.plannedFailureSets, sets),
+    sessionKey,
+  };
+  if (hasId) out.id = raw.id;
+  if (raw.unilateral === true) {
+    out.unilateral = true;
+    out.startSide = raw.startSide === 'right' ? 'right' : 'left';
+  }
+  return out;
+}
+
 /* Rozbehnutá session: buď platný objekt, alebo null. Poškodené/neúplné dáta sa zahodia. */
 function normalizeActiveSession(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
@@ -3359,7 +4802,7 @@ function normalizeActiveSession(raw) {
     }
     return out;
   };
-  return {
+  const out = {
     id: typeof raw.id === 'string' && raw.id ? raw.id : uid(),
     startedAt,
     planId,
@@ -3367,6 +4810,31 @@ function normalizeActiveSession(raw) {
     completedSets: pickMarks(raw.completedSets),
     actualFailureSets: pickMarks(raw.actualFailureSets),
   };
+  /* Výmeny cvikov počas tréningu: platné kroky prežijú obnovenie stránky.
+     Keď žiadne nie sú, kľúč sa vôbec nepridá – session bez výmen zostáva bez zmeny. */
+  const substituted = {};
+  if (raw.substituted && typeof raw.substituted === 'object' && !Array.isArray(raw.substituted)) {
+    for (const slot of Object.keys(raw.substituted)) {
+      if (!/^[^#]+#\d+$/.test(slot)) continue;
+      const list = Array.isArray(raw.substituted[slot]) ? raw.substituted[slot] : [];
+      const steps = [];
+      for (const s of list) {
+        if (!s || typeof s !== 'object' || Array.isArray(s)) continue;
+        const key = typeof s.key === 'string' && s.key ? s.key : null;
+        const ex = normalizeSubstituteExercise(s.ex);
+        if (!key || !ex) continue;
+        const at = Number(s.at);
+        steps.push({
+          key, ex,
+          oldName: typeof s.oldName === 'string' ? s.oldName : '',
+          at: Number.isFinite(at) && at > 0 ? at : startedAt,
+        });
+      }
+      if (steps.length) substituted[slot] = steps;
+    }
+  }
+  if (Object.keys(substituted).length) out.substituted = substituted;
+  return out;
 }
 
 function seedSampleData() {
@@ -3562,6 +5030,8 @@ function migrateV2toV3(parsed) {
   if (out.settings.bodyUnits !== 'imperial') out.settings.bodyUnits = 'metric';
   if (out.settings.foodLogEnabled !== true) out.settings.foodLogEnabled = false;
   if (out.settings.calorieEnabled !== true) out.settings.calorieEnabled = false;
+  /* Vybavenie používateľa: stará záloha bez neho zostáva "nezadané" (null). */
+  out.settings.availableEquipment = normalizeEquipment(out.settings.availableEquipment);
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -4372,9 +5842,12 @@ function getSession() {
 
 /* Stabilný kľúč cviku v rámci session. Používa stabilné id zabudovaného cviku, inak názov.
    Zobrazený názov sa pri prepnutí SK/EN prekladá, ale uložený názov cviku sa nemení,
-   takže značky prežijú zmenu jazyka, váhy aj poradia cvikov v pláne. */
+   takže značky prežijú zmenu jazyka, váhy aj poradia cvikov v pláne.
+   `sessionKey` nesie IBA náhrada cviku počas tréningu (nikdy plán ani história) –
+   vďaka tomu sa náhrada nikdy nemôže zraziť so značkami iného cviku. */
 function exerciseSessionKey(ex) {
   if (!ex) return '';
+  if (ex.sessionKey) return String(ex.sessionKey);
   return ex.id ? String(ex.id) : 'c:' + String(ex.name == null ? '' : ex.name);
 }
 
@@ -4394,6 +5867,90 @@ function exerciseSideOrder(ex) {
 /* Koľko samostatne označiteľných položiek cvik má (každá strana = jedna). */
 function exerciseSlotCount(ex) {
   return ex.sets * (exerciseSideOrder(ex) ? 2 : 1);
+}
+
+/* ---------- Výmena cviku počas tréningu (session, NIE plán) ----------
+   Výmena nikdy nezmení plán používateľa – zajtra ho čaká pôvodný cvik.
+   Žije v state.activeSession.substituted, takže prežije prekreslenie, zmenu
+   jazyka aj obnovenie stránky rovnako ako ostatné značky. */
+
+/* Slot = jeden cvik v pláne vrátane poradia duplicity (rovnaký cvik dvakrát v pláne). */
+function exerciseSlots(plan) {
+  const seen = {};
+  const out = [];
+  for (const ex of plan.exercises) {
+    const base = exerciseSessionKey(ex);
+    const occ = seen[base] || 0;
+    seen[base] = occ + 1;
+    out.push({ ex, base, occ, slot: base + '#' + occ });
+  }
+  return out;
+}
+
+/* Existuje pre tento cvik v pláne iba jeden slot? Pri duplicite sa výmena odmietne,
+   aby sa nikdy nezamenili dve rôzne série. */
+function slotIsUnique(plan, base) {
+  return exerciseSlots(plan).filter((s) => s.base === base).length === 1;
+}
+
+function substitutionMap() {
+  const sess = getSession();
+  const map = sess && sess.substituted;
+  return (map && typeof map === 'object' && !Array.isArray(map)) ? map : {};
+}
+
+function substitutionSteps(slot) {
+  const list = substitutionMap()[slot];
+  return Array.isArray(list) ? list : [];
+}
+
+function hasSubstitutions() {
+  return Object.keys(substitutionMap()).length > 0;
+}
+
+/* Počet označených sérií ľubovoľného cviku (plánového aj náhrady). */
+function countDoneSets(ex) {
+  const sess = getSession();
+  if (!sess || !ex) return 0;
+  const sides = exerciseSideOrder(ex);
+  let n = 0;
+  for (let i = 0; i < ex.sets; i++) {
+    if (sides) {
+      for (const side of sides) if (sess.completedSets[setSessionKey(ex, i, side)]) n++;
+    } else if (sess.completedSets[setSessionKey(ex, i)]) n++;
+  }
+  return n;
+}
+
+/* Segmenty jedného slotu: pôvodný cvik (ak na ňom niečo je), predchádzajúce náhrady
+   (tiež len ak na nich niečo je) a nakoniec aktívna náhrada.
+   Predchádzajúce segmenty sú IBA NA ČÍTANIE – ich hotové série sa nikdy neprepisujú.
+   `nextName` nesie cvik, ktorý daný segment NAOZAJ vystriedal (pri reťazci nie ten posledný). */
+function exerciseSegments(info) {
+  const steps = substitutionSteps(info.slot);
+  if (!steps.length) {
+    return [{ ex: info.ex, kind: 'plan', readOnly: false, active: true, step: null, nextName: '' }];
+  }
+  const segs = [];
+  if (countDoneSets(info.ex) > 0) {
+    segs.push({
+      ex: info.ex, kind: 'replaced', readOnly: true, active: false, step: null,
+      nextName: exerciseDisplayName(steps[0].ex),
+    });
+  }
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    const last = i === steps.length - 1;
+    if (last) {
+      segs.push({ ex: step.ex, kind: 'substitute', readOnly: false, active: true, step, nextName: '' });
+    } else if (countDoneSets(step.ex) > 0) {
+      segs.push({
+        ex: step.ex, kind: 'replaced', readOnly: true, active: false, step,
+        nextName: exerciseDisplayName(steps[i + 1].ex),
+      });
+    }
+  }
+  return segs;
 }
 
 /* Vytvorí session, ak ešte neexistuje. Volá sa pri "Začať tréning" a pri prvom označení série,
@@ -4440,23 +5997,24 @@ function setMark(kind, ex, index, side) {
 }
 
 function planExerciseCount(plan) {
-  return plan.exercises.reduce((s, ex) => s + exerciseSlotCount(ex), 0);
+  let n = 0;
+  for (const info of exerciseSlots(plan)) {
+    for (const seg of exerciseSegments(info)) n += exerciseSlotCount(seg.ex);
+  }
+  return n;
 }
 
 /* Počet dokončených sérií sa ráta z session, ale VŽDY len pre série, ktoré práve existujú
-   v zobrazenom pláne — takže zníženie počtu sérií nikdy neprinesie duchovské série. */
+   v zobrazenom pláne — takže zníženie počtu sérií nikdy neprinesie duchovské série.
+   Pri výmene cviku sa počítajú obe strany výmeny: hotové série pôvodného cviku
+   ZOSTÁVAJÚ pod jeho menom a série náhrady sú navyše. Nikdy nie dvakrát. */
 function totalSetsDone() {
   const sess = getSession();
   const plan = getPlan(selectedPlan);
   if (!sess || !plan) return 0;
   let n = 0;
-  for (const ex of plan.exercises) {
-    const sides = exerciseSideOrder(ex);
-    for (let i = 0; i < ex.sets; i++) {
-      if (sides) {
-        for (const side of sides) if (sess.completedSets[setSessionKey(ex, i, side)]) n++;
-      } else if (sess.completedSets[setSessionKey(ex, i)]) n++;
-    }
+  for (const info of exerciseSlots(plan)) {
+    for (const seg of exerciseSegments(info)) n += countDoneSets(seg.ex);
   }
   return n;
 }
@@ -4655,54 +6213,104 @@ function renderTrening() {
     return;
   }
 
-  for (const ex of plan.exercises) {
-    const div = document.createElement('div');
-    div.className = 'exercise';
-
-    const head = document.createElement('div');
-    head.className = 'exercise-head';
-    const name = document.createElement('span');
-    name.className = 'exercise-name';
-    name.textContent = exerciseDisplayName(ex);
-    const meta = document.createElement('span');
-    meta.className = 'exercise-meta';
-    meta.innerHTML = `${ex.sets} × ${ex.reps} &nbsp;·&nbsp; <b>${ex.weight} ${t('units.kg')}</b>`;
-    head.append(name, meta);
-    div.appendChild(head);
-
-    /* Jednostranný cvik: každá strana má vlastné série, vlastné značky aj vlastné zlyhania. */
-    const sides = exerciseSideOrder(ex);
-    if (sides) {
-      const sideNote = document.createElement('p');
-      sideNote.className = 'exercise-side-note';
-      sideNote.textContent = tPlural('unilateral.setsPerSide', ex.sets);
-      div.appendChild(sideNote);
-    }
-
-    const hint = document.createElement('div');
-    hint.className = 'compare-hint';
-    hint.innerHTML = comparisonHint(ex, plan.id);
-    div.appendChild(hint);
-
-    const sets = document.createElement('div');
-    sets.className = 'sets';
-
-    const plannedFailure = cleanFailureSets(ex.plannedFailureSets, ex.sets);
-
-    for (let i = 0; i < ex.sets; i++) {
-      if (sides) {
-        for (const side of sides) sets.appendChild(buildSetItem(ex, i, plannedFailure, side));
-      } else {
-        sets.appendChild(buildSetItem(ex, i, plannedFailure, null));
-      }
-    }
-
-    div.appendChild(sets);
-    list.appendChild(div);
+  /* Jeden plánový cvik môže mať po výmene počas tréningu viac segmentov:
+     pôvodný cvik (iba na čítanie, jeho hotové série zostávajú pod jeho menom)
+     a aktívnu náhradu. Plán sa pritom nikdy nemení. */
+  for (const info of exerciseSlots(plan)) {
+    for (const seg of exerciseSegments(info)) list.appendChild(buildExerciseBlock(seg, info, plan));
   }
 
   updateSummary();         // skutočný počet hotových sérií aj stav tlačidla Dokončiť
   refreshUpdateBanner();   // otvorenie/zatvorenie editora plánu mení stav "zaneprázdnený"
+}
+
+/* Jeden blok cviku v aktívnom tréningu (plánový cvik alebo segment po výmene). */
+function buildExerciseBlock(seg, info, plan) {
+  const ex = seg.ex;
+  const div = document.createElement('div');
+  div.className = 'exercise' + (seg.readOnly ? ' exercise-closed' : '');
+
+  const head = document.createElement('div');
+  head.className = 'exercise-head';
+  const name = document.createElement('span');
+  name.className = 'exercise-name';
+  name.textContent = exerciseDisplayName(ex);
+  head.appendChild(name);
+  const meta = document.createElement('span');
+  meta.className = 'exercise-meta';
+  meta.innerHTML = `${ex.sets} × ${ex.reps} &nbsp;·&nbsp; <b>${ex.weight} ${t('units.kg')}</b>`;
+  head.appendChild(meta);
+
+  /* Aktívny cvik je možné vymeniť – ale iba počas rozbehnutého tréningu, aby výmena
+     nikdy nezačala meranie trvania nechtiac. Pred tréningom sa plán upravuje normálne. */
+  if (seg.active && getSession()) {
+    const swap = document.createElement('button');
+    swap.type = 'button';
+    swap.className = 'btn-icon-sm exercise-swap';
+    swap.textContent = '⇄';
+    swap.title = t('exercise.replace');
+    swap.setAttribute('aria-label', t('exercise.replace') + ': ' + exerciseDisplayName(ex));
+    swap.addEventListener('click', () => openLibrary('replace', { slot: info.slot, base: info.base, ex }));
+    head.appendChild(swap);
+  }
+  div.appendChild(head);
+
+  /* Jednostranný cvik: každá strana má vlastné série, vlastné značky aj vlastné zlyhania. */
+  const sides = exerciseSideOrder(ex);
+  if (sides) {
+    const sideNote = document.createElement('p');
+    sideNote.className = 'exercise-side-note';
+    sideNote.textContent = tPlural('unilateral.setsPerSide', ex.sets);
+    div.appendChild(sideNote);
+  }
+
+  if (seg.kind === 'substitute') {
+    const note = document.createElement('p');
+    note.className = 'exercise-swap-note';
+    note.textContent = t('exercise.replacesNote', { name: seg.step.oldName });
+    div.appendChild(note);
+  }
+  if (seg.readOnly) {
+    const note = document.createElement('p');
+    note.className = 'exercise-swap-note';
+    note.textContent = t('exercise.replacedNote', { name: seg.nextName || '' })
+      + ' · ' + t('exercise.replacedAfter', { n: countDoneSets(ex) });
+    div.appendChild(note);
+  }
+
+  const hint = document.createElement('div');
+  hint.className = 'compare-hint';
+  hint.innerHTML = comparisonHint(ex, plan.id);
+  div.appendChild(hint);
+
+  const sets = document.createElement('div');
+  sets.className = 'sets';
+  const plannedFailure = cleanFailureSets(ex.plannedFailureSets, ex.sets);
+  for (let i = 0; i < ex.sets; i++) {
+    if (sides) {
+      for (const side of sides) sets.appendChild(buildSetItem(ex, i, plannedFailure, side, seg.readOnly));
+    } else {
+      sets.appendChild(buildSetItem(ex, i, plannedFailure, null, seg.readOnly));
+    }
+  }
+  div.appendChild(sets);
+
+  /* Posledná náhrada sa dá vrátiť späť – pôvodný cvik sa tým znova sprístupní. */
+  if (seg.active && seg.step) {
+    const undo = document.createElement('button');
+    undo.type = 'button';
+    undo.className = 'btn btn-secondary btn-block btn-undo-swap';
+    undo.textContent = t('exercise.undoReplace');
+    undo.addEventListener('click', () => requestUndoSubstitution(info.slot));
+    div.appendChild(undo);
+  }
+  return div;
+}
+
+/* Meno, ktorým bol pôvodný cvik nahradený (pre poznámku v uzavretom segmente). */
+function replacementNameAfter(info) {
+  const steps = substitutionSteps(info.slot);
+  return steps.length ? exerciseDisplayName(steps[steps.length - 1].ex) : '';
 }
 
 /* Preklad názvu strany pre jednostranný cvik. */
@@ -4712,10 +6320,12 @@ function sideName(side) {
 
 /* Jedna séria – pri jednostrannom cviku jedna jeho strana.
    Značky (hotová / do zlyhania) žijú v session, nie v DOM, takže prekreslenie nič nestratí.
-   `side` je 'left' | 'right' pre jednostranný cvik, inak null. */
-function buildSetItem(ex, index, plannedFailure, side) {
+   `side` je 'left' | 'right' pre jednostranný cvik, inak null.
+   `readOnly` je uzavretý segment po výmene cviku: série sa ZOBRAZIA, ale nedajú sa meniť –
+   hotové série pôvodného cviku sa nikdy neprepisujú na nový cvik. */
+function buildSetItem(ex, index, plannedFailure, side, readOnly) {
   const item = document.createElement('div');
-  item.className = 'set-item' + (side ? ' side-row' : '');
+  item.className = 'set-item' + (side ? ' side-row' : '') + (readOnly ? ' set-locked' : '');
 
   const sideLabel = side ? t('unilateral.setSide', { n: index + 1, side: sideName(side) }) : '';
 
@@ -4733,13 +6343,17 @@ function buildSetItem(ex, index, plannedFailure, side) {
   setBtn.textContent = side ? '✓' : `${index + 1} ✓`;
   setBtn.classList.toggle('done', setMark('done', ex, index, side));
   setBtn.setAttribute('aria-label', (side ? sideLabel + ' — ' : '') + t('trening.setDoneAria', { n: index + 1 }));
-  setBtn.addEventListener('click', () => {
-    const on = !setMark('done', ex, index, side);
-    toggleSetMark('done', ex, index, on, side);
-    setBtn.classList.toggle('done', on);
-    setSessionNote(null, 0);
-    updateSummary();
-  });
+  if (readOnly) {
+    setBtn.disabled = true;
+  } else {
+    setBtn.addEventListener('click', () => {
+      const on = !setMark('done', ex, index, side);
+      toggleSetMark('done', ex, index, on, side);
+      setBtn.classList.toggle('done', on);
+      setSessionNote(null, 0);
+      updateSummary();
+    });
+  }
 
   /* Samostatný ovládač pre každú sériu. Naplánovaná séria je len nenápadný náznak
      (prerušovaný oranžový okraj) – nikdy sa automaticky nepočíta ako dosiahnuté zlyhanie. */
@@ -4756,11 +6370,15 @@ function buildSetItem(ex, index, plannedFailure, side) {
     failBtn.title = on ? t('failure.failure') : (wasPlanned ? t('failure.planned') : t('failure.markSet'));
   };
   syncFail();
-  failBtn.addEventListener('click', () => {
-    toggleSetMark('failure', ex, index, !setMark('failure', ex, index, side), side);
-    setSessionNote(null, 0);
-    syncFail();
-  });
+  if (readOnly) {
+    failBtn.disabled = true;
+  } else {
+    failBtn.addEventListener('click', () => {
+      toggleSetMark('failure', ex, index, !setMark('failure', ex, index, side), side);
+      setSessionNote(null, 0);
+      syncFail();
+    });
+  }
 
   item.append(setBtn, failBtn);
   return item;
@@ -5763,6 +7381,447 @@ function cancelEditPlan() {
   if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
   if (discarded) saveState();
   renderAll();
+}
+
+/* ---------- Knižnica cvikov: hľadanie, filtre, alternatívy a výmena ----------
+   Knižnica je iba v kóde (EXERCISE_LIBRARY) – do localStorage nič nepridáva.
+   Otvára sa v troch miestach existujúceho toku a NIKDY nepridáva novú spodnú kartu:
+   1) tlačidlo na obrazovke Tréning, 2) ⓘ v editore plánu, 3) ⇄ počas tréningu. */
+
+let libraryMode = 'browse';       // 'browse' | 'replace'
+let libraryTarget = null;         // { slot, base, ex } – cieľ výmeny počas tréningu
+let libMuscle = null;
+let libLocation = null;
+let libQuery = '';
+let libFiltersOpen = false;
+let libDifficulty = null;
+let libPattern = null;
+let libCategory = null;
+
+let exerciseSheetId = null;
+let exerciseSheetCtx = 'browse';  // 'browse' | 'editor' | 'replace'
+
+function isOpen(id) {
+  const el = document.getElementById(id);
+  return !!(el && !el.hidden);
+}
+
+function resetLibraryFilters() {
+  libMuscle = null;
+  libLocation = null;
+  libQuery = '';
+  libDifficulty = null;
+  libPattern = null;
+  libCategory = null;
+}
+
+/* Hľadanie prechádza názvy vo VŠETKÝCH jazykoch: používateľ nájde cvik aj vtedy,
+   keď si pamätá anglický názov, ale rozhranie má v slovenčine. */
+function librarySearchText(entry) {
+  const parts = [entry.id, entry.primary, entry.pattern];
+  for (const code of LANG_CODES) {
+    const dict = I18N[code];
+    if (!dict) continue;
+    if (dict['exercise.' + entry.id]) parts.push(dict['exercise.' + entry.id]);
+    if (dict['muscle.' + entry.primary]) parts.push(dict['muscle.' + entry.primary]);
+  }
+  return parts.join(' ').toLowerCase();
+}
+
+/* Vlastné cviky používateľa z jeho plánov – hľadanie funguje aj pre ne.
+   Nikdy sa nezlúčia so zabudovaným cvikom, ani keď majú rovnaký názov. */
+function customExercisesMatching(q) {
+  const out = [];
+  const seen = new Set();
+  for (const planId of activePlanIds()) {
+    const plan = getPlan(planId);
+    if (!plan) continue;
+    for (const ex of plan.exercises) {
+      if (builtinExerciseId(ex)) continue;
+      const name = String(ex.name == null ? '' : ex.name).trim();
+      if (!name) continue;
+      const key = name.toLowerCase();
+      if (seen.has(key)) continue;
+      if (q && key.indexOf(q) < 0) continue;
+      seen.add(key);
+      out.push({ name, planId });
+    }
+  }
+  return out;
+}
+
+/* Výsledok filtrovania. Vymenený cvik sa neponúka, ak už v pláne je –
+   dva rovnaké cviky v jednom tréningu by si mohli zameniť značky sérií. */
+function libraryResults() {
+  const equip = availableEquipment();
+  let list = libraryAll();
+  if (libLocation) list = list.filter((e) => e.locations.includes(libLocation));
+  list = list.filter((e) => equipmentSatisfied(e, equip));
+  if (libDifficulty) list = list.filter((e) => e.difficulty === libDifficulty);
+  if (libPattern) list = list.filter((e) => e.pattern === libPattern);
+  if (libCategory) list = list.filter((e) => e.category === libCategory);
+  const q = libQuery.trim().toLowerCase();
+  if (q) list = list.filter((e) => librarySearchText(e).indexOf(q) >= 0);
+  if (libraryMode === 'replace') {
+    const plan = getPlan(selectedPlan);
+    const inPlan = plan ? plan.exercises.map((x) => exerciseSessionKey(x)) : [];
+    list = list.filter((e) => inPlan.indexOf(e.id) < 0);
+  }
+  if (libMuscle === 'fullBody') {
+    list = fullBodySpread(list);
+  } else if (libMuscle) {
+    const primary = list.filter((e) => e.primary === libMuscle);
+    const secondary = list.filter((e) => e.primary !== libMuscle && e.secondary.includes(libMuscle));
+    list = primary.concat(secondary);
+  }
+  return list;
+}
+
+function chipRow(group, items, selected, opts) {
+  const o = opts || {};
+  const sel = Array.isArray(selected) ? selected : [selected];
+  const out = ['<div class="metric-chips">'];
+  for (const it of items) {
+    const on = sel.indexOf(it.v) >= 0;
+    const disabled = o.noneExclusive && it.v !== 'none';
+    out.push('<button type="button" class="metric-chip' + (on ? ' active' : '') + '"'
+      + ' data-chip-group="' + escAttr(group) + '" data-chip-value="' + escAttr(it.v) + '"'
+      + ' aria-pressed="' + (on ? 'true' : 'false') + '"' + (disabled ? ' disabled' : '') + '>'
+      + esc(it.l) + '</button>');
+  }
+  out.push('</div>');
+  return out.join('');
+}
+
+function libraryRowHtml(entry) {
+  const tags = [t('diff.' + entry.difficulty)];
+  if (entry.equipment.length === 1 && entry.equipment[0] === 'none') tags.push(t('equip.none'));
+  else tags.push(t('equip.' + entry.equipment[0]));
+  return '<button type="button" class="lib-row" data-exercise-id="' + escAttr(entry.id) + '">'
+    + '<span class="lib-row-main">'
+    + '<span class="lib-row-name">' + esc(t('exercise.' + entry.id)) + '</span>'
+    + '<span class="lib-row-meta">' + esc(t('muscle.' + entry.primary)) + '</span>'
+    + '</span>'
+    + '<span class="lib-row-tags">' + tags.map((x) => '<span class="lib-tag">' + esc(x) + '</span>').join('') + '</span>'
+    + '</button>';
+}
+
+function altRowHtml(a) {
+  return '<button type="button" class="alt-row" data-exercise-id="' + escAttr(a.entry.id) + '">'
+    + '<span class="alt-name">' + esc(t('exercise.' + a.entry.id)) + '</span>'
+    + '<span class="alt-why">' + esc(t('exercise.alternativesWhy')) + ': ' + esc(t('altWhy.' + a.why)) + '</span>'
+    + '</button>';
+}
+
+function renderLibrary() {
+  const root = document.getElementById('library-body');
+  if (!root) return;
+  const replaceMode = libraryMode === 'replace';
+  const results = libraryResults();
+  const q = libQuery.trim().toLowerCase();
+  const custom = replaceMode ? [] : customExercisesMatching(q);
+  const equip = availableEquipment();
+  const h = [];
+
+  if (replaceMode && libraryTarget) {
+    h.push('<p class="sheet-note">' + esc(t('exercise.replaceHint')) + '</p>');
+  }
+
+  h.push('<p class="sheet-label">' + esc(t('library.discoverTitle')) + '</p>');
+  h.push(chipRow('muscle', [{ v: '', l: t('library.filterAll') }]
+    .concat(MUSCLE_CODES.map((c) => ({ v: c, l: t('muscle.' + c) })))
+    .concat([{ v: 'fullBody', l: t('muscle.fullBody') }]), libMuscle || ''));
+
+  h.push('<p class="sheet-label">' + esc(t('library.whereTitle')) + '</p>');
+  h.push(chipRow('location', [{ v: '', l: t('library.filterAll') }]
+    .concat(LOCATION_CODES.map((c) => ({ v: c, l: t('loc.' + c) }))), libLocation || ''));
+
+  /* Vybavenie používateľa je ULOŽENÁ voľba, nie dočasný filter – preto má vlastnú sekciu. */
+  h.push('<p class="sheet-label">' + esc(t('library.myEquipment')) + '</p>');
+  h.push(chipRow('equip', EQUIPMENT_CODES.map((c) => ({ v: c, l: t('equip.' + c) })), equip || [],
+    { noneExclusive: !!(equip && equip.indexOf('none') >= 0) }));
+  h.push('<div class="metric-chips"><button type="button" class="metric-chip'
+    + (homeGymSelected() ? ' active' : '') + '" data-lib-action="homegym" aria-pressed="'
+    + (homeGymSelected() ? 'true' : 'false') + '">' + esc(t('library.fullHomeGym')) + '</button></div>');
+  h.push('<p class="sheet-note">' + esc(t('library.equipmentHint')) + '</p>');
+  if (!equip) h.push('<p class="sheet-note">' + esc(t('library.equipmentUnset')) + '</p>');
+
+  h.push('<button type="button" class="btn btn-secondary btn-block" data-lib-action="togglefilters" aria-expanded="'
+    + (libFiltersOpen ? 'true' : 'false') + '">' + esc(t('library.filters')) + '</button>');
+  if (libFiltersOpen) {
+    h.push('<div class="lib-filters">');
+    h.push('<p class="sheet-label">' + esc(t('library.filterDifficulty')) + '</p>');
+    h.push(chipRow('difficulty', [{ v: '', l: t('library.filterAll') }]
+      .concat(DIFFICULTY_CODES.map((c) => ({ v: c, l: t('diff.' + c) }))), libDifficulty || ''));
+    h.push('<p class="sheet-label">' + esc(t('library.filterPattern')) + '</p>');
+    h.push(chipRow('pattern', [{ v: '', l: t('library.filterAll') }]
+      .concat(PATTERN_CODES.map((c) => ({ v: c, l: t('pattern.' + c) }))), libPattern || ''));
+    h.push('<p class="sheet-label">' + esc(t('library.filterCategory')) + '</p>');
+    h.push(chipRow('category', [{ v: '', l: t('library.filterAll') }]
+      .concat(CATEGORY_CODES.map((c) => ({ v: c, l: t('cat.' + c) }))), libCategory || ''));
+    h.push('</div>');
+  }
+
+  h.push('<p class="sheet-label">' + esc(t('library.results', { n: results.length })) + '</p>');
+  if (libMuscle === 'fullBody') h.push('<p class="sheet-note">' + esc(t('library.fullBodyHint')) + '</p>');
+
+  /* Žiadny výsledok z knižnice = vždy jasný prázdny stav, aj keď používateľ
+     má vlastné cviky, ktoré sa práve našli (tie sa zobrazia pod ním). */
+  if (!results.length) {
+    h.push('<p class="empty-state">' + esc(t('library.empty')) + '</p>');
+    h.push('<p class="sheet-note">' + esc(t('library.emptyHint')) + '</p>');
+  } else {
+    h.push('<div class="lib-list">' + results.map(libraryRowHtml).join('') + '</div>');
+  }
+  if (custom.length) {
+    h.push('<p class="sheet-label">' + esc(t('library.myOwn')) + '</p>');
+    h.push('<div class="lib-list">' + custom.map((c) => '<div class="lib-row lib-row-own">'
+      + '<span class="lib-row-main"><span class="lib-row-name">' + esc(c.name) + '</span>'
+      + '<span class="lib-row-meta">' + esc(t('exercise.notInLibrary')) + '</span></span></div>').join('') + '</div>');
+  }
+  h.push('<button type="button" class="btn btn-secondary btn-block" data-lib-action="reset">'
+    + esc(t('library.reset')) + '</button>');
+  root.innerHTML = h.join('');
+}
+
+/* Editor plánu je otvorený → knižnica pridáva cviky priamo do rozrobeného návrhu. */
+function libraryContext() {
+  return (editingPlan !== null && Array.isArray(editDraft)) ? 'editor' : 'browse';
+}
+
+function openLibrary(mode, target) {
+  libraryMode = mode === 'replace' ? 'replace' : 'browse';
+  libraryTarget = target || null;
+  libFiltersOpen = false;
+  const search = document.getElementById('lib-search');
+  if (search) search.value = libQuery;
+  document.getElementById('modal-library').hidden = false;
+  renderLibrary();
+  refreshUpdateBanner();
+}
+
+function closeLibrary() {
+  document.getElementById('modal-library').hidden = true;
+  libraryMode = 'browse';
+  libraryTarget = null;
+  refreshUpdateBanner();
+}
+
+function handleLibraryChip(group, value) {
+  if (group === 'equip') { toggleEquipment(value); return; }
+  if (group === 'muscle') libMuscle = value || null;
+  else if (group === 'location') libLocation = value || null;
+  else if (group === 'difficulty') libDifficulty = value || null;
+  else if (group === 'pattern') libPattern = value || null;
+  else if (group === 'category') libCategory = value || null;
+  renderLibrary();
+}
+
+function handleLibraryAction(action) {
+  if (action === 'togglefilters') { libFiltersOpen = !libFiltersOpen; renderLibrary(); return; }
+  if (action === 'reset') { resetLibraryFilters(); renderLibrary(); return; }
+  if (action === 'homegym') { toggleHomeGym(); renderLibrary(); return; }
+}
+
+function openExerciseSheet(id, ctx) {
+  exerciseSheetId = id || null;
+  exerciseSheetCtx = ctx || 'browse';
+  document.getElementById('modal-exercise').hidden = false;
+  renderExerciseSheet();
+  refreshUpdateBanner();
+}
+
+function closeExerciseSheet() {
+  document.getElementById('modal-exercise').hidden = true;
+  refreshUpdateBanner();
+}
+
+function metaRow(label, value) {
+  return '<div class="meta-row"><span class="meta-label">' + esc(label) + '</span>'
+    + '<span class="meta-value">' + esc(value) + '</span></div>';
+}
+
+function renderExerciseSheet() {
+  const body = document.getElementById('exercise-body');
+  const title = document.getElementById('exercise-title');
+  if (!body || !title) return;
+  const entry = libraryEntry(exerciseSheetId);
+  if (!entry) {
+    title.textContent = String(exerciseSheetId || '');
+    body.innerHTML = '<p class="sheet-note">' + esc(t('exercise.notInLibrary')) + '</p>';
+    return;
+  }
+  title.textContent = t('exercise.' + entry.id);
+
+  const h = [];
+  h.push('<div class="fig-box"></div>');
+  h.push('<p class="sheet-note fig-caption">' + esc(t('exercise.diagramCaption')) + '</p>');
+  h.push('<p class="sheet-note">' + esc(t('exercise.diagramNote')) + '</p>');
+
+  h.push('<div class="meta-grid">');
+  h.push(metaRow(t('exercise.primary'), t('muscle.' + entry.primary)));
+  h.push(metaRow(t('exercise.secondary'), entry.secondary.length
+    ? entry.secondary.map((m) => t('muscle.' + m)).join(' · ')
+    : t('exercise.noneSecondary')));
+  h.push(metaRow(t('exercise.patternLabel'), t('pattern.' + entry.pattern)));
+  h.push(metaRow(t('exercise.difficultyLabel'), t('diff.' + entry.difficulty)));
+  h.push(metaRow(t('exercise.equipmentNeeded'), equipmentLabelOf(entry)));
+  h.push(metaRow(t('exercise.locationsTitle'), entry.locations.map((l) => t('loc.' + l)).join(' · ')));
+  h.push('</div>');
+
+  h.push('<h4 class="sheet-label">' + esc(t('exercise.howTitle')) + '</h4>');
+  h.push('<p class="sheet-text">' + esc(t('exercise.' + entry.id + '.how')) + '</p>');
+  h.push('<h4 class="sheet-label">' + esc(t('exercise.mistakesTitle')) + '</h4>');
+  h.push('<p class="sheet-text">' + esc(t('exercise.' + entry.id + '.mistakes')) + '</p>');
+
+  const alts = alternativesFor(entry.id, { equipment: availableEquipment(), location: libLocation || null });
+  h.push('<h4 class="sheet-label">' + esc(t('exercise.alternativesTitle')) + '</h4>');
+  h.push(alts.length
+    ? '<div class="alt-list">' + alts.map(altRowHtml).join('') + '</div>'
+    : '<p class="sheet-note">' + esc(t('exercise.noAlternatives')) + '</p>');
+
+  /* Domáce alternatívy sa riadia tým, čo používateľ naozaj má. Ak nič nesedí,
+     povie sa to – nikdy sa neponúkne cvik, ktorý sa nedá vykonať. */
+  h.push('<h4 class="sheet-label">' + esc(t('exercise.homeTitle')) + '</h4>');
+  const equip = availableEquipment();
+  if (!equip) {
+    h.push('<p class="sheet-note">' + esc(t('library.equipmentUnset')) + '</p>');
+  } else {
+    const home = homeAlternativesFor(entry.id, equip);
+    h.push(home.length
+      ? '<div class="alt-list">' + home.map(altRowHtml).join('') + '</div>'
+      : '<p class="sheet-note">' + esc(t('exercise.homeNone')) + '</p>');
+  }
+
+  h.push('<p class="sheet-note">' + esc(t('exercise.disclaimer')) + '</p>');
+
+  if (exerciseSheetCtx === 'replace' && libraryTarget) {
+    h.push('<button type="button" class="btn btn-primary btn-block" data-sheet-action="replace">'
+      + esc(t('exercise.replace')) + '</button>');
+  } else if (exerciseSheetCtx === 'editor') {
+    /* Cvik, ktorý v návrhu už je, sa nepridá dvakrát – tlačidlo to povie. */
+    const already = Array.isArray(editDraft) && editDraft.some((d) => builtinExerciseId(d) === entry.id);
+    h.push('<button type="button" class="btn btn-primary btn-block" data-sheet-action="add"'
+      + (already ? ' disabled' : '') + '>'
+      + esc(t(already ? 'exercise.inPlanAlready' : 'exercise.addToPlan')) + '</button>');
+  }
+  body.innerHTML = h.join('');
+
+  const figBox = body.querySelector('.fig-box');
+  if (figBox) figBox.appendChild(buildPatternDiagram(entry.diagram));
+}
+
+/* Aplikuje náhradu: zapíše sa IBA do session, plán používateľa zostáva nedotknutý. */
+function applySubstitution(entryId) {
+  const target = libraryTarget;
+  const entry = libraryEntry(entryId);
+  if (!target || !entry) return;
+  const plan = getPlan(selectedPlan);
+  if (!plan) return;
+  const info = exerciseSlots(plan).find((s) => s.slot === target.slot);
+  if (!info) return;
+  const sess = ensureSession();
+  if (!sess) return;
+
+  /* Pri reťazci sa nahrádza TO, čo tam je teraz – nie pôvodný cvik z plánu.
+     Inak by druhá výmena tvrdila, že nahradila cvik, ktorý už dávno vymenila. */
+  const existing = substitutionSteps(info.slot);
+  const currentEx = existing.length ? existing[existing.length - 1].ex : info.ex;
+  const next = {
+    id: entry.id,
+    name: (I18N.en && I18N.en['exercise.' + entry.id]) || entry.id,
+    sets: currentEx.sets,
+    reps: currentEx.reps,
+    weight: currentEx.weight,
+    plannedFailureSets: cleanFailureSets(currentEx.plannedFailureSets, currentEx.sets),
+    sessionKey: 'sub_' + uid(),
+  };
+  /* Jednostranný cvik zostáva jednostranný – tvar tréningu sa výmenou nemení. */
+  if (currentEx.unilateral === true) {
+    next.unilateral = true;
+    next.startSide = currentEx.startSide === 'right' ? 'right' : 'left';
+  }
+
+  if (!sess.substituted || typeof sess.substituted !== 'object') sess.substituted = {};
+  if (!Array.isArray(sess.substituted[info.slot])) sess.substituted[info.slot] = [];
+  sess.substituted[info.slot].push({
+    key: next.sessionKey,
+    ex: next,
+    oldName: recordedExerciseName(currentEx),
+    at: Date.now(),
+  });
+  saveState();
+  closeExerciseSheet();
+  closeLibrary();
+  renderTrening();
+}
+
+function confirmSubstitution(entryId) {
+  const target = libraryTarget;
+  const plan = getPlan(selectedPlan);
+  const entry = libraryEntry(entryId);
+  if (!target || !plan || !entry) return;
+  const info = exerciseSlots(plan).find((s) => s.slot === target.slot);
+  if (!info) return;
+  if (!slotIsUnique(plan, info.base)) {
+    showGeneric(t('exercise.replaceTitle'), t('common.ok'), null, esc(t('exercise.replaceDuplicate')));
+    return;
+  }
+  /* Opäť: hovorí sa o cviku, ktorý tam je TERAZ. */
+  const existing = substitutionSteps(info.slot);
+  const currentEx = existing.length ? existing[existing.length - 1].ex : info.ex;
+  const done = countDoneSets(currentEx);
+  const oldName = exerciseDisplayName(currentEx);
+  const text = done > 0
+    ? t('exercise.replaceSomeDone', { done, total: exerciseSlotCount(currentEx), old: oldName, next: t('exercise.' + entry.id) })
+    : t('exercise.replaceNoneDone', { old: oldName });
+  showGeneric(t('exercise.replaceTitle'), t('exercise.replaceConfirm'),
+    () => applySubstitution(entryId), esc(text));
+}
+
+/* Zrušenie výmeny: pôvodný cvik sa znova sprístupní so všetkými svojimi sériami.
+   Značky náhrady sa musia zahodiť, inak by ostali visieť bez cviku. */
+function requestUndoSubstitution(slot) {
+  const sess = getSession();
+  if (!sess || !sess.substituted) return;
+  const steps = substitutionSteps(slot);
+  if (!steps.length) return;
+  const last = steps[steps.length - 1];
+  const doUndo = () => {
+    const map = sess.substituted;
+    if (!map || !Array.isArray(map[slot])) return;
+    map[slot].pop();
+    if (!map[slot].length) delete map[slot];
+    if (!Object.keys(map).length) delete sess.substituted;
+    const prefix = String(last.key) + ':';
+    for (const k of Object.keys(sess.completedSets)) if (k.indexOf(prefix) === 0) delete sess.completedSets[k];
+    for (const k of Object.keys(sess.actualFailureSets)) if (k.indexOf(prefix) === 0) delete sess.actualFailureSets[k];
+    saveState();
+    renderTrening();
+  };
+  const done = countDoneSets(last.ex);
+  if (done > 0) {
+    showGeneric(t('exercise.undoConfirm'), t('exercise.undoConfirm'), doUndo,
+      esc(t('exercise.undoDiscard', { name: exerciseDisplayName(last.ex), n: done })));
+  } else {
+    doUndo();
+  }
+}
+
+/* Pridanie cviku z knižnice do práve upravovaného plánu (draft, nie plán). */
+function addLibraryExerciseToDraft(entryId) {
+  if (editingPlan === null || !Array.isArray(editDraft)) return;
+  const entry = libraryEntry(entryId);
+  if (!entry) return;
+  if (editDraft.some((d) => builtinExerciseId(d) === entry.id)) return;
+  editDraft.push({
+    id: entry.id,
+    builtin: true,
+    name: (I18N.en && I18N.en['exercise.' + entry.id]) || entry.id,
+    sets: 3, reps: 10, weight: 0, plannedFailureSets: [],
+  });
+  renderEditPanel();
+  closeExerciseSheet();
 }
 
 /* ---------- Vykreslenie: POKROK ---------- */
@@ -7166,6 +9225,53 @@ function finishWorkout() {
   document.getElementById('confirm-note').focus();
 }
 
+/* Jeden cvik do histórie: setsDone aj actualFailureSets sa čítajú zo session cez stabilné
+   kľúče cvikov, takže sa nikdy nemôžu pomiešať dva cviky s rovnakým menom ani stratiť
+   po úprave plánu. `ex.name` je záznam názvu v čase tréningu – nemenný snapshot. */
+function historyExerciseEntry(ex, sess) {
+  const sides = exerciseSideOrder(ex);
+  const entry = {
+    name: ex.name,
+    exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
+    sets: ex.sets,
+    reps: ex.reps,
+    weight: ex.weight,
+    plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, ex.sets),
+  };
+  if (sides) {
+    /* Jednostranný cvik: každá strana sa zaznamenáva samostatne.
+       setsDone zostáva SÚČET oboch strán – rovnaký význam ako pri bežnom cviku. */
+    const doneSide = { left: [], right: [] };
+    const failSide = { left: [], right: [] };
+    for (let i = 0; i < ex.sets; i++) {
+      for (const side of sides) {
+        if (sess && sess.completedSets[setSessionKey(ex, i, side)]) doneSide[side].push(i + 1);
+        if (sess && sess.actualFailureSets[setSessionKey(ex, i, side)]) failSide[side].push(i + 1);
+      }
+    }
+    const cleanDone = cleanSideSets(doneSide, ex.sets);
+    const cleanFails = cleanSideSets(failSide, ex.sets);
+    entry.unilateral = true;
+    entry.startSide = ex.startSide === 'right' ? 'right' : 'left';
+    entry.setsDone = cleanDone.left.length + cleanDone.right.length;
+    entry.sidesDone = cleanDone;
+    entry.sidesFailure = cleanFails;
+    /* actualFailureSets zostáva zjednotením čísel sérií – pre staršie zobrazenia aj kompatibilitu. */
+    entry.actualFailureSets = Array.from(new Set(cleanFails.left.concat(cleanFails.right)))
+      .sort((a, b) => a - b);
+  } else {
+    const done = [];
+    const fails = [];
+    for (let i = 0; i < ex.sets; i++) {
+      if (sess && sess.completedSets[setSessionKey(ex, i)]) done.push(i + 1);
+      if (sess && sess.actualFailureSets[setSessionKey(ex, i)]) fails.push(i + 1);
+    }
+    entry.setsDone = done.length;
+    entry.actualFailureSets = cleanFailureSets(fails, ex.sets);
+  }
+  return entry;
+}
+
 function confirmFinish() {
   const plan = getPlan(selectedPlan);
   if (!plan) return;
@@ -7174,51 +9280,33 @@ function confirmFinish() {
   const beforeUnlocked = Object.keys(state.achievements);
   const beforeAchXP = achievementXP();
 
-  /* setsDone aj actualFailureSets sa čítajú zo session cez stabilné kľúče cvikov,
-     takže sa nikdy nemôžu pomiešať dva cviky s rovnakým menom ani stratiť po úprave plánu. */
-  const exercises = plan.exercises.map(ex => {
-    const sides = exerciseSideOrder(ex);
-    const entry = {
-      name: ex.name,
-      exId: (ex.id && BUILTIN_EXERCISE_IDS.has(ex.id)) ? ex.id : undefined,
-      sets: ex.sets,
-      reps: ex.reps,
-      weight: ex.weight,
-      plannedFailureSets: cleanFailureSets(ex.plannedFailureSets, ex.sets),
-    };
-    if (sides) {
-      /* Jednostranný cvik: každá strana sa zaznamenáva samostatne.
-         setsDone zostáva SÚČET oboch strán – rovnaký význam ako pri bežnom cviku. */
-      const doneSide = { left: [], right: [] };
-      const failSide = { left: [], right: [] };
-      for (let i = 0; i < ex.sets; i++) {
-        for (const side of sides) {
-          if (sess && sess.completedSets[setSessionKey(ex, i, side)]) doneSide[side].push(i + 1);
-          if (sess && sess.actualFailureSets[setSessionKey(ex, i, side)]) failSide[side].push(i + 1);
-        }
+  /* Výmena cviku počas tréningu sa zapisuje POCTIVO: pôvodný cvik si ponechá svoje
+     skutočne odcvičené série a náhrada sa zapíše zvlášť. Hotové série sa NIKDY
+     neprepisujú na nový cvik. Cvik bez jedinej série sa do histórie nedostane. */
+  const exercises = [];
+  for (const info of exerciseSlots(plan)) {
+    const steps = substitutionSteps(info.slot);
+    const originalDone = countDoneSets(info.ex);
+    if (!steps.length || originalDone > 0) {
+      const entry = historyExerciseEntry(info.ex, sess);
+      if (steps.length) {
+        /* Zapíše sa cvik, ktorý pôvodný NAOZAJ vystriedal – pri reťazci teda prvý, nie posledný. */
+        entry.replacedBy = exerciseDisplayName(steps[0].ex);
+        entry.replacedAfterSets = originalDone;
       }
-      const cleanDone = cleanSideSets(doneSide, ex.sets);
-      const cleanFails = cleanSideSets(failSide, ex.sets);
-      entry.unilateral = true;
-      entry.startSide = ex.startSide === 'right' ? 'right' : 'left';
-      entry.setsDone = cleanDone.left.length + cleanDone.right.length;
-      entry.sidesDone = cleanDone;
-      entry.sidesFailure = cleanFails;
-      /* actualFailureSets zostáva zjednotením čísel sérií – pre staršie zobrazenia aj kompatibilitu. */
-      entry.actualFailureSets = Array.from(new Set(cleanFails.left.concat(cleanFails.right)))
-        .sort((a, b) => a - b);
-    } else {
-      const done = [];
-      const fails = [];
-      for (let i = 0; i < ex.sets; i++) {
-        if (sess && sess.completedSets[setSessionKey(ex, i)]) done.push(i + 1);
-        if (sess && sess.actualFailureSets[setSessionKey(ex, i)]) fails.push(i + 1);
-      }
-      entry.setsDone = done.length;
-      entry.actualFailureSets = cleanFailureSets(fails, ex.sets);
+      exercises.push(entry);
     }
-    return entry;
-  });
+    for (let i = 0; i < steps.length; i++) {
+      const entry = historyExerciseEntry(steps[i].ex, sess);
+      if (steps[i].oldName) entry.substitutedFor = steps[i].oldName;
+      /* Aj náhrada, ktorá bola neskôr vymenená, si nechá svoje série a povie, kým bola nahradená. */
+      if (i < steps.length - 1 && countDoneSets(steps[i].ex) > 0) {
+        entry.replacedBy = exerciseDisplayName(steps[i + 1].ex);
+        entry.replacedAfterSets = countDoneSets(steps[i].ex);
+      }
+      exercises.push(entry);
+    }
+  }
 
   const doneCount = totalSetsDone();
   const xp = BASE_XP + doneCount * XP_PER_SET;
@@ -8572,6 +10660,10 @@ function setupEvents() {
     if (measureModal && !measureModal.hidden) { measureModal.hidden = true; refreshUpdateBanner(); return; }
     const foodModal = document.getElementById('modal-food');
     if (foodModal && !foodModal.hidden) { foodModal.hidden = true; refreshUpdateBanner(); return; }
+    const exSheet = document.getElementById('modal-exercise');
+    if (exSheet && !exSheet.hidden) { closeExerciseSheet(); return; }
+    const lib = document.getElementById('modal-library');
+    if (lib && !lib.hidden) { closeLibrary(); return; }
     const modal = document.getElementById('modal-day');
     if (modal && !modal.hidden) closeDay();
   });
@@ -8645,6 +10737,41 @@ function setupEvents() {
     renderPokrok();
   });
 
+  /* ---------- Knižnica cvikov a výmena počas tréningu ---------- */
+  on('btn-exercise-library', () => openLibrary('browse', null));
+  on('btn-library-close', closeLibrary);
+  on('btn-exercise-close', closeExerciseSheet);
+
+  /* Jeden delegovaný listener na telo knižnice – nevzniká 30 listenerov
+     pri každom prekreslení a opakované otvorenie nič nezduplikuje. */
+  on('library-body', (e) => {
+    const chip = e.target.closest ? e.target.closest('[data-chip-group]') : null;
+    if (chip) { handleLibraryChip(chip.dataset.chipGroup, chip.dataset.chipValue); return; }
+    const act = e.target.closest ? e.target.closest('[data-lib-action]') : null;
+    if (act) { handleLibraryAction(act.dataset.libAction); return; }
+    const row = e.target.closest ? e.target.closest('[data-exercise-id]') : null;
+    if (row && row.dataset.exerciseId) {
+      openExerciseSheet(row.dataset.exerciseId, libraryMode === 'replace' ? 'replace' : libraryContext());
+    }
+  });
+
+  /* Hľadanie je mimo prekresľovaného tela, takže pole nikdy nestratí fokus. */
+  on('lib-search', (e) => {
+    libQuery = e.target.value || '';
+    renderLibrary();
+  }, 'input');
+
+  on('exercise-body', (e) => {
+    const act = e.target.closest ? e.target.closest('[data-sheet-action]') : null;
+    if (act) {
+      if (act.dataset.sheetAction === 'replace') confirmSubstitution(exerciseSheetId);
+      else if (act.dataset.sheetAction === 'add') addLibraryExerciseToDraft(exerciseSheetId);
+      return;
+    }
+    const row = e.target.closest ? e.target.closest('[data-exercise-id]') : null;
+    if (row && row.dataset.exerciseId) openExerciseSheet(row.dataset.exerciseId, exerciseSheetCtx);
+  });
+
   on('btn-update', applyUpdate);
 
   /* Prvý dotyk/klik pri zapnutom zvuku vytvorí a aktivuje zvukový kontext v rámci
@@ -8694,7 +10821,8 @@ function isBusy() {
   if (getSession()) return true;                         // rozbehnutý aktívny tréning (meria sa jeho trvanie)
   if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
-    'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food'];
+    'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food',
+    'modal-library', 'modal-exercise'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg

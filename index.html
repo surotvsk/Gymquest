@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
 
@@ -98,6 +98,10 @@
         <button class="btn btn-secondary" id="btn-add-plan" data-i18n="trening.addPlan">+ Pridať tréning</button>
       </div>
       <p class="edit-hint plan-manage-hint" id="plan-manage-hint" hidden data-i18n="trening.manageHint">Potiahni plán a zmeň jeho poradie, alebo ťukni na ✏️ a uprav ho.</p>
+
+      <div class="plan-actions">
+        <button type="button" class="btn btn-secondary" id="btn-exercise-library" data-i18n="library.open">📚 Knižnica cvikov</button>
+      </div>
 
       <div class="edit-panel" id="edit-panel" hidden>
         <label class="modal-label" for="edit-plan-name" data-i18n="trening.planNameLabel">Názov plánu</label>
@@ -551,6 +555,31 @@
     </div>
   </div>
 
+  <!-- ============ MODAL: knižnica cvikov ============ -->
+  <div class="modal-backdrop" id="modal-library" hidden>
+    <div class="modal modal-sheet">
+      <div class="sheet-head">
+        <h3 data-i18n="library.title">Knižnica cvikov</h3>
+        <button type="button" class="btn-icon" id="btn-library-close" data-i18n-title="library.close" data-i18n-aria="library.close">✕</button>
+      </div>
+      <div class="sheet-search">
+        <input type="search" id="lib-search" autocomplete="off" data-i18n-aria="library.searchLabel" data-i18n-placeholder="library.searchPlaceholder">
+      </div>
+      <div class="sheet-scroll" id="library-body"></div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: detail cviku ============ -->
+  <div class="modal-backdrop" id="modal-exercise" hidden>
+    <div class="modal modal-sheet">
+      <div class="sheet-head">
+        <h3 id="exercise-title">—</h3>
+        <button type="button" class="btn-icon" id="btn-exercise-close" data-i18n-title="library.close" data-i18n-aria="library.close">✕</button>
+      </div>
+      <div class="sheet-scroll" id="exercise-body"></div>
+    </div>
+  </div>
+
   <!-- ============ MODAL: generické potvrdenie ============ -->
   <div class="modal-backdrop" id="modal-generic" hidden>
     <div class="modal">
@@ -631,6 +660,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=24"></script>
+  <script src="script.js?v=25"></script>
 </body>
 </html>

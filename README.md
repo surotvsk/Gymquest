@@ -63,6 +63,14 @@ everything on your own device.
 - **Plain-language explanations** — short, non-judgemental notes on measuring body weight, why daily
   changes are not a trend, what duration / sets / reps / progressive overload mean, and what the
   calorie estimate and your own nutrition numbers can and cannot tell you.
+- **Exercise library** — 33 built-in exercises with primary and secondary muscles, movement pattern,
+  difficulty, equipment, gym/home/outdoor availability, how-to steps, common mistakes, similar exercises
+  with the reason each was suggested, and an original position diagram. Find something by what you want
+  to train and where you are, search by name in any of the six languages, or tell it what equipment you
+  have and see only what you can actually do.
+- **Replace an exercise mid-workout** — swap an exercise without losing your progress. Sets you already
+  finished stay recorded under the original exercise; the replacement is added for the rest of the
+  session and your plan is never changed.
 - **Export and import** — back up or restore all of your data as a JSON file.
 - **Automatic backups** — opt-in JSON backup files every five workouts (at most weekly), created
   automatically on desktop and Android, and with one honest tap on iPhone. See *Automatic backups*
@@ -424,6 +432,133 @@ names look the same.
 
 ---
 
+## The exercise library
+
+GymQuest ships with a built-in catalogue of **33 exercises** — the 13 that have always powered the
+built-in plans, plus 20 added so the app is genuinely useful away from a gym as well. There is
+**no server, no download and no external service**: the catalogue lives in the app's own code, so it
+works offline from the first launch and adds nothing at all to your stored data.
+
+### What each exercise tells you
+
+- **Primary muscle**, called out on its own, and **secondary muscles** listed separately. They are never
+  mixed into one list, because "this trains your chest" and "this also uses your triceps" are different
+  claims.
+- **Movement pattern** (horizontal push, hip hinge, lateral raise …), **difficulty**
+  (beginner / intermediate / advanced), **equipment needed**, and **where it can be done** —
+  gym, home or outdoors.
+- **How to do it** — a short setup-to-finish description, written for someone doing it for the first
+  time.
+- **Common mistakes & technique notes** — one plain sentence about what usually goes wrong.
+- **A schematic body-position drawing** (see the honest note below).
+- **Similar exercises**, each with the reason it was suggested.
+
+### Opening it
+
+There is **no new bottom tab** — the five-tab bar on a phone is left exactly as it was. The library
+opens from places you are already working in:
+
+- the **Exercise library** button on the **Training** screen,
+- the same button while a **plan editor** is open, where exercises you find can be added straight into
+  the plan you are editing,
+- the **⇄ replace** button on any exercise **during a workout**.
+
+### Finding something to train
+
+1. **What do you want to train?** — Chest, Back, Shoulders, Arms, Legs, Glutes, Core, or Full body.
+2. **Where are you training?** — Gym, Home or Outdoors.
+3. **Search** by name, and open **Filters** for difficulty, movement pattern and exercise type.
+
+Search understands **all six languages at once**, so typing an English name finds the exercise even
+when the interface is in Slovak — and it also finds **your own** custom exercises, which appear in a
+separate *Your own exercises* section and are never merged with a library entry that happens to look
+similar.
+
+**Full body** is a deliberate selection spread across the major muscle groups, not a claim that each
+listed exercise trains everything.
+
+When nothing matches, you get a plain sentence saying so plus a **Reset filters** button. Reset clears
+the search, muscle, location, difficulty, pattern and type filters — it does **not** clear your saved
+equipment, because that is a preference rather than a filter.
+
+### My equipment — and why "No equipment" is different
+
+Under **My equipment** you tell GymQuest what you actually have: *No equipment, Resistance bands,
+Dumbbells, Pull-up bar (or dip bars), Adjustable bench, Barbell, Machine*, or the **Full home gym**
+shortcut, which simply selects bands, dumbbells, a pull-up bar, a bench and a barbell for you. You can
+change it at any time and the suggestions update immediately.
+
+- **"No equipment" is a filter choice, not equipment.** It cannot be combined with anything else:
+  choosing it clears the rest, and choosing anything else clears it.
+- **Bodyweight exercises are always available.** If you have only bands, you can still see push-ups —
+  owning a band does not remove your own body. But if you select *No equipment*, you see **only**
+  exercises that need no equipment.
+- **Until you tell it, GymQuest does not pretend to know.** With nothing selected it filters nothing,
+  shows everything, and says plainly that it needs your list before it can narrow things down.
+
+### Gym to home
+
+Open any exercise and the **Home alternatives** block suggests what you could do instead with the
+equipment you have. Every suggestion carries its reason — *same primary muscle, different equipment*,
+*no-equipment version*, *easier variation*, *more challenging variation* — and says nothing about being
+an identical swap. If nothing suitable exists for your equipment, GymQuest **says so** instead of
+offering an exercise you cannot perform. For example, a Lat Pulldown (cable rows) with only resistance
+bands suggests the band row and a bodyweight back extension; with no equipment at all it suggests only
+the bodyweight option.
+
+### Replacing an exercise during a workout
+
+If the machine is taken, tap **⇄** on that exercise (available once your workout is running) and pick
+what you will do instead. **Your plan is never changed** — tomorrow you are back on the original.
+
+Before anything changes you are told exactly what will happen:
+
+- **If no sets are recorded yet:** *"No sets recorded yet. Bench press will be replaced for the rest of
+  this session."*
+- **If sets are already recorded:** *"2 of 4 sets are already recorded for Bench press. Those stay
+  recorded under Bench press, and Push-up is added for the remaining work."*
+
+That is exactly what GymQuest then does. The completed sets stay under the original exercise, shown in
+a dimmed, locked block that cannot be edited, and the replacement is added below for the remaining work
+with a note saying what it replaces. **Completed sets are never relabelled onto the new exercise.**
+Progress, XP and the workout timer carry straight on, and everything survives a refresh, closing the app
+or switching language. You can replace again (the chain is recorded in order, each step keeping its own
+sets) or **undo the last replacement**; if the replacement already has sets recorded, undoing asks first
+and tells you they will be discarded.
+
+When you finish, the history records both sides honestly: the original with the sets it actually
+performed plus *Replaced by Push-up*, and the replacement with *Replaces Dips*. An exercise with no sets
+that was replaced is not written to history at all. If a plan lists the same exercise twice, GymQuest
+refuses the replacement and says why, rather than risk mixing the two up.
+
+### Demonstrations: what is here, and what is not
+
+**There are no photographs, animations or videos, and none is pretended.** Exercise media that could be
+legally redistributed cannot be sourced for this project, and streaming anything would require an
+external service, which would break the offline promise.
+
+What is here instead is a set of **15 original movement-pattern diagrams**, drawn by this project as
+inline SVG directly in the code:
+
+- they show the **body position** for a movement pattern (start position in grey, end position in
+  orange, with a direction arrow; static holds show a single position),
+- they are **original artwork authored for GymQuest**, stored in `script.js`, and covered by the
+  project's own licence — nothing is scraped, and there is no third-party media to attribute,
+- they make **zero network requests** and add **zero bytes** to the offline cache beyond the code
+  itself, so they work offline by construction,
+- they are captioned honestly as a **schematic of the body position, not a photo or video**, with the
+  written steps presented as the main guidance.
+
+If written instructions and a position diagram are not enough for a movement you are unsure about, the
+right next step is a qualified coach or trainer — not a picture in an app.
+
+### Accuracy and safety
+
+The library is descriptive and educational. It does not promise a specific body shape or result, it does
+not label any exercise universally "safe" or "unsafe", and it does not give medical diagnoses or
+treatment advice. An alternative is a training suggestion, **not** a medical recommendation for an
+injury. If something hurts, stop and get qualified advice.
+
 ## Training to failure (optional)
 
 Training to failure is an optional technique — GymQuest only records what you choose, and never
@@ -757,7 +892,12 @@ The whole app lives in a single `localStorage` value, and browsers allow roughly
 | Food log entry | ~130 bytes | ~475 KB (ten a day) | **~4.7 MB** |
 
 So the **food log is the only part that can realistically fill it up**, and only if you log a lot for
-many years. GymQuest never deletes anything to make room. Instead:
+many years. The exercise library adds **nothing here at all** — it lives in the app's code, not in your
+stored data, so a bigger library never costs you storage. It does make the app itself a little larger to
+download and cache (about 145 KB of code and translations, roughly a third more for `script.js`), which
+is a one-time cost and is cached offline like the rest of the app.
+
+GymQuest never deletes anything to make room. Instead:
 
 - If a save is ever refused by the browser, a warning appears at the top of the app saying what
   happened and pointing you at **Export data** — so you can save a file while your data is still in
