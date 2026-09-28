@@ -203,6 +203,17 @@ const EXERCISE_LIBRARY = [
    v množine (a teda preložiteľný), len sa už neponúka. */
 const BUILTIN_EXERCISE_IDS = new Set(EXERCISE_LIBRARY.map((e) => e.id));
 
+/* Mená (SK aj EN) → stabilné id. Používa sa pri migrácii starých záznamov
+   a pri zobrazení 5 kg míľnikov. Mení sa NIKDY – je súčasťou čítania starých dát. */
+const BUILTIN_NAME_TO_ID = {
+  'Bench press': 'bench-press', 'Tlaky nad hlavou': 'overhead-press', 'Dipy': 'dips', 'Upažovanie': 'lateral-raises',
+  'Zhyby': 'pull-ups', 'Pull-ups': 'pull-ups', 'Príťahy v predklone': 'bent-over-rows', 'Bent-over rows': 'bent-over-rows',
+  'Veslovanie na kladke': 'cable-rows', 'Cable rows': 'cable-rows', 'Bicepsové zdvihy': 'bicep-curls', 'Bicep curls': 'bicep-curls',
+  'Drepy': 'squats', 'Squats': 'squats', 'Leg press': 'leg-press', 'Výpady': 'lunges', 'Lunges': 'lunges',
+  'Zakopávanie': 'leg-curls', 'Leg curls': 'leg-curls', 'Lýtka': 'calf-raises', 'Calf raises': 'calf-raises',
+  'Overhead press': 'overhead-press', 'Lateral raises': 'lateral-raises', 'Dips': 'dips',
+};
+
 /* ---------- Knižnica: prístup a filtrovanie (jazykovo nezávislé kódy) ---------- */
 
 function libraryEntry(id) {
@@ -347,77 +358,188 @@ function homeGymSelected() {
   return HOME_GYM_SET.every((c) => current.includes(c));
 }
 
-/* ---------- Schémy telesnej polohy (vlastné SVG, žiadna knižnica) ----------
-   Pre každý vzorec pohybu je jedna schematická kresba: východisková poloha (sivá)
-   a koncová poloha (oranžová). Je to PÔVODNÉ dielo vytvorené pre tento projekt
-   a je uložené priamo v kóde, takže sa načítava offline a nič sa neodkiaľ
-   nesťahuje ani nelicencuje. Je to schéma polohy tela, NIE fotografia ani video. */
+/* ---------- Ilustrácie cvikov (vlastné SVG, žiadna knižnica) ----------
+   PÔVODNÉ dielo vytvorené pre tento projekt. Postava má OBJEM – trup ako vyplnená
+   plocha s ramenami, hrudníkom, pásom a bokmi, kužeľovité končatiny s kĺbmi, hlavu,
+   ruky a chodidlá – a je v správnej polohe pre daný cvik, so správnym náčiním
+   (tyč s kotúčmi, jednoručky, lavica, hrazda, bradlá, guma, kladka, schod, podložka)
+   v jednoduchom prostredí (posilňovňa / domov / vonku) a so šípkami smeru pohybu.
+
+   Je to ILUSTRÁCIA, nie fotografia a nie fotorealistické vykreslenie. Všetko sa
+   generuje z kódu, takže to funguje offline a nič sa neodkiaľ nesťahuje.
+   Rám môže byť aj skutočný obrázok ({ src }) – potom sa použije <img> a galéria,
+   popisky, ovládanie aj offline správanie fungujú rovnako. */
 
 const FIG_NS = 'http://www.w3.org/2000/svg';
+const FIG_W = 200;
+const FIG_H = 130;
+const FIG_GROUND = 112;
 
-/* Poloha je bočný pohľad. Súradnice sú v priestore 200×120, zem je na y = 104. */
-function pose(neck, head, hip, knee, ankle, elbow, hand) {
-  return { neck, head, hip, knee, ankle, elbow, hand };
+/* Proporcie postavy vo jednotkách viewBoxu. */
+const FIG_BODY = {
+  headR: 7, neckLen: 5, torsoLen: 30,
+  upperArm: 16, foreArm: 15, hand: 3.6,
+  thigh: 22, shin: 22, foot: 9,
+};
+
+/* Polovica šírky trupu: ramená, hrudník, pás, boky. */
+const FIG_SIDE_W = { shoulder: 10.5, chest: 9.5, waist: 7.5, hip: 8.5 };
+const FIG_FRONT_W = { shoulder: 14.5, chest: 12.5, waist: 10, hip: 11.5 };
+
+function figRad(deg) { return (deg * Math.PI) / 180; }
+
+function addPt(p, deg, len) {
+  return { x: p.x + Math.cos(figRad(deg)) * len, y: p.y + Math.sin(figRad(deg)) * len };
 }
 
-const PATTERN_POSES = {
-  pushH: {
-    start: pose([80, 74], [92, 72], [48, 80], [30, 84], [14, 88], [82, 88], [88, 100]),
-    end: pose([80, 60], [92, 58], [48, 66], [30, 70], [14, 74], [80, 76], [88, 100]),
-  },
-  pushV: {
-    start: pose([72, 40], [72, 30], [72, 68], [70, 86], [68, 104], [86, 50], [80, 40]),
-    end: pose([72, 40], [72, 30], [72, 68], [70, 86], [68, 104], [74, 22], [72, 10]),
-  },
-  pullV: {
-    start: pose([72, 52], [64, 44], [72, 76], [74, 90], [76, 104], [72, 30], [72, 14]),
-    end: pose([72, 36], [64, 28], [72, 60], [74, 74], [76, 88], [76, 26], [72, 14]),
-  },
-  pullH: {
-    start: pose([82, 50], [92, 44], [40, 66], [34, 84], [30, 104], [94, 64], [106, 76]),
-    end: pose([82, 50], [92, 44], [40, 66], [34, 84], [30, 104], [64, 62], [56, 70]),
-  },
-  squat: {
-    start: pose([72, 36], [72, 26], [72, 66], [72, 86], [70, 104], [86, 52], [88, 62]),
-    end: pose([74, 50], [76, 40], [56, 72], [84, 84], [70, 104], [88, 62], [90, 72]),
-  },
-  lunge: {
-    start: pose([76, 38], [76, 28], [76, 66], [76, 86], [74, 104], [90, 54], [92, 64]),
-    end: pose([76, 54], [76, 44], [70, 74], [94, 80], [74, 104], [90, 70], [92, 80]),
-  },
-  bridge: {
-    start: pose([38, 80], [28, 78], [64, 86], [88, 78], [106, 102], [40, 94], [30, 94]),
-    end: pose([38, 80], [28, 78], [64, 66], [88, 70], [106, 102], [40, 94], [30, 94]),
-  },
-  armIsolation: {
-    start: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 58], [86, 80]),
-    end: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 58], [82, 42]),
-  },
-  legIsolation: {
-    start: pose([38, 68], [34, 58], [42, 82], [74, 82], [104, 82], [46, 80], [58, 82]),
-    end: pose([38, 68], [34, 58], [42, 82], [74, 82], [78, 62], [46, 80], [58, 82]),
-  },
-  calfRaise: {
-    start: pose([70, 36], [70, 26], [70, 64], [70, 84], [68, 104], [84, 52], [86, 62]),
-    end: pose([70, 28], [70, 18], [70, 56], [70, 76], [68, 96], [84, 44], [86, 54]),
-  },
-  backExtension: {
-    start: pose([42, 86], [30, 86], [70, 86], [96, 86], [118, 86], [40, 96], [24, 96]),
-    end: pose([42, 80], [28, 72], [70, 86], [96, 86], [118, 74], [40, 76], [22, 66]),
-  },
-  /* Statická výdrž: jedna poloha, žiadna šípka – nič sa nehýbe. */
-  coreAntiExtension: {
-    start: pose([84, 74], [96, 72], [50, 78], [32, 84], [14, 90], [86, 94], [96, 102]),
-  },
-  lateralRaise: {
-    start: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 52], [76, 64]),
-    end: pose([66, 38], [66, 28], [66, 66], [66, 86], [64, 104], [82, 48], [98, 48]),
-  },
-  conditioning: {
-    start: pose([84, 74], [96, 72], [50, 78], [32, 84], [14, 90], [80, 90], [84, 102]),
-    end: pose([72, 36], [72, 26], [72, 64], [72, 84], [70, 104], [86, 50], [86, 20]),
-  },
-};
+/* Reťazec bodov z absolútnych uhlov (0 = doprava, 90 = dole, -90 = hore). */
+function chainFrom(start, degs, lens) {
+  const pts = [{ x: start.x, y: start.y }];
+  let p = pts[0];
+  for (let i = 0; i < degs.length; i++) {
+    p = addPt(p, degs[i], lens[i]);
+    pts.push(p);
+  }
+  return pts;
+}
+
+/* Zrkadlenie podľa zvislej osi – pre čelný pohľad (druhá strana tela). */
+function mirrorX(pts, axisX) {
+  return pts.map((p) => ({ x: 2 * axisX - p.x, y: p.y }));
+}
+
+/* IK pre dvojsegmentovú končatinu: vráti absolútne uhly [koreň, druhá časť].
+   Vďaka tomu sa rám zadáva ako "ruka je na hrudníku", nie ako uhly naslepo –
+   poloha je potom presná a nedá sa omylom nakresliť nesprávny pohyb.
+   `bend` (+1 / -1) určuje, na ktorú stranu sa kĺb ohne. */
+function solveLimb(root, target, len1, len2, bend) {
+  const dx = target.x - root.x;
+  const dy = target.y - root.y;
+  const raw = Math.hypot(dx, dy);
+  const d = Math.min(Math.max(raw, Math.abs(len1 - len2) + 0.01), len1 + len2 - 0.01);
+  const baseDeg = Math.atan2(dy, dx) * (180 / Math.PI);
+  const clamp = (v) => Math.min(1, Math.max(-1, v));
+  const a1 = Math.acos(clamp((len1 * len1 + d * d - len2 * len2) / (2 * len1 * d))) * (180 / Math.PI);
+  const a2 = Math.acos(clamp((len1 * len1 + len2 * len2 - d * d) / (2 * len1 * len2))) * (180 / Math.PI);
+  const s = bend >= 0 ? 1 : -1;
+  const deg1 = baseDeg + s * a1;
+  return [deg1, deg1 - s * (180 - a2)];
+}
+
+function figPt(p) {
+  return p.x.toFixed(1) + ' ' + p.y.toFixed(1);
+}
+
+/* Bod môže byť zapísaný ako [x, y] alebo {x, y} – vždy vráti {x, y}. */
+function asPoint(v) {
+  if (!v) return null;
+  if (Array.isArray(v)) return { x: Number(v[0]), y: Number(v[1]) };
+  return { x: Number(v.x), y: Number(v.y) };
+}
+
+/* Trup ako UZAVRETÁ VYPLNENÁ plocha – to je rozdiel oproti čiare.
+   Os trupu vedie z bokov k ramenám, kolmica určuje prednú/zadnú stranu. */
+function torsoOutline(hip, shoulder, w) {
+  const dx = shoulder.x - hip.x;
+  const dy = shoulder.y - hip.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const ax = dx / len;
+  const ay = dy / len;
+  const px = -ay;
+  const py = ax;
+  const at = (along, off) => ({ x: hip.x + ax * along + px * off, y: hip.y + ay * along + py * off });
+  const pts = [
+    at(0, w.hip), at(len * 0.45, w.waist), at(len * 0.78, w.chest), at(len, w.shoulder),
+    at(len, -w.shoulder), at(len * 0.78, -w.chest), at(len * 0.45, -w.waist), at(0, -w.hip),
+  ];
+  return 'M' + pts.map(figPt).join(' L') + ' Z';
+}
+
+/* Celá postava pre jeden rám. Súradnice sa počítajú z uhlov, takže náčinie sa
+   vždy drží v rukách a nohy stoja na zemi (pri postojoch sa výška bokov
+   dopočíta z dĺžky nôh). */
+function figureRig(frame) {
+  const f = frame || {};
+  const view = f.view === 'front' ? 'front' : 'side';
+  const w = view === 'front' ? FIG_FRONT_W : FIG_SIDE_W;
+  const B = FIG_BODY;
+  const footDeg = f.foot === undefined ? 0 : f.foot;
+
+  /* Boky: buď dané, alebo dopočítané tak, aby chodidlá stáli na zemi. */
+  const legsHint = f.legs || [90, 90];
+  let hip;
+  if (f.hip) hip = { x: f.hip[0] + (f.dx || 0), y: f.hip[1] + (f.dy || 0) };
+  else {
+    const drop = B.thigh * Math.sin(figRad(legsHint[0])) + B.shin * Math.sin(figRad(legsHint[1]));
+    hip = { x: (view === 'front' ? 100 : 96) + (f.dx || 0), y: FIG_GROUND - drop + (f.dy || 0) };
+  }
+
+  const torsoDeg = f.torso === undefined ? -90 : f.torso;
+  const shoulder = addPt(hip, torsoDeg, B.torsoLen);
+  const neck = addPt(shoulder, torsoDeg, B.neckLen);
+  const head = addPt(neck, torsoDeg, B.headR + 1);
+  const perpDeg = torsoDeg + 90;              // predná strana tela
+  const backDeg = torsoDeg + 270;             // zadná strana tela (opačná kolmica)
+
+  const shoulderOff = w.shoulder * 0.5;
+  const hipOff = w.hip * 0.42;
+  const armNearRoot = addPt(shoulder, perpDeg, shoulderOff);
+  const armFarRoot = addPt(shoulder, backDeg, shoulderOff);
+  const legNearRoot = addPt(hip, perpDeg, hipOff);
+  const legFarRoot = addPt(hip, backDeg, hipOff);
+
+  /* Končatiny: buď priamo uhly, alebo cieľová poloha ruky/chodidla cez IK. */
+  const handT = asPoint(f.hand);
+  const handFarT = asPoint(f.handFar);
+  const footT = asPoint(f.footAt);
+  const footFarT = asPoint(f.footFar);
+  const armAngles = handT
+    ? solveLimb(armNearRoot, handT, B.upperArm, B.foreArm, f.bend === undefined ? 1 : f.bend)
+    : (f.arm || [-70, -60]);
+  const armFarAngles = handFarT
+    ? solveLimb(armFarRoot, handFarT, B.upperArm, B.foreArm, f.bendFar === undefined ? 1 : f.bendFar)
+    : (f.armFar || armAngles);
+  const legAngles = footT
+    ? solveLimb(legNearRoot, footT, B.thigh, B.shin, f.kneeBend === undefined ? -1 : f.kneeBend)
+    : legsHint;
+  const legFarAngles = footFarT
+    ? solveLimb(legFarRoot, footFarT, B.thigh, B.shin, f.kneeBend === undefined ? -1 : f.kneeBend)
+    : (f.legsFar || legAngles);
+
+  const armNear = chainFrom(armNearRoot, armAngles, [B.upperArm, B.foreArm]);
+  const armFarPts = chainFrom(armFarRoot, armFarAngles, [B.upperArm, B.foreArm]);
+  const legNear = chainFrom(legNearRoot, legAngles, [B.thigh, B.shin]);
+  const legFarPts = chainFrom(legFarRoot, legFarAngles, [B.thigh, B.shin]);
+
+  const axisX = hip.x;
+  const mirror = view === 'front';
+  const armFarOut = mirror ? mirrorX(armFarPts, axisX) : armFarPts;
+  const legFarOut = mirror ? mirrorX(legFarPts, axisX) : legFarPts;
+
+  const feet = [legNear, legFarOut].map((leg, i) => {
+    const ankle = leg[2];
+    const dir = (mirror && i === 1) ? 180 - footDeg : footDeg;
+    return [ankle, addPt(ankle, dir, B.foot)];
+  });
+
+  return {
+    view,
+    widths: w,
+    hip,
+    shoulder,
+    neck,
+    head,
+    torsoDeg,
+    headTilt: (f.headTilt || 0) + torsoDeg + 90,
+    armNear,
+    armFar: armFarOut,
+    legNear,
+    legFar: legFarOut,
+    feet,
+    hands: [armNear[2], armFarOut[2]],
+    work: f.work || 'armNear',
+  };
+}
 
 function figEl(name, attrs) {
   const el = document.createElementNS(FIG_NS, name);
@@ -425,46 +547,675 @@ function figEl(name, attrs) {
   return el;
 }
 
-function drawPose(parent, p, cls) {
-  const seg = (a, b) => parent.appendChild(figEl('line', {
-    x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: cls,
-  }));
-  seg(p.neck, p.hip);
-  seg(p.neck, p.elbow);
-  seg(p.elbow, p.hand);
-  seg(p.hip, p.knee);
-  seg(p.knee, p.ankle);
-  parent.appendChild(figEl('circle', { cx: p.head[0], cy: p.head[1], r: 7, class: cls + '-head' }));
-  parent.appendChild(figEl('circle', { cx: p.neck[0], cy: p.neck[1], r: 2.5, class: cls + '-joint' }));
-  parent.appendChild(figEl('circle', { cx: p.hip[0], cy: p.hip[1], r: 2.5, class: cls + '-joint' }));
+function figLimb(parent, pts, cls) {
+  parent.appendChild(figEl('polyline', { points: pts.map(figPt).join(' '), class: cls }));
 }
 
-function buildPatternDiagram(pattern) {
-  const key = PATTERN_POSES[pattern] ? pattern : 'pushH';
-  const data = PATTERN_POSES[key];
-  const svg = figEl('svg', {
-    class: 'fig-svg', viewBox: '0 0 200 120', role: 'img',
-    'aria-label': t('exercise.diagramCaption') + ': ' + t('pattern.' + key),
-  });
-  svg.appendChild(figEl('line', { x1: 8, y1: 104, x2: 192, y2: 104, class: 'fig-ground' }));
-  drawPose(svg, data.start, 'fig-a');
-  if (data.end) {
-    drawPose(svg, data.end, 'fig-b');
-    svg.appendChild(figEl('path', { d: 'M74 114 L124 114 M116 110 L124 114 L116 118', class: 'fig-arrow' }));
+/* Jedna sekcia tela: vzdialené končatiny → trup → blízke končatiny.
+   Poradie je dôležité, aby telo pôsobilo ako 3D objem, nie ako plochá schéma. */
+function drawFigure(parent, rig) {
+  const g = figEl('g', { class: 'fig-body' });
+  const workFar = rig.work === 'armFar' || rig.work === 'all';
+  const workNear = rig.work === 'armNear' || rig.work === 'all';
+
+  /* Zadná noha a zadná ruka (tmavšie = ďalej od diváka). */
+  figLimb(g, rig.legFar, rig.work === 'legFar' ? 'fig-work' : 'fig-far');
+  figLimb(g, rig.armFar, workFar ? 'fig-work' : 'fig-far');
+  parent.appendChild(g);
+
+  const g2 = figEl('g', { class: 'fig-body' });
+  g2.appendChild(figEl('path', { d: torsoOutline(rig.hip, rig.shoulder, rig.widths), class: 'fig-torso' }));
+  /* Krk + hlava. */
+  g2.appendChild(figEl('path', {
+    d: 'M' + figPt(rig.shoulder) + ' L' + figPt(rig.neck),
+    class: 'fig-neck',
+  }));
+  g2.appendChild(figEl('ellipse', {
+    cx: rig.head.x.toFixed(1), cy: rig.head.y.toFixed(1),
+    rx: (FIG_BODY.headR * 0.84).toFixed(1), ry: FIG_BODY.headR.toFixed(1),
+    transform: 'rotate(' + rig.headTilt.toFixed(1) + ' ' + figPt(rig.head) + ')',
+    class: 'fig-head',
+  }));
+  parent.appendChild(g2);
+
+  const g3 = figEl('g', { class: 'fig-body' });
+  figLimb(g3, rig.legNear, rig.work === 'legNear' ? 'fig-work' : 'fig-near');
+  /* Chodidlá ako ploché plôšky – naznačujú postoj a kontakt so zemou. */
+  for (const [ankle, toe] of rig.feet) {
+    g3.appendChild(figEl('path', {
+      d: 'M' + figPt(ankle) + ' L' + figPt(toe),
+      class: 'fig-foot',
+    }));
   }
+  /* Ruky ako malé plôšky – vidno, že držia náčinie. */
+  for (const h of rig.hands) {
+    g3.appendChild(figEl('circle', { cx: h.x.toFixed(1), cy: h.y.toFixed(1), r: FIG_BODY.hand, class: 'fig-hand' }));
+  }
+  figLimb(g3, rig.armNear, workNear ? 'fig-work' : 'fig-near');
+  parent.appendChild(g3);
+}
+
+/* Šípka smeru pohybu. */
+function drawArrow(parent, at, deg, len, cls) {
+  const l = len || 20;
+  const tip = addPt(at, deg, l);
+  const tail = addPt(at, deg + 180, 4);
+  const head = 6;
+  const g = figEl('g', { class: cls || 'fig-arrow' });
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt(tail) + ' L' + figPt(tip),
+    class: 'fig-arrow-line',
+  }));
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt(addPt(tip, deg + 180 + 28, head)) + ' L' + figPt(tip)
+      + ' L' + figPt(addPt(tip, deg + 180 - 28, head)),
+    class: 'fig-arrow-head',
+  }));
+  parent.appendChild(g);
+}
+
+/* ---------- Náčinie ----------
+   Tvary sa počítajú Z POLOHY KĹBOV, takže tyč je vždy v rukách, lavica pod
+   telom a guma napnutá od kotvy k ruke. Nič sa nelepí naslepo. */
+
+function drawBarbell(parent, rig, plate) {
+  const a = rig.hands[0];
+  const b = rig.hands[1];
+  const forearmDeg = Math.atan2(b.y - rig.armNear[1].y, b.x - rig.armNear[1].x) * (180 / Math.PI);
+  const barDeg = forearmDeg + 90;
+  const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  const half = 25;
+  const g = figEl('g', { class: 'fig-gear fig-barbell' });
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt(addPt(mid, barDeg + 180, half)) + ' L' + figPt(addPt(mid, barDeg, half)),
+    class: 'fig-bar',
+  }));
+  for (const s of [1, -1]) {
+    const p = addPt(mid, barDeg + (s > 0 ? 0 : 180), half - 4.5);
+    g.appendChild(figEl('ellipse', {
+      cx: p.x.toFixed(1), cy: p.y.toFixed(1), rx: '4.2', ry: '9',
+      transform: 'rotate(' + barDeg.toFixed(1) + ' ' + figPt(p) + ')',
+      class: plate === 'small' ? 'fig-plate fig-plate-sm' : 'fig-plate',
+    }));
+  }
+  parent.appendChild(g);
+}
+
+function drawDumbbellAt(parent, hand, forearmRoot) {
+  const deg = Math.atan2(hand.y - forearmRoot.y, hand.x - forearmRoot.x) * (180 / Math.PI) + 90;
+  const g = figEl('g', { class: 'fig-gear fig-dumbbell' });
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt(addPt(hand, deg + 180, 7)) + ' L' + figPt(addPt(hand, deg, 7)),
+    class: 'fig-bar',
+  }));
+  for (const s of [1, -1]) {
+    const p = addPt(hand, deg + (s > 0 ? 0 : 180), 6);
+    g.appendChild(figEl('circle', { cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: '4.6', class: 'fig-plate' }));
+  }
+  parent.appendChild(g);
+}
+
+function drawBench(parent, x, y, w, tilt) {
+  const g = figEl('g', { class: 'fig-gear fig-bench' });
+  const d = tilt || 0;
+  const a = { x, y };
+  const b = addPt(a, d, w);
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt(a) + ' L' + figPt(b),
+    class: 'fig-bench-pad',
+  }));
+  const legs = [a, b];
+  for (const p of legs) {
+    g.appendChild(figEl('path', { d: 'M' + figPt(p) + ' L' + figPt({ x: p.x, y: FIG_GROUND }), class: 'fig-post' }));
+  }
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt({ x: a.x - 6, y: FIG_GROUND }) + ' L' + figPt({ x: b.x + 6, y: FIG_GROUND }),
+    class: 'fig-post-base',
+  }));
+  parent.appendChild(g);
+}
+
+function drawBar(parent, x1, x2, y, postTo) {
+  const g = figEl('g', { class: 'fig-gear fig-barbar' });
+  g.appendChild(figEl('path', { d: 'M' + x1 + ' ' + y + ' L' + x2 + ' ' + y, class: 'fig-bar' }));
+  for (const px of [x1 + 5, x2 - 5]) {
+    g.appendChild(figEl('path', { d: 'M' + px + ' ' + y + ' L' + px + ' ' + postTo, class: 'fig-post' }));
+  }
+  parent.appendChild(g);
+}
+
+function drawDipBars(parent, y) {
+  const g = figEl('g', { class: 'fig-gear fig-dipbars' });
+  for (const x of [88, 112]) {
+    g.appendChild(figEl('path', { d: 'M' + x + ' ' + y + ' L' + x + ' ' + FIG_GROUND, class: 'fig-post' }));
+  }
+  g.appendChild(figEl('path', { d: 'M88 ' + y + ' L112 ' + y, class: 'fig-bar' }));
+  parent.appendChild(g);
+}
+
+function drawBand(parent, from, to) {
+  const g = figEl('g', { class: 'fig-gear fig-band' });
+  const mx = (from.x + to.x) / 2 + (to.y - from.y) * 0.12;
+  const my = (from.y + to.y) / 2 + (from.x - to.x) * 0.12;
+  g.appendChild(figEl('path', {
+    d: 'M' + figPt(from) + ' Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + figPt(to),
+    class: 'fig-band-line',
+  }));
+  g.appendChild(figEl('path', { d: 'M' + figPt(from) + ' L' + figPt(addPt(from, 90, 6)), class: 'fig-anchor' }));
+  parent.appendChild(g);
+}
+
+function drawCable(parent, hand, x, pulleyY) {
+  const px = x === undefined ? 186 : x;
+  const g = figEl('g', { class: 'fig-gear fig-cable' });
+  g.appendChild(figEl('path', { d: 'M' + px + ' ' + pulleyY + ' L' + px + ' ' + FIG_GROUND, class: 'fig-post' }));
+  g.appendChild(figEl('path', { d: 'M' + (px - 8) + ' ' + pulleyY + ' L' + (px + 8) + ' ' + pulleyY, class: 'fig-post' }));
+  g.appendChild(figEl('circle', { cx: String(px), cy: String(pulleyY), r: '3', class: 'fig-pulley' }));
+  g.appendChild(figEl('path', { d: 'M' + px + ' ' + pulleyY + ' L' + figPt(hand), class: 'fig-cable-line' }));
+  g.appendChild(figEl('rect', {
+    x: String(px - 8), y: String(pulleyY + 24), width: '16', height: '26', rx: '3', class: 'fig-stack',
+  }));
+  parent.appendChild(g);
+}
+
+/* Sánky / plošina stroja (leg press, leg curl) – zvislá doska, o ktorú sa opiera. */
+function drawSled(parent, x, topY, w, h) {
+  const g = figEl('g', { class: 'fig-gear fig-sled' });
+  g.appendChild(figEl('rect', {
+    x: String(x), y: String(topY), width: String(w), height: String(h), rx: '3', class: 'fig-box-body',
+  }));
+  parent.appendChild(g);
+}
+
+function drawBox(parent, x, topY, w) {
+  const g = figEl('g', { class: 'fig-gear fig-box' });
+  g.appendChild(figEl('rect', {
+    x: String(x), y: String(topY), width: String(w), height: String(FIG_GROUND - topY),
+    rx: '2', class: 'fig-box-body',
+  }));
+  parent.appendChild(g);
+}
+
+function drawMat(parent, x, w) {
+  parent.appendChild(figEl('rect', {
+    x: String(x), y: String(FIG_GROUND - 3), width: String(w), height: '3', rx: '1.5', class: 'fig-mat',
+  }));
+}
+
+/* ---------- Prostredie ---------- */
+function drawScene(parent, scene) {
+  const g = figEl('g', { class: 'fig-scene' });
+  g.appendChild(figEl('path', {
+    d: 'M4 ' + FIG_GROUND + ' L' + FIG_W + ' ' + FIG_GROUND,
+    class: 'fig-ground',
+  }));
+  if (scene === 'gym') {
+    g.appendChild(figEl('path', { d: 'M12 ' + FIG_GROUND + ' L12 34 M12 34 L30 34', class: 'fig-props' }));
+    g.appendChild(figEl('circle', { cx: '26', cy: '100', r: '8', class: 'fig-props-thin' }));
+    g.appendChild(figEl('circle', { cx: '36', cy: '102', r: '6', class: 'fig-props-thin' }));
+  } else if (scene === 'home') {
+    g.appendChild(figEl('path', { d: 'M168 20 L168 ' + FIG_GROUND, class: 'fig-props' }));
+    g.appendChild(figEl('path', { d: 'M150 34 L186 34', class: 'fig-props-thin' }));
+  } else {
+    g.appendChild(figEl('path', { d: 'M14 96 Q34 78 54 96', class: 'fig-props' }));
+    g.appendChild(figEl('path', { d: 'M28 96 L28 104 M40 96 L40 104', class: 'fig-props-thin' }));
+    g.appendChild(figEl('path', { d: 'M170 92 L184 92', class: 'fig-props-thin' }));
+  }
+  parent.appendChild(g);
+}
+
+/* ---------- Zostavenie jedného rámu ---------- */
+function drawFrame(parent, frame) {
+  const f = frame || {};
+  drawScene(parent, f.scene || 'gym');
+  const rig = figureRig(f);
+
+  /* Náčinie za telom (lavica, schod, podložka) – kreslí sa pred postavou. */
+  const gear = f.gear || {};
+  if (gear.bench) {
+    drawBench(parent, gear.bench.x, gear.bench.y, gear.bench.w, gear.bench.tilt);
+  }
+  if (gear.box) drawBox(parent, gear.box.x, gear.box.y, gear.box.w);
+  if (gear.mat) drawMat(parent, gear.mat.x, gear.mat.w);
+  if (gear.band) drawBand(parent, asPoint(gear.band.from), rig.hands[0]);
+  if (gear.cable) drawCable(parent, rig.hands[0], gear.cable.x, gear.cable.pulleyY);
+  if (gear.sled) drawSled(parent, gear.sled.x, gear.sled.y, gear.sled.w, gear.sled.h);
+  if (gear.pullup) drawBar(parent, 80, 120, gear.pullup, gear.pullup);
+  if (gear.dips) drawDipBars(parent, gear.dips);
+
+  drawFigure(parent, rig);
+
+  /* Náčinie v rukách (pred telom). */
+  if (gear.barbell) drawBarbell(parent, rig, gear.barbell);
+  if (gear.dumbbells) {
+    drawDumbbellAt(parent, rig.hands[0], rig.armNear[1]);
+    drawDumbbellAt(parent, rig.hands[1], rig.armFar[1]);
+  }
+
+  for (const a of f.arrows || []) {
+    const from = a.at === 'hand' ? rig.hands[0] : a.at === 'hip' ? rig.hip : a.at === 'foot' ? rig.feet[0][1] : rig.shoulder;
+    drawArrow(parent, from, a.deg, a.len, a.cls);
+  }
+}
+
+/* Celý rám ako hotové SVG. */
+function buildFrameSvg(frame) {
+  const svg = figEl('svg', {
+    class: 'fig-svg', viewBox: '0 0 ' + FIG_W + ' ' + FIG_H, role: 'img',
+  });
+  drawFrame(svg, frame);
   return svg;
 }
 
-// maps both SK and EN built-in names -> stable id (for migration + milestone display)
-const BUILTIN_NAME_TO_ID = {
-  'Bench press': 'bench-press', 'Tlaky nad hlavou': 'overhead-press', 'Dipy': 'dips', 'Upažovanie': 'lateral-raises',
-  'Zhyby': 'pull-ups', 'Pull-ups': 'pull-ups', 'Príťahy v predklone': 'bent-over-rows', 'Bent-over rows': 'bent-over-rows',
-  'Veslovanie na kladke': 'cable-rows', 'Cable rows': 'cable-rows', 'Bicepsové zdvihy': 'bicep-curls', 'Bicep curls': 'bicep-curls',
-  'Drepy': 'squats', 'Squats': 'squats', 'Leg press': 'leg-press', 'Výpady': 'lunges', 'Lunges': 'lunges',
-  'Zakopávanie': 'leg-curls', 'Leg curls': 'leg-curls', 'Lýtka': 'calf-raises', 'Calf raises': 'calf-raises',
-  'Overhead press': 'overhead-press', 'Lateral raises': 'lateral-raises', 'Dips': 'dips',
+/* ---------- Rámy ilustrácií pre jednotlivé cviky ----------
+   Každý rám vychádza z TOHO ISTÉHO textu "Ako na to", ktorý má daný cvik, takže
+   obrázok a písaný návod sa nemôžu rozísť. Polohy rúk a chodidiel sa zadávajú
+   súradnicami a kĺby dopočíta IK, preto je postava vždy v správnej polohe.
+   `rig` je IBA rozmiestnenie náčinia – DRUH náčinia sa odvodzuje z metaúdajov
+   cviku, takže sa nedá nakresliť náčinie, ktoré cvik nevyžaduje. */
+
+const EXERCISE_MEDIA = {
+  /* --- Tlakové cviky --- */
+  'bench-press': {
+    scene: 'gym',
+    rig: { bench: { x: 44, y: 87, w: 80 } },
+    frames: [
+      { view: 'side', hip: [76, 78], torso: 0, hand: [106, 52], bend: 1, footAt: [62, 112], caption: 'media.start' },
+      { view: 'side', hip: [76, 78], torso: 0, hand: [104, 69], bend: 1, footAt: [62, 112],
+        arrows: [{ at: 'hand', deg: 90, len: 15 }], caption: 'media.lower' },
+      { view: 'side', hip: [76, 78], torso: 0, hand: [106, 62], bend: 1, footAt: [62, 112],
+        arrows: [{ at: 'hand', deg: -90, len: 15 }], caption: 'media.raise' },
+    ],
+  },
+  'overhead-press': {
+    scene: 'gym',
+    rig: { barbell: 'big' },
+    frames: [
+      { view: 'front', hand: [107, 44], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [107, 26], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 14 }], caption: 'media.raise' },
+      { view: 'front', hand: [107, 12], bend: 1, caption: 'media.top' },
+    ],
+  },
+  'dips': {
+    scene: 'gym',
+    bars: 'dip',
+    rig: { dips: 67 },
+    frames: [
+      { view: 'front', dy: 0, hand: [107, 67], legs: [80, 70], caption: 'media.start' },
+      { view: 'front', dy: 14, hand: [107, 67], legs: [70, 60], arrows: [{ at: 'hip', deg: 90, len: 14 }], caption: 'media.lower' },
+      { view: 'front', dy: 6, hand: [107, 67], legs: [76, 66], arrows: [{ at: 'hip', deg: -90, len: 14 }], caption: 'media.raise' },
+    ],
+  },
+  'push-up': {
+    scene: 'home',
+    rig: { mat: { x: 24, w: 150 } },
+    frames: [
+      { view: 'side', hip: [58, 81], torso: 0, hand: [88, 112], bend: -1, footAt: [32, 112], caption: 'media.start' },
+      { view: 'side', hip: [58, 94], torso: 0, hand: [88, 112], bend: -1, footAt: [32, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 13 }], caption: 'media.lower' },
+      { view: 'side', hip: [58, 88], torso: 0, hand: [88, 112], bend: -1, footAt: [32, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+    ],
+  },
+  'diamond-push-up': {
+    scene: 'home',
+    rig: { mat: { x: 24, w: 150 } },
+    frames: [
+      { view: 'side', hip: [58, 81], torso: 0, hand: [86, 112], bend: -1, footAt: [32, 112], caption: 'media.start' },
+      { view: 'side', hip: [58, 94], torso: 0, hand: [86, 112], bend: -1, footAt: [32, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 13 }], caption: 'media.lower' },
+      { view: 'side', hip: [58, 88], torso: 0, hand: [86, 112], bend: -1, footAt: [32, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+    ],
+  },
+  'pike-push-up': {
+    scene: 'home',
+    rig: {},
+    frames: [
+      { view: 'side', hip: [70, 72], torso: 45, hand: [92, 112], bend: -1, footAt: [46, 110], caption: 'media.start' },
+      { view: 'side', hip: [70, 80], torso: 40, hand: [92, 112], bend: -1, footAt: [44, 110],
+        arrows: [{ at: 'hip', deg: 90, len: 12 }], caption: 'media.lower' },
+      { view: 'side', hip: [70, 76], torso: 43, hand: [92, 112], bend: -1, footAt: [45, 110],
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.raise' },
+    ],
+  },
+  'band-chest-press': {
+    scene: 'home',
+    rig: { band: { from: [70, 32] } },
+    frames: [
+      { view: 'side', hip: [96, 68], torso: -90, hand: [112, 44], bend: 1, caption: 'media.start' },
+      { view: 'side', hip: [96, 68], torso: -90, hand: [128, 42], bend: 1,
+        arrows: [{ at: 'hand', deg: 0, len: 14 }], caption: 'media.extend' },
+      { view: 'side', hip: [96, 68], torso: -90, hand: [120, 43], bend: 1,
+        arrows: [{ at: 'hand', deg: 180, len: 12 }], caption: 'media.return' },
+    ],
+  },
+
+  /* --- Ťahové cviky --- */
+  'bent-over-rows': {
+    scene: 'gym',
+    rig: { barbell: 'small' },
+    frames: [
+      { view: 'side', hip: [96, 68], torso: -45, hand: [117, 74], bend: 1, caption: 'media.start' },
+      { view: 'side', hip: [96, 68], torso: -45, hand: [115, 60], bend: 1,
+        arrows: [{ at: 'hand', deg: -90, len: 13 }], caption: 'media.pull' },
+      { view: 'side', hip: [96, 68], torso: -45, hand: [117, 67], bend: 1,
+        arrows: [{ at: 'hand', deg: 90, len: 12 }], caption: 'media.return' },
+    ],
+  },
+  'dumbbell-row': {
+    scene: 'gym',
+    rig: { bench: { x: 96, y: 92, w: 62 } },
+    frames: [
+      { view: 'side', hip: [80, 70], torso: -50, hand: [104, 88], bend: 1, footAt: [70, 112], caption: 'media.start' },
+      { view: 'side', hip: [80, 70], torso: -50, hand: [102, 74], bend: 1, footAt: [70, 112],
+        arrows: [{ at: 'hand', deg: -90, len: 13 }], caption: 'media.pull' },
+      { view: 'side', hip: [80, 70], torso: -50, hand: [104, 81], bend: 1, footAt: [70, 112],
+        arrows: [{ at: 'hand', deg: 90, len: 12 }], caption: 'media.return' },
+    ],
+  },
+  'cable-rows': {
+    scene: 'gym',
+    rig: { cable: { x: 186, pulleyY: 62 } },
+    frames: [
+      { view: 'side', hip: [78, 82], torso: -90, hand: [112, 58], bend: 1, footAt: [100, 112], caption: 'media.start' },
+      { view: 'side', hip: [78, 82], torso: -90, hand: [86, 64], bend: 1, footAt: [100, 112],
+        arrows: [{ at: 'hand', deg: 180, len: 13 }], caption: 'media.pull' },
+      { view: 'side', hip: [78, 82], torso: -90, hand: [100, 60], bend: 1, footAt: [100, 112],
+        arrows: [{ at: 'hand', deg: 0, len: 12 }], caption: 'media.return' },
+    ],
+  },
+  'pull-ups': {
+    scene: 'gym',
+    rig: { pullup: 22 },
+    frames: [
+      { view: 'front', hip: [100, 80], torso: -90, hand: [122, 22], bend: 1, legs: [100, 120], caption: 'media.start' },
+      { view: 'front', hip: [100, 66], torso: -90, hand: [122, 22], bend: 1, legs: [104, 118],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.pull' },
+      { view: 'front', hip: [100, 74], torso: -90, hand: [122, 22], bend: 1, legs: [102, 119],
+        arrows: [{ at: 'hip', deg: 90, len: 12 }], caption: 'media.lower' },
+    ],
+  },
+  'band-pulldown': {
+    scene: 'home',
+    rig: { band: { from: [100, 6] } },
+    frames: [
+      { view: 'front', hand: [107, 16], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [110, 42], bend: 1, arrows: [{ at: 'hand', deg: 90, len: 13 }], caption: 'media.pull' },
+      { view: 'front', hand: [108, 28], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 12 }], caption: 'media.return' },
+    ],
+  },
+  'band-row': {
+    scene: 'home',
+    rig: { band: { from: [152, 56] } },
+    frames: [
+      { view: 'side', hip: [96, 68], torso: -90, hand: [124, 58], bend: 1, caption: 'media.start' },
+      { view: 'side', hip: [96, 68], torso: -90, hand: [100, 60], bend: 1,
+        arrows: [{ at: 'hand', deg: 180, len: 13 }], caption: 'media.pull' },
+      { view: 'side', hip: [96, 68], torso: -90, hand: [112, 59], bend: 1,
+        arrows: [{ at: 'hand', deg: 0, len: 12 }], caption: 'media.return' },
+    ],
+  },
+  'superman': {
+    scene: 'home',
+    rig: { mat: { x: 24, w: 150 } },
+    frames: [
+      { view: 'side', hip: [70, 104], torso: 0, hand: [124, 104], bend: -1, footAt: [26, 104], caption: 'media.start' },
+      { view: 'side', hip: [70, 104], torso: 0, hand: [122, 94], bend: -1, footAt: [30, 94],
+        arrows: [{ at: 'hand', deg: -90, len: 11 }], caption: 'media.raise' },
+    ],
+  },
+
+  /* --- Ramená a ruky --- */
+  'lateral-raises': {
+    scene: 'gym',
+    rig: {},
+    frames: [
+      { view: 'front', hand: [107, 67], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [138, 38], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 12 }], caption: 'media.raise' },
+    ],
+  },
+  'band-shoulder-press': {
+    scene: 'home',
+    rig: { band: { from: [104, 110] } },
+    frames: [
+      { view: 'front', hand: [107, 44], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [107, 26], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 13 }], caption: 'media.raise' },
+      { view: 'front', hand: [107, 14], bend: 1, caption: 'media.top' },
+    ],
+  },
+  'bicep-curls': {
+    scene: 'gym',
+    rig: {},
+    frames: [
+      { view: 'front', hand: [107, 67], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [110, 52], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 12 }], caption: 'media.raise' },
+      { view: 'front', hand: [112, 42], bend: 1, caption: 'media.top' },
+    ],
+  },
+  'hammer-curl': {
+    scene: 'home',
+    rig: {},
+    frames: [
+      { view: 'front', hand: [107, 67], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [110, 52], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 12 }], caption: 'media.raise' },
+      { view: 'front', hand: [112, 42], bend: 1, caption: 'media.top' },
+    ],
+  },
+  'band-bicep-curl': {
+    scene: 'home',
+    rig: { band: { from: [104, 110] } },
+    frames: [
+      { view: 'front', hand: [107, 67], bend: 1, caption: 'media.start' },
+      { view: 'front', hand: [110, 52], bend: 1, arrows: [{ at: 'hand', deg: -90, len: 12 }], caption: 'media.raise' },
+      { view: 'front', hand: [112, 42], bend: 1, caption: 'media.top' },
+    ],
+  },
+
+  /* --- Nohy --- */
+  'squats': {
+    scene: 'gym',
+    rig: { barbell: 'big' },
+    frames: [
+      { view: 'side', torso: -90, hand: [93, 35], bend: 1, caption: 'media.start' },
+      { view: 'side', hip: [88, 86], torso: -55, hand: [104, 58], bend: 1, footAt: [96, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 13 }], caption: 'media.lower' },
+      { view: 'side', hip: [93, 77], torso: -76, hand: [98, 47], bend: 1, footAt: [96, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+    ],
+  },
+  'bodyweight-squat': {
+    scene: 'home',
+    rig: {},
+    frames: [
+      { view: 'side', torso: -90, hand: [112, 44], bend: 1, caption: 'media.start' },
+      { view: 'side', hip: [88, 86], torso: -50, hand: [122, 52], bend: 1, footAt: [96, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 13 }], caption: 'media.lower' },
+      { view: 'side', hip: [93, 77], torso: -74, hand: [118, 46], bend: 1, footAt: [96, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+    ],
+  },
+  'split-squat': {
+    scene: 'home',
+    rig: {},
+    frames: [
+      { view: 'side', torso: -90, hand: [103, 66], bend: 1, footAt: [104, 112], footFar: [84, 112], caption: 'media.start' },
+      { view: 'side', hip: [96, 86], torso: -85, hand: [103, 74], bend: 1, footAt: [112, 112], footFar: [74, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 12 }], caption: 'media.lower' },
+      { view: 'side', hip: [96, 76], torso: -87, hand: [103, 70], bend: 1, footAt: [110, 112], footFar: [76, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.raise' },
+    ],
+  },
+  'lunges': {
+    scene: 'gym',
+    rig: {},
+    frames: [
+      { view: 'side', torso: -90, hand: [103, 66], bend: 1, footAt: [104, 112], footFar: [84, 112], caption: 'media.start' },
+      { view: 'side', hip: [96, 86], torso: -85, hand: [103, 74], bend: 1, footAt: [114, 112], footFar: [72, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 12 }], caption: 'media.lower' },
+      { view: 'side', hip: [96, 76], torso: -87, hand: [103, 70], bend: 1, footAt: [110, 112], footFar: [76, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.raise' },
+    ],
+  },
+  'step-up': {
+    scene: 'home',
+    rig: { box: { x: 60, y: 92, w: 28 } },
+    frames: [
+      { view: 'side', hip: [56, 66], torso: -90, hand: [63, 60], bend: 1, footAt: [72, 92], footFar: [50, 110], caption: 'media.start' },
+      { view: 'side', hip: [58, 56], torso: -90, hand: [65, 50], bend: 1, footAt: [72, 92], footFar: [56, 98],
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.raise' },
+      { view: 'side', hip: [64, 49], torso: -90, hand: [71, 43], bend: 1, footAt: [72, 92], footFar: [76, 90], caption: 'media.top' },
+    ],
+  },
+  'leg-press': {
+    scene: 'gym',
+    rig: { sled: { x: 100, y: 60, w: 10, h: 44 } },
+    frames: [
+      { view: 'side', hip: [58, 86], torso: -90, hand: [63, 80], bend: 1, footAt: [96, 64], caption: 'media.start' },
+      { view: 'side', hip: [58, 86], torso: -90, hand: [63, 80], bend: 1, footAt: [84, 74],
+        gear: { sled: { x: 88, y: 70, w: 10, h: 38 } },
+        arrows: [{ at: 'hip', deg: 90, len: 12 }], caption: 'media.lower' },
+      { view: 'side', hip: [58, 86], torso: -90, hand: [63, 80], bend: 1, footAt: [91, 69],
+        gear: { sled: { x: 95, y: 65, w: 10, h: 41 } },
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.extend' },
+    ],
+  },
+  'leg-curls': {
+    scene: 'gym',
+    rig: { bench: { x: 40, y: 88, w: 56 }, cable: { x: 118, pulleyY: 100 } },
+    frames: [
+      { view: 'side', hip: [60, 84], torso: -90, hand: [65, 78], bend: 1, footAt: [98, 100], caption: 'media.start' },
+      { view: 'side', hip: [60, 84], torso: -90, hand: [65, 78], bend: 1, footAt: [76, 92],
+        arrows: [{ at: 'hip', deg: 90, len: 12 }], caption: 'media.pull' },
+      { view: 'side', hip: [60, 84], torso: -90, hand: [65, 78], bend: 1, footAt: [88, 98],
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.return' },
+    ],
+  },
+  'calf-raises': {
+    scene: 'home',
+    rig: { box: { x: 78, y: 104, w: 30 } },
+    frames: [
+      { view: 'side', hip: [96, 62], torso: -90, hand: [103, 58], bend: 1, footAt: [100, 104], foot: 0, caption: 'media.start' },
+      { view: 'side', hip: [96, 57], torso: -90, hand: [103, 53], bend: 1, footAt: [100, 100], foot: 40,
+        arrows: [{ at: 'hip', deg: -90, len: 12 }], caption: 'media.raise' },
+    ],
+  },
+
+  /* --- Zadok a stred tela --- */
+  'glute-bridge': {
+    scene: 'home',
+    rig: { mat: { x: 30, w: 140 } },
+    frames: [
+      { view: 'side', hip: [72, 102], torso: 0, hand: [96, 108], bend: 1, footAt: [110, 112], caption: 'media.start' },
+      { view: 'side', hip: [72, 86], torso: 28, hand: [96, 108], bend: 1, footAt: [110, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+      { view: 'side', hip: [72, 94], torso: 15, hand: [96, 108], bend: 1, footAt: [110, 112], caption: 'media.top' },
+    ],
+  },
+  'hip-thrust': {
+    scene: 'home',
+    rig: { bench: { x: 34, y: 100, w: 52 } },
+    frames: [
+      { view: 'side', hip: [96, 104], torso: 188, hand: [101, 108], bend: 1, footAt: [124, 112], caption: 'media.start' },
+      { view: 'side', hip: [96, 88], torso: 158, hand: [101, 92], bend: 1, footAt: [124, 112],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+      { view: 'side', hip: [96, 96], torso: 171, hand: [101, 100], bend: 1, footAt: [124, 112], caption: 'media.top' },
+    ],
+  },
+  'single-leg-glute-bridge': {
+    scene: 'home',
+    rig: { mat: { x: 30, w: 140 } },
+    frames: [
+      { view: 'side', hip: [72, 102], torso: 0, hand: [96, 108], bend: 1, footAt: [108, 112], footFar: [110, 100], caption: 'media.start' },
+      { view: 'side', hip: [72, 86], torso: 28, hand: [96, 108], bend: 1, footAt: [108, 112], footFar: [112, 86],
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+      { view: 'side', hip: [72, 94], torso: 15, hand: [96, 108], bend: 1, footAt: [108, 112], footFar: [111, 93], caption: 'media.top' },
+    ],
+  },
+  'plank': {
+    scene: 'home',
+    rig: { mat: { x: 20, w: 156 } },
+    frames: [
+      { view: 'side', hip: [58, 96], torso: 0, hand: [88, 110], bend: -1, footAt: [22, 112], caption: 'media.setup' },
+      { view: 'side', hip: [58, 96], torso: 0, hand: [88, 110], bend: -1, footAt: [22, 112], caption: 'media.held' },
+    ],
+  },
+  'dead-bug': {
+    scene: 'home',
+    rig: { mat: { x: 24, w: 150 } },
+    frames: [
+      { view: 'side', hip: [70, 104], torso: 0, hand: [100, 80], bend: 1, footAt: [76, 86], caption: 'media.start' },
+      { view: 'side', hip: [70, 104], torso: 0, hand: [118, 104], bend: 1, footAt: [76, 86], footFar: [112, 100],
+        arrows: [{ at: 'hand', deg: 0, len: 12 }], caption: 'media.lower' },
+      { view: 'side', hip: [70, 104], torso: 0, hand: [108, 92], bend: 1, footAt: [76, 86], footFar: [94, 104], caption: 'media.return' },
+    ],
+  },
+  'burpee': {
+    scene: 'outdoor',
+    rig: {},
+    frames: [
+      { view: 'side', torso: -90, hand: [103, 66], bend: 1, caption: 'media.start' },
+      { view: 'side', hip: [58, 96], torso: 0, hand: [88, 112], bend: -1, footAt: [26, 112],
+        arrows: [{ at: 'hip', deg: 90, len: 13 }], caption: 'media.lower' },
+      { view: 'side', hip: [96, 62], torso: -90, hand: [100, 32], bend: 1,
+        arrows: [{ at: 'hip', deg: -90, len: 13 }], caption: 'media.raise' },
+    ],
+  },
 };
 
+/* Náčinie sa ODVODZUJE z metaúdajov cviku – nedá sa nakresliť náčinie, ktoré
+   cvik nevyžaduje. `rig` (a jeho verzia v ráme) určuje len rozmiestnenie. */
+function gearFor(entry, media, frame) {
+  const rig = Object.assign({}, media.rig || {}, frame.gear || {});
+  const eq = entry.equipment || [];
+  const gear = {};
+  if (eq.indexOf('barbell') >= 0) gear.barbell = rig.barbell || 'big';
+  if (eq.indexOf('dumbbells') >= 0) gear.dumbbells = true;
+  if (eq.indexOf('bench') >= 0) gear.bench = rig.bench || { x: 44, y: 87, w: 80 };
+  if (eq.indexOf('pullupBar') >= 0) {
+    if (media.bars === 'dip') gear.dips = rig.dips || 67;
+    else gear.pullup = rig.pullup === undefined ? 22 : rig.pullup;
+  }
+  if (eq.indexOf('cableMachine') >= 0) {
+    if (media.sled) gear.sled = rig.sled;
+    else gear.cable = rig.cable || { x: 186, pulleyY: 62 };
+  }
+  if (eq.indexOf('bands') >= 0 && rig.band) gear.band = rig.band;
+  if (rig.box) gear.box = rig.box;
+  if (rig.mat) gear.mat = rig.mat;
+  return gear;
+}
+
+/* Rámy cviku: ak vizuál nemá overený rám, vráti null a rozhranie ukáže čestný
+   stav "Ukážka nie je k dispozícii" spolu s písaným návodom. */
+function framesForExercise(entry) {
+  if (!entry) return null;
+  const media = EXERCISE_MEDIA[entry.id];
+  if (!media || !Array.isArray(media.frames) || !media.frames.length) return null;
+  return media;
+}
+
+/* Jeden rám pripravený na vykreslenie (náčinie už je odvodené z metaúdajov). */
+function resolvedFrame(entry, media, index) {
+  const frame = media.frames[index];
+  if (!frame) return null;
+  const scene = frame.scene
+    || media.scene
+    || (entry.locations.indexOf('gym') >= 0 ? 'gym' : (entry.locations.indexOf('home') >= 0 ? 'home' : 'outdoor'));
+  return Object.assign({}, frame, {
+    scene,
+    gear: gearFor(entry, media, frame),
+    view: frame.view || media.view || 'side',
+  });
+}
+
+/* Zoznam vizuálov pre galériu. Rám môže byť aj skutočný obrázok ({ src }) –
+   vtedy sa použije <img> a všetko ostatné (popisky, ovládanie, offline) funguje rovnako. */
+function exerciseMediaList(entry) {
+  const media = framesForExercise(entry);
+  if (!media) return [];
+  return media.frames.map((f, i) => Object.assign({ index: i }, resolvedFrame(entry, media, i)));
+}
 /* ---------- Plány: prístup, poradie a zobrazované názvy ---------- */
 
 function getPlan(id) {
@@ -819,6 +1570,25 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP za úspechy',
     'motivacia.newAchievement': 'Nový úspech: {names}',
 
+    /* --- Galéria ukážok cviku --- */
+    'media.galleryLabel': 'Ukážka cviku',
+    'media.prev': 'Predchádzajúci obrázok',
+    'media.next': 'Nasledujúci obrázok',
+    'media.counter': 'Obrázok {n} z {total}',
+    'media.alt': '{name} — {caption}',
+    'media.start': 'Východisková poloha.',
+    'media.lower': 'Spúšťanie váhy.',
+    'media.raise': 'Zdvihnutie váhy.',
+    'media.top': 'Horná poloha.',
+    'media.held': 'Výdrž.',
+    'media.setup': 'Nastavenie.',
+    'media.extend': 'Vytlačenie.',
+    'media.pull': 'Príťah.',
+    'media.return': 'Návrat.',
+    'media.unavailableTitle': 'Ukážka nie je k dispozícii',
+    'media.unavailable': 'GymQuest zatiaľ nemá overenú ukážku tohto cviku. Hlavným návodom sú písané kroky nižšie.',
+    'media.illustrationNote': 'Pôvodná ilustrácia vytvorená pre GymQuest. Nie je to fotografia.',
+
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
     'rest.savePreset': 'Uložiť predvoľbu',
@@ -910,8 +1680,6 @@ const I18N = {
     'exercise.replaceDuplicate': 'Tento plán uvádza ten istý cvik viackrát, takže ich GymQuest nedokáže bezpečne rozlíšiť. Najprv jeden z nich v editore premenuj alebo vymaž.',
     'exercise.homeTitle': 'Domáce alternatívy',
     'exercise.homeNone': 'Pre tvoje náčinie sa nenašla vhodná alternatíva. Zmeň, čo máš, alebo si prejdi knižnicu.',
-    'exercise.diagramCaption': 'Poloha tela — schéma',
-    'exercise.diagramNote': 'Zjednodušená kresba polohy tela, nie fotografia ani video. Hlavným návodom sú písané kroky vyššie.',
     'exercise.disclaimer': 'Všeobecné informácie, nie lekárska rada a nie lekárske odporúčanie pri zranení.',
     'exercise.notInLibrary': 'Toto je tvoj vlastný cvik, takže o ňom GymQuest nemá údaje z knižnice.',
     'exercise.addToPlan': 'Pridať do plánu',
@@ -1449,6 +2217,25 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP from achievements',
     'motivacia.newAchievement': 'New achievement: {names}',
 
+    /* --- Exercise demonstration gallery --- */
+    'media.galleryLabel': 'Exercise demonstration',
+    'media.prev': 'Previous image',
+    'media.next': 'Next image',
+    'media.counter': 'Image {n} of {total}',
+    'media.alt': '{name} — {caption}',
+    'media.start': 'Starting position.',
+    'media.lower': 'Lowering the weight.',
+    'media.raise': 'Raising the weight.',
+    'media.top': 'Top position.',
+    'media.held': 'Held position.',
+    'media.setup': 'Setup.',
+    'media.extend': 'Extending.',
+    'media.pull': 'Pulling.',
+    'media.return': 'Returning.',
+    'media.unavailableTitle': 'Demonstration unavailable',
+    'media.unavailable': 'GymQuest has no verified demonstration for this exercise yet. The written steps below are the guidance.',
+    'media.illustrationNote': 'Original illustration created for GymQuest. Not a photograph.',
+
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
     'rest.savePreset': 'Save preset',
@@ -1540,8 +2327,6 @@ const I18N = {
     'exercise.replaceDuplicate': 'This plan lists the same exercise more than once, so GymQuest cannot tell the two apart safely. Rename or remove one of them in the plan editor first.',
     'exercise.homeTitle': 'Home alternatives',
     'exercise.homeNone': 'No suitable alternative for your equipment. Change what you have, or browse the library.',
-    'exercise.diagramCaption': 'Body position — schematic',
-    'exercise.diagramNote': 'A simplified drawing of the body position, not a photo or video. The written steps are the main guidance.',
     'exercise.disclaimer': 'General information, not medical advice, and not a medical recommendation for an injury.',
     'exercise.notInLibrary': 'This is your own exercise, so GymQuest has no library information for it.',
     'exercise.addToPlan': 'Add to plan',
@@ -2079,6 +2864,25 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP por logros',
     'motivacia.newAchievement': 'Nuevo logro: {names}',
 
+    /* --- Galería de demostración --- */
+    'media.galleryLabel': 'Demostración del ejercicio',
+    'media.prev': 'Imagen anterior',
+    'media.next': 'Imagen siguiente',
+    'media.counter': 'Imagen {n} de {total}',
+    'media.alt': '{name} — {caption}',
+    'media.start': 'Posición inicial.',
+    'media.lower': 'Bajando el peso.',
+    'media.raise': 'Subiendo el peso.',
+    'media.top': 'Posición superior.',
+    'media.held': 'Posición mantenida.',
+    'media.setup': 'Colocación.',
+    'media.extend': 'Extendiendo.',
+    'media.pull': 'Tirando.',
+    'media.return': 'Volviendo.',
+    'media.unavailableTitle': 'Demostración no disponible',
+    'media.unavailable': 'GymQuest todavía no tiene una demostración verificada de este ejercicio. La guía son los pasos escritos de abajo.',
+    'media.illustrationNote': 'Ilustración original creada para GymQuest. No es una fotografía.',
+
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
     'rest.savePreset': 'Guardar ajuste',
@@ -2170,8 +2974,6 @@ const I18N = {
     'exercise.replaceDuplicate': 'Este plan repite el mismo ejercicio más de una vez, así que GymQuest no puede distinguirlos con seguridad. Renombra o elimina uno de ellos en el editor del plan.',
     'exercise.homeTitle': 'Alternativas en casa',
     'exercise.homeNone': 'No hay una alternativa adecuada para tu equipo. Cambia lo que tienes o explora la biblioteca.',
-    'exercise.diagramCaption': 'Posición del cuerpo — esquema',
-    'exercise.diagramNote': 'Dibujo simplificado de la posición del cuerpo, no una foto ni un vídeo. La guía principal son los pasos escritos.',
     'exercise.disclaimer': 'Información general, no consejo médico ni una recomendación médica para una lesión.',
     'exercise.notInLibrary': 'Este es un ejercicio tuyo, así que GymQuest no tiene información de la biblioteca sobre él.',
     'exercise.addToPlan': 'Añadir al plan',
@@ -2707,6 +3509,25 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP por conquistas',
     'motivacia.newAchievement': 'Nova conquista: {names}',
 
+    /* --- Galeria de demonstração --- */
+    'media.galleryLabel': 'Demonstração do exercício',
+    'media.prev': 'Imagem anterior',
+    'media.next': 'Próxima imagem',
+    'media.counter': 'Imagem {n} de {total}',
+    'media.alt': '{name} — {caption}',
+    'media.start': 'Posição inicial.',
+    'media.lower': 'Descendo o peso.',
+    'media.raise': 'Subindo o peso.',
+    'media.top': 'Posição superior.',
+    'media.held': 'Posição mantida.',
+    'media.setup': 'Posicionamento.',
+    'media.extend': 'Estendendo.',
+    'media.pull': 'Puxando.',
+    'media.return': 'Retornando.',
+    'media.unavailableTitle': 'Demonstração indisponível',
+    'media.unavailable': 'O GymQuest ainda não tem uma demonstração verificada deste exercício. O guia são os passos escritos abaixo.',
+    'media.illustrationNote': 'Ilustração original criada para o GymQuest. Não é uma fotografia.',
+
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
     'rest.savePreset': 'Salvar predefinição',
@@ -2798,8 +3619,6 @@ const I18N = {
     'exercise.replaceDuplicate': 'Este plano lista o mesmo exercício mais de uma vez, então o GymQuest não consegue diferenciá-los com segurança. Renomeie ou remova um deles no editor do plano.',
     'exercise.homeTitle': 'Alternativas em casa',
     'exercise.homeNone': 'Não há alternativa adequada para o seu equipamento. Mude o que você tem ou explore a biblioteca.',
-    'exercise.diagramCaption': 'Posição do corpo — esquema',
-    'exercise.diagramNote': 'Desenho simplificado da posição do corpo, não é foto nem vídeo. O guia principal são os passos escritos.',
     'exercise.disclaimer': 'Informação geral, não é orientação médica nem recomendação médica para uma lesão.',
     'exercise.notInLibrary': 'Este é um exercício seu, então o GymQuest não tem informações da biblioteca sobre ele.',
     'exercise.addToPlan': 'Adicionar ao plano',
@@ -3335,6 +4154,25 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP grâce aux succès',
     'motivacia.newAchievement': 'Nouveau succès : {names}',
 
+    /* --- Galerie de démonstration --- */
+    'media.galleryLabel': 'Démonstration de l’exercice',
+    'media.prev': 'Image précédente',
+    'media.next': 'Image suivante',
+    'media.counter': 'Image {n} sur {total}',
+    'media.alt': '{name} — {caption}',
+    'media.start': 'Position de départ.',
+    'media.lower': 'Descente de la charge.',
+    'media.raise': 'Montée de la charge.',
+    'media.top': 'Position haute.',
+    'media.held': 'Position tenue.',
+    'media.setup': 'Mise en place.',
+    'media.extend': 'Extension.',
+    'media.pull': 'Traction.',
+    'media.return': 'Retour.',
+    'media.unavailableTitle': 'Démonstration indisponible',
+    'media.unavailable': 'GymQuest n’a pas encore de démonstration vérifiée pour cet exercice. Les étapes écrites ci-dessous font référence.',
+    'media.illustrationNote': 'Illustration originale créée pour GymQuest. Ce n’est pas une photographie.',
+
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
     'rest.savePreset': 'Enregistrer le préréglage',
@@ -3426,8 +4264,6 @@ const I18N = {
     'exercise.replaceDuplicate': 'Ce plan liste le même exercice plusieurs fois : GymQuest ne peut donc pas les distinguer de façon sûre. Renomme ou supprime l’un des deux dans l’éditeur du plan.',
     'exercise.homeTitle': 'Alternatives à la maison',
     'exercise.homeNone': 'Aucune alternative adaptée à ton matériel. Change ce que tu as ou parcours la bibliothèque.',
-    'exercise.diagramCaption': 'Position du corps — schéma',
-    'exercise.diagramNote': 'Dessin simplifié de la position du corps, ni photo ni vidéo. Les étapes écrites restent la référence.',
     'exercise.disclaimer': 'Informations générales, ni avis médical ni recommandation médicale en cas de blessure.',
     'exercise.notInLibrary': 'C’est ton propre exercice : GymQuest n’a donc aucune fiche de bibliothèque pour lui.',
     'exercise.addToPlan': 'Ajouter au plan',
@@ -3982,6 +4818,25 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP من الإنجازات',
     'motivacia.newAchievement': 'إنجاز جديد: {names}',
 
+    /* --- معرض عرض التمرين --- */
+    'media.galleryLabel': 'عرض للتمرين',
+    'media.prev': 'الصورة السابقة',
+    'media.next': 'الصورة التالية',
+    'media.counter': 'الصورة {n} من {total}',
+    'media.alt': '{name} — {caption}',
+    'media.start': 'وضع البداية.',
+    'media.lower': 'إنزال الوزن.',
+    'media.raise': 'رفع الوزن.',
+    'media.top': 'الوضع العلوي.',
+    'media.held': 'وضع الثبات.',
+    'media.setup': 'التهيئة.',
+    'media.extend': 'المدّ.',
+    'media.pull': 'السحب.',
+    'media.return': 'العودة.',
+    'media.unavailableTitle': 'العرض غير متوفّر',
+    'media.unavailable': 'لا يملك GymQuest بعد عرضًا موثّقًا لهذا التمرين. الدليل هو الخطوات المكتوبة أدناه.',
+    'media.illustrationNote': 'رسم أصلي أُنشئ لـ GymQuest. ليس صورة فوتوغرافية.',
+
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
     'rest.savePreset': 'حفظ كإعداد مسبق',
@@ -4073,8 +4928,6 @@ const I18N = {
     'exercise.replaceDuplicate': 'هذه الخطة تكرّر التمرين نفسه أكثر من مرة، لذا لا يستطيع GymQuest التمييز بينهما بأمان. أعد تسمية أحدهما أو احذفه من محرّر الخطة.',
     'exercise.homeTitle': 'بدائل منزلية',
     'exercise.homeNone': 'لا يوجد بديل مناسب لأدواتك. غيّر ما لديك أو تصفّح المكتبة.',
-    'exercise.diagramCaption': 'وضع الجسم — رسم تخطيطي',
-    'exercise.diagramNote': 'رسم مبسّط لوضع الجسم، وليس صورة أو فيديو. الخطوات المكتوبة هي الدليل الأساسي.',
     'exercise.disclaimer': 'معلومات عامة، وليست نصيحة طبية ولا توصية طبية لإصابة.',
     'exercise.notInLibrary': 'هذا تمرينك الخاص، فلا توجد في GymQuest معلومات مكتبة عنه.',
     'exercise.addToPlan': 'إضافة إلى الخطة',
@@ -7932,9 +8785,7 @@ function renderExerciseSheet() {
   title.textContent = t('exercise.' + entry.id);
 
   const h = [];
-  h.push('<div class="fig-box"></div>');
-  h.push('<p class="sheet-note fig-caption">' + esc(t('exercise.diagramCaption')) + '</p>');
-  h.push('<p class="sheet-note">' + esc(t('exercise.diagramNote')) + '</p>');
+  h.push(mediaGalleryHtml(entry));
 
   h.push('<div class="meta-grid">');
   h.push(metaRow(t('exercise.primary'), t('muscle.' + entry.primary)));
@@ -7984,12 +8835,189 @@ function renderExerciseSheet() {
       + esc(t(already ? 'exercise.inPlanAlready' : 'exercise.addToPlan')) + '</button>');
   }
   body.innerHTML = h.join('');
-
-  const figBox = body.querySelector('.fig-box');
-  if (figBox) figBox.appendChild(buildPatternDiagram(entry.diagram));
+  mountMediaGallery(entry);
 }
 
-/* Aplikuje náhradu: zapíše sa IBA do session, plán používateľa zostáva nedotknutý. */
+/* ---------- Galéria ukážok v detaile cviku ----------
+   Vodorovne posúvateľná koľaj so snapovaním = natívne potiahnutie prstom na iPhone,
+   ktoré NEBLOKUJE zvislé skrolovanie stránky. Žiadny vlastný gesture kód, takže
+   sa nedá "pokaziť" skrolovanie. */
+
+let mediaCurrent = 0;
+
+function mediaMissingNode() {
+  const box = document.createElement('div');
+  box.className = 'media-missing';
+  box.innerHTML = '<span class="media-missing-icon" aria-hidden="true">🎬</span>'
+    + '<strong>' + esc(t('media.unavailableTitle')) + '</strong>'
+    + '<span class="sheet-note">' + esc(t('media.unavailable')) + '</span>';
+  return box;
+}
+
+function mediaGalleryHtml(entry) {
+  const items = exerciseMediaList(entry);
+  if (!items.length) {
+    return '<div class="media">'
+      + '<div class="media-stage"><div class="media-missing">'
+      + '<span class="media-missing-icon" aria-hidden="true">🎬</span>'
+      + '<strong>' + esc(t('media.unavailableTitle')) + '</strong>'
+      + '<span class="sheet-note">' + esc(t('media.unavailable')) + '</span>'
+      + '</div></div></div>';
+  }
+  const h = [];
+  h.push('<div class="media" id="exercise-media">');
+  h.push('<div class="media-stage">');
+  h.push('<div class="media-track" id="media-track" tabindex="0" role="group"'
+    + ' aria-label="' + escAttr(t('media.galleryLabel')) + '">');
+  items.forEach((it, i) => h.push('<div class="media-slide" data-media-index="' + i + '"></div>'));
+  h.push('</div>');
+  h.push('<button type="button" class="media-nav media-prev" id="media-prev" aria-label="'
+    + escAttr(t('media.prev')) + '">' + dirGlyph('‹', '›') + '</button>');
+  h.push('<button type="button" class="media-nav media-next" id="media-next" aria-label="'
+    + escAttr(t('media.next')) + '">' + dirGlyph('›', '‹') + '</button>');
+  h.push('</div>');
+  h.push('<div class="media-bar"><span class="media-dots" id="media-dots"></span>'
+    + '<span class="media-count" id="media-count" aria-live="polite"></span></div>');
+  h.push('<p class="media-caption" id="media-caption" aria-live="polite"></p>');
+  h.push('<p class="media-note">' + esc(t('media.illustrationNote')) + '</p>');
+  h.push('</div>');
+  return h.join('');
+}
+
+function updateMediaChrome(entry) {
+  const items = exerciseMediaList(entry);
+  const dots = document.getElementById('media-dots');
+  const count = document.getElementById('media-count');
+  const caption = document.getElementById('media-caption');
+  const prev = document.getElementById('media-prev');
+  const next = document.getElementById('media-next');
+  if (!items.length) return;
+  const i = Math.min(Math.max(mediaCurrent, 0), items.length - 1);
+  if (dots) {
+    Array.prototype.forEach.call(dots.children, (d, k) => d.classList.toggle('active', k === i));
+  }
+  if (count) count.textContent = t('media.counter', { n: i + 1, total: items.length });
+  if (caption) caption.textContent = t(items[i].caption);
+  if (prev) prev.disabled = i === 0;
+  if (next) next.disabled = i === items.length - 1;
+  /* Jedna ukážka = žiadne ovládanie a žiadne bodky, aby obrazovka nebola zbytočne plná. */
+  const single = items.length < 2;
+  if (prev) prev.hidden = single;
+  if (next) next.hidden = single;
+  if (dots) dots.hidden = single;
+}
+
+function goToMedia(index, smooth) {
+  const track = document.getElementById('media-track');
+  if (!track) return;
+  const slides = track.querySelectorAll('.media-slide');
+  if (!slides.length) return;
+  const i = Math.min(Math.max(index, 0), slides.length - 1);
+  mediaCurrent = i;
+  const left = slides[i].offsetLeft - track.offsetLeft;
+  try {
+    track.scrollTo({ left, behavior: smooth === false ? 'auto' : 'smooth' });
+  } catch (e) {
+    track.scrollLeft = left;
+  }
+  const entry = libraryEntry(exerciseSheetId);
+  if (entry) updateMediaChrome(entry);
+}
+
+function mountMediaGallery(entry) {
+  const track = document.getElementById('media-track');
+  if (!track) return;
+  const items = exerciseMediaList(entry);
+  const slides = track.querySelectorAll('.media-slide');
+  items.forEach((it, i) => {
+    const slide = slides[i];
+    if (!slide) return;
+    if (it.src) {
+      /* Skutočný obrázok: pri chybe sa NIKDY nezobrazí rozbitá ikona. */
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = t('media.alt', { name: t('exercise.' + entry.id), caption: t(it.caption) });
+      img.addEventListener('error', () => {
+        slide.innerHTML = '';
+        slide.appendChild(mediaMissingNode());
+      });
+      img.src = it.src;
+      slide.appendChild(img);
+    } else {
+      const svg = buildFrameSvg(it);
+      svg.setAttribute('aria-label', t('media.alt', { name: t('exercise.' + entry.id), caption: t(it.caption) }));
+      slide.appendChild(svg);
+    }
+  });
+
+  const dots = document.getElementById('media-dots');
+  if (dots) {
+    dots.innerHTML = items.map((it, i) => '<span class="media-dot" data-dot="' + i + '"></span>').join('');
+  }
+  mediaCurrent = 0;
+  updateMediaChrome(entry);
+
+  const prev = document.getElementById('media-prev');
+  const next = document.getElementById('media-next');
+  if (prev) prev.addEventListener('click', () => goToMedia(mediaCurrent - 1));
+  if (next) next.addEventListener('click', () => goToMedia(mediaCurrent + 1));
+  if (dots) {
+    dots.addEventListener('click', (e) => {
+      const dot = e.target && e.target.dataset ? e.target.dataset.dot : null;
+      if (dot !== undefined && dot !== null) goToMedia(Number(dot));
+    });
+  }
+
+  /* Potiahnutie prstom: index sa odvodí z posunu, takže bodky aj popisok sedia. */
+  let raf = null;
+  track.addEventListener('scroll', () => {
+    if (raf) return;
+    raf = setTimeout(() => {
+      raf = null;
+      const w = track.clientWidth || 1;
+      const i = Math.round(track.scrollLeft / w);
+      if (i !== mediaCurrent) {
+        mediaCurrent = i;
+        updateMediaChrome(entry);
+      }
+    }, 60);
+  }, { passive: true });
+
+  track.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); goToMedia(mediaCurrent + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); goToMedia(mediaCurrent - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); goToMedia(0); }
+    else if (e.key === 'End') { e.preventDefault(); goToMedia(items.length - 1); }
+  });
+}
+
+/* ---------- Manifest zdrojov a licencií (pre vývojárov, nie do bežného UI) ----------
+   Každý vizuál je PÔVODNÉ dielo tohto projektu, vytvorené v kóde. Žiadny tretí
+   subjekt, žiadne licenčné práva, žiadny vzdialený súbor. */
+function exerciseMediaManifest() {
+  const out = [];
+  for (const entry of libraryAll()) {
+    exerciseMediaList(entry).forEach((f, i) => {
+      out.push({
+        assetId: entry.id + '/' + (i + 1),
+        exerciseId: entry.id,
+        sourceType: f.src ? 'file' : 'original',
+        creator: 'GymQuest project',
+        license: 'Same licence as the GymQuest project',
+        added: MEDIA_ADDED_DATE,
+        offlinePath: f.src || ('inline:code#' + entry.id + '/' + (i + 1)),
+        caption: f.caption,
+      });
+    });
+  }
+  return out;
+}
+
+/* Dátum pridania vizuálov (jeden pre celú dávku). */
+const MEDIA_ADDED_DATE = '2026-09-25';
+
+/* ---------- Aplikuje náhradu: zapíše sa IBA do session, plán používateľa zostáva nedotknutý. ---------- */
 function applySubstitution(entryId) {
   const target = libraryTarget;
   const entry = libraryEntry(entryId);

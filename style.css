@@ -2804,6 +2804,9 @@ body.has-backup-banner .app-main {
   overflow-wrap: break-word;
 }
 
+/* Zatváracie tlačidlo musí zostať dosť veľké na ťuknutie prstom. */
+.sheet-head .btn-icon { min-width: 44px; min-height: 44px; flex: 0 0 auto; }
+
 .sheet-search {
   padding: var(--sp-3) var(--sp-4) 0;
   flex: 0 0 auto;
@@ -2925,6 +2928,8 @@ body.has-backup-banner .app-main {
 
 /* ===== Schéma telesnej polohy (vlastné SVG) ===== */
 
+/* ===== Ilustrácia cviku (vlastné SVG) ===== */
+
 .fig-box {
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -2933,16 +2938,142 @@ body.has-backup-banner .app-main {
   margin-bottom: var(--sp-1);
 }
 
-.fig-svg { width: 100%; height: auto; max-height: 190px; display: block; }
-.fig-ground { stroke: var(--border-strong); stroke-width: 2; }
-.fig-a line { stroke: var(--text-faint); stroke-width: 5; stroke-linecap: round; }
-.fig-a-head { fill: var(--text-faint); }
-.fig-a-joint { fill: var(--surface-2); }
-.fig-b line { stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
-.fig-b-head { fill: var(--accent); }
-.fig-b-joint { fill: var(--surface-2); }
-.fig-arrow { stroke: var(--text-faint); stroke-width: 2; fill: none; }
+.fig-svg { width: 100%; height: auto; display: block; }
 .fig-caption { margin-top: 0; }
+
+/* Telo: vzdialené končatiny tmavšie, blízke svetlejšie = objem, nie plochá čiara. */
+.fig-body { stroke-linecap: round; stroke-linejoin: round; }
+
+.fig-far { fill: none; stroke: #6f7482; stroke-width: 9; }
+.fig-near { fill: none; stroke: #c6cbd7; stroke-width: 10; }
+.fig-work { fill: none; stroke: var(--accent); stroke-width: 10; }
+
+.fig-torso {
+  fill: #b6bcc9;
+  stroke: #b6bcc9;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.fig-neck { fill: none; stroke: #b6bcc9; stroke-width: 7; }
+.fig-head { fill: #c6cbd7; }
+.fig-foot { fill: none; stroke: #c6cbd7; stroke-width: 6; }
+.fig-hand { fill: #c6cbd7; }
+
+/* Náčinie */
+.fig-bar { fill: none; stroke: #9aa1b0; stroke-width: 3.4; stroke-linecap: round; }
+.fig-plate { fill: #7c8290; stroke: #a7adba; stroke-width: 1.4; }
+.fig-plate-sm { fill: #6d7280; }
+.fig-bench-pad { fill: none; stroke: #8d93a2; stroke-width: 9; stroke-linecap: round; }
+.fig-post { fill: none; stroke: #767c8a; stroke-width: 4; }
+.fig-post-base { fill: none; stroke: #767c8a; stroke-width: 5; stroke-linecap: round; }
+.fig-dipbars .fig-bar { stroke-width: 3.4; }
+.fig-band-line { fill: none; stroke: var(--accent); stroke-width: 3.4; stroke-linecap: round; }
+.fig-anchor { fill: none; stroke: #767c8a; stroke-width: 3; }
+.fig-cable-line { fill: none; stroke: #9aa1b0; stroke-width: 2.4; stroke-dasharray: 4 3; }
+.fig-pulley { fill: #a7adba; }
+.fig-stack { fill: #5f6472; }
+.fig-box-body { fill: #454a56; stroke: #5f6472; stroke-width: 2; }
+.fig-mat { fill: #454a56; }
+
+/* Prostredie */
+.fig-ground { fill: none; stroke: var(--border-strong); stroke-width: 2; }
+.fig-props { fill: none; stroke: #4b505c; stroke-width: 4; stroke-linecap: round; }
+.fig-props-thin { fill: none; stroke: #3f434e; stroke-width: 3; stroke-linecap: round; }
+
+.fig-arrow-line { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+.fig-arrow-head { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ===== Galéria ukážok ===== */
+
+.media { margin-bottom: var(--sp-3); }
+
+.media-stage {
+  position: relative;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.media-track {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+
+.media-track::-webkit-scrollbar { display: none; }
+
+.media-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  padding: var(--sp-2) var(--sp-2) 0;
+  box-sizing: border-box;
+}
+
+.media-slide .fig-svg { max-height: 200px; }
+.media-slide img { width: 100%; max-height: 200px; object-fit: contain; display: block; }
+
+.media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 8, 12, 0.62);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-full);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-md);
+  cursor: pointer;
+}
+
+.media-prev { inset-inline-start: var(--sp-1); }
+.media-next { inset-inline-end: var(--sp-1); }
+.media-nav:disabled { opacity: 0.32; cursor: default; }
+.media-nav[hidden] { display: none; }
+
+.media-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-1) 0;
+}
+
+.media-dots { display: flex; gap: 6px; flex: 0 1 auto; }
+.media-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+}
+.media-dot.active { background: var(--accent); }
+.media-count { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.media-caption { font-size: var(--fs-sm); color: var(--text); margin: var(--sp-2) 0 0; overflow-wrap: break-word; }
+.media-note { font-size: var(--fs-xs); color: var(--text-faint); margin: 2px 0 0; overflow-wrap: break-word; }
+
+.media-missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  min-height: 120px;
+  padding: var(--sp-3);
+  text-align: center;
+}
+.media-missing-icon { font-size: 26px; line-height: 1; opacity: 0.7; }
+
 
 /* ===== Výmena cviku počas tréningu ===== */
 
