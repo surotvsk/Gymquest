@@ -819,6 +819,29 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP za úspechy',
     'motivacia.newAchievement': 'Nový úspech: {names}',
 
+    /* --- Predvoľby časovača oddychu --- */
+    'rest.startOnce': 'Spustiť raz',
+    'rest.savePreset': 'Uložiť predvoľbu',
+    'rest.manage': 'Spravovať časovače',
+    'rest.manageHint': 'Uprav, premenuj, preusporiadaj alebo vymaž predvoľby časovača.',
+    'rest.addPreset': '+ Pridať predvoľbu',
+    'rest.editPreset': 'Upraviť predvoľbu',
+    'rest.deleteTitle': 'Vymazať predvoľbu',
+    'rest.deleteConfirm': 'Vymazať predvoľbu „{name}“?',
+    'rest.nameLabel': 'Názov (voliteľný)',
+    'rest.namePlaceholder': 'napr. Ťažké drepy',
+    'rest.none': 'Zatiaľ žiadne predvoľby. Vlastný časovač funguje ďalej.',
+    'rest.secondsLabel': '{n} s',
+    'rest.startPreset': 'Spustiť {name}',
+    'rest.presetSaved': 'Predvoľba „{name}“ je uložená.',
+    'rest.offerConvert': 'Uložený vlastný čas {time} ešte nie je predvoľba.',
+    'rest.convert': 'Uložiť ako predvoľbu',
+    'rest.errZero': 'Zadaj čas väčší ako nula.',
+    'rest.errInvalid': 'Zadaj celé minúty a sekundy.',
+    'rest.errTooLong': 'Najdlhší oddych je 60 minút.',
+    'rest.errName': 'Názov môže mať najviac 40 znakov.',
+    'rest.errDuplicate': 'Predvoľba s týmto časom už existuje: {name}.',
+
     /* --- Knižnica cvikov: štítky, filtre, postup a technika --- */
     'muscle.chest': 'Hrudník', 'muscle.back': 'Chrbát', 'muscle.shoulders': 'Ramená', 'muscle.arms': 'Ruky',
     'muscle.legs': 'Nohy', 'muscle.glutes': 'Zadok', 'muscle.core': 'Stred tela', 'muscle.fullBody': 'Celé telo',
@@ -1425,6 +1448,29 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP from achievements',
     'motivacia.newAchievement': 'New achievement: {names}',
+
+    /* --- Rest timer presets --- */
+    'rest.startOnce': 'Start once',
+    'rest.savePreset': 'Save preset',
+    'rest.manage': 'Manage timers',
+    'rest.manageHint': 'Edit, rename, reorder or delete your rest-timer presets.',
+    'rest.addPreset': '+ Add preset',
+    'rest.editPreset': 'Edit preset',
+    'rest.deleteTitle': 'Delete preset',
+    'rest.deleteConfirm': 'Delete the preset “{name}”?',
+    'rest.nameLabel': 'Name (optional)',
+    'rest.namePlaceholder': 'e.g. Heavy squats',
+    'rest.none': 'No presets yet. The custom timer still works.',
+    'rest.secondsLabel': '{n} s',
+    'rest.startPreset': 'Start {name}',
+    'rest.presetSaved': 'Saved “{name}” as a preset.',
+    'rest.offerConvert': 'Your saved custom time {time} is not a preset yet.',
+    'rest.convert': 'Save as preset',
+    'rest.errZero': 'Enter a time greater than zero.',
+    'rest.errInvalid': 'Enter whole minutes and seconds.',
+    'rest.errTooLong': 'The longest rest is 60 minutes.',
+    'rest.errName': 'The name can be at most 40 characters.',
+    'rest.errDuplicate': 'A preset with this time already exists: {name}.',
 
     /* --- Exercise library: labels, filters, flow and technique notes --- */
     'muscle.chest': 'Chest', 'muscle.back': 'Back', 'muscle.shoulders': 'Shoulders', 'muscle.arms': 'Arms',
@@ -2033,6 +2079,29 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP por logros',
     'motivacia.newAchievement': 'Nuevo logro: {names}',
 
+    /* --- Ajustes del temporizador de descanso --- */
+    'rest.startOnce': 'Iniciar una vez',
+    'rest.savePreset': 'Guardar ajuste',
+    'rest.manage': 'Gestionar temporizadores',
+    'rest.manageHint': 'Edita, renombra, reordena o elimina tus ajustes de descanso.',
+    'rest.addPreset': '+ Añadir ajuste',
+    'rest.editPreset': 'Editar ajuste',
+    'rest.deleteTitle': 'Eliminar ajuste',
+    'rest.deleteConfirm': '¿Eliminar el ajuste «{name}»?',
+    'rest.nameLabel': 'Nombre (opcional)',
+    'rest.namePlaceholder': 'p. ej. Sentadillas pesadas',
+    'rest.none': 'Todavía no hay ajustes. El temporizador personalizado sigue funcionando.',
+    'rest.secondsLabel': '{n} s',
+    'rest.startPreset': 'Iniciar {name}',
+    'rest.presetSaved': '«{name}» guardado como ajuste.',
+    'rest.offerConvert': 'Tu tiempo personalizado guardado {time} aún no es un ajuste.',
+    'rest.convert': 'Guardar como ajuste',
+    'rest.errZero': 'Introduce un tiempo mayor que cero.',
+    'rest.errInvalid': 'Introduce minutos y segundos enteros.',
+    'rest.errTooLong': 'El descanso más largo es de 60 minutos.',
+    'rest.errName': 'El nombre puede tener como máximo 40 caracteres.',
+    'rest.errDuplicate': 'Ya existe un ajuste con este tiempo: {name}.',
+
     /* --- Biblioteca de ejercicios --- */
     'muscle.chest': 'Pecho', 'muscle.back': 'Espalda', 'muscle.shoulders': 'Hombros', 'muscle.arms': 'Brazos',
     'muscle.legs': 'Piernas', 'muscle.glutes': 'Glúteos', 'muscle.core': 'Core', 'muscle.fullBody': 'Cuerpo completo',
@@ -2638,6 +2707,29 @@ const I18N = {
     'motivacia.newAchXp': '+{xp} XP por conquistas',
     'motivacia.newAchievement': 'Nova conquista: {names}',
 
+    /* --- Predefinições do cronômetro de descanso --- */
+    'rest.startOnce': 'Iniciar uma vez',
+    'rest.savePreset': 'Salvar predefinição',
+    'rest.manage': 'Gerenciar cronômetros',
+    'rest.manageHint': 'Edite, renomeie, reordene ou exclua suas predefinições de descanso.',
+    'rest.addPreset': '+ Adicionar predefinição',
+    'rest.editPreset': 'Editar predefinição',
+    'rest.deleteTitle': 'Excluir predefinição',
+    'rest.deleteConfirm': 'Excluir a predefinição “{name}”?',
+    'rest.nameLabel': 'Nome (opcional)',
+    'rest.namePlaceholder': 'ex.: Agachamento pesado',
+    'rest.none': 'Ainda não há predefinições. O cronômetro personalizado continua funcionando.',
+    'rest.secondsLabel': '{n} s',
+    'rest.startPreset': 'Iniciar {name}',
+    'rest.presetSaved': '“{name}” salvo como predefinição.',
+    'rest.offerConvert': 'Seu tempo personalizado salvo {time} ainda não é uma predefinição.',
+    'rest.convert': 'Salvar como predefinição',
+    'rest.errZero': 'Informe um tempo maior que zero.',
+    'rest.errInvalid': 'Informe minutos e segundos inteiros.',
+    'rest.errTooLong': 'O descanso mais longo é de 60 minutos.',
+    'rest.errName': 'O nome pode ter no máximo 40 caracteres.',
+    'rest.errDuplicate': 'Já existe uma predefinição com este tempo: {name}.',
+
     /* --- Biblioteca de exercícios --- */
     'muscle.chest': 'Peito', 'muscle.back': 'Costas', 'muscle.shoulders': 'Ombros', 'muscle.arms': 'Braços',
     'muscle.legs': 'Pernas', 'muscle.glutes': 'Glúteos', 'muscle.core': 'Centro do corpo', 'muscle.fullBody': 'Corpo inteiro',
@@ -3242,6 +3334,29 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP grâce aux succès',
     'motivacia.newAchievement': 'Nouveau succès : {names}',
+
+    /* --- Préréglages du minuteur de repos --- */
+    'rest.startOnce': 'Lancer une fois',
+    'rest.savePreset': 'Enregistrer le préréglage',
+    'rest.manage': 'Gérer les minuteurs',
+    'rest.manageHint': 'Modifie, renomme, réordonne ou supprime tes préréglages de repos.',
+    'rest.addPreset': '+ Ajouter un préréglage',
+    'rest.editPreset': 'Modifier le préréglage',
+    'rest.deleteTitle': 'Supprimer le préréglage',
+    'rest.deleteConfirm': 'Supprimer le préréglage « {name} » ?',
+    'rest.nameLabel': 'Nom (facultatif)',
+    'rest.namePlaceholder': 'ex. Squats lourds',
+    'rest.none': 'Aucun préréglage pour l’instant. Le minuteur personnalisé fonctionne toujours.',
+    'rest.secondsLabel': '{n} s',
+    'rest.startPreset': 'Lancer {name}',
+    'rest.presetSaved': '« {name} » enregistré comme préréglage.',
+    'rest.offerConvert': 'Ton temps personnalisé enregistré {time} n’est pas encore un préréglage.',
+    'rest.convert': 'Enregistrer comme préréglage',
+    'rest.errZero': 'Saisis un temps supérieur à zéro.',
+    'rest.errInvalid': 'Saisis des minutes et des secondes entières.',
+    'rest.errTooLong': 'Le repos le plus long est de 60 minutes.',
+    'rest.errName': 'Le nom peut contenir au maximum 40 caractères.',
+    'rest.errDuplicate': 'Un préréglage avec ce temps existe déjà : {name}.',
 
     /* --- Bibliothèque d’exercices --- */
     'muscle.chest': 'Pectoraux', 'muscle.back': 'Dos', 'muscle.shoulders': 'Épaules', 'muscle.arms': 'Bras',
@@ -3866,6 +3981,29 @@ const I18N = {
     'motivacia.xpReward': '+{xp} XP',
     'motivacia.newAchXp': '+{xp} XP من الإنجازات',
     'motivacia.newAchievement': 'إنجاز جديد: {names}',
+
+    /* --- الإعدادات المسبقة لمؤقت الراحة --- */
+    'rest.startOnce': 'تشغيل مرة واحدة',
+    'rest.savePreset': 'حفظ كإعداد مسبق',
+    'rest.manage': 'إدارة المؤقتات',
+    'rest.manageHint': 'عدّل الإعدادات المسبقة للراحة أو أعد تسميتها أو ترتيبها أو احذفها.',
+    'rest.addPreset': '+ إضافة إعداد مسبق',
+    'rest.editPreset': 'تعديل الإعداد المسبق',
+    'rest.deleteTitle': 'حذف الإعداد المسبق',
+    'rest.deleteConfirm': 'حذف الإعداد المسبق «{name}»؟',
+    'rest.nameLabel': 'الاسم (اختياري)',
+    'rest.namePlaceholder': 'مثال: سكوات ثقيل',
+    'rest.none': 'لا توجد إعدادات مسبقة بعد. المؤقت المخصّص ما زال يعمل.',
+    'rest.secondsLabel': '{n} ث',
+    'rest.startPreset': 'تشغيل {name}',
+    'rest.presetSaved': 'تم حفظ «{name}» كإعداد مسبق.',
+    'rest.offerConvert': 'الوقت المخصّص المحفوظ {time} ليس إعدادًا مسبقًا بعد.',
+    'rest.convert': 'حفظ كإعداد مسبق',
+    'rest.errZero': 'أدخل وقتًا أكبر من صفر.',
+    'rest.errInvalid': 'أدخل دقائق وثواني كاملة.',
+    'rest.errTooLong': 'أطول راحة هي 60 دقيقة.',
+    'rest.errName': 'يمكن أن يحتوي الاسم على 40 حرفًا كحد أقصى.',
+    'rest.errDuplicate': 'يوجد إعداد مسبق بهذا الوقت بالفعل: {name}.',
 
     /* --- مكتبة التمارين --- */
     'muscle.chest': 'الصدر', 'muscle.back': 'الظهر', 'muscle.shoulders': 'الكتفان', 'muscle.arms': 'الذراعان',
@@ -4526,6 +4664,132 @@ function normalizeCustomRest(min, sec) {
   return { minutes: m, seconds: s };
 }
 
+/* ---------- Predvoľby časovača oddychu ----------
+   Usporiadaný zoznam s stabilnými id. Poradie poľa JE poradie tlačidiel.
+   `seconds` je celé číslo, `name` je voliteľný VLASTNÝ názov – prázdny znamená
+   "odvoď popis z času a prelož ho". Vlastný názov sa nikdy neprekladá. */
+
+const REST_PRESET_MIN_SECONDS = 1;
+const REST_PRESET_MAX_SECONDS = 3600;   // rovnaký strop ako normalizeCustomRest (60 min)
+const REST_PRESET_NAME_MAX = 40;
+
+/* Pôvodné tri predvoľby, ktoré boli doteraz natvrdo v HTML: 60 s, 90 s, 120 s. */
+function defaultRestPresets() {
+  return [60, 90, 120].map((seconds) => ({ id: 'rest_preset_' + uid(), seconds, name: '' }));
+}
+
+/* NEDEŠTRUKTÍVNA normalizácia: platná položka zostáva presne taká, aká bola
+   (id, názov, poradie), poškodená sa zahodí. Duplicitné id dostane nové.
+   Prázdne pole vráti prázdne pole – zmazané predvoľby sa NIKDY nevracajú. */
+function cleanRestPresets(raw) {
+  if (!Array.isArray(raw)) return null;
+  const out = [];
+  const ids = new Set();
+  for (const item of raw) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
+    const seconds = Math.round(Number(item.seconds));
+    if (!Number.isFinite(seconds) || seconds < REST_PRESET_MIN_SECONDS || seconds > REST_PRESET_MAX_SECONDS) continue;
+    let id = typeof item.id === 'string' && item.id ? item.id : '';
+    if (!id || ids.has(id)) id = 'rest_preset_' + uid();
+    ids.add(id);
+    const name = typeof item.name === 'string' ? item.name.trim().slice(0, REST_PRESET_NAME_MAX) : '';
+    out.push({ id, seconds, name });
+  }
+  return out;
+}
+
+function restPresets() {
+  const list = state && state.settings ? state.settings.restPresets : null;
+  return Array.isArray(list) ? list : [];
+}
+
+function restPresetById(id) {
+  return restPresets().find((p) => p.id === id) || null;
+}
+
+/* Popis predvoľby: vlastný názov sa NIKDY neprekladá, odvodený sa prekladá vždy. */
+function restPresetLabel(preset) {
+  if (!preset) return '';
+  return preset.name ? preset.name : t('rest.secondsLabel', { n: preset.seconds });
+}
+
+/* Presný čas predvoľby ako M:SS – používa sa pri správe, aby bol čas vidieť aj vtedy,
+   keď má predvoľba vlastný názov. */
+function formatPresetTime(seconds) {
+  const n = Math.max(0, Math.round(Number(seconds) || 0));
+  return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
+}
+
+/* Spoločná validácia pre "Uložiť predvoľbu" aj pre úpravu/pridanie v správe.
+   Vráti { seconds, name } alebo { error, clash }. */
+function validatePresetValues(minutes, seconds, name, excludeId) {
+  const rawM = Number(minutes);
+  const rawS = Number(seconds);
+  if (!Number.isInteger(rawM) || !Number.isInteger(rawS) || rawM < 0 || rawS < 0) return { error: 'invalid' };
+  /* Strop sa kontroluje na SUROVÝCH hodnotách – normalizeCustomRest by ich inak ticho
+     ore zal na 60 minút a používateľ by dostal iný čas, než zadal. */
+  if (rawM * 60 + rawS > REST_PRESET_MAX_SECONDS) return { error: 'tooLong' };
+  const norm = normalizeCustomRest(rawM, rawS);
+  const total = norm.minutes * 60 + norm.seconds;
+  if (!Number.isFinite(total) || total < REST_PRESET_MIN_SECONDS) return { error: 'zero' };
+  const clean = String(name == null ? '' : name).trim();
+  if (clean.length > REST_PRESET_NAME_MAX) return { error: 'name' };
+  /* Rovnaký čas je povolený IBA vtedy, keď majú obe predvoľby vlastné a rozdielne názvy –
+     inak by dve tlačidlá vyzerali úplne rovnako. */
+  const clash = restPresets().find((p) => p.seconds === total && p.id !== excludeId);
+  if (clash && !(clean && clash.name && clean.toLowerCase() !== clash.name.toLowerCase())) {
+    return { error: 'duplicate', clash };
+  }
+  return { seconds: total, name: clean };
+}
+
+function presetErrorMessage(result) {
+  if (result.error === 'zero') return t('rest.errZero');
+  if (result.error === 'tooLong') return t('rest.errTooLong');
+  if (result.error === 'name') return t('rest.errName');
+  if (result.error === 'duplicate') return t('rest.errDuplicate', { name: restPresetLabel(result.clash) });
+  return t('rest.errInvalid');
+}
+
+/* Uloží vlastný čas do panela (predvyplnenie nabudúce). Existujúce správanie. */
+function rememberCustomTime(minutes, seconds) {
+  state.settings.customRestMinutes = minutes;
+  state.settings.customRestSeconds = seconds;
+  saveState();
+}
+
+function addRestPreset(seconds, name) {
+  const list = restPresets().slice();
+  const preset = { id: 'rest_preset_' + uid(), seconds, name: name || '' };
+  list.push(preset);
+  state.settings.restPresets = list;
+  saveState();
+  return preset;
+}
+
+function updateRestPreset(id, seconds, name) {
+  state.settings.restPresets = restPresets().map((p) => (
+    p.id === id ? { id, seconds, name: name || '' } : p
+  ));
+  saveState();
+}
+
+function deleteRestPreset(id) {
+  state.settings.restPresets = restPresets().filter((p) => p.id !== id);
+  saveState();
+}
+
+function moveRestPreset(id, delta) {
+  const list = restPresets().slice();
+  const at = list.findIndex((p) => p.id === id);
+  const to = at + delta;
+  if (at < 0 || to < 0 || to >= list.length) return;   // okraje sa neobtáčajú
+  const [item] = list.splice(at, 1);
+  list.splice(to, 0, item);
+  state.settings.restPresets = list;
+  saveState();
+}
+
 function defaultState() {
   return {
     version: 3,
@@ -4547,6 +4811,9 @@ function defaultState() {
     settings: {
       weeklyGoal: 3, lang: 'en', restSound: false, restSoundLength: 'standard',
       customRestMinutes: 2, customRestSeconds: 30,
+      /* Predvoľby časovača oddychu: používateľ ich môže upraviť, premenovať,
+         preusporiadať aj vymazať. Nový používateľ začína s pôvodnými 60/90/120. */
+      restPresets: defaultRestPresets(),
       /* Automatické zálohovanie: voliteľné, predvolene VYPNUTÉ. */
       autoBackup: false, autoBackupOfferedAt: null, autoBackupWorkoutCount: 0,
       /* Jednotky telesných mier (nie váh cvikov). Voliteľné funkcie: VYPNUTÉ. */
@@ -4890,6 +5157,10 @@ function backfillState() {
   normalizePlans();
   normalizeGoalHistory();
   syncGoalSnapshot();
+  /* Predvoľby časovača: chýbajúce sa doplnia, PRÁZDNE zostávajú prázdne (idempotentné). */
+  state.settings.restPresets = Array.isArray(state.settings.restPresets)
+    ? cleanRestPresets(state.settings.restPresets)
+    : defaultRestPresets();
   for (const id of Object.keys(state.plans)) {
     const plan = state.plans[id];
     plan.exercises = plan.exercises.map(ex => {
@@ -5018,6 +5289,13 @@ function migrateV2toV3(parsed) {
   const cr = normalizeCustomRest(out.settings.customRestMinutes, out.settings.customRestSeconds);
   out.settings.customRestMinutes = (cr.minutes === 0 && cr.seconds === 0) ? 2 : cr.minutes;
   out.settings.customRestSeconds = (cr.minutes === 0 && cr.seconds === 0) ? 30 : cr.seconds;
+  /* Predvoľby časovača: chýbajúci zoznam sa naplní pôvodnými troma (60/90/120).
+     PRÁZDNY zoznam je skutočná voľba používateľa (všetky vymazal) a zostáva prázdny –
+     vymazaná predvoľba sa tak nikdy nevráti po obnovení, importe ani aktualizácii.
+     Beží to aj pri importe, takže poškodené predvoľby z cudzej zálohy sa nikdy neuložia. */
+  out.settings.restPresets = Array.isArray(out.settings.restPresets)
+    ? cleanRestPresets(out.settings.restPresets)
+    : defaultRestPresets();
   /* Automatické zálohovanie: len explicitné true ho zapne (predvolene vypnuté).
      Kniha záloh sa normalizuje nedeštruktívne – chýbajúca alebo poškodená
      hodnota sa nahradí východiskom, platná sa zachová presne. */
@@ -9182,6 +9460,9 @@ function renderAll() {
   renderTrening();
   renderPokrok();
   renderMotivacia();
+  /* Predvoľby časovača patria k obrazovke Tréning, ale jazyk aj zmena dát ich menia. */
+  renderTimerPresets();
+  renderCustomTimer();
   // Kalendár sa prekresľuje len keď je otvorený – zbytočne nepočítame iné obrazovky.
   if (activeTab === 'kalendar') renderKalendar();
   // Otvorený detail dňa musí zareagovať na zmenu jazyka aj na zmenu histórie.
@@ -10257,6 +10538,49 @@ function stopTimer() {
   if (bar) bar.hidden = true;
 }
 
+/* ---------- Časovač oddychu: predvoľby a vlastný čas ----------
+   Predvoľby sú používateľské dáta (settings.restPresets). Vlastný čas sa dá spustiť
+   RAZ (bez uloženia) alebo uložiť ako predvoľbu – to je celý rozdiel medzi
+   "Spustiť raz" a "Uložiť predvoľbu". Správa predvolieb nikdy nesúvisí s bežiacim
+   odpočtom: mení iba zoznam, takže timerEnd ani timerSessionId sa nedotkne. */
+
+let presetManageMode = false;
+let presetFormId = null;        // 'NEW' | id upravovanej predvoľby | null (skryté)
+let presetFormFilledFor = null; // aby prekreslenie nezmazalo rozrobené pole
+let customPanelOpen = false;    // aby prekreslenie nezmazalo rozrobený vlastný čas
+
+/* Riadok tlačidiel s predvoľbami v používateľskom poradí. Vlastné tlačidlo "Vlastný"
+   zostáva vždy posledné – nie je súčasťou zoznamu predvolieb a nedá sa vymazať. */
+function renderTimerPresets() {
+  const box = document.getElementById('timer-presets');
+  if (!box) return;
+  const custom = document.getElementById('btn-custom-timer');
+  box.querySelectorAll('.timer-preset').forEach((el) => el.remove());
+  for (const preset of restPresets()) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip timer-chip timer-preset';
+    btn.dataset.presetId = preset.id;
+    const label = restPresetLabel(preset);
+    btn.textContent = label;
+    btn.title = label;                       // celý názov aj vtedy, keď sa skráti
+    btn.setAttribute('aria-label', t('rest.startPreset', { name: label }));
+    box.insertBefore(btn, custom);
+  }
+  renderPresetManage();
+  /* Zmena zoznamu mení aj to, či sa má ponúknuť prevod uloženého vlastného času. */
+  renderPresetOffer();
+}
+
+/* Spustí PRESNE čas predvoľby. Nikdy nečíta vstupy vlastného časovača,
+   takže nikdy nezačne starý "naposledy použitý" čas. */
+function startPreset(id) {
+  const preset = restPresetById(id);
+  if (!preset) return;
+  hideCustomTimer();
+  startTimer(preset.seconds);
+}
+
 /* ---------- Vlastný čas pauzy ---------- */
 
 function renderCustomTimer() {
@@ -10268,10 +10592,19 @@ function renderCustomTimer() {
     chip.classList.toggle('active', open);
     chip.setAttribute('aria-pressed', open ? 'true' : 'false');
   }
-  document.getElementById('ct-minutes').value = String(state.settings.customRestMinutes);
-  document.getElementById('ct-seconds').value = String(state.settings.customRestSeconds);
-  updateCustomPreview();
-  document.getElementById('ct-error').hidden = true;
+  /* Vstupy sa plnia LEN pri otvorení panela – prekreslenie počas písania
+     tak nikdy nezmazže to, čo používateľ práve napísal. */
+  if (open !== customPanelOpen) {
+    customPanelOpen = open;
+    document.getElementById('ct-error').hidden = true;
+    document.getElementById('ct-ok').hidden = true;
+    if (open) {
+      document.getElementById('ct-minutes').value = String(state.settings.customRestMinutes);
+      document.getElementById('ct-seconds').value = String(state.settings.customRestSeconds);
+    }
+  }
+  if (open) updateCustomPreview();
+  renderPresetOffer();
 }
 
 function toggleCustomTimer() {
@@ -10285,6 +10618,7 @@ function hideCustomTimer() {
   if (box) box.hidden = true;
   const chip = document.getElementById('btn-custom-timer');
   if (chip) { chip.classList.remove('active'); chip.setAttribute('aria-pressed', 'false'); }
+  renderCustomTimer();
 }
 
 function updateCustomPreview() {
@@ -10297,7 +10631,7 @@ function updateCustomPreview() {
   document.getElementById('ct-preview').textContent = `${norm.minutes}:${String(norm.seconds).padStart(2, '0')}`;
 }
 
-/* Vráti { total, minutes, seconds } alebo { error: 'invalid' | 'zero' }. */
+/* Vráti { total, minutes, seconds } alebo { error: 'invalid' | 'zero' | 'tooLong' }. */
 function readCustomTimer() {
   const minEl = document.getElementById('ct-minutes');
   const secEl = document.getElementById('ct-seconds');
@@ -10309,26 +10643,229 @@ function readCustomTimer() {
       || !Number.isInteger(m) || !Number.isInteger(s) || m < 0 || s < 0) {
     return { error: 'invalid' };
   }
+  if (m * 60 + s > REST_PRESET_MAX_SECONDS) return { error: 'tooLong' };
   const norm = normalizeCustomRest(m, s);
   const total = norm.minutes * 60 + norm.seconds;
   if (total <= 0) return { error: 'zero' };
   return { total, minutes: norm.minutes, seconds: norm.seconds };
 }
 
-function startCustomTimer() {
+/* Jedno miesto na preklad chyby vlastného časovača. */
+function customTimerError(error) {
+  if (error === 'zero') return t('trening.customZero');
+  if (error === 'tooLong') return t('rest.errTooLong');
+  return t('trening.customInvalid');
+}
+
+function showCustomError(msg) {
   const errEl = document.getElementById('ct-error');
+  const okEl = document.getElementById('ct-ok');
+  okEl.hidden = true;
+  errEl.hidden = false;
+  errEl.textContent = msg;
+}
+
+/* Spustí vlastný čas RAZ. Predvoľbu zámerne nevytvára ani nemení existujúce. */
+function startCustomOnce() {
   const result = readCustomTimer();
   if (result.error) {
-    errEl.hidden = false;
-    errEl.textContent = t(result.error === 'zero' ? 'trening.customZero' : 'trening.customInvalid');
+    showCustomError(customTimerError(result.error));
     return;
   }
-  errEl.hidden = true;
-  state.settings.customRestMinutes = result.minutes;
-  state.settings.customRestSeconds = result.seconds;
-  saveState();
+  document.getElementById('ct-error').hidden = true;
+  rememberCustomTime(result.minutes, result.seconds);
   hideCustomTimer();
   startTimer(result.total);
+}
+
+/* Uloží vlastný čas ako predvoľbu. Zámerne NESPÚŠŤA časovač –
+   úprava predvolieb nesmie nikdy omylom začať odpočet. */
+function saveCustomAsPreset() {
+  const result = readCustomTimer();
+  if (result.error) {
+    showCustomError(customTimerError(result.error));
+    return;
+  }
+  const check = validatePresetValues(result.minutes, result.seconds, '', null);
+  if (check.error) { showCustomError(presetErrorMessage(check)); return; }
+  document.getElementById('ct-error').hidden = true;
+  rememberCustomTime(result.minutes, result.seconds);
+  const preset = addRestPreset(check.seconds, check.name);
+  renderTimerPresets();
+  const okEl = document.getElementById('ct-ok');
+  okEl.hidden = false;
+  okEl.textContent = t('rest.presetSaved', { name: restPresetLabel(preset) });
+  refreshUpdateBanner();
+}
+
+/* ---------- Ponuka na prevod uloženého vlastného času ----------
+   Nič sa nevytvára samo. Riadok sa ukáže len vtedy, keď má používateľ uložený
+   vlastný čas, ktorý ešte NIE JE predvoľbou – a zmizne hneď po prevode. */
+function renderPresetOffer() {
+  const box = document.getElementById('preset-offer');
+  if (!box) return;
+  const m = Number(state.settings.customRestMinutes);
+  const s = Number(state.settings.customRestSeconds);
+  const total = (Number.isFinite(m) ? m : 0) * 60 + (Number.isFinite(s) ? s : 0);
+  const isUntouchedDefault = total === 150;     // 2:30 = pôvodná hodnota, nič sa neukladalo
+  const alreadyHas = restPresets().some((p) => p.seconds === total);
+  if (!Number.isInteger(total) || total < REST_PRESET_MIN_SECONDS
+      || total > REST_PRESET_MAX_SECONDS || isUntouchedDefault || alreadyHas) {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  const text = box.querySelector('.preset-offer-text');
+  if (text) text.textContent = t('rest.offerConvert', { time: formatPresetTime(total) });
+}
+
+function convertCustomTimeToPreset() {
+  const m = Number(state.settings.customRestMinutes);
+  const s = Number(state.settings.customRestSeconds);
+  const check = validatePresetValues(m, s, '', null);
+  if (check.error) { showCustomError(presetErrorMessage(check)); return; }
+  const preset = addRestPreset(check.seconds, check.name);
+  renderTimerPresets();
+  const okEl = document.getElementById('ct-ok');
+  document.getElementById('ct-error').hidden = true;
+  okEl.hidden = false;
+  okEl.textContent = t('rest.presetSaved', { name: restPresetLabel(preset) });
+  refreshUpdateBanner();
+}
+
+/* ---------- Správa predvolieb ---------- */
+
+function updatePresetManageButton() {
+  const btn = document.getElementById('btn-manage-presets');
+  if (!btn) return;
+  btn.classList.toggle('active', presetManageMode);
+  btn.setAttribute('aria-pressed', presetManageMode ? 'true' : 'false');
+  btn.textContent = t(presetManageMode ? 'trening.managePlansDone' : 'rest.manage');
+}
+
+function setPresetManageMode(on) {
+  presetManageMode = on === true;
+  if (!presetManageMode) { presetFormId = null; presetFormFilledFor = null; }
+  updatePresetManageButton();
+  renderPresetManage();
+}
+
+function renderPresetManage() {
+  const box = document.getElementById('preset-manage');
+  const rows = document.getElementById('preset-rows');
+  if (!box || !rows) return;
+  updatePresetManageButton();
+  box.hidden = !presetManageMode;
+  if (!presetManageMode) { renderPresetForm(); return; }
+
+  rows.innerHTML = '';
+  const list = restPresets();
+  if (!list.length) {
+    const p = document.createElement('p');
+    p.className = 'empty-state';
+    p.textContent = t('rest.none');
+    rows.appendChild(p);
+  }
+  list.forEach((preset, i) => {
+    const row = document.createElement('div');
+    row.className = 'preset-row';
+    row.dataset.presetId = preset.id;
+
+    const main = document.createElement('span');
+    main.className = 'preset-row-main';
+    const label = document.createElement('span');
+    label.className = 'preset-row-label';
+    label.textContent = restPresetLabel(preset);
+    const time = document.createElement('span');
+    time.className = 'preset-row-time';
+    time.textContent = formatPresetTime(preset.seconds);
+    main.append(label, time);
+
+    const actions = document.createElement('span');
+    actions.className = 'preset-row-actions';
+    const make = (act, glyph, titleKey, labelText) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn-icon-sm';
+      b.dataset.presetAction = act;
+      b.textContent = glyph;
+      b.title = t(titleKey);
+      b.setAttribute('aria-label', t(titleKey) + ': ' + labelText);
+      if ((act === 'up' && i === 0) || (act === 'down' && i === list.length - 1)) b.disabled = true;
+      return b;
+    };
+    const shown = restPresetLabel(preset);
+    actions.append(
+      make('up', dirGlyph('↑', '↑'), 'trening.moveUp', shown),
+      make('down', dirGlyph('↓', '↓'), 'trening.moveDown', shown),
+      make('edit', '✏️', 'rest.editPreset', shown),
+      make('delete', '🗑️', 'rest.deleteTitle', shown)
+    );
+    const del = actions.querySelector('[data-preset-action="delete"]');
+    if (del) del.classList.add('btn-icon-danger');
+
+    row.append(main, actions);
+    rows.appendChild(row);
+  });
+  renderPresetForm();
+}
+
+/* Formulár pre pridanie/úpravu. Plní sa LEN pri zmene cieľa, aby prekreslenie
+   nezmazalo rozrobené hodnoty. */
+function renderPresetForm() {
+  const form = document.getElementById('preset-form');
+  if (!form) return;
+  if (presetFormId === null) { form.hidden = true; presetFormFilledFor = null; return; }
+  const editing = presetFormId === 'NEW' ? null : restPresetById(presetFormId);
+  if (presetFormId !== 'NEW' && !editing) { presetFormId = null; form.hidden = true; presetFormFilledFor = null; return; }
+  form.hidden = false;
+  const title = document.getElementById('preset-form-title');
+  if (title) title.textContent = t(presetFormId === 'NEW' ? 'rest.addPreset' : 'rest.editPreset');
+  if (presetFormFilledFor !== presetFormId) {
+    presetFormFilledFor = presetFormId;
+    document.getElementById('pf-minutes').value = editing ? String(Math.floor(editing.seconds / 60)) : '';
+    document.getElementById('pf-seconds').value = editing ? String(editing.seconds % 60) : '';
+    document.getElementById('pf-name').value = editing ? editing.name : '';
+    document.getElementById('pf-error').hidden = true;
+  }
+}
+
+function savePresetForm() {
+  if (presetFormId === null) return;
+  const errEl = document.getElementById('pf-error');
+  const mRaw = document.getElementById('pf-minutes').value.trim();
+  const sRaw = document.getElementById('pf-seconds').value.trim();
+  const m = Number(mRaw);
+  const s = Number(sRaw);
+  if (mRaw === '' || sRaw === '' || !Number.isInteger(m) || !Number.isInteger(s)
+      || m < 0 || s < 0) {
+    errEl.hidden = false;
+    errEl.textContent = t('rest.errInvalid');
+    return;
+  }
+  const excludeId = presetFormId === 'NEW' ? null : presetFormId;
+  const check = validatePresetValues(m, s, document.getElementById('pf-name').value, excludeId);
+  if (check.error) { errEl.hidden = false; errEl.textContent = presetErrorMessage(check); return; }
+  errEl.hidden = true;
+  if (presetFormId === 'NEW') addRestPreset(check.seconds, check.name);
+  else updateRestPreset(presetFormId, check.seconds, check.name);
+  presetFormId = null;
+  presetFormFilledFor = null;
+  renderTimerPresets();
+  renderPresetManage();
+  refreshUpdateBanner();
+}
+
+function requestDeletePreset(id) {
+  const preset = restPresetById(id);
+  if (!preset) return;
+  const shown = restPresetLabel(preset);
+  showGeneric(t('rest.deleteTitle'), t('common.delete'), () => {
+    deleteRestPreset(id);
+    if (presetFormId === id) { presetFormId = null; presetFormFilledFor = null; }
+    renderTimerPresets();
+    renderPresetManage();
+  }, esc(t('rest.deleteConfirm', { name: shown })));
 }
 
 /* ---------- Jazyk ---------- */
@@ -10442,6 +10979,8 @@ function applyStaticI18n() {
   renderAutoBackupSetting();
   renderBackupStrip();   // jazyková zmena musí prekresliť aj lištu zálohy
   updatePlanManageButton();   // prepínač plánov má v každom jazyku správny text
+  renderTimerPresets();       // názvy predvolieb časovača sú v každom jazyku iné
+  renderCustomTimer();
   applyDirGlyphs();
 }
 
@@ -10548,17 +11087,41 @@ function setupEvents() {
     }, t('trening.resetSessionConfirm'));
   });
 
-  document.querySelectorAll('.timer-chip[data-seconds]').forEach(chip => {
-    chip.addEventListener('click', () => {
-      hideCustomTimer();
-      startTimer(parseInt(chip.dataset.seconds, 10));
-    });
+  /* Predvoľby časovača oddychu: jeden delegovaný listener, takže prekreslenie
+     ani opakované otvorenie obrazovky nikdy nepridá ďalšie listenery. */
+  on('timer-presets', (e) => {
+    const btn = e.target.closest ? e.target.closest('.timer-preset[data-preset-id]') : null;
+    if (btn && btn.dataset.presetId) startPreset(btn.dataset.presetId);
   });
   on('timer-stop', stopTimer);
   on('btn-custom-timer', toggleCustomTimer);
-  on('btn-start-custom', startCustomTimer);
+  on('btn-start-custom', startCustomOnce);
+  on('btn-save-preset', saveCustomAsPreset);
+  on('btn-preset-convert', convertCustomTimeToPreset);
   on('ct-minutes', updateCustomPreview, 'input');
   on('ct-seconds', updateCustomPreview, 'input');
+
+  on('btn-manage-presets', () => setPresetManageMode(!presetManageMode));
+  on('preset-rows', (e) => {
+    const btn = e.target.closest ? e.target.closest('[data-preset-action]') : null;
+    if (!btn) return;
+    const row = btn.closest ? btn.closest('.preset-row') : null;
+    const id = row ? row.dataset.presetId : null;
+    if (!id) return;
+    const act = btn.dataset.presetAction;
+    if (act === 'up' || act === 'down') {
+      moveRestPreset(id, act === 'up' ? -1 : 1);
+      renderTimerPresets();
+    } else if (act === 'edit') {
+      presetFormId = id;
+      renderPresetManage();
+    } else if (act === 'delete') {
+      requestDeletePreset(id);
+    }
+  });
+  on('btn-preset-add', () => { presetFormId = 'NEW'; renderPresetManage(); });
+  on('btn-preset-cancel', () => { presetFormId = null; presetFormFilledFor = null; renderPresetManage(); });
+  on('btn-preset-save', savePresetForm);
 
   on('btn-setup-ok', confirmSetup);
   // viditeľné Uložiť aj pôvodné Zavrieť – obe uložia, aby sa zmena nikdy nestratila
@@ -10664,6 +11227,10 @@ function setupEvents() {
     if (exSheet && !exSheet.hidden) { closeExerciseSheet(); return; }
     const lib = document.getElementById('modal-library');
     if (lib && !lib.hidden) { closeLibrary(); return; }
+    /* Vnorené panely zatvárame skôr než modaly – najprv to, čo je "najvyššie". */
+    const ctPanel = document.getElementById('custom-timer');
+    if (ctPanel && !ctPanel.hidden) { hideCustomTimer(); return; }
+    if (presetManageMode) { setPresetManageMode(false); return; }
     const modal = document.getElementById('modal-day');
     if (modal && !modal.hidden) closeDay();
   });
@@ -10820,6 +11387,9 @@ function isBusy() {
   if (editingPlan !== null) return true;                 // otvorený editor plánu s neuloženými zmenami
   if (getSession()) return true;                         // rozbehnutý aktívny tréning (meria sa jeho trvanie)
   if (totalSetsDone() > 0) return true;                  // rozbehnutý tréning s označenými sériami
+  if (presetManageMode) return true;                     // otvorená správa predvolieb časovača
+  const ctPanel = document.getElementById('custom-timer');
+  if (ctPanel && !ctPanel.hidden) return true;           // rozrobený vlastný čas pauzy
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
     'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food',
     'modal-library', 'modal-exercise'];

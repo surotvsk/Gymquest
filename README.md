@@ -45,6 +45,9 @@ everything on your own device.
 - **Rest timer** — 60 / 90 / 120 second presets plus a custom time (minutes + seconds, up to 60
   minutes), with an optional gentle gong when the countdown reaches zero. The sound is **off by
   default**, has a **Short / Standard / Long** length choice, and is toggled in ⚙️ Settings.
+- **Editable rest-timer presets** — the quick-start buttons are yours: change any time, give a preset
+  your own name, reorder them, add your own, or delete one for good. A custom time can be started once
+  without saving, or saved as a reusable preset.
 - **Comparison with last time** — every exercise shows whether you went heavier or lighter than your
   previous session **of the same workout plan**.
 - **Six languages** — full **Slovak, English, Spanish, Brazilian Portuguese, French and Arabic**
@@ -381,6 +384,39 @@ ever replayed late, and — when the app is open and audio is allowed — the go
 natural end of a countdown.
 
 ---
+
+### Rest timer presets
+
+The quick-start buttons above the timer are **your** presets, not fixed choices. Out of the box they are
+the original three — **60 s, 90 s and 120 s** — and you can change everything about them:
+
+- **Start one** by tapping its button. It always starts *that* preset's own duration.
+- **Edit** a preset's time, and give it **your own name** if you want one (up to 40 characters, shown
+  exactly as you typed it and never translated).
+- **Rename** it at any time by editing it again. A preset without a name is labelled with its duration,
+  which is translated in every language.
+- **Reorder** with the ↑ / ↓ buttons; the row order is the button order.
+- **Delete** any preset, after a confirmation that names it. **Defaults are not special** — delete the
+  60 s preset and it stays gone through refreshes, imports and app updates.
+
+Open **Manage timers** to do all of that (it keeps the button row clean), and **Done** to close it.
+
+**Custom time.** The `Custom` button opens the minutes/seconds panel with two actions:
+
+- **Start once** runs that time *right now* and creates **no** preset — and it no longer overwrites the
+  custom time you had saved, which is what used to happen.
+- **Save preset** adds it to your quick-start buttons for next time. It deliberately **does not start a
+  timer**, so saving can never set off a countdown by accident.
+
+If you have a saved custom time from before this update, GymQuest keeps it and offers once to turn it into
+a preset — it never creates one behind your back.
+
+**Rules the presets follow.** Times are whole seconds, greater than zero and at most 60 minutes. A
+duplicate length is allowed only when both presets have different names of their own (two differently
+named rests can sensibly share a length); otherwise you get a message telling you which preset already
+uses it. Deleting every preset is fine — the `Custom` timer is not part of the list, so the timer is never
+left unusable. Changing, renaming, reordering or deleting a preset during a rest **never touches the
+running countdown**, and your sound on/off and gong-length settings are untouched.
 
 ## Creating a workout plan
 

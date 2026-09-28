@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
 
@@ -141,10 +141,7 @@
       </div>
 
       <h3 class="card-title" data-i18n="trening.timerSection">Časovač oddychu</h3>
-      <div class="timer-chips">
-        <button class="chip timer-chip" data-seconds="60" data-i18n-aria="trening.timerStart">60 s</button>
-        <button class="chip timer-chip" data-seconds="90" data-i18n-aria="trening.timerStart">90 s</button>
-        <button class="chip timer-chip" data-seconds="120" data-i18n-aria="trening.timerStart">120 s</button>
+      <div class="timer-chips" id="timer-presets">
         <button type="button" class="chip timer-chip timer-chip-custom" id="btn-custom-timer" aria-pressed="false" data-i18n="trening.timerCustom" data-i18n-aria="trening.customStartAlt">Vlastný</button>
       </div>
 
@@ -157,13 +154,51 @@
           </div>
           <div class="custom-field">
             <label for="ct-seconds" data-i18n="trening.customSeconds">Sekundy</label>
-            <input type="number" id="ct-seconds" min="0" max="59" inputmode="numeric" autocomplete="off">
+            <input type="number" id="ct-seconds" min="0" max="3599" inputmode="numeric" autocomplete="off">
           </div>
         </div>
         <p class="custom-preview" id="ct-preview">2:30</p>
         <p class="card-note ct-error" id="ct-error" hidden></p>
-        <button class="btn btn-primary custom-start" id="btn-start-custom" data-i18n="trening.customStart">Spustiť časovač pauzy</button>
+        <p class="card-note ct-ok" id="ct-ok" hidden></p>
+        <div class="row-actions">
+          <button type="button" class="btn btn-secondary" id="btn-start-custom" data-i18n="rest.startOnce">Spustiť raz</button>
+          <button type="button" class="btn btn-primary" id="btn-save-preset" data-i18n="rest.savePreset">Uložiť predvoľbu</button>
+        </div>
+        <div class="preset-offer" id="preset-offer" hidden>
+          <p class="card-note preset-offer-text"></p>
+          <button type="button" class="btn btn-secondary btn-block" id="btn-preset-convert" data-i18n="rest.convert">Uložiť ako predvoľbu</button>
+        </div>
       </div>
+
+      <div class="preset-manage" id="preset-manage" hidden>
+        <p class="edit-hint" data-i18n="rest.manageHint">Uprav, premenuj, preusporiadaj alebo vymaž predvoľby časovača.</p>
+        <div class="preset-rows" id="preset-rows"></div>
+
+        <div class="preset-form" id="preset-form" hidden>
+          <span class="custom-title" id="preset-form-title" data-i18n="rest.editPreset">Upraviť predvoľbu</span>
+          <div class="custom-fields">
+            <div class="custom-field">
+              <label for="pf-minutes" data-i18n="trening.customMinutes">Minúty</label>
+              <input type="number" id="pf-minutes" min="0" max="60" inputmode="numeric" autocomplete="off">
+            </div>
+            <div class="custom-field">
+              <label for="pf-seconds" data-i18n="trening.customSeconds">Sekundy</label>
+              <input type="number" id="pf-seconds" min="0" max="3599" inputmode="numeric" autocomplete="off">
+            </div>
+          </div>
+          <label class="modal-label" for="pf-name" data-i18n="rest.nameLabel">Názov (voliteľný)</label>
+          <input type="text" class="modal-input" id="pf-name" maxlength="40" autocomplete="off" data-i18n-placeholder="rest.namePlaceholder" placeholder="napr. Ťažké drepy">
+          <p class="card-note ct-error" id="pf-error" hidden></p>
+          <div class="row-actions">
+            <button type="button" class="btn btn-secondary" id="btn-preset-cancel" data-i18n="common.cancel">Zrušiť</button>
+            <button type="button" class="btn btn-primary" id="btn-preset-save" data-i18n="common.save">Uložiť</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-block" id="btn-preset-add" data-i18n="rest.addPreset">+ Pridať predvoľbu</button>
+      </div>
+
+      <button type="button" class="btn btn-secondary btn-block" id="btn-manage-presets" aria-pressed="false" data-i18n="rest.manage">Spravovať časovače</button>
 
       <div class="row-actions">
         <button class="btn btn-secondary" id="btn-reset-session" data-i18n="trening.resetSession">Resetovať tréning</button>
@@ -660,6 +695,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=25"></script>
+  <script src="script.js?v=26"></script>
 </body>
 </html>
