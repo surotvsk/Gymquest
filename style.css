@@ -3017,7 +3017,7 @@ body.has-backup-banner .app-main {
 }
 
 .media-slide .fig-svg { max-height: 200px; }
-.media-slide img { width: 100%; max-height: 200px; object-fit: contain; display: block; }
+.media-slide img { width: 100%; max-height: 260px; object-fit: contain; display: block; }
 
 .media-nav {
   position: absolute;
@@ -3060,6 +3060,7 @@ body.has-backup-banner .app-main {
 .media-dot.active { background: var(--accent); }
 .media-count { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .media-caption { font-size: var(--fs-sm); color: var(--text); margin: var(--sp-2) 0 0; overflow-wrap: break-word; }
+.media-credit { font-size: var(--fs-xs); color: var(--text-faint); margin: 2px 0 0; overflow-wrap: break-word; }
 .media-note { font-size: var(--fs-xs); color: var(--text-faint); margin: 2px 0 0; overflow-wrap: break-word; }
 
 .media-missing {

@@ -68,7 +68,8 @@ everything on your own device.
   calorie estimate and your own nutrition numbers can and cannot tell you.
 - **Exercise library** — 33 built-in exercises with primary and secondary muscles, movement pattern,
   difficulty, equipment, gym/home/outdoor availability, how-to steps, common mistakes, similar exercises
-  with the reason each was suggested, and an **illustrated demonstration gallery** you can swipe through.
+  with the reason each was suggested, and a **demonstration gallery** (a licensed photograph where one is
+  available, otherwise an original illustration) you can swipe through.
   Find something by what you want to train and where you are, search by name in any of the six languages,
   or tell it what equipment you have and see only what you can actually do.
 - **Replace an exercise mid-workout** — swap an exercise without losing your progress. Sets you already
@@ -103,6 +104,7 @@ browser — double-click the file or drag it into a browser window. The app work
 | `script.js` | All application logic — state, workouts, rotation, streaks, XP, achievements, translations |
 | `manifest.json` | Web app manifest so the app can be installed to a home screen |
 | `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` | Home screen and app icons |
+| `media/` | Licensed exercise photographs and their credits (`media/CREDITS.md`) |
 | `README.md` | This documentation |
 
 ---
@@ -486,7 +488,8 @@ works offline from the first launch and adds nothing at all to your stored data.
 - **How to do it** — a short setup-to-finish description, written for someone doing it for the first
   time.
 - **Common mistakes & technique notes** — one plain sentence about what usually goes wrong.
-- **A schematic body-position drawing** (see the honest note below).
+- **A demonstration** — a licensed photograph where one is available, otherwise an original illustration
+  (see the honest note below).
 - **Similar exercises**, each with the reason it was suggested.
 
 ### Opening it
@@ -569,49 +572,42 @@ refuses the replacement and says why, rather than risk mixing the two up.
 
 ### Demonstrations: what is here, and what is not
 
-**Read this before judging the visuals — they are illustrations, not photographs.**
+The demonstration gallery uses two kinds of media, and **both work fully offline** — every file is
+served from this repository and cached by the service worker; nothing is hot-linked or fetched at
+runtime.
 
-There are **no photographs and no photorealistic renderings**, and none is claimed. Photographs of
-exercises cannot be legally redistributed without a verified licence, and streaming or hotlinking them
-would break the offline promise. So GymQuest ships an **original illustrated demonstration gallery**,
-drawn by this project as code:
+- **Ten exercises use a real, licensed photograph** stored locally in `media/` — **Bench press,
+  Overhead press, Bent-over row, Biceps curl, Lateral raise, Pull-up, Dips, Push-up, Plank** and
+  **Lunges**. Each is a **single still** (not a start/mid/end sequence) showing a real person performing
+  the movement with the relevant equipment. Nine are **CC BY 2.0** and one (Bench press) is **U.S.
+  Marine Corps public domain**; the **creator and licence are printed in the app under each image**, and
+  the full list is in [`media/CREDITS.md`](media/CREDITS.md).
+- **Every other exercise keeps the original illustrated gallery** drawn by this project as code — a
+  figure with real body volume, the correct equipment and a movement arrow — because no clean,
+  correctly-matching photograph under a reusable licence was available for it.
 
-- **Every one of the 33 exercises has a demonstration**: 95 frames in total, 2 or 3 per exercise.
-- Each frame shows a **figure with real body volume** — a shaped torso with shoulders, chest, waist and
-  hips, tapered limbs with joints, hands, feet and a head — **in the correct posture for that exercise**,
-  plus the **correct equipment** (a barbell with plates, dumbbells, a bench, a pull-up bar, dip bars, a
-  band under tension, a cable machine, a step, a mat) in a **gym, home or outdoor** setting chosen from
-  that exercise's own availability.
-- The **working limb is highlighted in orange** and a **movement arrow** shows the direction of travel.
-- Positions come from the same written steps you see on the same screen, and the equipment drawn is
-  derived from the exercise's own metadata — so the picture cannot show gear the exercise does not use,
-  and cannot drift apart from the words.
+**Not every requested exercise is covered, honestly:**
 
-**Swipe between images** with your finger, or use the **‹ ›** buttons, the dots, the `1 of 3` counter or
-the arrow keys. Each image has a **caption** ("Starting position.", "Lowering the weight.", …) in every
-supported language. If a demonstration cannot be verified for an exercise, you get a clean
-**"Demonstration unavailable"** state with the written steps — never a misleading image and never a
-broken-image icon.
+- *Deadlift*, *Lat pulldown* and *Triceps extension* are **not in GymQuest's library at all**, so there
+  is nothing to demonstrate.
+- **Squat** has no clean, correctly-matching photograph under a reusable licence, so it keeps its
+  illustration rather than shipping a misleading image.
+- Where a photograph exists it is a **still image, not a video or animation**, and the licensed sources
+  do not provide start/mid/end sequences of the same person.
 
-**Size and offline:** the illustrations are generated from code, so they make **zero network requests**,
-add **no image files** and add **nothing** to the offline cache. The cost is code only, roughly
-**+90 KB** of `script.js`.
+**Swipe between images** with your finger, or use the **‹ ›** buttons, the dots, the counter or the
+arrow keys. Each image has a **caption** in every supported language. If a demonstration cannot be
+verified for an exercise, you get a clean **"Demonstration unavailable"** state with the written steps —
+never a misleading image and never a broken-image icon.
 
 **Provenance.** Every visual asset is listed in a developer-facing manifest
-(`exerciseMediaManifest()` in the console) with its asset id, exercise id, source type, creator, licence,
-date added and offline path. **Every asset is `original`**, created for this project, under the project's
-own licence. **No asset is licensed, photographic or third-party** — so nothing here rests on an
-unverified claim.
+(`exerciseMediaManifest()` in the console) with its asset id, exercise id, source type (`file` or
+`original`), creator, licence, licence URL, source page and offline path. Photographs are credited to
+their creators; the illustrations remain original works of this project.
 
-**Adding real photographs later.** Each gallery frame accepts either a generated drawing or a real image
-file (`{ src: 'media/whatever.webp' }`). Dropping licensed photographs in is **one line per frame** —
-swiping, captions, dots, arrows, the counter, the unavailable-state fallback and all offline behaviour
-keep working unchanged. That image path is implemented and tested, including what happens when a file is
-missing.
-
-**What is still missing, honestly:** a photographic or photorealistic demonstration. That needs licensed
-photography or an image-generation step, neither of which this environment can produce or verify. The
-illustrations are a clear, consistent, legally safe substitute — not a photo set.
+**Size and offline.** The photographs add **ten JPEG files (~850 KB total**, long edge ≤ 900 px) that
+are precached by the service worker, so they load with no network. The illustrations remain generated
+from code and add no files of their own.
 
 ### Accuracy and safety
 

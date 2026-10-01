@@ -1163,6 +1163,36 @@ const EXERCISE_MEDIA = {
   },
 };
 
+/* ---------- Licencované fotografie (Wikimedia Commons) ----------
+   Rám ukážky môže byť aj skutočný obrázok: { src }. Pre vybrané cviky nahrádza
+   pôvodnú kreslenú ukážku licencovaná fotografia uložená lokálne v `media/`.
+   Licencia každého autora je v MEDIA_CREDITS a je povinné ju zobraziť (CC BY). */
+const EXERCISE_PHOTO_MEDIA = {
+  'bench-press': ['media/bench-press-1.jpg'],
+  'overhead-press': ['media/overhead-press-1.jpg'],
+  'bicep-curls': ['media/bicep-curls-1.jpg'],
+  'lateral-raises': ['media/lateral-raises-1.jpg'],
+  'bent-over-rows': ['media/bent-over-rows-1.jpg'],
+  'pull-ups': ['media/pull-ups-1.jpg'],
+  'dips': ['media/dips-1.jpg'],
+  'push-up': ['media/push-up-1.jpg'],
+  'plank': ['media/plank-1.jpg'],
+  'lunges': ['media/lunges-1.jpg'],
+};
+
+const MEDIA_CREDITS = {
+  'bench-press': [{ creator: 'Cpl. Courtney C. White, U.S. Marine Corps', license: 'Public domain', licenseUrl: '', source: 'https://commons.wikimedia.org/wiki/File:USMC-110816-F-2786W-005.jpg' }],
+  'overhead-press': [{ creator: 'Nenad Stojkovic', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Attractive_sporty_woman_doing_overhead_press_in_gym_with_barbell.jpg' }],
+  'bicep-curls': [{ creator: 'Tyler Read', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_double_dumbbell_bicep_curl.jpg' }],
+  'lateral-raises': [{ creator: 'PTPioneer', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_shoulder_dumbbell_raises.jpg' }],
+  'bent-over-rows': [{ creator: 'Eric Astrauskas (PTinTO.com)', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Landmine_Bent-Over_Rows.jpg' }],
+  'pull-ups': [{ creator: 'PTPioneer', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_pull_up_top_position.jpg' }],
+  'dips': [{ creator: 'PTPioneer', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_dips_Exercise.jpg' }],
+  'push-up': [{ creator: 'PTPioneer', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_push-ups_from_the_side.jpg' }],
+  'plank': [{ creator: 'Shixart1985', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Woman_performing_plank_exercise_at_home_gym.jpg' }],
+  'lunges': [{ creator: 'PTPioneer', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_lunges.jpg' }],
+};
+
 /* Náčinie sa ODVODZUJE z metaúdajov cviku – nedá sa nakresliť náčinie, ktoré
    cvik nevyžaduje. `rig` (a jeho verzia v ráme) určuje len rozmiestnenie. */
 function gearFor(entry, media, frame) {
@@ -1190,6 +1220,10 @@ function gearFor(entry, media, frame) {
    stav "Ukážka nie je k dispozícii" spolu s písaným návodom. */
 function framesForExercise(entry) {
   if (!entry) return null;
+  const photos = EXERCISE_PHOTO_MEDIA[entry.id];
+  if (photos && photos.length) {
+    return { frames: photos.map((src) => ({ src, caption: 'media.photo' })) };
+  }
   const media = EXERCISE_MEDIA[entry.id];
   if (!media || !Array.isArray(media.frames) || !media.frames.length) return null;
   return media;
@@ -1202,10 +1236,12 @@ function resolvedFrame(entry, media, index) {
   const scene = frame.scene
     || media.scene
     || (entry.locations.indexOf('gym') >= 0 ? 'gym' : (entry.locations.indexOf('home') >= 0 ? 'home' : 'outdoor'));
+  const credits = MEDIA_CREDITS[entry.id];
   return Object.assign({}, frame, {
     scene,
     gear: gearFor(entry, media, frame),
     view: frame.view || media.view || 'side',
+    credit: (credits && credits[index]) || null,
   });
 }
 
@@ -1585,6 +1621,9 @@ const I18N = {
     'media.extend': 'Vytlačenie.',
     'media.pull': 'Príťah.',
     'media.return': 'Návrat.',
+    'media.photo': 'Ukážková fotografia.',
+    'media.photoNote': 'Licencovaná fotografia. Autor a licencia sú uvedené pod obrázkom.',
+    'media.credit': 'Fotografia: {credit}',
     'media.unavailableTitle': 'Ukážka nie je k dispozícii',
     'media.unavailable': 'GymQuest zatiaľ nemá overenú ukážku tohto cviku. Hlavným návodom sú písané kroky nižšie.',
     'media.illustrationNote': 'Pôvodná ilustrácia vytvorená pre GymQuest. Nie je to fotografia.',
@@ -2232,6 +2271,9 @@ const I18N = {
     'media.extend': 'Extending.',
     'media.pull': 'Pulling.',
     'media.return': 'Returning.',
+    'media.photo': 'Demonstration photograph.',
+    'media.photoNote': 'Licensed photograph. The creator and licence are shown under the image.',
+    'media.credit': 'Photo: {credit}',
     'media.unavailableTitle': 'Demonstration unavailable',
     'media.unavailable': 'GymQuest has no verified demonstration for this exercise yet. The written steps below are the guidance.',
     'media.illustrationNote': 'Original illustration created for GymQuest. Not a photograph.',
@@ -2879,6 +2921,9 @@ const I18N = {
     'media.extend': 'Extendiendo.',
     'media.pull': 'Tirando.',
     'media.return': 'Volviendo.',
+    'media.photo': 'Fotografía de demostración.',
+    'media.photoNote': 'Fotografía con licencia. El autor y la licencia aparecen bajo la imagen.',
+    'media.credit': 'Fotografía: {credit}',
     'media.unavailableTitle': 'Demostración no disponible',
     'media.unavailable': 'GymQuest todavía no tiene una demostración verificada de este ejercicio. La guía son los pasos escritos de abajo.',
     'media.illustrationNote': 'Ilustración original creada para GymQuest. No es una fotografía.',
@@ -3524,6 +3569,9 @@ const I18N = {
     'media.extend': 'Estendendo.',
     'media.pull': 'Puxando.',
     'media.return': 'Retornando.',
+    'media.photo': 'Fotografia de demonstração.',
+    'media.photoNote': 'Fotografia licenciada. O autor e a licença aparecem sob a imagem.',
+    'media.credit': 'Foto: {credit}',
     'media.unavailableTitle': 'Demonstração indisponível',
     'media.unavailable': 'O GymQuest ainda não tem uma demonstração verificada deste exercício. O guia são os passos escritos abaixo.',
     'media.illustrationNote': 'Ilustração original criada para o GymQuest. Não é uma fotografia.',
@@ -4169,6 +4217,9 @@ const I18N = {
     'media.extend': 'Extension.',
     'media.pull': 'Traction.',
     'media.return': 'Retour.',
+    'media.photo': 'Photographie de démonstration.',
+    'media.photoNote': 'Photographie sous licence. L’auteur et la licence figurent sous l’image.',
+    'media.credit': 'Photo : {credit}',
     'media.unavailableTitle': 'Démonstration indisponible',
     'media.unavailable': 'GymQuest n’a pas encore de démonstration vérifiée pour cet exercice. Les étapes écrites ci-dessous font référence.',
     'media.illustrationNote': 'Illustration originale créée pour GymQuest. Ce n’est pas une photographie.',
@@ -4833,6 +4884,9 @@ const I18N = {
     'media.extend': 'المدّ.',
     'media.pull': 'السحب.',
     'media.return': 'العودة.',
+    'media.photo': 'صورة توضيحية.',
+    'media.photoNote': 'صورة مرخّصة. يظهر المصوّر والترخيص تحت الصورة.',
+    'media.credit': 'صورة: {credit}',
     'media.unavailableTitle': 'العرض غير متوفّر',
     'media.unavailable': 'لا يملك GymQuest بعد عرضًا موثّقًا لهذا التمرين. الدليل هو الخطوات المكتوبة أدناه.',
     'media.illustrationNote': 'رسم أصلي أُنشئ لـ GymQuest. ليس صورة فوتوغرافية.',
@@ -8879,7 +8933,9 @@ function mediaGalleryHtml(entry) {
   h.push('<div class="media-bar"><span class="media-dots" id="media-dots"></span>'
     + '<span class="media-count" id="media-count" aria-live="polite"></span></div>');
   h.push('<p class="media-caption" id="media-caption" aria-live="polite"></p>');
-  h.push('<p class="media-note">' + esc(t('media.illustrationNote')) + '</p>');
+  h.push('<p class="media-credit" id="media-credit" hidden></p>');
+  const isPhoto = !!(items[0] && items[0].src);
+  h.push('<p class="media-note">' + esc(t(isPhoto ? 'media.photoNote' : 'media.illustrationNote')) + '</p>');
   h.push('</div>');
   return h.join('');
 }
@@ -8898,6 +8954,17 @@ function updateMediaChrome(entry) {
   }
   if (count) count.textContent = t('media.counter', { n: i + 1, total: items.length });
   if (caption) caption.textContent = t(items[i].caption);
+  const credit = document.getElementById('media-credit');
+  if (credit) {
+    const c = items[i].credit;
+    if (c) {
+      credit.textContent = t('media.credit', { credit: c.creator + ' · ' + c.license });
+      credit.hidden = false;
+    } else {
+      credit.textContent = '';
+      credit.hidden = true;
+    }
+  }
   if (prev) prev.disabled = i === 0;
   if (next) next.disabled = i === items.length - 1;
   /* Jedna ukážka = žiadne ovládanie a žiadne bodky, aby obrazovka nebola zbytočne plná. */
@@ -8999,12 +9066,15 @@ function exerciseMediaManifest() {
   const out = [];
   for (const entry of libraryAll()) {
     exerciseMediaList(entry).forEach((f, i) => {
+      const c = f.credit;
       out.push({
         assetId: entry.id + '/' + (i + 1),
         exerciseId: entry.id,
         sourceType: f.src ? 'file' : 'original',
-        creator: 'GymQuest project',
-        license: 'Same licence as the GymQuest project',
+        creator: c ? c.creator : 'GymQuest project',
+        license: c ? c.license : 'Same licence as the GymQuest project',
+        licenseUrl: c ? c.licenseUrl : null,
+        source: c ? c.source : null,
         added: MEDIA_ADDED_DATE,
         offlinePath: f.src || ('inline:code#' + entry.id + '/' + (i + 1)),
         caption: f.caption,
