@@ -576,38 +576,34 @@ The demonstration gallery uses two kinds of media, and **both work fully offline
 served from this repository and cached by the service worker; nothing is hot-linked or fetched at
 runtime.
 
-- **Ten exercises use a real, licensed photograph** stored locally in `media/` — **Bench press,
-  Overhead press, Bent-over row, Biceps curl, Lateral raise, Pull-up, Dips, Push-up, Plank** and
-  **Lunges**. Each is a **single still** (not a start/mid/end sequence) showing a real person performing
-  the movement with the relevant equipment. Nine are **CC BY 2.0** and one (Bench press) is **U.S.
-  Marine Corps public domain**; the **creator and licence are printed in the app under each image**, and
-  the full list is in [`media/CREDITS.md`](media/CREDITS.md).
-- **Every other exercise keeps the original illustrated gallery** drawn by this project as code — a
-  figure with real body volume, the correct equipment and a movement arrow — because no clean,
-  correctly-matching photograph under a reusable licence was available for it.
+- **Seven exercises use a short local video** (`media/*.webm`) with play/pause controls and a poster
+  image, and **no autoplay** — **Bench press, Squat, Overhead press, Bent-over row, Biceps curl,
+  Pull-up** and **Lunges**. The videos are unmodified originals from Wikimedia Commons.
+- **Lateral raise uses a three-photograph sequence of the same person** performing the same dumbbell
+  lateral raise — *Starting position → Raising the weight → Top position* — with a subtle orange
+  movement arrow on each frame and an **"Image 1 of 3"** indicator you can swipe through.
+- **Push-up, Dips and Plank keep a single licensed photograph** for now: no suitable reusable video
+  exists (the available ones are a wall push-up and machine/ledge variants, not the correct movement)
+  and no matching multi-photo sequence of the same person was found, so they are marked as
+  **needing better media**.
+- **Every other exercise keeps the original illustrated gallery** drawn by this project as code.
 
-**Not every requested exercise is covered, honestly:**
+**Not every requested exercise is covered, honestly:** *Deadlift*, *Lat pulldown* and *Triceps
+extension* are **not in GymQuest's library at all**, so there is nothing to demonstrate.
 
-- *Deadlift*, *Lat pulldown* and *Triceps extension* are **not in GymQuest's library at all**, so there
-  is nothing to demonstrate.
-- **Squat** has no clean, correctly-matching photograph under a reusable licence, so it keeps its
-  illustration rather than shipping a misleading image.
-- Where a photograph exists it is a **still image, not a video or animation**, and the licensed sources
-  do not provide start/mid/end sequences of the same person.
-
-**Swipe between images** with your finger, or use the **‹ ›** buttons, the dots, the counter or the
-arrow keys. Each image has a **caption** in every supported language. If a demonstration cannot be
-verified for an exercise, you get a clean **"Demonstration unavailable"** state with the written steps —
-never a misleading image and never a broken-image icon.
+**Swipe between media** with your finger, or use the **‹ ›** buttons, the dots, the counter or the arrow
+keys. Each item has a **caption** in every supported language, and the **creator and licence are printed
+under the media**. If a demonstration cannot be loaded, you get a clean **"Demonstration unavailable"**
+state with the written steps — never a broken-image icon.
 
 **Provenance.** Every visual asset is listed in a developer-facing manifest
 (`exerciseMediaManifest()` in the console) with its asset id, exercise id, source type (`file` or
-`original`), creator, licence, licence URL, source page and offline path. Photographs are credited to
-their creators; the illustrations remain original works of this project.
+`original`), creator, licence, licence URL, source page and offline path. The full attribution list is
+also in [`media/CREDITS.md`](media/CREDITS.md).
 
-**Size and offline.** The photographs add **ten JPEG files (~850 KB total**, long edge ≤ 900 px) that
-are precached by the service worker, so they load with no network. The illustrations remain generated
-from code and add no files of their own.
+**Video format and offline.** Videos are **WebM (VP8/VP9)** — they play in Chrome, Firefox and Edge and
+in recent versions of Safari. All are precached by the service worker, so they play with no network. Six
+are under 0.6 MB; the two public-domain CDC clips are larger (bicep curl ≈ 5.4 MB, push-up ≈ 6.5 MB).
 
 ### Accuracy and safety
 
