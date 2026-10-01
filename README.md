@@ -576,17 +576,18 @@ The demonstration gallery uses two kinds of media, and **both work fully offline
 served from this repository and cached by the service worker; nothing is hot-linked or fetched at
 runtime.
 
-- **Seven exercises use a short local video** (`media/*.webm`) with play/pause controls and a poster
+- **Eight exercises use a short local video** (`media/*.webm`) with play/pause controls and a poster
   image, and **no autoplay** — **Bench press, Squat, Overhead press, Bent-over row, Biceps curl,
-  Pull-up** and **Lunges**. The videos are unmodified originals from Wikimedia Commons.
+  Pull-up, Lunges** and **Superman**. The videos are unmodified originals from Wikimedia Commons.
 - **Lateral raise uses a three-photograph sequence of the same person** performing the same dumbbell
   lateral raise — *Starting position → Raising the weight → Top position* — with a subtle orange
   movement arrow on each frame and an **"Image 1 of 3"** indicator you can swipe through.
-- **Push-up, Dips and Plank keep a single licensed photograph** for now: no suitable reusable video
-  exists (the available ones are a wall push-up and machine/ledge variants, not the correct movement)
-  and no matching multi-photo sequence of the same person was found, so they are marked as
-  **needing better media**.
-- **Every other exercise keeps the original illustrated gallery** drawn by this project as code.
+- **Six exercises use a single licensed photograph**: Push-up, Plank, **Cable rows (CC0)**,
+  **Leg press (CC BY 2.0)**, **Dips (CC BY-SA 3.0, parallel bars)** and **Burpee (public domain)** —
+  the **creator and licence are printed under each image** and listed in
+  [`media/CREDITS.md`](media/CREDITS.md).
+- **Exercises without a correctly-matched, legally usable demonstration yet** keep the original
+  illustrated gallery for now; they are tracked as *unresolved* pending a decision.
 
 **Not every requested exercise is covered, honestly:** *Deadlift*, *Lat pulldown* and *Triceps
 extension* are **not in GymQuest's library at all**, so there is nothing to demonstrate.

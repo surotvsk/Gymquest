@@ -1176,6 +1176,7 @@ const EXERCISE_VIDEO_MEDIA = {
   'bicep-curls': { src: 'media/bicep-curls.webm', poster: 'media/bicep-curls-poster.jpg' },
   'pull-ups': { src: 'media/pull-ups.webm', poster: 'media/pull-ups-poster.jpg' },
   'lunges': { src: 'media/lunges.webm', poster: 'media/lunges-poster.jpg' },
+  'superman': { src: 'media/superman.webm', poster: 'media/superman-poster.jpg' },
 };
 
 const EXERCISE_PHOTO_MEDIA = {
@@ -1187,6 +1188,9 @@ const EXERCISE_PHOTO_MEDIA = {
   'push-up': [{ src: 'media/push-up-1.jpg', caption: 'media.photo' }],
   'dips': [{ src: 'media/dips-1.jpg', caption: 'media.photo' }],
   'plank': [{ src: 'media/plank-1.jpg', caption: 'media.photo' }],
+  'cable-rows': [{ src: 'media/cable-rows-1.jpg', caption: 'media.photo' }],
+  'leg-press': [{ src: 'media/leg-press-1.jpg', caption: 'media.photo' }],
+  'burpee': [{ src: 'media/burpee-1.jpg', caption: 'media.photo' }],
 };
 
 const MEDIA_CREDITS = {
@@ -1203,8 +1207,12 @@ const MEDIA_CREDITS = {
     { creator: 'ThoroughlyReviewed', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Fitness_model_shoulder_exercise_weight_training_(32004749823).jpg' },
     { creator: 'ThoroughlyReviewed', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Fitness_model_shoulder_exercise_weight_training_(32004749753).jpg' },
   ],
-  'dips': [{ creator: 'PTPioneer', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Girl_doing_dips_Exercise.jpg' }],
+  'dips': [{ creator: 'soh32’s', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0', source: 'https://commons.wikimedia.org/wiki/File:Dips.jpg' }],
   'plank': [{ creator: 'Shixart1985', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Woman_performing_plank_exercise_at_home_gym.jpg' }],
+  'superman': [{ creator: 'Centers for Disease Control and Prevention', license: 'Public domain', licenseUrl: '', source: 'https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Superman.webm' }],
+  'cable-rows': [{ creator: 'Miguel Angel Omaña Rojas', license: 'CC0', licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/', source: 'https://commons.wikimedia.org/wiki/File:Woman_using_a_seated_cable_row_machine_at_the_gym.jpg' }],
+  'leg-press': [{ creator: 'Nenad Stojkovic', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0', source: 'https://commons.wikimedia.org/wiki/File:Young_man_using_a_leg_press_machine_at_the_gym.jpg' }],
+  'burpee': [{ creator: 'U.S. Marine Corps (Sgt. Ryan Young)', license: 'Public domain', licenseUrl: '', source: 'https://commons.wikimedia.org/wiki/File:Airborne_Burpee.jpg' }],
 };
 
 /* Náčinie sa ODVODZUJE z metaúdajov cviku – nedá sa nakresliť náčinie, ktoré

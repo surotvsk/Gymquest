@@ -19,6 +19,7 @@ is covered by the same author and licence.
 | `pull-ups.webm` | Pull-up | FitnessScape | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Pull-ups_-_exercise_demonstration_video.webm |
 | `bicep-curls.webm` | Biceps curl | Centers for Disease Control and Prevention | Public domain | https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Bicep_Curls.webm |
 | `lunges.webm` | Lunges | Skhulile Mthiyane | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Forward_lunge_training.webm |
+| `superman.webm` | Superman | Centers for Disease Control and Prevention | Public domain | https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Superman.webm |
 
 ## Photographs
 
@@ -28,8 +29,11 @@ is covered by the same author and licence.
 | `lateral-raises-2.jpg` | Lateral raise (raising) | ThoroughlyReviewed | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Fitness_model_shoulder_exercise_weight_training_(32004749823).jpg |
 | `lateral-raises-3.jpg` | Lateral raise (top) | ThoroughlyReviewed | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Fitness_model_shoulder_exercise_weight_training_(32004749753).jpg |
 | `push-up-1.jpg` | Push-up | PTPioneer | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Girl_doing_push-ups_from_the_side.jpg |
-| `dips-1.jpg` | Dips | PTPioneer | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Girl_doing_dips_Exercise.jpg |
+| `dips-1.jpg` | Dips | soh32’s | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Dips.jpg |
 | `plank-1.jpg` | Plank | Shixart1985 | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Woman_performing_plank_exercise_at_home_gym.jpg |
+| `cable-rows-1.jpg` | Cable rows | Miguel Angel Omaña Rojas | CC0 | https://commons.wikimedia.org/wiki/File:Woman_using_a_seated_cable_row_machine_at_the_gym.jpg |
+| `leg-press-1.jpg` | Leg press | Nenad Stojkovic | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Young_man_using_a_leg_press_machine_at_the_gym.jpg |
+| `burpee-1.jpg` | Burpee | U.S. Marine Corps (Sgt. Ryan Young) | Public domain | https://commons.wikimedia.org/wiki/File:Airborne_Burpee.jpg |
 
 ## Licences
 
