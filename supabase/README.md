@@ -11,13 +11,22 @@ exactly as before: fully offline, no accounts, no network requests. Nothing belo
 1. Create a Supabase project (Free plan), note the **Project URL** and the **publishable / anon key**
    (Project settings → API). These two are safe in frontend code.
 
-## 2. Run the database migration
-Run [`migrations/0001_community.sql`](./migrations/0001_community.sql) once:
-- SQL editor → paste the whole file → Run, **or** with the CLI: `supabase db push`.
+## 2. Run the database migrations
+Run **both** migrations, in order:
+1. [`migrations/0001_community.sql`](./migrations/0001_community.sql) — tables, functions, triggers, RLS, buckets.
+2. [`migrations/0002_community_grants.sql`](./migrations/0002_community_grants.sql) — explicit `GRANT`s.
 
-It creates `profiles`, `posts`, `reports`, `blocks`, the helper functions, the triggers (new-user
+SQL editor → paste a file → Run, **or** with the CLI: `supabase db push`.
+
+`0002` is required **because you disabled “Automatically expose new tables”**: without it the new
+tables have no privileges for the `authenticated` role and the API cannot reach them at all. It grants
+the minimum columns/tables the app uses (`role` is deliberately **not** granted, so it can only be set
+by the owner via SQL).
+
+`0001` creates `profiles`, `posts`, `reports`, `blocks`, the helper functions, the triggers (new-user
 profile, role/suspension guard, post guard), all RLS policies, and the two Storage buckets
-(`community` private, `avatars` public) with their policies. Re-running is safe (idempotent).
+(`community` private, `avatars` public) with their policies. Each file is safe to run once — **never
+re-run an already-applied migration** (if `0001` is already applied, run only `0002`).
 
 Verify afterwards: **Storage** shows `community` (private, 6 MB limit) and `avatars` (public, 2 MB).
 
@@ -33,10 +42,11 @@ Verify afterwards: **Storage** shows `community` (private, 6 MB limit) and `avat
 ## 4. Deploy the privileged delete-account function
 ```bash
 supabase functions deploy delete-account
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<your service_role key>   # NEVER commit this
 ```
-`SUPABASE_URL` / `SUPABASE_ANON_KEY` are provided by the platform. The **service_role key must never**
-appear in `community-config.js`, the repository, or logs.
+Do **not** set `SUPABASE_URL`, `SUPABASE_ANON_KEY` or `SUPABASE_SERVICE_ROLE_KEY` yourself — these are
+**reserved secrets that Supabase provides to Edge Functions automatically**; attempting to set them
+manually is rejected. The function reads them from `Deno.env` at runtime, so the **service_role key is
+never** placed in `community-config.js`, the repository, or logs.
 
 ## 5. Point the app at your project
 Edit [`../community-config.js`](../community-config.js) and set ONLY:

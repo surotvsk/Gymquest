@@ -1894,6 +1894,7 @@ const I18N = {
     'community.errUsername': 'Toto používateľské meno je už obsadené.', 'community.errUpload': 'Nahrávanie zlyhalo. Nič sa nezverejnilo; tvoja fotka je v bezpečí.',
     'community.errImage': 'Tento obrázok sa nepodarilo prečítať.', 'community.errTooLarge': 'Obrázok je príliš veľký na zdieľanie.',
     'community.errModeration': 'Pridávanie je vypnuté, kým nie je nastavené moderovanie (musí existovať moderátor).',
+    'community.errNotAllowed': 'Táto akcia nie je povolená.',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2730,6 +2731,7 @@ const I18N = {
     'community.errUpload': 'Upload failed. Nothing was published; your photo is safe.',
     'community.errImage': 'That image could not be read.', 'community.errTooLarge': 'The image is too large to share.',
     'community.errModeration': 'Posting is disabled until moderation is configured (a moderator must exist).',
+    'community.errNotAllowed': 'That action is not allowed.',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3560,6 +3562,7 @@ const I18N = {
     'community.errUsername': 'Ese nombre de usuario ya está en uso.', 'community.errUpload': 'La subida falló. No se publicó nada; tu foto está a salvo.',
     'community.errImage': 'No se pudo leer esa imagen.', 'community.errTooLarge': 'La imagen es demasiado grande para compartirla.',
     'community.errModeration': 'La publicación está desactivada hasta que se configure la moderación (debe existir un moderador).',
+    'community.errNotAllowed': 'Esa acción no está permitida.',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4388,6 +4391,7 @@ const I18N = {
     'community.errUsername': 'Esse nome de usuário já está em uso.', 'community.errUpload': 'Falha no envio. Nada foi publicado; sua foto está segura.',
     'community.errImage': 'Não foi possível ler essa imagem.', 'community.errTooLarge': 'A imagem é grande demais para compartilhar.',
     'community.errModeration': 'A publicação está desativada até a moderação ser configurada (precisa existir um moderador).',
+    'community.errNotAllowed': 'Essa ação não é permitida.',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5216,6 +5220,7 @@ const I18N = {
     'community.errUsername': 'Ce nom d’utilisateur est déjà pris.', 'community.errUpload': 'Échec de l’envoi. Rien n’a été publié ; ta photo est en sécurité.',
     'community.errImage': 'Impossible de lire cette image.', 'community.errTooLarge': 'L’image est trop volumineuse pour être partagée.',
     'community.errModeration': 'La publication est désactivée tant que la modération n’est pas configurée (un modérateur doit exister).',
+    'community.errNotAllowed': 'Cette action n’est pas autorisée.',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -6063,6 +6068,7 @@ const I18N = {
     'community.errUsername': 'اسم المستخدم مأخوذ بالفعل.', 'community.errUpload': 'فشل الرفع. لم يُنشر شيء؛ صورتك بأمان.',
     'community.errImage': 'تعذّرت قراءة هذه الصورة.', 'community.errTooLarge': 'الصورة كبيرة جدًا للمشاركة.',
     'community.errModeration': 'النشر معطّل حتى يُضبط الإشراف (يجب وجود مشرف).',
+    'community.errNotAllowed': 'هذا الإجراء غير مسموح.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -11856,16 +11862,18 @@ function communityReportPost(postId) {
 }
 async function communityModerate(action, id) {
   const sb = communityClient(); if (!sb) return;
-  let res = { error: null };
+  let res = { error: null, data: [{ ok: 1 }] };
   if (action === 'approve' || action === 'reject') {
     const patch = action === 'approve' ? { status: 'approved', published_at: new Date().toISOString() } : { status: 'rejected' };
-    res = await sb.from('posts').update(patch).eq('id', id);
+    res = await sb.from('posts').update(patch).eq('id', id).select('id');
   } else if (action === 'resolve-report') {
-    res = await sb.from('reports').update({ status: 'resolved' }).eq('id', id);
+    res = await sb.from('reports').update({ status: 'resolved' }).eq('id', id).select('id');
   } else if (action === 'suspend') {
-    res = await sb.from('profiles').update({ suspended: true }).eq('id', id);
+    res = await sb.from('profiles').update({ suspended: true }).eq('id', id).select('id');
   }
-  communitySetMessage(res && res.error ? 'community.errNetwork' : 'community.saved');
+  /* RLS can filter the update to 0 rows without an error — report that honestly. */
+  const denied = res && (res.error || (Array.isArray(res.data) && res.data.length === 0));
+  communitySetMessage(denied ? 'community.errNotAllowed' : 'community.saved');
   renderCommunity();
 }
 function communityDeleteAccount() {

@@ -11,8 +11,10 @@
 //
 // Deploy (as the project owner):
 //   supabase functions deploy delete-account
-//   supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...   # never commit this
-// SUPABASE_URL and SUPABASE_ANON_KEY are provided by the platform.
+// SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY are RESERVED
+// secrets that Supabase provides to Edge Functions automatically — do NOT set
+// them manually (attempting to is rejected). The service_role key is read from
+// Deno.env at runtime and never placed in frontend code or logs.
 // ============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
