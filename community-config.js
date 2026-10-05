@@ -16,8 +16,6 @@
    query strings in index.html) so the service worker re-fetches it.
    ========================================================================= */
 window.GYMQUEST_COMMUNITY = {
-  // Example: 'https://abcdefghijklmnop.supabase.co'
-  supabaseUrl: '',
-  // Example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'  (the "anon"/publishable key)
-  supabaseAnonKey: '',
+  supabaseUrl: 'https://mbjbtprkwvoqgqphgudq.supabase.co',
+  supabaseAnonKey: 'sb_publishable_JjrKzkL8_uLpogHHjB1Y5g_4Lk1zAv-',
 };
