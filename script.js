@@ -1730,6 +1730,24 @@ const I18N = {
     'media.unavailableTitle': 'Ukážka nie je k dispozícii',
     'media.unavailable': 'GymQuest zatiaľ nemá overenú ukážku tohto cviku. Hlavným návodom sú písané kroky nižšie.',
     'media.none': 'GymQuest nemá fotku ani video tohto cviku.',
+    'media.addPersonal': 'Pridať vlastnú fotku alebo video',
+    'media.myDemo': 'Moja ukážka',
+    'media.limits': 'Fotky: JPG, PNG, WebP alebo GIF do 15 MB. Videá: MP4, WebM alebo MOV do 60 MB. Najviac 12 položiek na cvik.',
+    'media.personalNote': 'Vlastné médiá ostávajú iba na tomto zariadení. Nesynchronizujú sa medzi zariadeniami, nie sú súčasťou JSON zálohy a môžu sa stratiť, ak vymažeš dáta aplikácie.',
+    'media.personalGalleryNote': 'Tvoja vlastná ukážka, uložená na tomto zariadení.',
+    'media.replaceMedia': 'Nahradiť',
+    'media.deleteMedia': 'Vymazať',
+    'media.deleteTitle': 'Vymazať toto médium?',
+    'media.deleteConfirm': 'Vymaže sa iba tvoja vlastná nahrávka k tomuto cviku. Knižničné médiá zostávajú nedotknuté.',
+    'media.errType': 'Nepodporovaný typ súboru. Použi JPG, PNG, WebP alebo GIF, prípadne MP4, WebM alebo MOV.',
+    'media.errSize': 'Súbor je príliš veľký. Fotky do 15 MB, videá do 60 MB.',
+    'media.errRead': 'Súbor sa nepodarilo prečítať.',
+    'media.errStorage': 'Na tomto zariadení nie je dosť miesta na uloženie súboru.',
+    'media.maxReached': 'Na jeden cvik môžeš mať najviac 12 vlastných položiek.',
+    'media.addedOk': 'Uložené na tomto zariadení.',
+    'media.addAria': 'Pridať vlastnú fotku alebo video',
+    'media.replaceAria': 'Nahradiť moje médium',
+    'media.deleteAria': 'Vymazať moje médium',
     'media.illustrationNote': 'Pôvodná ilustrácia vytvorená pre GymQuest. Nie je to fotografia.',
 
     /* --- Predvoľby časovača oddychu --- */
@@ -2429,6 +2447,24 @@ const I18N = {
     'media.unavailableTitle': 'Demonstration unavailable',
     'media.unavailable': 'GymQuest has no verified demonstration for this exercise yet. The written steps below are the guidance.',
     'media.none': 'GymQuest has no photo or video for this exercise.',
+    'media.addPersonal': 'Add my photo or video',
+    'media.myDemo': 'My demonstration',
+    'media.limits': 'Photos: JPG, PNG, WebP or GIF up to 15 MB. Videos: MP4, WebM or MOV up to 60 MB. Up to 12 items per exercise.',
+    'media.personalNote': 'Your own media stays on this device only. It is not synced between devices, it is not included in the JSON backup, and it may be lost if you clear the app data.',
+    'media.personalGalleryNote': 'Your own demonstration, stored on this device.',
+    'media.replaceMedia': 'Replace',
+    'media.deleteMedia': 'Delete',
+    'media.deleteTitle': 'Delete this media?',
+    'media.deleteConfirm': 'This removes only your own upload for this exercise. Library media is not affected.',
+    'media.errType': 'Unsupported file type. Use JPG, PNG, WebP or GIF, or MP4, WebM or MOV.',
+    'media.errSize': 'That file is too large. Photos up to 15 MB, videos up to 60 MB.',
+    'media.errRead': 'That file could not be read.',
+    'media.errStorage': 'Not enough storage on this device to save the file.',
+    'media.maxReached': 'You can keep up to 12 of your own items per exercise.',
+    'media.addedOk': 'Saved on this device.',
+    'media.addAria': 'Add my photo or video',
+    'media.replaceAria': 'Replace my media',
+    'media.deleteAria': 'Delete my media',
     'media.illustrationNote': 'Original illustration created for GymQuest. Not a photograph.',
 
     /* --- Rest timer presets --- */
@@ -3128,6 +3164,24 @@ const I18N = {
     'media.unavailableTitle': 'Demostración no disponible',
     'media.unavailable': 'GymQuest todavía no tiene una demostración verificada de este ejercicio. La guía son los pasos escritos de abajo.',
     'media.none': 'GymQuest no tiene foto ni vídeo de este ejercicio.',
+    'media.addPersonal': 'Añadir mi foto o vídeo',
+    'media.myDemo': 'Mi demostración',
+    'media.limits': 'Fotos: JPG, PNG, WebP o GIF hasta 15 MB. Vídeos: MP4, WebM o MOV hasta 60 MB. Máximo 12 elementos por ejercicio.',
+    'media.personalNote': 'Tu propio material se queda solo en este dispositivo. No se sincroniza entre dispositivos, no se incluye en la copia JSON y puede perderse si borras los datos de la aplicación.',
+    'media.personalGalleryNote': 'Tu propia demostración, guardada en este dispositivo.',
+    'media.replaceMedia': 'Reemplazar',
+    'media.deleteMedia': 'Eliminar',
+    'media.deleteTitle': '¿Eliminar este contenido?',
+    'media.deleteConfirm': 'Solo se elimina tu propia subida de este ejercicio. El material de la biblioteca no se altera.',
+    'media.errType': 'Tipo de archivo no compatible. Usa JPG, PNG, WebP o GIF, o MP4, WebM o MOV.',
+    'media.errSize': 'El archivo es demasiado grande. Fotos hasta 15 MB, vídeos hasta 60 MB.',
+    'media.errRead': 'No se pudo leer el archivo.',
+    'media.errStorage': 'No hay suficiente espacio en este dispositivo para guardar el archivo.',
+    'media.maxReached': 'Puedes tener hasta 12 elementos propios por ejercicio.',
+    'media.addedOk': 'Guardado en este dispositivo.',
+    'media.addAria': 'Añadir mi foto o vídeo',
+    'media.replaceAria': 'Reemplazar mi contenido',
+    'media.deleteAria': 'Eliminar mi contenido',
     'media.illustrationNote': 'Ilustración original creada para GymQuest. No es una fotografía.',
 
     /* --- Ajustes del temporizador de descanso --- */
@@ -3825,6 +3879,24 @@ const I18N = {
     'media.unavailableTitle': 'Demonstração indisponível',
     'media.unavailable': 'O GymQuest ainda não tem uma demonstração verificada deste exercício. O guia são os passos escritos abaixo.',
     'media.none': 'O GymQuest não tem foto nem vídeo deste exercício.',
+    'media.addPersonal': 'Adicionar minha foto ou vídeo',
+    'media.myDemo': 'Minha demonstração',
+    'media.limits': 'Fotos: JPG, PNG, WebP ou GIF até 15 MB. Vídeos: MP4, WebM ou MOV até 60 MB. No máximo 12 itens por exercício.',
+    'media.personalNote': 'Seu próprio material fica somente neste dispositivo. Não é sincronizado entre dispositivos, não entra no backup JSON e pode ser perdido se você limpar os dados do aplicativo.',
+    'media.personalGalleryNote': 'Sua própria demonstração, guardada neste dispositivo.',
+    'media.replaceMedia': 'Substituir',
+    'media.deleteMedia': 'Excluir',
+    'media.deleteTitle': 'Excluir esta mídia?',
+    'media.deleteConfirm': 'Isso remove apenas o seu próprio envio para este exercício. A mídia da biblioteca não é afetada.',
+    'media.errType': 'Tipo de arquivo não suportado. Use JPG, PNG, WebP ou GIF, ou MP4, WebM ou MOV.',
+    'media.errSize': 'O arquivo é grande demais. Fotos até 15 MB, vídeos até 60 MB.',
+    'media.errRead': 'Não foi possível ler o arquivo.',
+    'media.errStorage': 'Não há espaço suficiente neste dispositivo para salvar o arquivo.',
+    'media.maxReached': 'Você pode manter até 12 itens próprios por exercício.',
+    'media.addedOk': 'Salvo neste dispositivo.',
+    'media.addAria': 'Adicionar minha foto ou vídeo',
+    'media.replaceAria': 'Substituir minha mídia',
+    'media.deleteAria': 'Excluir minha mídia',
     'media.illustrationNote': 'Ilustração original criada para o GymQuest. Não é uma fotografia.',
 
     /* --- Predefinições do cronômetro de descanso --- */
@@ -4522,6 +4594,24 @@ const I18N = {
     'media.unavailableTitle': 'Démonstration indisponible',
     'media.unavailable': 'GymQuest n’a pas encore de démonstration vérifiée pour cet exercice. Les étapes écrites ci-dessous font référence.',
     'media.none': 'GymQuest n’a pas de photo ni de vidéo de cet exercice.',
+    'media.addPersonal': 'Ajouter ma photo ou ma vidéo',
+    'media.myDemo': 'Ma démonstration',
+    'media.limits': 'Photos : JPG, PNG, WebP ou GIF jusqu’à 15 Mo. Vidéos : MP4, WebM ou MOV jusqu’à 60 Mo. 12 éléments maximum par exercice.',
+    'media.personalNote': 'Tes propres médias restent uniquement sur cet appareil. Ils ne sont pas synchronisés entre appareils, ne sont pas inclus dans la sauvegarde JSON et peuvent être perdus si tu effaces les données de l’application.',
+    'media.personalGalleryNote': 'Ta propre démonstration, stockée sur cet appareil.',
+    'media.replaceMedia': 'Remplacer',
+    'media.deleteMedia': 'Supprimer',
+    'media.deleteTitle': 'Supprimer ce média ?',
+    'media.deleteConfirm': 'Cela supprime uniquement ton propre envoi pour cet exercice. Les médias de la bibliothèque ne sont pas modifiés.',
+    'media.errType': 'Type de fichier non pris en charge. Utilise JPG, PNG, WebP ou GIF, ou MP4, WebM ou MOV.',
+    'media.errSize': 'Ce fichier est trop volumineux. Photos jusqu’à 15 Mo, vidéos jusqu’à 60 Mo.',
+    'media.errRead': 'Impossible de lire ce fichier.',
+    'media.errStorage': 'Pas assez d’espace sur cet appareil pour enregistrer le fichier.',
+    'media.maxReached': 'Tu peux garder jusqu’à 12 éléments personnels par exercice.',
+    'media.addedOk': 'Enregistré sur cet appareil.',
+    'media.addAria': 'Ajouter ma photo ou ma vidéo',
+    'media.replaceAria': 'Remplacer mon média',
+    'media.deleteAria': 'Supprimer mon média',
     'media.illustrationNote': 'Illustration originale créée pour GymQuest. Ce n’est pas une photographie.',
 
     /* --- Préréglages du minuteur de repos --- */
@@ -5238,6 +5328,24 @@ const I18N = {
     'media.unavailableTitle': 'العرض غير متوفّر',
     'media.unavailable': 'لا يملك GymQuest بعد عرضًا موثّقًا لهذا التمرين. الدليل هو الخطوات المكتوبة أدناه.',
     'media.none': 'لا يملك GymQuest صورة أو فيديو لهذا التمرين.',
+    'media.addPersonal': 'إضافة صورتي أو فيديوي',
+    'media.myDemo': 'عرضي الخاص',
+    'media.limits': 'الصور: JPG أو PNG أو WebP أو GIF حتى 15 ميغابايت. الفيديوهات: MP4 أو WebM أو MOV حتى 60 ميغابايت. بحد أقصى 12 عنصرًا لكل تمرين.',
+    'media.personalNote': 'وسائطك الخاصة تبقى على هذا الجهاز فقط. لا تتم مزامنتها بين الأجهزة، ولا تُضمَّن في نسخة JSON الاحتياطية، وقد تُفقد إذا مسحت بيانات التطبيق.',
+    'media.personalGalleryNote': 'عرضك الخاص، محفوظ على هذا الجهاز.',
+    'media.replaceMedia': 'استبدال',
+    'media.deleteMedia': 'حذف',
+    'media.deleteTitle': 'حذف هذه الوسائط؟',
+    'media.deleteConfirm': 'سيؤدي هذا إلى حذف ما رفعته أنت لهذا التمرين فقط. وسائط المكتبة لا تتأثر.',
+    'media.errType': 'نوع ملف غير مدعوم. استخدم JPG أو PNG أو WebP أو GIF، أو MP4 أو WebM أو MOV.',
+    'media.errSize': 'الملف كبير جدًا. الصور حتى 15 ميغابايت والفيديوهات حتى 60 ميغابايت.',
+    'media.errRead': 'تعذّرت قراءة الملف.',
+    'media.errStorage': 'لا توجد مساحة كافية على هذا الجهاز لحفظ الملف.',
+    'media.maxReached': 'يمكنك الاحتفاظ بما يصل إلى 12 عنصرًا خاصًا لكل تمرين.',
+    'media.addedOk': 'تم الحفظ على هذا الجهاز.',
+    'media.addAria': 'إضافة صورتي أو فيديوي',
+    'media.replaceAria': 'استبدال وسائطي',
+    'media.deleteAria': 'حذف وسائطي',
     'media.illustrationNote': 'رسم أصلي أُنشئ لـ GymQuest. ليس صورة فوتوغرافية.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
@@ -9154,9 +9262,9 @@ function renderLibrary() {
   }
   if (custom.length) {
     h.push('<p class="sheet-label">' + esc(t('library.myOwn')) + '</p>');
-    h.push('<div class="lib-list">' + custom.map((c) => '<div class="lib-row lib-row-own">'
+    h.push('<div class="lib-list">' + custom.map((c) => '<button type="button" class="lib-row lib-row-own" data-exercise-id="c:' + escAttr(c.name) + '">'
       + '<span class="lib-row-main"><span class="lib-row-name">' + esc(c.name) + '</span>'
-      + '<span class="lib-row-meta">' + esc(t('exercise.notInLibrary')) + '</span></span></div>').join('') + '</div>');
+      + '<span class="lib-row-meta">' + esc(t('exercise.notInLibrary')) + '</span></span></button>').join('') + '</div>');
   }
   h.push('<button type="button" class="btn btn-secondary btn-block" data-lib-action="reset">'
     + esc(t('library.reset')) + '</button>');
@@ -9224,7 +9332,22 @@ function renderExerciseSheet() {
   const body = document.getElementById('exercise-body');
   const title = document.getElementById('exercise-title');
   if (!body || !title) return;
+  releasePersonalObjectUrls();
   const entry = libraryEntry(exerciseSheetId);
+
+  /* Vlastný (používateľom vytvorený) cvik: ukážeme jeho názov a vlastné médiá. */
+  if (!entry && isCustomSheetId(exerciseSheetId)) {
+    title.textContent = customNameFromKey(exerciseSheetId);
+    const ch = [];
+    ch.push(mediaGalleryHtml());
+    ch.push('<p class="sheet-note">' + esc(t('exercise.notInLibrary')) + '</p>');
+    ch.push('<p class="sheet-note">' + esc(t('exercise.disclaimer')) + '</p>');
+    ch.push(mediaPersonalSectionHtml());
+    body.innerHTML = ch.join('');
+    mountMediaGallery();
+    return;
+  }
+
   if (!entry) {
     title.textContent = String(exerciseSheetId || '');
     body.innerHTML = '<p class="sheet-note">' + esc(t('exercise.notInLibrary')) + '</p>';
@@ -9233,7 +9356,7 @@ function renderExerciseSheet() {
   title.textContent = t('exercise.' + entry.id);
 
   const h = [];
-  h.push(mediaGalleryHtml(entry));
+  h.push(mediaGalleryHtml());
 
   h.push('<div class="meta-grid">');
   h.push(metaRow(t('exercise.primary'), t('muscle.' + entry.primary)));
@@ -9282,8 +9405,9 @@ function renderExerciseSheet() {
       + (already ? ' disabled' : '') + '>'
       + esc(t(already ? 'exercise.inPlanAlready' : 'exercise.addToPlan')) + '</button>');
   }
+  h.push(mediaPersonalSectionHtml());
   body.innerHTML = h.join('');
-  mountMediaGallery(entry);
+  mountMediaGallery();
 }
 
 /* ---------- Galéria ukážok v detaile cviku ----------
@@ -9328,8 +9452,8 @@ function mediaArrowNode(arrow) {
   return svg;
 }
 
-function mediaGalleryHtml(entry) {
-  const items = exerciseMediaList(entry);
+function mediaGalleryHtml() {
+  const items = galleryItemsForSheet();
   if (!items.length) {
     /* Bez skutočnej fotky či videa: žiadny rám galérie, len krátka správa. */
     return '<p class="media-none">' + esc(t('media.none')) + '</p>';
@@ -9350,15 +9474,17 @@ function mediaGalleryHtml(entry) {
     + '<span class="media-count" id="media-count" aria-live="polite"></span></div>');
   h.push('<p class="media-caption" id="media-caption" aria-live="polite"></p>');
   h.push('<p class="media-credit" id="media-credit" hidden></p>');
+  h.push('<div class="media-personal" id="media-personal" hidden></div>');
   const lead = items[0] || {};
-  const noteKey = lead.video ? 'media.videoNote' : (lead.src ? 'media.photoNote' : 'media.illustrationNote');
+  const noteKey = lead.personal ? 'media.personalGalleryNote'
+    : (lead.video ? 'media.videoNote' : (lead.src ? 'media.photoNote' : 'media.illustrationNote'));
   h.push('<p class="media-note">' + esc(t(noteKey)) + '</p>');
   h.push('</div>');
   return h.join('');
 }
 
-function updateMediaChrome(entry) {
-  const items = exerciseMediaList(entry);
+function updateMediaChrome() {
+  const items = galleryItemsForSheet();
   const dots = document.getElementById('media-dots');
   const count = document.getElementById('media-count');
   const caption = document.getElementById('media-caption');
@@ -9366,20 +9492,41 @@ function updateMediaChrome(entry) {
   const next = document.getElementById('media-next');
   if (!items.length) return;
   const i = Math.min(Math.max(mediaCurrent, 0), items.length - 1);
+  const cur = items[i];
   if (dots) {
     Array.prototype.forEach.call(dots.children, (d, k) => d.classList.toggle('active', k === i));
   }
   if (count) count.textContent = t('media.counter', { n: i + 1, total: items.length });
-  if (caption) caption.textContent = t(items[i].caption);
+  if (caption) caption.textContent = t(cur.caption);
   const credit = document.getElementById('media-credit');
   if (credit) {
-    const c = items[i].credit;
-    if (c) {
-      credit.textContent = t(items[i].video ? 'media.videoCredit' : 'media.credit', { credit: c.creator + ' · ' + c.license });
+    if (cur.personal) {
+      /* Názov súboru je VŽDY len text (textContent), nikdy HTML. */
+      credit.textContent = t('media.myDemo') + (cur.name ? ' · ' + cur.name : '');
+      credit.hidden = false;
+    } else if (cur.credit) {
+      credit.textContent = t(cur.video ? 'media.videoCredit' : 'media.credit', { credit: cur.credit.creator + ' · ' + cur.credit.license });
       credit.hidden = false;
     } else {
       credit.textContent = '';
       credit.hidden = true;
+    }
+  }
+  /* Kompaktné ovládanie len pre VLASTNÉ médium (knižničné sa needituje). */
+  const personal = document.getElementById('media-personal');
+  if (personal) {
+    if (cur.personal) {
+      personal.innerHTML =
+        '<button type="button" class="btn btn-secondary media-personal-btn" data-personal-action="replace"'
+        + ' data-media-id="' + escAttr(cur.id) + '" aria-label="' + escAttr(t('media.replaceAria')) + '">'
+        + esc(t('media.replaceMedia')) + '</button>'
+        + '<button type="button" class="btn btn-secondary media-personal-btn" data-personal-action="delete"'
+        + ' data-media-id="' + escAttr(cur.id) + '" aria-label="' + escAttr(t('media.deleteAria')) + '">'
+        + esc(t('media.deleteMedia')) + '</button>';
+      personal.hidden = false;
+    } else {
+      personal.innerHTML = '';
+      personal.hidden = true;
     }
   }
   if (prev) prev.disabled = i === 0;
@@ -9405,20 +9552,21 @@ function goToMedia(index, smooth) {
   } catch (e) {
     track.scrollLeft = left;
   }
-  const entry = libraryEntry(exerciseSheetId);
-  if (entry) updateMediaChrome(entry);
+  updateMediaChrome();
 }
 
-function mountMediaGallery(entry) {
+function mountMediaGallery() {
   const track = document.getElementById('media-track');
   if (!track) return;
-  const items = exerciseMediaList(entry);
+  const items = galleryItemsForSheet();
   const slides = track.querySelectorAll('.media-slide');
-  const mediaAlt = (it) => t('media.alt', { name: t('exercise.' + entry.id), caption: t(it.caption) });
+  const mediaAlt = (it) => t('media.alt', { name: sheetExerciseName(), caption: t(it.caption) });
   items.forEach((it, i) => {
     const slide = slides[i];
     if (!slide) return;
-    if (it.video) {
+    if (it.personal) {
+      mountPersonalSlide(slide, it, mediaAlt);
+    } else if (it.video) {
       /* Krátke lokálne video: ovládanie prehrávania + plagát, bez automatického prehrávania. */
       const frame = document.createElement('div');
       frame.className = 'media-frame';
@@ -9459,7 +9607,7 @@ function mountMediaGallery(entry) {
     dots.innerHTML = items.map((it, i) => '<span class="media-dot" data-dot="' + i + '"></span>').join('');
   }
   mediaCurrent = 0;
-  updateMediaChrome(entry);
+  updateMediaChrome();
 
   const prev = document.getElementById('media-prev');
   const next = document.getElementById('media-next');
@@ -9482,7 +9630,7 @@ function mountMediaGallery(entry) {
       const i = Math.round(track.scrollLeft / w);
       if (i !== mediaCurrent) {
         mediaCurrent = i;
-        updateMediaChrome(entry);
+        updateMediaChrome();
       }
     }, 60);
   }, { passive: true });
@@ -9493,6 +9641,372 @@ function mountMediaGallery(entry) {
     else if (e.key === 'Home') { e.preventDefault(); goToMedia(0); }
     else if (e.key === 'End') { e.preventDefault(); goToMedia(items.length - 1); }
   });
+}
+
+/* ---------- Vlastné médiá cvikov (lokálne v IndexedDB) ----------
+   Fotky a videá, ktoré nahrál používateľ, ostávajú IBA na tomto zariadení.
+   Nikdy sa neposielajú na server, do GitHubu ani do iných zariadení a NIE SÚ
+   súčasťou JSON zálohy. V localStorage ani v histórii tréningov nie je žiadne
+   médium (žiadne base64) – ukladajú sa len binárne bloby v IndexedDB.
+   Objektové URL sa vytvárajú až pri zobrazení a hneď sa zase rušia. */
+
+const MEDIA_DB_NAME = 'gymquest-media';
+const MEDIA_DB_VERSION = 1;
+const MEDIA_META_STORE = 'meta';
+const MEDIA_BLOB_STORE = 'blobs';
+const MEDIA_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MEDIA_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
+const MEDIA_MAX_IMAGE_BYTES = 15 * 1024 * 1024;   // 15 MB na fotku
+const MEDIA_MAX_VIDEO_BYTES = 60 * 1024 * 1024;   // 60 MB na video
+const MEDIA_MAX_ITEMS = 12;                       // max. vlastných položiek na cvik
+
+let mediaDb = null;
+let personalMediaReady = false;
+const personalMediaMeta = new Map();              // exerciseKey -> [meta]
+let personalObjectUrls = [];
+let pendingMediaReplaceId = null;
+
+function isCustomSheetId(id) { return !!id && String(id).indexOf('c:') === 0; }
+function customNameFromKey(id) { return isCustomSheetId(id) ? String(id).slice(2) : String(id || ''); }
+function sheetExerciseName() {
+  const entry = libraryEntry(exerciseSheetId);
+  return entry ? t('exercise.' + entry.id) : customNameFromKey(exerciseSheetId);
+}
+function personalMediaFor(exerciseId) { return personalMediaMeta.get(exerciseId) || []; }
+function mediaKindOf(type) {
+  if (MEDIA_IMAGE_TYPES.indexOf(type) >= 0) return 'image';
+  if (MEDIA_VIDEO_TYPES.indexOf(type) >= 0) return 'video';
+  return null;
+}
+function mediaLimitBytes(kind) { return kind === 'video' ? MEDIA_MAX_VIDEO_BYTES : MEDIA_MAX_IMAGE_BYTES; }
+function releasePersonalObjectUrls() {
+  personalObjectUrls.forEach((u) => { try { URL.revokeObjectURL(u); } catch (e) {} });
+  personalObjectUrls = [];
+}
+
+function openMediaDb() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') { reject(new Error('no-idb')); return; }
+    const req = indexedDB.open(MEDIA_DB_NAME, MEDIA_DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(MEDIA_META_STORE)) {
+        const s = db.createObjectStore(MEDIA_META_STORE, { keyPath: 'id' });
+        s.createIndex('exerciseKey', 'exerciseKey', { unique: false });
+      }
+      if (!db.objectStoreNames.contains(MEDIA_BLOB_STORE)) {
+        db.createObjectStore(MEDIA_BLOB_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('idb-open'));
+  });
+}
+function idbReq(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('idb'));
+  });
+}
+function idbWriteMetaAndBlob(meta, rec) {
+  return new Promise((resolve, reject) => {
+    const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE], 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    tx.objectStore(MEDIA_META_STORE).put(meta);
+    tx.objectStore(MEDIA_BLOB_STORE).put(rec);
+  });
+}
+function idbDeleteMetaAndBlob(id) {
+  return new Promise((resolve, reject) => {
+    const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE], 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    tx.objectStore(MEDIA_META_STORE).delete(id);
+    tx.objectStore(MEDIA_BLOB_STORE).delete(id);
+  });
+}
+function idbGetBlob(id) {
+  return idbReq(mediaDb.transaction(MEDIA_BLOB_STORE, 'readonly').objectStore(MEDIA_BLOB_STORE).get(id));
+}
+
+/* Načítanie metadát (malých) pri štarte; bloby sa neprednačítavajú. */
+async function initPersonalMedia() {
+  try {
+    mediaDb = await openMediaDb();
+  } catch (e) {
+    mediaDb = null;
+    personalMediaReady = true;
+    return;
+  }
+  try {
+    const all = await idbReq(mediaDb.transaction(MEDIA_META_STORE, 'readonly').objectStore(MEDIA_META_STORE).getAll());
+    personalMediaMeta.clear();
+    (all || []).forEach((m) => {
+      if (!m || !m.exerciseKey) return;
+      const arr = personalMediaMeta.get(m.exerciseKey) || [];
+      arr.push(m);
+      personalMediaMeta.set(m.exerciseKey, arr);
+    });
+    personalMediaMeta.forEach((arr) => arr.sort((a, b) => (a.seq || 0) - (b.seq || 0)));
+  } catch (e) { /* prázdna alebo poškodená DB = žiadne médiá */ }
+  personalMediaReady = true;
+  if (isOpen('modal-exercise')) renderExerciseSheet();
+}
+
+/* Viz uály pre detail: NAJPRV vlastné médiá, potom knižničné (tie sa nemenia). */
+function galleryItemsForSheet() {
+  const id = exerciseSheetId;
+  if (!id) return [];
+  const out = [];
+  personalMediaFor(id).forEach((m) => {
+    out.push({
+      personal: true, id: m.id, kind: m.kind, video: m.kind === 'video',
+      caption: 'media.myDemo', credit: null, name: m.name || '',
+    });
+  });
+  const entry = libraryEntry(id);
+  if (entry) exerciseMediaList(entry).forEach((it) => out.push(it));
+  return out;
+}
+
+function mediaPersonalSectionHtml() {
+  return '<div class="media-personal-add">'
+    + '<button type="button" class="btn btn-secondary btn-block" data-sheet-action="addmedia"'
+    + ' aria-label="' + escAttr(t('media.addAria')) + '">' + esc(t('media.addPersonal')) + '</button>'
+    + '<p class="media-limit">' + esc(t('media.limits')) + '</p>'
+    + '<p class="media-privacy">' + esc(t('media.personalNote')) + '</p>'
+    + '<p class="media-status" id="media-status" role="status" hidden></p>'
+    + '</div>';
+}
+
+function showMediaStatus(key) {
+  const el = document.getElementById('media-status');
+  if (!el) return;
+  el.textContent = t(key);
+  el.hidden = false;
+}
+
+function triggerMediaPicker(replaceId) {
+  const input = document.getElementById('file-media');
+  if (!input) { showMediaStatus('media.errStorage'); return; }
+  pendingMediaReplaceId = replaceId || null;
+  input.value = '';
+  input.click();
+}
+
+/* Overí, že obrázok sa dá naozaj prečítať (inak "unreadable"). */
+function probeImage(file) {
+  return new Promise((resolve) => {
+    let url = null;
+    try {
+      url = URL.createObjectURL(file);
+      const img = new Image();
+      let done = false;
+      const finish = (ok) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        try { URL.revokeObjectURL(url); } catch (e) {}
+        resolve(ok);
+      };
+      const timer = setTimeout(() => finish(false), 6000);
+      img.onload = () => finish(true);
+      img.onerror = () => finish(false);
+      img.src = url;
+    } catch (e) { resolve(false); }
+  });
+}
+
+/* Plagát videa (najlepšie ako sa dá). Vráti { poster, error }. */
+function makeVideoPoster(file) {
+  return new Promise((resolve) => {
+    let url = null;
+    try {
+      url = URL.createObjectURL(file);
+      const v = document.createElement('video');
+      v.muted = true;
+      v.setAttribute('playsinline', '');
+      v.preload = 'metadata';
+      v.src = url;
+      let settled = false;
+      const finish = (poster, isError) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        try { URL.revokeObjectURL(url); } catch (e) {}
+        resolve({ poster: poster || null, error: !!isError });
+      };
+      const timer = setTimeout(() => finish(null, false), 5000);   // časový limit = bez plagátu, nie chyba
+      v.addEventListener('loadeddata', () => {
+        try {
+          const d = (v.duration && isFinite(v.duration)) ? v.duration : 0;
+          v.currentTime = d > 0.2 ? Math.min(0.1, d / 2) : 0;
+        } catch (e) { finish(null, false); }
+      });
+      v.addEventListener('seeked', () => {
+        try {
+          const c = document.createElement('canvas');
+          c.width = v.videoWidth || 640;
+          c.height = v.videoHeight || 360;
+          c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+          c.toBlob((b) => finish(b, false), 'image/jpeg', 0.7);
+        } catch (e) { finish(null, false); }
+      });
+      v.addEventListener('error', () => finish(null, true));
+    } catch (e) { resolve({ poster: null, error: true }); }
+  });
+}
+
+/* Uloží JEDEN súbor. Vráti kľúč hlásenia ('media.addedOk' = uložené). */
+async function addPersonalMedia(key, file) {
+  const kind = mediaKindOf(file.type);
+  if (!kind) return 'media.errType';
+  if (typeof file.size === 'number' && file.size > mediaLimitBytes(kind)) return 'media.errSize';
+  let posterBlob = null;
+  if (kind === 'image') {
+    if (!(await probeImage(file))) return 'media.errRead';
+  } else {
+    const pr = await makeVideoPoster(file);
+    if (pr.error) return 'media.errRead';
+    posterBlob = pr.poster;
+  }
+  const id = uid();
+  const meta = {
+    id, exerciseKey: key, kind, name: String(file.name || ''),
+    type: file.type, size: file.size, seq: Date.now() + Math.random(), hasPoster: !!posterBlob,
+  };
+  try {
+    await idbWriteMetaAndBlob(meta, { id, blob: file, posterBlob });
+  } catch (err) {
+    return 'media.errStorage';   // úspech hlásime AŽ po úspešnom uložení
+  }
+  const arr = personalMediaMeta.get(key) || [];
+  arr.push(meta);
+  arr.sort((a, b) => (a.seq || 0) - (b.seq || 0));
+  personalMediaMeta.set(key, arr);
+  return 'media.addedOk';
+}
+
+/* Nahradí existujúcu položku; pri zlyhaní ostáva pôvodná (transakcia sa nepotvrdí). */
+async function replacePersonalMedia(key, id, file) {
+  const old = personalMediaFor(key).find((m) => m.id === id);
+  if (!old) return null;
+  const kind = mediaKindOf(file.type);
+  if (!kind) return 'media.errType';
+  if (typeof file.size === 'number' && file.size > mediaLimitBytes(kind)) return 'media.errSize';
+  let posterBlob = null;
+  if (kind === 'image') {
+    if (!(await probeImage(file))) return 'media.errRead';
+  } else {
+    const pr = await makeVideoPoster(file);
+    if (pr.error) return 'media.errRead';
+    posterBlob = pr.poster;
+  }
+  const meta = Object.assign({}, old, {
+    kind, name: String(file.name || ''), type: file.type, size: file.size, hasPoster: !!posterBlob,
+  });
+  try {
+    await idbWriteMetaAndBlob(meta, { id, blob: file, posterBlob });
+  } catch (err) {
+    return 'media.errStorage';
+  }
+  Object.assign(old, meta);
+  return 'media.addedOk';
+}
+
+function confirmDeletePersonal(id) {
+  const m = personalMediaFor(exerciseSheetId).find((x) => x.id === id);
+  if (!m) return;
+  showGeneric(t('media.deleteTitle'), t('media.deleteMedia'), () => { deletePersonalMedia(exerciseSheetId, id); }, esc(t('media.deleteConfirm')));
+}
+
+async function deletePersonalMedia(key, id) {
+  if (!mediaDb) return;
+  try {
+    await idbDeleteMetaAndBlob(id);
+  } catch (e) {
+    showMediaStatus('media.errStorage');
+    return;
+  }
+  const arr = personalMediaFor(key).filter((m) => m.id !== id);
+  if (arr.length) personalMediaMeta.set(key, arr); else personalMediaMeta.delete(key);
+  releasePersonalObjectUrls();
+  renderExerciseSheet();
+}
+
+async function onMediaFilesSelected(e) {
+  const input = e.target;
+  const files = Array.prototype.slice.call(input.files || []);
+  input.value = '';
+  const replaceId = pendingMediaReplaceId;
+  pendingMediaReplaceId = null;
+  if (!files.length) return;                 // zrušený výber = nič sa nedeje
+  const key = exerciseSheetId;
+  if (!key) return;
+  if (!mediaDb) { showMediaStatus('media.errStorage'); return; }
+
+  /* Najprv over VŠETKY súbory (typ aj veľkosť) – ak čokoľvek nesedí, nič sa neuloží. */
+  for (const f of files) {
+    const kind = mediaKindOf(f.type);
+    if (!kind) { showMediaStatus('media.errType'); return; }
+    if (typeof f.size === 'number' && f.size > mediaLimitBytes(kind)) { showMediaStatus('media.errSize'); return; }
+  }
+  const existing = personalMediaFor(key);
+  let notice;
+  if (replaceId) {
+    if (!existing.some((m) => m.id === replaceId)) return;
+    notice = await replacePersonalMedia(key, replaceId, files[0]);
+  } else {
+    if (existing.length + files.length > MEDIA_MAX_ITEMS) { showMediaStatus('media.maxReached'); return; }
+    notice = 'media.addedOk';
+    for (const f of files) {
+      notice = await addPersonalMedia(key, f);
+      if (notice !== 'media.addedOk') break;   // pri chybe ostávajú predchádzajúce médiá
+    }
+  }
+  releasePersonalObjectUrls();
+  renderExerciseSheet();
+  if (notice) showMediaStatus(notice);
+}
+
+/* Vlastný rám: bloby dotiahneme asynchrónne a vytvoríme objektové URL až teraz. */
+function mountPersonalSlide(slide, it, mediaAlt) {
+  idbGetBlob(it.id).then((rec) => {
+    if (!rec || !rec.blob) { slide.innerHTML = ''; slide.appendChild(mediaMissingNode()); return; }
+    if (!slide.isConnected) return;           // medzitým sa galéria prekreslila
+    const frame = document.createElement('div');
+    frame.className = 'media-frame';
+    if (it.kind === 'video') {
+      const url = URL.createObjectURL(rec.blob);
+      personalObjectUrls.push(url);
+      const v = document.createElement('video');
+      v.controls = true;
+      v.preload = 'metadata';
+      v.setAttribute('playsinline', '');
+      v.setAttribute('aria-label', mediaAlt(it));
+      if (rec.posterBlob) {
+        try { const pu = URL.createObjectURL(rec.posterBlob); personalObjectUrls.push(pu); v.poster = pu; } catch (e) {}
+      }
+      v.addEventListener('error', () => { slide.innerHTML = ''; slide.appendChild(mediaMissingNode()); });
+      v.src = url;
+      frame.appendChild(v);
+    } else {
+      const url = URL.createObjectURL(rec.blob);
+      personalObjectUrls.push(url);
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = mediaAlt(it);
+      img.addEventListener('error', () => { slide.innerHTML = ''; slide.appendChild(mediaMissingNode()); });
+      img.src = url;
+      frame.appendChild(img);
+    }
+    slide.innerHTML = '';
+    slide.appendChild(frame);
+  }).catch(() => { slide.innerHTML = ''; slide.appendChild(mediaMissingNode()); });
 }
 
 /* ---------- Manifest zdrojov a licencií (pre vývojárov, nie do bežného UI) ----------
@@ -12867,11 +13381,20 @@ function setupEvents() {
     if (act) {
       if (act.dataset.sheetAction === 'replace') confirmSubstitution(exerciseSheetId);
       else if (act.dataset.sheetAction === 'add') addLibraryExerciseToDraft(exerciseSheetId);
+      else if (act.dataset.sheetAction === 'addmedia') triggerMediaPicker(null);
+      return;
+    }
+    const pAct = e.target.closest ? e.target.closest('[data-personal-action]') : null;
+    if (pAct) {
+      if (pAct.dataset.personalAction === 'replace') triggerMediaPicker(pAct.dataset.mediaId);
+      else if (pAct.dataset.personalAction === 'delete') confirmDeletePersonal(pAct.dataset.mediaId);
       return;
     }
     const row = e.target.closest ? e.target.closest('[data-exercise-id]') : null;
     if (row && row.dataset.exerciseId) openExerciseSheet(row.dataset.exerciseId, exerciseSheetCtx);
   });
+
+  on('file-media', onMediaFilesSelected, 'change');
 
   on('btn-update', applyUpdate);
 
@@ -13014,6 +13537,8 @@ applyStaticI18n();
 verifyI18n();
 switchTab('dnes');
 renderAll();
+/* Vlastné médiá cvikov (IndexedDB) sa načítajú neblokujúco po prvom vykreslení. */
+initPersonalMedia();
 startDayWatcher();
 startDurationTicker();
 if (restoredSession) setSessionNote('trening.sessionRestored', 10000);

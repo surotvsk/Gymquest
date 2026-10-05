@@ -602,6 +602,15 @@ runtime.
 usable photo or video yet**, so they show the *Demonstration unavailable* state. No illustration was
 invented to fill the gap.
 
+**Your own demonstrations.** From any exercise's detail view — built-in **or** one you created — you
+can attach your own photo or video with **Add my photo or video**. These files are stored **only on
+this device** (in the browser's IndexedDB), shown **first** in the gallery and labelled *My
+demonstration*, and can be replaced or deleted at any time. They are **private**: never uploaded, not
+sent to GitHub, a server, analytics or other users, and **not synced between devices**. They are also
+**not** part of the JSON backup, so a backup does not carry them and they can be lost if you clear the
+app's data. Photos (JPG, PNG, WebP, GIF) up to 15 MB and videos (MP4, WebM, MOV) up to 60 MB are
+accepted, up to 12 of your own items per exercise.
+
 **Swipe between media** with your finger, or use the **‹ ›** buttons, the dots, the counter or the arrow
 keys. Each item has a **caption** in every supported language, and the **creator and licence are printed
 under the media**. If a demonstration cannot be loaded, you get a clean **"Demonstration unavailable"**

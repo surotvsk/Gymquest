@@ -2905,7 +2905,7 @@ body.has-backup-banner .app-main {
   overflow-wrap: anywhere;
 }
 
-.lib-row-own { cursor: default; }
+.lib-row-own { cursor: pointer; }
 
 .alt-row { flex-direction: column; align-items: flex-start; min-height: 48px; }
 .alt-name { font-size: var(--fs-sm); font-weight: var(--fw-bold); overflow-wrap: break-word; }
@@ -3085,6 +3085,27 @@ body.has-backup-banner .app-main {
   text-align: start;
   overflow-wrap: break-word;
 }
+
+/* Vlastné médiá: kompaktné ovládanie pod galériou + pridanie/limity/poznámka. */
+.media-personal { display: flex; gap: var(--sp-2); margin: var(--sp-2) 0 0; }
+.media-personal[hidden] { display: none; }
+.media-personal .media-personal-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px 10px;
+  font-size: var(--fs-xs);
+  min-height: 34px;
+}
+.media-personal-add { margin: var(--sp-2) 0 var(--sp-3); }
+.media-limit, .media-privacy, .media-status {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  line-height: 1.5;
+  margin: 4px 0 0;
+  overflow-wrap: break-word;
+}
+.media-status { color: var(--text); }
+.media-status[hidden] { display: none; }
 
 .media-missing {
   display: flex;
