@@ -66,10 +66,10 @@ everything on your own device.
 - **Plain-language explanations** — short, non-judgemental notes on measuring body weight, why daily
   changes are not a trend, what duration / sets / reps / progressive overload mean, and what the
   calorie estimate and your own nutrition numbers can and cannot tell you.
-- **Exercise library** — 33 built-in exercises with primary and secondary muscles, movement pattern,
+- **Exercise library** — 48 built-in exercises with primary and secondary muscles, movement pattern,
   difficulty, equipment, gym/home/outdoor availability, how-to steps, common mistakes, similar exercises
-  with the reason each was suggested, and a **demonstration gallery** (a licensed photograph where one is
-  available, otherwise an original illustration) you can swipe through.
+  with the reason each was suggested, and a **demonstration gallery** (a licensed video or photograph
+  where one is available, otherwise an original illustration or an honest *unavailable* state) you can swipe through.
   Find something by what you want to train and where you are, search by name in any of the six languages,
   or tell it what equipment you have and see only what you can actually do.
 - **Replace an exercise mid-workout** — swap an exercise without losing your progress. Sets you already
@@ -472,8 +472,11 @@ names look the same.
 
 ## The exercise library
 
-GymQuest ships with a built-in catalogue of **33 exercises** — the 13 that have always powered the
-built-in plans, plus 20 added so the app is genuinely useful away from a gym as well. There is
+GymQuest ships with a built-in catalogue of **48 exercises** — the 13 that have always powered the
+built-in plans, plus 20 added so the app is genuinely useful away from a gym, and 15 further gym
+exercises (cable curl, machine chest press, pec deck, incline dumbbell press, front raise, wide-grip
+lat pulldown, dumbbell and cable pullover, single-arm dumbbell and cable triceps extension, hack
+squat, Romanian deadlift, leg extension, adductor machine and abductor machine). There is
 **no server, no download and no external service**: the catalogue lives in the app's own code, so it
 works offline from the first launch and adds nothing at all to your stored data.
 
@@ -488,8 +491,8 @@ works offline from the first launch and adds nothing at all to your stored data.
 - **How to do it** — a short setup-to-finish description, written for someone doing it for the first
   time.
 - **Common mistakes & technique notes** — one plain sentence about what usually goes wrong.
-- **A demonstration** — a licensed photograph where one is available, otherwise an original illustration
-  (see the honest note below).
+- **A demonstration** — a licensed video or photograph where one is available, otherwise an original
+  illustration, or an honest *Demonstration unavailable* state (see the note below).
 - **Similar exercises**, each with the reason it was suggested.
 
 ### Opening it
@@ -576,21 +579,28 @@ The demonstration gallery uses two kinds of media, and **both work fully offline
 served from this repository and cached by the service worker; nothing is hot-linked or fetched at
 runtime.
 
-- **Eight exercises use a short local video** (`media/*.webm`) with play/pause controls and a poster
+- **Eleven exercises use a short local video** (`media/*.webm`) with play/pause controls and a poster
   image, and **no autoplay** — **Bench press, Squat, Overhead press, Bent-over row, Biceps curl,
-  Pull-up, Lunges** and **Superman**. The videos are unmodified originals from Wikimedia Commons.
+  Pull-up, Lunges, Superman**, plus **Machine chest press**, **Incline dumbbell press** and
+  **Leg extension**. The videos are originals from Wikimedia Commons (the incline dumbbell press clip
+  is the Commons 480p transcode).
 - **Lateral raise uses a three-photograph sequence of the same person** performing the same dumbbell
   lateral raise — *Starting position → Raising the weight → Top position* — with a subtle orange
   movement arrow on each frame and an **"Image 1 of 3"** indicator you can swipe through.
-- **Six exercises use a single licensed photograph**: Push-up, Plank, **Cable rows (CC0)**,
-  **Leg press (CC BY 2.0)**, **Dips (CC BY-SA 3.0, parallel bars)** and **Burpee (public domain)** —
-  the **creator and licence are printed under each image** and listed in
-  [`media/CREDITS.md`](media/CREDITS.md).
+- **Twelve exercises use licensed photographs**: Push-up, Plank, **Cable rows (CC0)**,
+  **Leg press (CC BY 2.0)**, **Dips (CC BY-SA 3.0, parallel bars)** and **Burpee (public domain)**,
+  plus the newer **Cable curl**, **Pec deck**, **Front raise**, **Wide-grip lat pulldown**,
+  **Hack squat** and **Hip abductor machine** — the **creator and licence are printed under each
+  image** and listed in [`media/CREDITS.md`](media/CREDITS.md).
 - **Exercises without a correctly-matched, legally usable demonstration yet** keep the original
-  illustrated gallery for now; they are tracked as *unresolved* pending a decision.
+  illustrated gallery for now, or show the honest *Demonstration unavailable* state; they are tracked
+  as *unresolved* pending a decision.
 
-**Not every requested exercise is covered, honestly:** *Deadlift*, *Lat pulldown* and *Triceps
-extension* are **not in GymQuest's library at all**, so there is nothing to demonstrate.
+**Not every requested exercise has a demonstration yet, honestly:** *Dumbbell pullover*,
+*Cable/machine pullover*, the *single-arm dumbbell* and *single-arm cable triceps extension*, the
+*Romanian deadlift* and the *adductor (inner-thigh) machine* have **no correctly-matched, legally
+usable photo or video yet**, so they show the *Demonstration unavailable* state. No illustration was
+invented to fill the gap.
 
 **Swipe between media** with your finger, or use the **‹ ›** buttons, the dots, the counter or the arrow
 keys. Each item has a **caption** in every supported language, and the **creator and licence are printed
@@ -603,8 +613,10 @@ state with the written steps — never a broken-image icon.
 also in [`media/CREDITS.md`](media/CREDITS.md).
 
 **Video format and offline.** Videos are **WebM (VP8/VP9)** — they play in Chrome, Firefox and Edge and
-in recent versions of Safari. All are precached by the service worker, so they play with no network. Six
-are under 0.6 MB; the two public-domain CDC clips are larger (bicep curl ≈ 5.4 MB, push-up ≈ 6.5 MB).
+in recent versions of Safari. All are precached by the service worker, so they play with no network.
+Most clips are modest (under ~0.6 MB); the public-domain CDC clips are larger (bicep curl ≈ 5.4 MB,
+machine chest press ≈ 3.6 MB, leg extension ≈ 5.9 MB) and the incline dumbbell press clip is the
+Commons 480p transcode (≈ 10.9 MB).
 
 ### Accuracy and safety
 

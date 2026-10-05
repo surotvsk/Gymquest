@@ -6,7 +6,7 @@
    so no update would ever be offered.
    Bump it and the new worker installs, re-fetches everything and deletes the old cache. */
 
-const CACHE_VERSION = 'v26';
+const CACHE_VERSION = 'v28';
 const CACHE_PREFIX = 'gymquest-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
@@ -14,8 +14,8 @@ const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
    Cache kľúč je celá URL, takže "style.css" a "style.css?v=27" sú dve rôzne položky. */
 const PRECACHE = [
   'index.html',
-  'style.css?v=30',
-  'script.js?v=30',
+  'style.css?v=32',
+  'script.js?v=32',
   'manifest.json',
   'apple-touch-icon.png',
   'icon-192.png',
@@ -45,6 +45,22 @@ const PRECACHE = [
   'media/burpee-1.jpg',
   'media/superman.webm',
   'media/superman-poster.jpg',
+  'media/machine-chest-press.webm',
+  'media/machine-chest-press-poster.jpg',
+  'media/incline-dumbbell-press.webm',
+  'media/incline-dumbbell-press-poster.jpg',
+  'media/leg-extension.webm',
+  'media/leg-extension-poster.jpg',
+  'media/cable-curl-1.jpg',
+  'media/cable-curl-2.jpg',
+  'media/pec-deck-1.jpg',
+  'media/pec-deck-2.jpg',
+  'media/front-raise-1.jpg',
+  'media/lat-pulldown-1.jpg',
+  'media/lat-pulldown-2.jpg',
+  'media/hack-squat-1.jpg',
+  'media/hack-squat-2.jpg',
+  'media/abductor-machine-1.jpg',
 ];
 
 /* Zoznam precache URL sa počíta až pri prvej požiadavke – na najvyššej úrovni

@@ -3076,6 +3076,16 @@ body.has-backup-banner .app-main {
 .media-credit { font-size: var(--fs-xs); color: var(--text-faint); margin: 2px 0 0; overflow-wrap: break-word; }
 .media-note { font-size: var(--fs-xs); color: var(--text-faint); margin: 2px 0 0; overflow-wrap: break-word; }
 
+/* Bez skutočnej fotky či videa: krátka, čistá správa namiesto rámčeka galérie. */
+.media-none {
+  font-size: var(--fs-sm, 0.95rem);
+  color: var(--text-faint);
+  line-height: 1.5;
+  margin: 0 0 var(--sp-3, 12px);
+  text-align: start;
+  overflow-wrap: break-word;
+}
+
 .media-missing {
   display: flex;
   flex-direction: column;
