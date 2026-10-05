@@ -11,13 +11,14 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=37">
+  <link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
 
   <header class="app-header">
     <h1 class="app-title">GymQuest</h1>
     <div class="header-actions">
+      <button class="btn-icon" id="btn-community" data-i18n-title="community.open" data-i18n-aria="community.open">🌐</button>
       <button class="btn-icon" id="btn-settings" data-i18n-title="header.settingsTitle">⚙️</button>
       <div class="header-level" id="header-level" data-i18n-title="header.levelTitle">Úr. 0</div>
     </div>
@@ -799,6 +800,7 @@
         <button type="button" class="btn btn-secondary" id="btn-photo-viewer-save" data-i18n="photos.saveToDevice">Uložiť do zariadenia</button>
         <button type="button" class="btn btn-secondary" id="btn-photo-viewer-edit" data-i18n="photos.edit">Upraviť</button>
         <button type="button" class="btn btn-secondary" id="btn-photo-viewer-delete" data-i18n="photos.delete">Vymazať</button>
+        <button type="button" class="btn btn-secondary" id="btn-photo-viewer-share" data-i18n="community.shareFromPhoto">Zdieľať do Community</button>
       </div>
     </div>
   </div>
@@ -832,6 +834,32 @@
 
   <input type="file" id="file-media" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple hidden>
   <input type="file" id="file-progress-photos" accept="image/*" multiple hidden>
-  <script src="script.js?v=37"></script>
+  <!-- ============ MODAL: Community (voliteľná online) ============ -->
+  <div class="modal-backdrop" id="modal-community" hidden>
+    <div class="modal modal-sheet">
+      <div class="sheet-head">
+        <h3 data-i18n="community.title">Community</h3>
+        <button type="button" class="btn-icon" data-community-action="close" data-i18n-title="common.close" data-i18n-aria="common.close">✕</button>
+      </div>
+      <div class="sheet-scroll" id="community-body"></div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: popis príspevku ============ -->
+  <div class="modal-backdrop" id="modal-community-caption" hidden>
+    <div class="modal">
+      <h3 data-i18n="community.editCaption">Upraviť popis</h3>
+      <label class="modal-label" for="community-caption-input" data-i18n="community.caption">Popis</label>
+      <input type="text" class="modal-input" id="community-caption-input" maxlength="500">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="btn-community-caption-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button type="button" class="btn btn-primary" id="btn-community-caption-save" data-i18n="common.save">Uložiť</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="community-config.js?v=38"></script>
+  <script src="vendor/supabase-js.js?v=38"></script>
+  <script src="script.js?v=38"></script>
 </body>
 </html>

@@ -1856,6 +1856,44 @@ const I18N = {
     'photos.errSize': 'Obrázok je príliš veľký. Fotky do 25 MB.',
     'photos.errStorage': 'Na tomto zariadení nie je dosť miesta na uloženie fotky.',
     'photos.openAria': 'Otvoriť fotku z {date}', 'photos.prev': 'Predchádzajúca', 'photos.next': 'Ďalšia',
+    'community.title': 'Community', 'community.open': 'Community', 'community.loading': 'Načítava sa…',
+    'community.setupTitle': 'Community zatiaľ nie je nastavená',
+    'community.setupBody': 'Toto zostavenie má Community vypnutú. Nič sa nenahráva a nevykonávajú sa žiadne sieťové požiadavky.',
+    'community.setupSteps': 'Vlastník aplikácie musí nastaviť Supabase (pozri návod) a vyplniť community-config.js.',
+    'community.offlineNote': 'Tréningy, merania a súkromné Fotky progresu ostávajú na tomto zariadení a nikdy sa nenahrávajú.',
+    'community.onlineNote': 'Community je online a verejná. Nahrá sa iba fotka, ktorú výslovne zdieľaš.',
+    'community.rules': 'Zdieľaj iba vlastné fotky a správaj sa k ostatným s rešpektom. Žiadna nahota, obťažovanie, nenávisť ani znevažovanie vzhľadu. Moderátori môžu obsah odstrániť a účty pozastaviť.',
+    'community.privacy': 'Nahrá sa iba zvolená fotka (bez metadát). Používateľské meno je verejné; e-mail sa nikdy nezobrazuje. Príspevky aj účet môžeš kedykoľvek vymazať.',
+    'community.enable': 'Zapnúť Community', 'community.disable': 'Vypnúť Community',
+    'community.email': 'E-mail', 'community.password': 'Heslo', 'community.signIn': 'Prihlásiť sa', 'community.signUp': 'Registrovať sa',
+    'community.signInTitle': 'Prihlás sa alebo si vytvor účet', 'community.signOut': 'Odhlásiť sa',
+    'community.emailConfirmNote': 'Pošleme ti potvrdzujúci odkaz e-mailom — dokonči registráciu v schránke.',
+    'community.emailHidden': 'Tvoj e-mail sa nikdy nezobrazuje verejne.', 'community.signUpDone': 'Potvrď účet cez odkaz v e-maile.',
+    'community.username': 'Používateľské meno', 'community.bio': 'Krátky popis (voliteľný)', 'community.changeAvatar': 'Zmeniť avatar',
+    'community.deleteAccount': 'Vymazať môj účet v Community', 'community.deleteAccountTitle': 'Vymazať účet v Community?',
+    'community.deleteAccountConfirm': 'Natrvalo odstráni tvoj profil v Community, príspevky a nahraté fotky. Netýka sa súkromných tréningov v zariadení a nedokáže odstrániť kópie, ktoré si už ostatní uložili.',
+    'community.accountDeleted': 'Tvoj účet v Community bol vymazaný.', 'community.moderatorBadge': 'Si moderátor.',
+    'community.suspendedBadge': 'Tento účet má pozastavené pridávanie príspevkov.',
+    'community.tabFeed': 'Prehľad', 'community.tabMyPosts': 'Moje príspevky', 'community.tabProfile': 'Profil', 'community.tabModerate': 'Moderovanie',
+    'community.loadMore': 'Načítať ďalšie', 'community.feedEmpty': 'Zatiaľ žiadne schválené príspevky.', 'community.myPostsEmpty': 'Zatiaľ si nič nezdieľal.',
+    'community.unknownUser': 'Člen',
+    'community.editCaption': 'Upraviť popis', 'community.caption': 'Popis',
+    'community.deletePost': 'Vymazať príspevok', 'community.deletePostTitle': 'Vymazať tento príspevok?', 'community.deletePostConfirm': 'Odstráni príspevok aj nahratú fotku.',
+    'community.block': 'Zablokovať', 'community.blockTitle': 'Zablokovať tohto používateľa?', 'community.blockConfirm': 'Jeho príspevky sa skryjú z tvojho prehľadu. Community môžeš ďalej používať.', 'community.blocked': 'Používateľ zablokovaný.',
+    'community.report': 'Nahlásiť', 'community.reportTitle': 'Nahlásiť tento príspevok?', 'community.reportConfirm': 'Moderátori ho posúdia. Tvoje nahlásenie nie je verejné.', 'community.reportReasonDefault': 'Nahlásené z prehľadu', 'community.reported': 'Nahlásenie odoslané moderátorom.',
+    'community.approve': 'Schváliť', 'community.reject': 'Zamietnuť', 'community.suspend': 'Pozastaviť', 'community.resolve': 'Vyriešiť',
+    'community.pendingTitle': 'Čakajúce príspevky', 'community.pendingEmpty': 'Nič nečaká na kontrolu.',
+    'community.reportsTitle': 'Otvorené nahlásenia', 'community.reportsEmpty': 'Žiadne otvorené nahlásenia.', 'community.reportRow': 'Nahlásenie {id}: {reason}',
+    'community.statusPending': 'Čaká na kontrolu', 'community.statusApproved': 'Schválené', 'community.statusRejected': 'Zamietnuté',
+    'community.shareFromPhoto': 'Zdieľať do Community', 'community.shareTitle': 'Zdieľať do Community?', 'community.shareConfirm': 'Nahrať',
+    'community.shareBody': 'Fotka sa nahrá ako kópia bez EXIF a zverejní sa až po schválení moderátorom. Uvidí ju každý.',
+    'community.shareHint': 'Otvor súkromnú fotku progresu a zvoľ „Zdieľať do Community“. Vždy iba jedna fotka – celá galéria sa nikdy nezverejní automaticky.',
+    'community.submitted': 'Odoslané na kontrolu.', 'community.saved': 'Uložené.', 'community.deleted': 'Vymazané.',
+    'community.errUnavailable': 'Community je teraz nedostupná.', 'community.errNetwork': 'Chyba siete. Skús to znova.',
+    'community.errSignIn': 'Prihlásenie zlyhalo. Skontroluj e-mail a heslo.', 'community.errSignUp': 'Registrácia zlyhala. E-mail sa už môže používať alebo je heslo slabé.',
+    'community.errUsername': 'Toto používateľské meno je už obsadené.', 'community.errUpload': 'Nahrávanie zlyhalo. Nič sa nezverejnilo; tvoja fotka je v bezpečí.',
+    'community.errImage': 'Tento obrázok sa nepodarilo prečítať.', 'community.errTooLarge': 'Obrázok je príliš veľký na zdieľanie.',
+    'community.errModeration': 'Pridávanie je vypnuté, kým nie je nastavené moderovanie (musí existovať moderátor).',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2648,6 +2686,50 @@ const I18N = {
     'photos.errSize': 'That image is too large. Photos up to 25 MB.',
     'photos.errStorage': 'Not enough storage on this device to save the photo.',
     'photos.openAria': 'Open photo from {date}', 'photos.prev': 'Previous', 'photos.next': 'Next',
+    'community.title': 'Community', 'community.open': 'Community', 'community.loading': 'Loading…',
+    'community.setupTitle': 'Community is not set up yet',
+    'community.setupBody': 'This build ships with Community disabled. Nothing is uploaded and no network requests are made.',
+    'community.setupSteps': 'The app owner must configure Supabase (see the setup guide) and fill in community-config.js.',
+    'community.offlineNote': 'Your workouts, measurements and private Progress photos stay on this device and are never uploaded.',
+    'community.onlineNote': 'Community is online and public. Only a photo you explicitly share is uploaded.',
+    'community.rules': 'Share only your own photos and treat others with respect. No nudity, harassment, hate or body-shaming. Moderators may remove content and suspend accounts.',
+    'community.privacy': 'Only your chosen photo is uploaded (metadata removed). Your username is public; your email is never shown. You can delete posts and your account at any time.',
+    'community.enable': 'Enable Community', 'community.disable': 'Turn off Community',
+    'community.email': 'Email', 'community.password': 'Password', 'community.signIn': 'Sign in', 'community.signUp': 'Sign up',
+    'community.signInTitle': 'Sign in or create an account', 'community.signOut': 'Sign out',
+    'community.emailConfirmNote': 'We email you a confirmation link — check your inbox to finish signing up.',
+    'community.emailHidden': 'Your email is never shown publicly.', 'community.signUpDone': 'Check your email to confirm your account.',
+    'community.username': 'Username', 'community.bio': 'Short bio (optional)', 'community.changeAvatar': 'Change avatar',
+    'community.deleteAccount': 'Delete my community account', 'community.deleteAccountTitle': 'Delete your community account?',
+    'community.deleteAccountConfirm': 'This permanently removes your community profile, posts and uploaded photos. It does not touch your private on-device workouts, and it cannot remove copies others already saved.',
+    'community.accountDeleted': 'Your community account was deleted.', 'community.moderatorBadge': 'You are a moderator.',
+    'community.suspendedBadge': 'This account is suspended from posting.',
+    'community.tabFeed': 'Feed', 'community.tabMyPosts': 'My posts', 'community.tabProfile': 'Profile', 'community.tabModerate': 'Moderate',
+    'community.loadMore': 'Load more', 'community.feedEmpty': 'No approved posts yet.', 'community.myPostsEmpty': 'You have not shared any posts yet.',
+    'community.unknownUser': 'Member',
+    'community.editCaption': 'Edit caption', 'community.caption': 'Caption',
+    'community.deletePost': 'Delete post', 'community.deletePostTitle': 'Delete this post?',
+    'community.deletePostConfirm': 'This removes the post and its uploaded photo.',
+    'community.block': 'Block', 'community.blockTitle': 'Block this user?',
+    'community.blockConfirm': 'Their posts will be hidden from your feed. You can still use Community normally.', 'community.blocked': 'User blocked.',
+    'community.report': 'Report', 'community.reportTitle': 'Report this post?',
+    'community.reportConfirm': 'Moderators will review it. Your report is not public.', 'community.reportReasonDefault': 'Reported from the feed',
+    'community.reported': 'Report sent to moderators.',
+    'community.approve': 'Approve', 'community.reject': 'Reject', 'community.suspend': 'Suspend', 'community.resolve': 'Resolve',
+    'community.pendingTitle': 'Pending posts', 'community.pendingEmpty': 'Nothing awaiting review.',
+    'community.reportsTitle': 'Open reports', 'community.reportsEmpty': 'No open reports.', 'community.reportRow': 'Report {id}: {reason}',
+    'community.statusPending': 'Pending review', 'community.statusApproved': 'Approved', 'community.statusRejected': 'Rejected',
+    'community.shareFromPhoto': 'Share to Community', 'community.shareTitle': 'Share to Community?', 'community.shareConfirm': 'Upload',
+    'community.shareBody': 'The photo will be uploaded as an EXIF-free copy and published only after a moderator approves it. Everyone will be able to see it.',
+    'community.shareHint': 'Open a private progress photo and choose “Share to Community”. One photo at a time — your whole gallery is never published automatically.',
+    'community.submitted': 'Submitted for review.', 'community.saved': 'Saved.', 'community.deleted': 'Deleted.',
+    'community.errUnavailable': 'Community is unavailable right now.', 'community.errNetwork': 'Network error. Please try again.',
+    'community.errSignIn': 'Could not sign in. Check your email and password.',
+    'community.errSignUp': 'Could not sign up. The email may already be in use or the password too weak.',
+    'community.errUsername': 'That username is already taken.',
+    'community.errUpload': 'Upload failed. Nothing was published; your photo is safe.',
+    'community.errImage': 'That image could not be read.', 'community.errTooLarge': 'The image is too large to share.',
+    'community.errModeration': 'Posting is disabled until moderation is configured (a moderator must exist).',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3440,6 +3522,44 @@ const I18N = {
     'photos.errSize': 'La imagen es demasiado grande. Fotos hasta 25 MB.',
     'photos.errStorage': 'No hay suficiente espacio en este dispositivo para guardar la foto.',
     'photos.openAria': 'Abrir la foto del {date}', 'photos.prev': 'Anterior', 'photos.next': 'Siguiente',
+    'community.title': 'Comunidad', 'community.open': 'Comunidad', 'community.loading': 'Cargando…',
+    'community.setupTitle': 'La Comunidad aún no está configurada',
+    'community.setupBody': 'Esta versión incluye la Comunidad desactivada. No se sube nada y no se hace ninguna petición de red.',
+    'community.setupSteps': 'El propietario de la app debe configurar Supabase (ver la guía) y rellenar community-config.js.',
+    'community.offlineNote': 'Tus entrenamientos, medidas y fotos privadas de progreso se quedan en este dispositivo y nunca se suben.',
+    'community.onlineNote': 'La Comunidad es online y pública. Solo se sube la foto que compartes explícitamente.',
+    'community.rules': 'Comparte solo tus propias fotos y trata a los demás con respeto. Nada de desnudos, acoso, odio ni comentarios sobre el cuerpo. Los moderadores pueden retirar contenido y suspender cuentas.',
+    'community.privacy': 'Solo se sube la foto elegida (sin metadatos). Tu nombre de usuario es público; tu correo nunca se muestra. Puedes borrar publicaciones y tu cuenta cuando quieras.',
+    'community.enable': 'Activar Comunidad', 'community.disable': 'Desactivar Comunidad',
+    'community.email': 'Correo', 'community.password': 'Contraseña', 'community.signIn': 'Iniciar sesión', 'community.signUp': 'Registrarse',
+    'community.signInTitle': 'Inicia sesión o crea una cuenta', 'community.signOut': 'Cerrar sesión',
+    'community.emailConfirmNote': 'Te enviamos un enlace de confirmación por correo: revisa tu bandeja para terminar el registro.',
+    'community.emailHidden': 'Tu correo nunca se muestra públicamente.', 'community.signUpDone': 'Revisa tu correo para confirmar la cuenta.',
+    'community.username': 'Nombre de usuario', 'community.bio': 'Biografía corta (opcional)', 'community.changeAvatar': 'Cambiar avatar',
+    'community.deleteAccount': 'Eliminar mi cuenta de la Comunidad', 'community.deleteAccountTitle': '¿Eliminar tu cuenta de la Comunidad?',
+    'community.deleteAccountConfirm': 'Elimina permanentemente tu perfil, publicaciones y fotos subidas. No afecta a tus entrenamientos privados del dispositivo y no puede borrar copias que otros ya guardaron.',
+    'community.accountDeleted': 'Tu cuenta de la Comunidad fue eliminada.', 'community.moderatorBadge': 'Eres moderador.',
+    'community.suspendedBadge': 'Esta cuenta tiene la publicación suspendida.',
+    'community.tabFeed': 'Muro', 'community.tabMyPosts': 'Mis publicaciones', 'community.tabProfile': 'Perfil', 'community.tabModerate': 'Moderar',
+    'community.loadMore': 'Cargar más', 'community.feedEmpty': 'Aún no hay publicaciones aprobadas.', 'community.myPostsEmpty': 'Aún no has compartido nada.',
+    'community.unknownUser': 'Miembro',
+    'community.editCaption': 'Editar pie de foto', 'community.caption': 'Pie de foto',
+    'community.deletePost': 'Eliminar publicación', 'community.deletePostTitle': '¿Eliminar esta publicación?', 'community.deletePostConfirm': 'Elimina la publicación y su foto subida.',
+    'community.block': 'Bloquear', 'community.blockTitle': '¿Bloquear a este usuario?', 'community.blockConfirm': 'Sus publicaciones se ocultarán de tu muro. Puedes seguir usando la Comunidad con normalidad.', 'community.blocked': 'Usuario bloqueado.',
+    'community.report': 'Denunciar', 'community.reportTitle': '¿Denunciar esta publicación?', 'community.reportConfirm': 'Los moderadores la revisarán. Tu denuncia no es pública.', 'community.reportReasonDefault': 'Denunciado desde el muro', 'community.reported': 'Denuncia enviada a los moderadores.',
+    'community.approve': 'Aprobar', 'community.reject': 'Rechazar', 'community.suspend': 'Suspender', 'community.resolve': 'Resolver',
+    'community.pendingTitle': 'Publicaciones pendientes', 'community.pendingEmpty': 'Nada pendiente de revisión.',
+    'community.reportsTitle': 'Denuncias abiertas', 'community.reportsEmpty': 'No hay denuncias abiertas.', 'community.reportRow': 'Denuncia {id}: {reason}',
+    'community.statusPending': 'Pendiente de revisión', 'community.statusApproved': 'Aprobada', 'community.statusRejected': 'Rechazada',
+    'community.shareFromPhoto': 'Compartir en la Comunidad', 'community.shareTitle': '¿Compartir en la Comunidad?', 'community.shareConfirm': 'Subir',
+    'community.shareBody': 'La foto se subirá como copia sin EXIF y solo se publicará tras la aprobación de un moderador. Todos podrán verla.',
+    'community.shareHint': 'Abre una foto privada de progreso y elige «Compartir en la Comunidad». Una foto cada vez: tu galería nunca se publica automáticamente.',
+    'community.submitted': 'Enviado para revisión.', 'community.saved': 'Guardado.', 'community.deleted': 'Eliminado.',
+    'community.errUnavailable': 'La Comunidad no está disponible ahora.', 'community.errNetwork': 'Error de red. Inténtalo de nuevo.',
+    'community.errSignIn': 'No se pudo iniciar sesión. Revisa correo y contraseña.', 'community.errSignUp': 'No se pudo registrar. El correo puede estar en uso o la contraseña ser débil.',
+    'community.errUsername': 'Ese nombre de usuario ya está en uso.', 'community.errUpload': 'La subida falló. No se publicó nada; tu foto está a salvo.',
+    'community.errImage': 'No se pudo leer esa imagen.', 'community.errTooLarge': 'La imagen es demasiado grande para compartirla.',
+    'community.errModeration': 'La publicación está desactivada hasta que se configure la moderación (debe existir un moderador).',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4230,6 +4350,44 @@ const I18N = {
     'photos.errSize': 'A imagem é grande demais. Fotos até 25 MB.',
     'photos.errStorage': 'Não há espaço suficiente neste dispositivo para salvar a foto.',
     'photos.openAria': 'Abrir a foto de {date}', 'photos.prev': 'Anterior', 'photos.next': 'Próxima',
+    'community.title': 'Comunidade', 'community.open': 'Comunidade', 'community.loading': 'Carregando…',
+    'community.setupTitle': 'A Comunidade ainda não está configurada',
+    'community.setupBody': 'Esta versão vem com a Comunidade desativada. Nada é enviado e nenhuma requisição de rede é feita.',
+    'community.setupSteps': 'O dono do app precisa configurar o Supabase (veja o guia) e preencher o community-config.js.',
+    'community.offlineNote': 'Seus treinos, medidas e fotos privadas de progresso ficam neste dispositivo e nunca são enviados.',
+    'community.onlineNote': 'A Comunidade é online e pública. Só é enviada a foto que você compartilhar explicitamente.',
+    'community.rules': 'Compartilhe apenas suas próprias fotos e trate os outros com respeito. Sem nudez, assédio, ódio ou comentários sobre o corpo. Moderadores podem remover conteúdo e suspender contas.',
+    'community.privacy': 'Só a foto escolhida é enviada (sem metadados). Seu nome de usuário é público; seu e-mail nunca é exibido. Você pode excluir posts e sua conta quando quiser.',
+    'community.enable': 'Ativar Comunidade', 'community.disable': 'Desativar Comunidade',
+    'community.email': 'E-mail', 'community.password': 'Senha', 'community.signIn': 'Entrar', 'community.signUp': 'Cadastrar',
+    'community.signInTitle': 'Entre ou crie uma conta', 'community.signOut': 'Sair',
+    'community.emailConfirmNote': 'Enviamos um link de confirmação por e-mail — confira sua caixa de entrada para concluir o cadastro.',
+    'community.emailHidden': 'Seu e-mail nunca é exibido publicamente.', 'community.signUpDone': 'Confira seu e-mail para confirmar a conta.',
+    'community.username': 'Nome de usuário', 'community.bio': 'Bio curta (opcional)', 'community.changeAvatar': 'Trocar avatar',
+    'community.deleteAccount': 'Excluir minha conta da Comunidade', 'community.deleteAccountTitle': 'Excluir sua conta da Comunidade?',
+    'community.deleteAccountConfirm': 'Isso remove permanentemente seu perfil, posts e fotos enviadas. Não afeta seus treinos privados no dispositivo e não pode apagar cópias que outros já salvaram.',
+    'community.accountDeleted': 'Sua conta da Comunidade foi excluída.', 'community.moderatorBadge': 'Você é moderador.',
+    'community.suspendedBadge': 'Esta conta está suspensa de publicar.',
+    'community.tabFeed': 'Feed', 'community.tabMyPosts': 'Meus posts', 'community.tabProfile': 'Perfil', 'community.tabModerate': 'Moderar',
+    'community.loadMore': 'Carregar mais', 'community.feedEmpty': 'Ainda não há posts aprovados.', 'community.myPostsEmpty': 'Você ainda não compartilhou nada.',
+    'community.unknownUser': 'Membro',
+    'community.editCaption': 'Editar legenda', 'community.caption': 'Legenda',
+    'community.deletePost': 'Excluir post', 'community.deletePostTitle': 'Excluir este post?', 'community.deletePostConfirm': 'Remove o post e a foto enviada.',
+    'community.block': 'Bloquear', 'community.blockTitle': 'Bloquear este usuário?', 'community.blockConfirm': 'Os posts dele ficarão ocultos no seu feed. Você pode continuar usando a Comunidade normalmente.', 'community.blocked': 'Usuário bloqueado.',
+    'community.report': 'Denunciar', 'community.reportTitle': 'Denunciar este post?', 'community.reportConfirm': 'Os moderadores vão analisar. Sua denúncia não é pública.', 'community.reportReasonDefault': 'Denunciado no feed', 'community.reported': 'Denúncia enviada aos moderadores.',
+    'community.approve': 'Aprovar', 'community.reject': 'Rejeitar', 'community.suspend': 'Suspender', 'community.resolve': 'Resolver',
+    'community.pendingTitle': 'Posts pendentes', 'community.pendingEmpty': 'Nada aguardando revisão.',
+    'community.reportsTitle': 'Denúncias abertas', 'community.reportsEmpty': 'Nenhuma denúncia aberta.', 'community.reportRow': 'Denúncia {id}: {reason}',
+    'community.statusPending': 'Aguardando revisão', 'community.statusApproved': 'Aprovado', 'community.statusRejected': 'Rejeitado',
+    'community.shareFromPhoto': 'Compartilhar na Comunidade', 'community.shareTitle': 'Compartilhar na Comunidade?', 'community.shareConfirm': 'Enviar',
+    'community.shareBody': 'A foto será enviada como cópia sem EXIF e só será publicada após a aprovação de um moderador. Todos poderão vê-la.',
+    'community.shareHint': 'Abra uma foto privada de progresso e escolha “Compartilhar na Comunidade”. Uma foto por vez — sua galeria nunca é publicada automaticamente.',
+    'community.submitted': 'Enviado para revisão.', 'community.saved': 'Salvo.', 'community.deleted': 'Excluído.',
+    'community.errUnavailable': 'A Comunidade está indisponível agora.', 'community.errNetwork': 'Erro de rede. Tente novamente.',
+    'community.errSignIn': 'Não foi possível entrar. Confira e-mail e senha.', 'community.errSignUp': 'Não foi possível cadastrar. O e-mail pode estar em uso ou a senha fraca.',
+    'community.errUsername': 'Esse nome de usuário já está em uso.', 'community.errUpload': 'Falha no envio. Nada foi publicado; sua foto está segura.',
+    'community.errImage': 'Não foi possível ler essa imagem.', 'community.errTooLarge': 'A imagem é grande demais para compartilhar.',
+    'community.errModeration': 'A publicação está desativada até a moderação ser configurada (precisa existir um moderador).',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5020,6 +5178,44 @@ const I18N = {
     'photos.errSize': 'Cette image est trop volumineuse. Photos jusqu’à 25 Mo.',
     'photos.errStorage': 'Pas assez d’espace sur cet appareil pour enregistrer la photo.',
     'photos.openAria': 'Ouvrir la photo du {date}', 'photos.prev': 'Précédente', 'photos.next': 'Suivante',
+    'community.title': 'Communauté', 'community.open': 'Communauté', 'community.loading': 'Chargement…',
+    'community.setupTitle': 'La Communauté n’est pas encore configurée',
+    'community.setupBody': 'Cette version est livrée avec la Communauté désactivée. Rien n’est envoyé et aucune requête réseau n’est faite.',
+    'community.setupSteps': 'Le propriétaire de l’application doit configurer Supabase (voir le guide) et remplir community-config.js.',
+    'community.offlineNote': 'Tes entraînements, mesures et photos de progrès privées restent sur cet appareil et ne sont jamais envoyés.',
+    'community.onlineNote': 'La Communauté est en ligne et publique. Seule la photo que tu partages explicitement est envoyée.',
+    'community.rules': 'Ne partage que tes propres photos et respecte les autres. Pas de nudité, harcèlement, haine ni jugement sur le corps. Les modérateurs peuvent retirer du contenu et suspendre des comptes.',
+    'community.privacy': 'Seule la photo choisie est envoyée (sans métadonnées). Ton nom d’utilisateur est public ; ton e-mail n’est jamais affiché. Tu peux supprimer tes publications et ton compte à tout moment.',
+    'community.enable': 'Activer la Communauté', 'community.disable': 'Désactiver la Communauté',
+    'community.email': 'E-mail', 'community.password': 'Mot de passe', 'community.signIn': 'Se connecter', 'community.signUp': 'S’inscrire',
+    'community.signInTitle': 'Connecte-toi ou crée un compte', 'community.signOut': 'Se déconnecter',
+    'community.emailConfirmNote': 'Nous t’envoyons un lien de confirmation par e-mail — vérifie ta boîte pour terminer l’inscription.',
+    'community.emailHidden': 'Ton e-mail n’est jamais affiché publiquement.', 'community.signUpDone': 'Vérifie ton e-mail pour confirmer ton compte.',
+    'community.username': 'Nom d’utilisateur', 'community.bio': 'Bio courte (facultatif)', 'community.changeAvatar': 'Changer d’avatar',
+    'community.deleteAccount': 'Supprimer mon compte Communauté', 'community.deleteAccountTitle': 'Supprimer ton compte Communauté ?',
+    'community.deleteAccountConfirm': 'Cela supprime définitivement ton profil, tes publications et tes photos envoyées. Cela ne touche pas à tes entraînements privés sur l’appareil et ne peut pas retirer les copies que d’autres ont déjà enregistrées.',
+    'community.accountDeleted': 'Ton compte Communauté a été supprimé.', 'community.moderatorBadge': 'Tu es modérateur.',
+    'community.suspendedBadge': 'Ce compte est suspendu de publication.',
+    'community.tabFeed': 'Fil', 'community.tabMyPosts': 'Mes publications', 'community.tabProfile': 'Profil', 'community.tabModerate': 'Modérer',
+    'community.loadMore': 'Charger plus', 'community.feedEmpty': 'Aucune publication approuvée pour l’instant.', 'community.myPostsEmpty': 'Tu n’as encore rien partagé.',
+    'community.unknownUser': 'Membre',
+    'community.editCaption': 'Modifier la légende', 'community.caption': 'Légende',
+    'community.deletePost': 'Supprimer la publication', 'community.deletePostTitle': 'Supprimer cette publication ?', 'community.deletePostConfirm': 'Cela supprime la publication et sa photo envoyée.',
+    'community.block': 'Bloquer', 'community.blockTitle': 'Bloquer cet utilisateur ?', 'community.blockConfirm': 'Ses publications seront masquées de ton fil. Tu peux continuer à utiliser la Communauté normalement.', 'community.blocked': 'Utilisateur bloqué.',
+    'community.report': 'Signaler', 'community.reportTitle': 'Signaler cette publication ?', 'community.reportConfirm': 'Les modérateurs l’examineront. Ton signalement n’est pas public.', 'community.reportReasonDefault': 'Signalé depuis le fil', 'community.reported': 'Signalement envoyé aux modérateurs.',
+    'community.approve': 'Approuver', 'community.reject': 'Rejeter', 'community.suspend': 'Suspendre', 'community.resolve': 'Résoudre',
+    'community.pendingTitle': 'Publications en attente', 'community.pendingEmpty': 'Rien à examiner.',
+    'community.reportsTitle': 'Signalements ouverts', 'community.reportsEmpty': 'Aucun signalement ouvert.', 'community.reportRow': 'Signalement {id} : {reason}',
+    'community.statusPending': 'En attente d’examen', 'community.statusApproved': 'Approuvée', 'community.statusRejected': 'Rejetée',
+    'community.shareFromPhoto': 'Partager dans la Communauté', 'community.shareTitle': 'Partager dans la Communauté ?', 'community.shareConfirm': 'Envoyer',
+    'community.shareBody': 'La photo sera envoyée en copie sans EXIF et publiée seulement après approbation d’un modérateur. Tout le monde pourra la voir.',
+    'community.shareHint': 'Ouvre une photo de progrès privée et choisis « Partager dans la Communauté ». Une photo à la fois — ta galerie n’est jamais publiée automatiquement.',
+    'community.submitted': 'Envoyé pour examen.', 'community.saved': 'Enregistré.', 'community.deleted': 'Supprimé.',
+    'community.errUnavailable': 'La Communauté est indisponible pour le moment.', 'community.errNetwork': 'Erreur réseau. Réessaie.',
+    'community.errSignIn': 'Connexion impossible. Vérifie l’e-mail et le mot de passe.', 'community.errSignUp': 'Inscription impossible. L’e-mail est peut-être déjà utilisé ou le mot de passe trop faible.',
+    'community.errUsername': 'Ce nom d’utilisateur est déjà pris.', 'community.errUpload': 'Échec de l’envoi. Rien n’a été publié ; ta photo est en sécurité.',
+    'community.errImage': 'Impossible de lire cette image.', 'community.errTooLarge': 'L’image est trop volumineuse pour être partagée.',
+    'community.errModeration': 'La publication est désactivée tant que la modération n’est pas configurée (un modérateur doit exister).',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -5829,6 +6025,44 @@ const I18N = {
     'photos.errSize': 'الصورة كبيرة جدًا. الصور حتى 25 ميغابايت.',
     'photos.errStorage': 'لا توجد مساحة كافية على هذا الجهاز لحفظ الصورة.',
     'photos.openAria': 'افتح صورة {date}', 'photos.prev': 'السابقة', 'photos.next': 'التالية',
+    'community.title': 'المجتمع', 'community.open': 'المجتمع', 'community.loading': 'جارٍ التحميل…',
+    'community.setupTitle': 'لم يتم إعداد المجتمع بعد',
+    'community.setupBody': 'تأتي هذه النسخة والمجتمع معطّل. لا يتم رفع أي شيء ولا تُرسل أي طلبات شبكة.',
+    'community.setupSteps': 'على مالك التطبيق إعداد Supabase (انظر الدليل) وتعبئة ملف community-config.js.',
+    'community.offlineNote': 'تبقى تمارينك وقياساتك وصور التقدّم الخاصة على هذا الجهاز ولا تُرفع أبدًا.',
+    'community.onlineNote': 'المجتمع متصل وعام. لا تُرفع إلا الصورة التي تشاركها صراحةً.',
+    'community.rules': 'شارك صورك فقط وعامل الآخرين باحترام. لا عُري ولا تحرّش ولا كراهية ولا أحكام على الأجسام. يمكن للمشرفين حذف المحتوى وإيقاف الحسابات.',
+    'community.privacy': 'تُرفع الصورة المختارة فقط (بدون بيانات وصفية). اسم المستخدم علني؛ ولا يظهر بريدك أبدًا. يمكنك حذف المنشورات وحسابك في أي وقت.',
+    'community.enable': 'تفعيل المجتمع', 'community.disable': 'إيقاف المجتمع',
+    'community.email': 'البريد الإلكتروني', 'community.password': 'كلمة المرور', 'community.signIn': 'تسجيل الدخول', 'community.signUp': 'إنشاء حساب',
+    'community.signInTitle': 'سجّل الدخول أو أنشئ حسابًا', 'community.signOut': 'تسجيل الخروج',
+    'community.emailConfirmNote': 'نرسل إليك رابط تأكيد بالبريد — تحقّق من صندوقك لإكمال التسجيل.',
+    'community.emailHidden': 'لا يظهر بريدك الإلكتروني علنًا أبدًا.', 'community.signUpDone': 'تحقّق من بريدك لتأكيد الحساب.',
+    'community.username': 'اسم المستخدم', 'community.bio': 'نبذة قصيرة (اختياري)', 'community.changeAvatar': 'تغيير الصورة الرمزية',
+    'community.deleteAccount': 'حذف حساب المجتمع', 'community.deleteAccountTitle': 'حذف حساب المجتمع؟',
+    'community.deleteAccountConfirm': 'يؤدي هذا إلى حذف ملفك ومنشوراتك وصورك المرفوعة نهائيًا. لا يمسّ تمارينك الخاصة على الجهاز ولا يمكنه إزالة نسخ حفظها آخرون.',
+    'community.accountDeleted': 'تم حذف حساب المجتمع.', 'community.moderatorBadge': 'أنت مشرف.',
+    'community.suspendedBadge': 'هذا الحساب موقوف عن النشر.',
+    'community.tabFeed': 'الخلاصة', 'community.tabMyPosts': 'منشوراتي', 'community.tabProfile': 'الملف', 'community.tabModerate': 'الإشراف',
+    'community.loadMore': 'تحميل المزيد', 'community.feedEmpty': 'لا توجد منشورات معتمدة بعد.', 'community.myPostsEmpty': 'لم تشارك أي شيء بعد.',
+    'community.unknownUser': 'عضو',
+    'community.editCaption': 'تعديل التعليق', 'community.caption': 'التعليق',
+    'community.deletePost': 'حذف المنشور', 'community.deletePostTitle': 'حذف هذا المنشور؟', 'community.deletePostConfirm': 'سيحذف المنشور وصورته المرفوعة.',
+    'community.block': 'حظر', 'community.blockTitle': 'حظر هذا المستخدم؟', 'community.blockConfirm': 'ستُخفى منشوراته من خلاصتك. يمكنك متابعة استخدام المجتمع كالمعتاد.', 'community.blocked': 'تم حظر المستخدم.',
+    'community.report': 'إبلاغ', 'community.reportTitle': 'الإبلاغ عن هذا المنشور؟', 'community.reportConfirm': 'سيراجعه المشرفون. إبلاغك ليس علنيًا.', 'community.reportReasonDefault': 'تم الإبلاغ من الخلاصة', 'community.reported': 'أُرسل الإبلاغ إلى المشرفين.',
+    'community.approve': 'اعتماد', 'community.reject': 'رفض', 'community.suspend': 'إيقاف', 'community.resolve': 'حلّ',
+    'community.pendingTitle': 'منشورات قيد الانتظار', 'community.pendingEmpty': 'لا شيء بانتظار المراجعة.',
+    'community.reportsTitle': 'الإبلاغات المفتوحة', 'community.reportsEmpty': 'لا إبلاغات مفتوحة.', 'community.reportRow': 'إبلاغ {id}: {reason}',
+    'community.statusPending': 'قيد المراجعة', 'community.statusApproved': 'معتمد', 'community.statusRejected': 'مرفوض',
+    'community.shareFromPhoto': 'مشاركة إلى المجتمع', 'community.shareTitle': 'المشاركة إلى المجتمع؟', 'community.shareConfirm': 'رفع',
+    'community.shareBody': 'ستُرفع الصورة كنسخة بلا بيانات EXIF ولن تُنشر إلا بعد موافقة مشرف. سيتمكن الجميع من رؤيتها.',
+    'community.shareHint': 'افتح صورة تقدّم خاصة واختر «مشاركة إلى المجتمع». صورة واحدة في كل مرة — لا يُنشر معرضك كاملًا تلقائيًا.',
+    'community.submitted': 'أُرسل للمراجعة.', 'community.saved': 'تم الحفظ.', 'community.deleted': 'تم الحذف.',
+    'community.errUnavailable': 'المجتمع غير متاح الآن.', 'community.errNetwork': 'خطأ في الشبكة. حاول مرة أخرى.',
+    'community.errSignIn': 'تعذّر تسجيل الدخول. تحقّق من البريد وكلمة المرور.', 'community.errSignUp': 'تعذّر إنشاء الحساب. قد يكون البريد مستخدمًا أو كلمة المرور ضعيفة.',
+    'community.errUsername': 'اسم المستخدم مأخوذ بالفعل.', 'community.errUpload': 'فشل الرفع. لم يُنشر شيء؛ صورتك بأمان.',
+    'community.errImage': 'تعذّرت قراءة هذه الصورة.', 'community.errTooLarge': 'الصورة كبيرة جدًا للمشاركة.',
+    'community.errModeration': 'النشر معطّل حتى يُضبط الإشراف (يجب وجود مشرف).',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -6711,6 +6945,8 @@ function defaultState() {
       bodyUnits: 'metric', foodLogEnabled: false, calorieEnabled: false,
       /* Vybavenie, ktoré má používateľ k dispozícii. null = zatiaľ nezadané. */
       availableEquipment: null,
+      /* Voliteľná online Community: predvolene VYPNUTÁ (žiadne požiadavky). */
+      communityOptIn: false,
     },
     achievements: {},
     demo: false,
@@ -7224,6 +7460,8 @@ function migrateV2toV3(parsed) {
   if (out.settings.calorieEnabled !== true) out.settings.calorieEnabled = false;
   /* Vybavenie používateľa: stará záloha bez neho zostáva "nezadané" (null). */
   out.settings.availableEquipment = normalizeEquipment(out.settings.availableEquipment);
+  /* Community: len explicitné true ju zapne; stará záloha zostáva offline. */
+  if (out.settings.communityOptIn !== true) out.settings.communityOptIn = false;
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -11203,6 +11441,447 @@ function closePhotoCompare() {
   refreshUpdateBanner();
 }
 
+/* ================= Community (voliteľná, online cez Supabase) =================
+   Zapnutá je iba ak je vyplnený community-config.js A používateľ ju sám zapne.
+   Pred zapnutím sa NEROBIA žiadne sieťové požiadavky. Všetka autorizácia je
+   vynútená v databáze (RLS) a v Storage politikách, nie v tomto rozhraní.
+   Súkromné tréningy, merania a Fotky progresu sa sem NIKDY neposielajú. */
+
+const COMMUNITY_PAGE = 12;
+const COMMUNITY_UPLOAD_EDGE = 1280;
+const COMMUNITY_MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+
+let communityClientRef = null;
+let communityProfile = null;
+let communityBlocked = new Set();
+let communityFeed = { items: [], offset: 0, done: false, loading: false };
+let communityView = 'feed';
+let communityMessage = '';
+
+function communityCfg() { return (typeof window !== 'undefined' && window.GYMQUEST_COMMUNITY) || {}; }
+function communityConfigured() {
+  const c = communityCfg();
+  const url = String(c.supabaseUrl || '').replace(/\/+$/, '');
+  return !!(url && c.supabaseAnonKey && /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url));
+}
+function communityOptIn() { return state.settings.communityOptIn === true; }
+function communityClient() {
+  if (!communityConfigured() || !communityOptIn()) return null;
+  if (communityClientRef) return communityClientRef;
+  if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+  try {
+    communityClientRef = window.supabase.createClient(String(communityCfg().supabaseUrl).replace(/\/+$/, ''), communityCfg().supabaseAnonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'gymquest-community-auth' },
+    });
+  } catch (e) { communityClientRef = null; }
+  return communityClientRef;
+}
+function communityPublicUrl(sb, bucket, path) {
+  if (!sb || !path) return '';
+  try { return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl; } catch (e) { return ''; }
+}
+/* Súkromný bucket: obrázky sa čítajú cez krátkodobú podpísanú URL (RLS povolí
+   iba vlastníkovi, moderátorovi alebo schválenému príspevku). */
+async function communitySignedUrl(sb, path) {
+  if (!sb || !path) return '';
+  try {
+    const { data } = await sb.storage.from('community').createSignedUrl(path, 3600);
+    return (data && data.signedUrl) || '';
+  } catch (e) { return ''; }
+}
+function communityOpen() { document.getElementById('modal-community').hidden = false; refreshUpdateBanner(); renderCommunity(); }
+function communityClose() { document.getElementById('modal-community').hidden = true; refreshUpdateBanner(); }
+function communityEnable() {
+  state.settings.communityOptIn = true;
+  saveState();
+  communityClientRef = null;
+  communityView = 'feed';
+  communityOpen();
+}
+function communityDisable() {
+  state.settings.communityOptIn = false;
+  saveState();
+  communityClientRef = null;
+  communityProfile = null;
+  communityBlocked = new Set();
+  communityFeed = { items: [], offset: 0, done: false, loading: false };
+  communityClose();
+}
+function communitySetView(view) { communityView = view; renderCommunity(); }
+function communitySetMessage(key) { communityMessage = key ? t(key) : ''; }
+
+/* ---------- Vykreslenie ---------- */
+async function renderCommunity() {
+  const body = document.getElementById('community-body');
+  if (!body) return;
+  if (!communityConfigured()) { body.innerHTML = communitySetupHtml(); return; }
+  if (!communityOptIn()) { body.innerHTML = communityIntroHtml(); return; }
+  const sb = communityClient();
+  if (!sb) { body.innerHTML = communityNote('community.errUnavailable'); return; }
+  body.innerHTML = communityNote('community.loading');
+  try {
+    const res = await sb.auth.getSession();
+    const session = res && res.data ? res.data.session : null;
+    if (!session) { body.innerHTML = communityAuthHtml(); return; }
+    await communityEnsureProfile(sb, session.user);
+    await communityLoadBlocks(sb, session.user.id);
+    if (communityView === 'myposts') { body.innerHTML = await communityMyPostsHtml(sb, session.user); return; }
+    if (communityView === 'moderate') { body.innerHTML = await communityModerateHtml(sb, session.user); return; }
+    if (communityView === 'profile') { body.innerHTML = await communityProfileHtml(sb, session.user); return; }
+    communityFeed = { items: [], offset: 0, done: false, loading: false };
+    body.innerHTML = communityFeedShellHtml();
+    await communityLoadFeed(sb, true);
+  } catch (e) {
+    body.innerHTML = communityNote('community.errNetwork');
+  }
+}
+function communityNote(key) {
+  return '<p class="card-note">' + esc(t(key)) + '</p>'
+    + (communityMessage ? '<p class="media-status" role="status">' + esc(communityMessage) + '</p>' : '');
+}
+function communityTabbar() {
+  const tab = (v, key) => '<button type="button" class="goal-chip' + (communityView === v ? ' active' : '') + '" data-community-view="' + v + '">' + esc(t(key)) + '</button>';
+  return '<div class="goal-chips" id="community-tabs">'
+    + tab('feed', 'community.tabFeed') + tab('myposts', 'community.tabMyPosts')
+    + tab('profile', 'community.tabProfile') + '</div>';
+}
+function communitySetupHtml() {
+  return '<div class="card"><h3 class="card-title">' + esc(t('community.setupTitle')) + '</h3>'
+    + '<p class="card-note">' + esc(t('community.setupBody')) + '</p>'
+    + '<p class="card-note">' + esc(t('community.setupSteps')) + '</p>'
+    + '<p class="card-note">' + esc(t('community.offlineNote')) + '</p>'
+    + '<div class="plan-actions"><button type="button" class="btn btn-secondary" data-community-action="close">' + esc(t('common.close')) + '</button></div></div>';
+}
+function communityIntroHtml() {
+  return '<div class="card"><h3 class="card-title">' + esc(t('community.title')) + '</h3>'
+    + '<p class="card-note">' + esc(t('community.onlineNote')) + '</p>'
+    + '<p class="card-note">' + esc(t('community.rules')) + '</p>'
+    + '<p class="card-note">' + esc(t('community.privacy')) + '</p>'
+    + '<div class="plan-actions">'
+    + '<button type="button" class="btn btn-primary" data-community-action="enable">' + esc(t('community.enable')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="close">' + esc(t('common.cancel')) + '</button>'
+    + '</div></div>';
+}
+function communityAuthHtml() {
+  return '<div class="card"><h3 class="card-title">' + esc(t('community.signInTitle')) + '</h3>'
+    + '<label class="modal-label" for="community-email">' + esc(t('community.email')) + '</label>'
+    + '<input type="email" class="modal-input" id="community-email" autocomplete="email">'
+    + '<label class="modal-label" for="community-password">' + esc(t('community.password')) + '</label>'
+    + '<input type="password" class="modal-input" id="community-password" autocomplete="current-password">'
+    + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
+    + '<div class="plan-actions">'
+    + '<button type="button" class="btn btn-primary" data-community-action="signin">' + esc(t('community.signIn')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="signup">' + esc(t('community.signUp')) + '</button>'
+    + '</div>'
+    + '<p class="card-note">' + esc(t('community.emailConfirmNote')) + '</p>'
+    + '<p class="card-note">' + esc(t('community.offlineNote')) + '</p>'
+    + '<div class="plan-actions"><button type="button" class="btn btn-secondary" data-community-action="close">' + esc(t('common.close')) + '</button></div></div>';
+}
+function communityFeedShellHtml() {
+  return communityTabbar()
+    + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
+    + '<div id="community-feed">' + communityFeedItemsHtml() + '</div>'
+    + '<div class="plan-actions">'
+    + '<button type="button" class="btn btn-secondary" id="community-more" data-community-action="more"' + (communityFeed.done ? ' hidden' : '') + '>' + esc(t('community.loadMore')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="signout">' + esc(t('community.signOut')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="disable">' + esc(t('community.disable')) + '</button>'
+    + '</div>';
+}
+function communityFeedItemsHtml() {
+  if (!communityFeed.items.length) return '<p class="empty-state">' + esc(t('community.feedEmpty')) + '</p>';
+  return communityFeed.items.map(communityCardHtml).join('');
+}
+function communityCardHtml(p) {
+  const name = (p.profiles && p.profiles.username) || t('community.unknownUser');
+  const avatar = p.profiles && p.profiles.avatar_path ? communityPublicUrl(communityClient(), 'avatars', p.profiles.avatar_path) : '';
+  const thumb = p.thumb_url || '';
+  const mine = communityProfile && p.user_id === communityProfile.id;
+  const date = p.created_at ? formatDate(String(p.created_at).slice(0, 10)) : '';
+  return '<div class="community-card" data-post="' + escAttr(p.id) + '">'
+    + '<div class="community-head">'
+    + (avatar ? '<img class="community-avatar" src="' + escAttr(avatar) + '" alt="">' : '<span class="community-avatar community-avatar-empty" aria-hidden="true">🙂</span>')
+    + '<span class="community-name">' + esc(name) + '</span>'
+    + '<span class="community-date">' + esc(date) + '</span></div>'
+    + (thumb ? '<img class="community-photo" loading="lazy" decoding="async" src="' + escAttr(thumb) + '" alt="">' : '')
+    + (p.caption ? '<p class="community-caption">' + esc(p.caption) + '</p>' : '')
+    + '<div class="plan-actions">'
+    + (mine ? '<button type="button" class="btn btn-secondary" data-community-action="edit-caption" data-post="' + escAttr(p.id) + '">' + esc(t('community.editCaption')) + '</button>'
+      + '<button type="button" class="btn btn-secondary" data-community-action="delete-post" data-post="' + escAttr(p.id) + '">' + esc(t('community.deletePost')) + '</button>'
+      : '<button type="button" class="btn btn-secondary" data-community-action="block" data-user="' + escAttr(p.user_id) + '" data-name="' + escAttr(name) + '">' + esc(t('community.block')) + '</button>'
+        + '<button type="button" class="btn btn-secondary" data-community-action="report-post" data-post="' + escAttr(p.id) + '">' + esc(t('community.report')) + '</button>')
+    + '</div></div>';
+}
+async function communityLoadFeed(sb, reset) {
+  if (communityFeed.loading || (communityFeed.done && !reset)) return;
+  communityFeed.loading = true;
+  const from = reset ? 0 : communityFeed.offset;
+  const { data, error } = await sb.from('posts')
+    .select('id,user_id,caption,thumb_path,created_at,profiles(username,avatar_path)')
+    .eq('status', 'approved')
+    .order('created_at', { ascending: false })
+    .range(from, from + COMMUNITY_PAGE - 1);
+  communityFeed.loading = false;
+  if (error) { communitySetMessage('community.errNetwork'); return; }
+  const rows = (data || []).filter((p) => !communityBlocked.has(p.user_id));
+  await Promise.all(rows.map(async (p) => { p.thumb_url = await communitySignedUrl(sb, p.thumb_path); }));
+  if (reset) communityFeed.items = rows; else communityFeed.items = communityFeed.items.concat(rows);
+  communityFeed.offset = from + (data ? data.length : 0);
+  communityFeed.done = !data || data.length < COMMUNITY_PAGE;
+  const feed = document.getElementById('community-feed');
+  if (feed) feed.innerHTML = communityFeedItemsHtml();
+  const more = document.getElementById('community-more');
+  if (more) more.hidden = communityFeed.done;
+}
+async function communityLoadBlocks(sb, uid) {
+  const { data } = await sb.from('blocks').select('blocked_id').eq('blocker_id', uid);
+  communityBlocked = new Set((data || []).map((b) => b.blocked_id));
+}
+async function communityEnsureProfile(sb, user) {
+  const { data } = await sb.from('profiles').select('id,username,bio,avatar_path,role,suspended').eq('id', user.id).maybeSingle();
+  communityProfile = data || null;
+}
+async function communityProfileHtml(sb, user) {
+  const p = communityProfile || {};
+  const masked = t('community.emailHidden');
+  return communityTabbar()
+    + '<div class="card"><h3 class="card-title">' + esc(t('community.tabProfile')) + '</h3>'
+    + '<label class="modal-label" for="community-username">' + esc(t('community.username')) + '</label>'
+    + '<input type="text" class="modal-input" id="community-username" maxlength="30" value="' + escAttr(p.username || '') + '">'
+    + '<label class="modal-label" for="community-bio">' + esc(t('community.bio')) + '</label>'
+    + '<input type="text" class="modal-input" id="community-bio" maxlength="300" value="' + escAttr(p.bio || '') + '">'
+    + '<p class="card-note">' + esc(masked) + '</p>'
+    + (p.role === 'moderator' ? '<p class="card-note">' + esc(t('community.moderatorBadge')) + '</p>' : '')
+    + (p.suspended ? '<p class="card-note">' + esc(t('community.suspendedBadge')) + '</p>' : '')
+    + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
+    + '<div class="plan-actions">'
+    + '<button type="button" class="btn btn-primary" data-community-action="save-profile">' + esc(t('common.save')) + '</button>'
+    + '<label class="btn btn-secondary" for="community-avatar">' + esc(t('community.changeAvatar')) + '</label>'
+    + '<input type="file" id="community-avatar" accept="image/*" hidden>'
+    + (p.role === 'moderator' ? '<button type="button" class="btn btn-secondary" data-community-view="moderate">' + esc(t('community.tabModerate')) + '</button>' : '')
+    + '<button type="button" class="btn btn-secondary" data-community-action="delete-account">' + esc(t('community.deleteAccount')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="signout">' + esc(t('community.signOut')) + '</button>'
+    + '</div></div>';
+}
+async function communityMyPostsHtml(sb, user) {
+  const { data } = await sb.from('posts').select('id,status,caption,thumb_path,created_at').eq('user_id', user.id).order('created_at', { ascending: false });
+  const rows = data || [];
+  await Promise.all(rows.map(async (p) => { p.thumb_url = await communitySignedUrl(sb, p.thumb_path); }));
+  const card = (p) => {
+    const thumb = p.thumb_url || '';
+    return '<div class="community-card" data-post="' + escAttr(p.id) + '">'
+      + (thumb ? '<img class="community-photo" loading="lazy" decoding="async" src="' + escAttr(thumb) + '" alt="">' : '')
+      + '<p class="community-status-badge">' + esc(t('community.status' + p.status.charAt(0).toUpperCase() + p.status.slice(1))) + '</p>'
+      + (p.caption ? '<p class="community-caption">' + esc(p.caption) + '</p>' : '')
+      + '<div class="plan-actions">'
+      + '<button type="button" class="btn btn-secondary" data-community-action="edit-caption" data-post="' + escAttr(p.id) + '">' + esc(t('community.editCaption')) + '</button>'
+      + '<button type="button" class="btn btn-secondary" data-community-action="delete-post" data-post="' + escAttr(p.id) + '">' + esc(t('community.deletePost')) + '</button>'
+      + '</div></div>';
+  };
+  return communityTabbar()
+    + '<p class="card-note">' + esc(t('community.shareHint')) + '</p>'
+    + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
+    + (rows.length ? rows.map(card).join('') : '<p class="empty-state">' + esc(t('community.myPostsEmpty')) + '</p>');
+}
+async function communityModerateHtml(sb, user) {
+  const pend = await sb.from('posts').select('id,user_id,caption,thumb_path,created_at,profiles(username)').eq('status', 'pending').order('created_at', { ascending: true }).limit(50);
+  const reps = await sb.from('reports').select('id,post_id,reported_user_id,reason,created_at').eq('status', 'open').order('created_at', { ascending: true }).limit(50);
+  const pendingRows = pend.data || [];
+  await Promise.all(pendingRows.map(async (p) => { p.thumb_url = await communitySignedUrl(sb, p.thumb_path); }));
+  const pending = pendingRows.map((p) => {
+    const thumb = p.thumb_url || '';
+    return '<div class="community-card" data-post="' + escAttr(p.id) + '">'
+      + (thumb ? '<img class="community-photo" loading="lazy" src="' + escAttr(thumb) + '" alt="">' : '')
+      + '<p class="community-caption">' + esc(((p.profiles && p.profiles.username) || '?') + ' · ' + (p.caption || '')) + '</p>'
+      + '<div class="plan-actions">'
+      + '<button type="button" class="btn btn-primary" data-community-action="approve" data-post="' + escAttr(p.id) + '">' + esc(t('community.approve')) + '</button>'
+      + '<button type="button" class="btn btn-secondary" data-community-action="reject" data-post="' + escAttr(p.id) + '">' + esc(t('community.reject')) + '</button>'
+      + '<button type="button" class="btn btn-secondary" data-community-action="suspend" data-user="' + escAttr(p.user_id) + '">' + esc(t('community.suspend')) + '</button>'
+      + '</div></div>';
+  }).join('');
+  const reports = (reps.data || []).map((r) => '<div class="community-card">'
+    + '<p class="community-caption">' + esc(t('community.reportRow', { reason: r.reason || '', id: String(r.post_id || r.reported_user_id || '') })) + '</p>'
+    + '<div class="plan-actions">'
+    + (r.reported_user_id ? '<button type="button" class="btn btn-secondary" data-community-action="suspend" data-user="' + escAttr(r.reported_user_id) + '">' + esc(t('community.suspend')) + '</button>' : '')
+    + '<button type="button" class="btn btn-secondary" data-community-action="resolve-report" data-report="' + escAttr(r.id) + '">' + esc(t('community.resolve')) + '</button>'
+    + '</div></div>').join('');
+  return communityTabbar()
+    + '<h3 class="card-title">' + esc(t('community.pendingTitle')) + '</h3>'
+    + (pending || '<p class="empty-state">' + esc(t('community.pendingEmpty')) + '</p>')
+    + '<h3 class="card-title">' + esc(t('community.reportsTitle')) + '</h3>'
+    + (reports || '<p class="empty-state">' + esc(t('community.reportsEmpty')) + '</p>')
+    + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>';
+}
+
+/* ---------- Akcie ---------- */
+function communityCredentials() {
+  const e = document.getElementById('community-email');
+  const p = document.getElementById('community-password');
+  return { email: e ? e.value.trim() : '', password: p ? p.value : '' };
+}
+async function communitySignIn() {
+  const sb = communityClient(); if (!sb) return;
+  const c = communityCredentials();
+  communitySetMessage('');
+  const { error } = await sb.auth.signInWithPassword({ email: c.email, password: c.password });
+  if (error) { communitySetMessage('community.errSignIn'); renderCommunity(); return; }
+  renderCommunity();
+}
+async function communitySignUp() {
+  const sb = communityClient(); if (!sb) return;
+  const c = communityCredentials();
+  communitySetMessage('');
+  const { error } = await sb.auth.signUp({ email: c.email, password: c.password });
+  if (error) { communitySetMessage('community.errSignUp'); renderCommunity(); return; }
+  communitySetMessage('community.signUpDone');
+  renderCommunity();
+}
+async function communitySignOut() {
+  const sb = communityClient(); if (!sb) return;
+  await sb.auth.signOut();
+  communityProfile = null;
+  communityFeed = { items: [], offset: 0, done: false, loading: false };
+  renderCommunity();
+}
+async function communitySaveProfile() {
+  const sb = communityClient(); if (!sb || !communityProfile) return;
+  const u = document.getElementById('community-username');
+  const b = document.getElementById('community-bio');
+  const username = (u ? u.value.trim() : '');
+  const bio = (b ? b.value.trim() : '');
+  const { error } = await sb.from('profiles').update({ username, bio }).eq('id', communityProfile.id);
+  communitySetMessage(error ? (String(error.message || '').indexOf('duplicate') >= 0 ? 'community.errUsername' : 'community.errNetwork') : 'community.saved');
+  renderCommunity();
+}
+async function communityUploadAvatar(file) {
+  const sb = communityClient(); if (!sb || !communityProfile) return;
+  try {
+    const dec = await decodeImageForProgress(file);
+    if (!dec) { communitySetMessage('community.errImage'); renderCommunity(); return; }
+    const out = await drawScaledP(dec.src, dec.w, dec.h, 400, 'image/jpeg', 0.8);
+    if (dec.close) dec.close();
+    const path = communityProfile.id + '/avatar.jpg';
+    const up = await sb.storage.from('avatars').upload(path, out.blob, { upsert: true, contentType: 'image/jpeg' });
+    if (up.error) { communitySetMessage('community.errUpload'); renderCommunity(); return; }
+    await sb.from('profiles').update({ avatar_path: path }).eq('id', communityProfile.id);
+    communitySetMessage('community.saved');
+  } catch (e) { communitySetMessage('community.errImage'); }
+  renderCommunity();
+}
+async function communityShareProgressPhoto(id) {
+  const sb = communityClient(); if (!sb || !communityProfile) return;
+  try {
+    const rec = await idbGetProgress(id);
+    if (!rec || !rec.blob) { communitySetMessage('community.errImage'); return; }
+    const dec = await decodeImageForProgress(rec.blob);
+    if (!dec) { communitySetMessage('community.errImage'); return; }
+    const full = await drawScaledP(dec.src, dec.w, dec.h, COMMUNITY_UPLOAD_EDGE, 'image/jpeg', 0.82);
+    const thumb = await drawScaledP(dec.src, dec.w, dec.h, 400, 'image/jpeg', 0.8);
+    if (dec.close) dec.close();
+    if (!full.blob || full.blob.size > COMMUNITY_MAX_UPLOAD_BYTES) { communitySetMessage('community.errTooLarge'); return; }
+    const postId = uid();
+    const imagePath = communityProfile.id + '/' + postId + '.jpg';
+    const thumbPath = communityProfile.id + '/' + postId + '_thumb.jpg';
+    const up1 = await sb.storage.from('community').upload(imagePath, full.blob, { contentType: 'image/jpeg' });
+    if (up1.error) { communitySetMessage('community.errUpload'); return; }
+    const up2 = await sb.storage.from('community').upload(thumbPath, thumb.blob, { contentType: 'image/jpeg' });
+    if (up2.error) { await sb.storage.from('community').remove([imagePath]); communitySetMessage('community.errUpload'); return; }
+    const ins = await sb.from('posts').insert({ user_id: communityProfile.id, image_path: imagePath, thumb_path: thumbPath, caption: '' });
+    if (ins.error) {
+      await sb.storage.from('community').remove([imagePath, thumbPath]);   // no orphaned files
+      communitySetMessage(String(ins.error.message || '').indexOf('policy') >= 0 ? 'community.errModeration' : 'community.errUpload');
+      return;
+    }
+    communitySetMessage('community.submitted');
+  } catch (e) { communitySetMessage('community.errUpload'); }
+}
+function communityAskShare(id) {
+  showGeneric(t('community.shareTitle'), t('community.shareConfirm'), () => {
+    communityShareProgressPhoto(id).then(() => {
+      if (isOpen('modal-community')) renderCommunity();
+      else showPhotoStatus('community.submitted');
+    });
+  }, esc(t('community.shareBody')));
+}
+let communityCaptionPostId = null;
+function communityEditCaption(postId) {
+  communityCaptionPostId = postId;
+  const inp = document.getElementById('community-caption-input');
+  if (inp) inp.value = '';
+  document.getElementById('modal-community-caption').hidden = false;
+}
+async function communitySaveCaption() {
+  const sb = communityClient();
+  if (!sb || !communityCaptionPostId) return;
+  const val = (((document.getElementById('community-caption-input') || {}).value) || '').slice(0, 500);
+  const { error } = await sb.from('posts').update({ caption: val }).eq('id', communityCaptionPostId);
+  communityCaptionPostId = null;
+  document.getElementById('modal-community-caption').hidden = true;
+  communitySetMessage(error ? 'community.errNetwork' : 'community.saved');
+  renderCommunity();
+}
+function communityDeletePost(postId) {
+  showGeneric(t('community.deletePostTitle'), t('community.deletePost'), () => {
+    const sb = communityClient(); if (!sb) return;
+    sb.from('posts').select('image_path,thumb_path').eq('id', postId).maybeSingle().then((res) => {
+      const p = res.data || {};
+      sb.from('posts').delete().eq('id', postId).then(() => {
+        if (p.image_path) sb.storage.from('community').remove([p.image_path, p.thumb_path].filter(Boolean));
+        communitySetMessage('community.deleted');
+        renderCommunity();
+      });
+    });
+  }, esc(t('community.deletePostConfirm')));
+}
+function communityBlock(userId, name) {
+  showGeneric(t('community.blockTitle'), t('community.block'), () => {
+    const sb = communityClient(); if (!sb || !communityProfile) return;
+    sb.from('blocks').insert({ blocker_id: communityProfile.id, blocked_id: userId }).then((res) => {
+      if (res && res.error) { communitySetMessage('community.errNetwork'); renderCommunity(); return; }
+      communityBlocked.add(userId);
+      communityFeed.items = communityFeed.items.filter((p) => p.user_id !== userId);
+      communitySetMessage('community.blocked');
+      renderCommunity();
+    });
+  }, esc(t('community.blockConfirm', { name: name || '' })));
+}
+function communityReportPost(postId) {
+  showGeneric(t('community.reportTitle'), t('community.report'), () => {
+    const sb = communityClient(); if (!sb || !communityProfile) return;
+    sb.from('reports').insert({ reporter_id: communityProfile.id, post_id: postId, reason: t('community.reportReasonDefault') }).then((res) => {
+      if (res && res.error) { communitySetMessage('community.errNetwork'); renderCommunity(); return; }
+      communitySetMessage('community.reported');
+      renderCommunity();
+    });
+  }, esc(t('community.reportConfirm')));
+}
+async function communityModerate(action, id) {
+  const sb = communityClient(); if (!sb) return;
+  let res = { error: null };
+  if (action === 'approve' || action === 'reject') {
+    const patch = action === 'approve' ? { status: 'approved', published_at: new Date().toISOString() } : { status: 'rejected' };
+    res = await sb.from('posts').update(patch).eq('id', id);
+  } else if (action === 'resolve-report') {
+    res = await sb.from('reports').update({ status: 'resolved' }).eq('id', id);
+  } else if (action === 'suspend') {
+    res = await sb.from('profiles').update({ suspended: true }).eq('id', id);
+  }
+  communitySetMessage(res && res.error ? 'community.errNetwork' : 'community.saved');
+  renderCommunity();
+}
+function communityDeleteAccount() {
+  showGeneric(t('community.deleteAccountTitle'), t('community.deleteAccount'), () => {
+    const sb = communityClient(); if (!sb) return;
+    sb.functions.invoke('delete-account', { method: 'POST' }).then((res) => {
+      if (res && res.error) { communitySetMessage('community.errNetwork'); renderCommunity(); return null; }
+      return sb.auth.signOut().then(() => {
+        communityProfile = null;
+        communitySetMessage('community.accountDeleted');
+        renderCommunity();
+      });
+    }).catch(() => { communitySetMessage('community.errNetwork'); renderCommunity(); });
+  }, esc(t('community.deleteAccountConfirm')));
+}
+
 function setPokrokView(view) {
   pokrokView = (view === 'body' || view === 'food' || view === 'photos') ? view : 'progress';
   renderPokrok();
@@ -14887,6 +15566,42 @@ function setupEvents() {
   });
 
   /* ---------- Pokrok: podpohľady, telo a jedlo ---------- */
+  on('btn-community', communityOpen);
+  on('btn-community-settings', communityOpen);
+  on('btn-photo-viewer-share', () => { const id = currentViewerPhotoId(); if (id) communityAskShare(id); });
+  on('community-body', (e) => {
+    const tab = e.target.closest ? e.target.closest('[data-community-view]') : null;
+    if (tab && tab.dataset.communityView) { communitySetView(tab.dataset.communityView); return; }
+    const a = e.target.closest ? e.target.closest('[data-community-action]') : null;
+    if (!a) return;
+    const act = a.dataset.communityAction;
+    if (act === 'close') communityClose();
+    else if (act === 'enable') communityEnable();
+    else if (act === 'disable') communityDisable();
+    else if (act === 'signin') communitySignIn();
+    else if (act === 'signup') communitySignUp();
+    else if (act === 'signout') communitySignOut();
+    else if (act === 'save-profile') communitySaveProfile();
+    else if (act === 'more') { const sb = communityClient(); if (sb) communityLoadFeed(sb, false); }
+    else if (act === 'edit-caption') communityEditCaption(a.dataset.post);
+    else if (act === 'delete-post') communityDeletePost(a.dataset.post);
+    else if (act === 'block') communityBlock(a.dataset.user, a.dataset.name);
+    else if (act === 'report-post') communityReportPost(a.dataset.post);
+    else if (act === 'approve' || act === 'reject') communityModerate(act, a.dataset.post);
+    else if (act === 'resolve-report') communityModerate('resolve-report', a.dataset.report);
+    else if (act === 'suspend') communityModerate('suspend', a.dataset.user);
+    else if (act === 'delete-account') communityDeleteAccount();
+  });
+  on('community-body', (e) => {
+    if (e.target && e.target.id === 'community-avatar' && e.target.files && e.target.files[0]) {
+      const f = e.target.files[0];
+      e.target.value = '';
+      communityUploadAvatar(f);
+    }
+  }, 'change');
+  on('btn-community-caption-cancel', () => { communityCaptionPostId = null; document.getElementById('modal-community-caption').hidden = true; });
+  on('btn-community-caption-save', communitySaveCaption);
+
   on('pokrok-subtabs', (e) => {
     const btn = e.target.closest ? e.target.closest('.subtab') : null;
     if (btn && btn.dataset.pokrok) setPokrokView(btn.dataset.pokrok);
@@ -15079,7 +15794,8 @@ function isBusy() {
   if (ctPanel && !ctPanel.hidden) return true;           // rozrobený vlastný čas pauzy
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
     'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food',
-    'modal-library', 'modal-exercise', 'modal-photo-add', 'modal-photo', 'modal-photo-compare'];
+    'modal-library', 'modal-exercise', 'modal-photo-add', 'modal-photo', 'modal-photo-compare',
+    'modal-community', 'modal-community-caption'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg
