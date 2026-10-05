@@ -1837,6 +1837,25 @@ const I18N = {
     'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
     'plan.home-starter': 'Domáci štart',
     'plan.outdoor-starter': 'Vonkajší štart',
+    'photos.subtab': 'Fotky progresu',
+    'photos.add': 'Pridať fotky', 'photos.addTitle': 'Pridať fotky', 'photos.editTitle': 'Upraviť fotku',
+    'photos.date': 'Dátum', 'photos.note': 'Poznámka', 'photos.optional': 'voliteľné', 'photos.view': 'Pohľad',
+    'photos.viewNone': 'Žiadny', 'photos.viewFront': 'Zpredu', 'photos.viewSide': 'Zboku', 'photos.viewBack': 'Zozadu', 'photos.viewOther': 'Iný',
+    'photos.empty': 'Zatiaľ žiadne fotky progresu.',
+    'photos.emptyHint': 'Pridaj fotky a porovnaj, ako vyzeráš v čase. Ostávajú na tomto zariadení.',
+    'photos.privacy': 'Fotky sa ukladajú iba na tomto zariadení. Nesynchronizujú sa medzi zariadeniami, nie sú v JSON zálohe a môžu sa stratiť, ak vymažeš dáta aplikácie či prehliadača. Nie sú šifrované ani chránené heslom.',
+    'photos.optimizeNote': 'Ukladá sa len optimalizovaná kópia a náhľad – pôvodný súbor sa neuchováva.',
+    'photos.compare': 'Porovnať', 'photos.compareHint': 'Vyber ľubovoľné dve fotky. Skorší dátum sa zobrazí ako Predtým.',
+    'photos.before': 'Predtým', 'photos.after': 'Teraz',
+    'photos.edit': 'Upraviť', 'photos.delete': 'Vymazať',
+    'photos.deleteTitle': 'Vymazať túto fotku?',
+    'photos.deleteConfirm': 'Fotka z {date} sa odstráni z tohto zariadenia. Nedá sa to vrátiť.',
+    'photos.saveToDevice': 'Uložiť do zariadenia', 'photos.saveHint': 'Uloží optimalizovanú kópiu z GymQuestu, nie pôvodný súbor.',
+    'photos.addedOk': 'Uložené na tomto zariadení.', 'photos.needTwo': 'Na porovnanie pridaj aspoň dve fotky.',
+    'photos.errType': 'Nepodporovaný alebo nečitateľný obrázok. Použi bežný formát (JPG, PNG, WebP).',
+    'photos.errSize': 'Obrázok je príliš veľký. Fotky do 25 MB.',
+    'photos.errStorage': 'Na tomto zariadení nie je dosť miesta na uloženie fotky.',
+    'photos.openAria': 'Otvoriť fotku z {date}', 'photos.prev': 'Predchádzajúca', 'photos.next': 'Ďalšia',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2610,6 +2629,25 @@ const I18N = {
     'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
     'plan.home-starter': 'Home starter',
     'plan.outdoor-starter': 'Outdoor starter',
+    'photos.subtab': 'Progress photos',
+    'photos.add': 'Add photos', 'photos.addTitle': 'Add photos', 'photos.editTitle': 'Edit photo',
+    'photos.date': 'Date', 'photos.note': 'Note', 'photos.optional': 'optional', 'photos.view': 'View',
+    'photos.viewNone': 'None', 'photos.viewFront': 'Front', 'photos.viewSide': 'Side', 'photos.viewBack': 'Back', 'photos.viewOther': 'Other',
+    'photos.empty': 'No progress photos yet.',
+    'photos.emptyHint': 'Add photos to compare how you look over time. They stay on this device.',
+    'photos.privacy': 'Your photos are stored only on this device. They are not synced between devices, not included in the JSON backup, and may be lost if you clear the app or browser data. They are not encrypted and not password-protected.',
+    'photos.optimizeNote': 'Only an optimized copy and a thumbnail are kept — the original file is not stored.',
+    'photos.compare': 'Compare', 'photos.compareHint': 'Pick any two photos. The earlier date is shown as Before.',
+    'photos.before': 'Before', 'photos.after': 'Now',
+    'photos.edit': 'Edit', 'photos.delete': 'Delete',
+    'photos.deleteTitle': 'Delete this photo?',
+    'photos.deleteConfirm': 'This removes the photo from {date} from this device. It cannot be undone.',
+    'photos.saveToDevice': 'Save to device', 'photos.saveHint': 'Saves the optimized copy stored in GymQuest, not the original file.',
+    'photos.addedOk': 'Saved on this device.', 'photos.needTwo': 'Add at least two photos to compare.',
+    'photos.errType': 'Unsupported or unreadable image. Use a common photo format (JPG, PNG, WebP).',
+    'photos.errSize': 'That image is too large. Photos up to 25 MB.',
+    'photos.errStorage': 'Not enough storage on this device to save the photo.',
+    'photos.openAria': 'Open photo from {date}', 'photos.prev': 'Previous', 'photos.next': 'Next',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3383,6 +3421,25 @@ const I18N = {
     'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
     'plan.home-starter': 'Inicio en casa',
     'plan.outdoor-starter': 'Inicio al aire libre',
+    'photos.subtab': 'Fotos de progreso',
+    'photos.add': 'Añadir fotos', 'photos.addTitle': 'Añadir fotos', 'photos.editTitle': 'Editar foto',
+    'photos.date': 'Fecha', 'photos.note': 'Nota', 'photos.optional': 'opcional', 'photos.view': 'Vista',
+    'photos.viewNone': 'Ninguna', 'photos.viewFront': 'Frontal', 'photos.viewSide': 'Lateral', 'photos.viewBack': 'Trasera', 'photos.viewOther': 'Otra',
+    'photos.empty': 'Aún no hay fotos de progreso.',
+    'photos.emptyHint': 'Añade fotos para comparar cómo te ves con el tiempo. Se quedan en este dispositivo.',
+    'photos.privacy': 'Tus fotos se guardan solo en este dispositivo. No se sincronizan entre dispositivos, no están en la copia JSON y pueden perderse si borras los datos de la aplicación o del navegador. No están cifradas ni protegidas con contraseña.',
+    'photos.optimizeNote': 'Solo se guardan una copia optimizada y una miniatura: el archivo original no se almacena.',
+    'photos.compare': 'Comparar', 'photos.compareHint': 'Elige dos fotos cualesquiera. La fecha más antigua se muestra como Antes.',
+    'photos.before': 'Antes', 'photos.after': 'Ahora',
+    'photos.edit': 'Editar', 'photos.delete': 'Eliminar',
+    'photos.deleteTitle': '¿Eliminar esta foto?',
+    'photos.deleteConfirm': 'Se eliminará la foto del {date} de este dispositivo. No se puede deshacer.',
+    'photos.saveToDevice': 'Guardar en el dispositivo', 'photos.saveHint': 'Guarda la copia optimizada de GymQuest, no el archivo original.',
+    'photos.addedOk': 'Guardado en este dispositivo.', 'photos.needTwo': 'Añade al menos dos fotos para comparar.',
+    'photos.errType': 'Imagen no compatible o ilegible. Usa un formato común (JPG, PNG, WebP).',
+    'photos.errSize': 'La imagen es demasiado grande. Fotos hasta 25 MB.',
+    'photos.errStorage': 'No hay suficiente espacio en este dispositivo para guardar la foto.',
+    'photos.openAria': 'Abrir la foto del {date}', 'photos.prev': 'Anterior', 'photos.next': 'Siguiente',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4154,6 +4211,25 @@ const I18N = {
     'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
     'plan.home-starter': 'Início em casa',
     'plan.outdoor-starter': 'Início ao ar livre',
+    'photos.subtab': 'Fotos de progresso',
+    'photos.add': 'Adicionar fotos', 'photos.addTitle': 'Adicionar fotos', 'photos.editTitle': 'Editar foto',
+    'photos.date': 'Data', 'photos.note': 'Nota', 'photos.optional': 'opcional', 'photos.view': 'Vista',
+    'photos.viewNone': 'Nenhuma', 'photos.viewFront': 'Frente', 'photos.viewSide': 'Lado', 'photos.viewBack': 'Costas', 'photos.viewOther': 'Outra',
+    'photos.empty': 'Ainda não há fotos de progresso.',
+    'photos.emptyHint': 'Adicione fotos para comparar como você fica ao longo do tempo. Elas ficam neste dispositivo.',
+    'photos.privacy': 'Suas fotos são guardadas somente neste dispositivo. Não são sincronizadas entre dispositivos, não entram no backup JSON e podem ser perdidas se você limpar os dados do aplicativo ou do navegador. Não são criptografadas nem protegidas por senha.',
+    'photos.optimizeNote': 'Apenas uma cópia otimizada e uma miniatura são guardadas — o arquivo original não é armazenado.',
+    'photos.compare': 'Comparar', 'photos.compareHint': 'Escolha duas fotos quaisquer. A data mais antiga aparece como Antes.',
+    'photos.before': 'Antes', 'photos.after': 'Agora',
+    'photos.edit': 'Editar', 'photos.delete': 'Excluir',
+    'photos.deleteTitle': 'Excluir esta foto?',
+    'photos.deleteConfirm': 'Isso remove a foto de {date} deste dispositivo. Não pode ser desfeito.',
+    'photos.saveToDevice': 'Salvar no dispositivo', 'photos.saveHint': 'Salva a cópia otimizada do GymQuest, não o arquivo original.',
+    'photos.addedOk': 'Salvo neste dispositivo.', 'photos.needTwo': 'Adicione pelo menos duas fotos para comparar.',
+    'photos.errType': 'Imagem não suportada ou ilegível. Use um formato comum (JPG, PNG, WebP).',
+    'photos.errSize': 'A imagem é grande demais. Fotos até 25 MB.',
+    'photos.errStorage': 'Não há espaço suficiente neste dispositivo para salvar a foto.',
+    'photos.openAria': 'Abrir a foto de {date}', 'photos.prev': 'Anterior', 'photos.next': 'Próxima',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -4925,6 +5001,25 @@ const I18N = {
     'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
     'plan.home-starter': 'Départ maison',
     'plan.outdoor-starter': 'Départ extérieur',
+    'photos.subtab': 'Photos de progrès',
+    'photos.add': 'Ajouter des photos', 'photos.addTitle': 'Ajouter des photos', 'photos.editTitle': 'Modifier la photo',
+    'photos.date': 'Date', 'photos.note': 'Note', 'photos.optional': 'facultatif', 'photos.view': 'Vue',
+    'photos.viewNone': 'Aucune', 'photos.viewFront': 'Face', 'photos.viewSide': 'Profil', 'photos.viewBack': 'Dos', 'photos.viewOther': 'Autre',
+    'photos.empty': 'Aucune photo de progrès pour l’instant.',
+    'photos.emptyHint': 'Ajoute des photos pour comparer ton apparence dans le temps. Elles restent sur cet appareil.',
+    'photos.privacy': 'Tes photos sont stockées uniquement sur cet appareil. Elles ne sont pas synchronisées entre appareils, ne sont pas incluses dans la sauvegarde JSON et peuvent être perdues si tu effaces les données de l’application ou du navigateur. Elles ne sont ni chiffrées ni protégées par mot de passe.',
+    'photos.optimizeNote': 'Seules une copie optimisée et une miniature sont conservées — le fichier d’origine n’est pas stocké.',
+    'photos.compare': 'Comparer', 'photos.compareHint': 'Choisis deux photos. La date la plus ancienne apparaît comme Avant.',
+    'photos.before': 'Avant', 'photos.after': 'Maintenant',
+    'photos.edit': 'Modifier', 'photos.delete': 'Supprimer',
+    'photos.deleteTitle': 'Supprimer cette photo ?',
+    'photos.deleteConfirm': 'Cela supprime la photo du {date} de cet appareil. Action irréversible.',
+    'photos.saveToDevice': 'Enregistrer sur l’appareil', 'photos.saveHint': 'Enregistre la copie optimisée de GymQuest, pas le fichier d’origine.',
+    'photos.addedOk': 'Enregistré sur cet appareil.', 'photos.needTwo': 'Ajoute au moins deux photos pour comparer.',
+    'photos.errType': 'Image non prise en charge ou illisible. Utilise un format courant (JPG, PNG, WebP).',
+    'photos.errSize': 'Cette image est trop volumineuse. Photos jusqu’à 25 Mo.',
+    'photos.errStorage': 'Pas assez d’espace sur cet appareil pour enregistrer la photo.',
+    'photos.openAria': 'Ouvrir la photo du {date}', 'photos.prev': 'Précédente', 'photos.next': 'Suivante',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -5715,6 +5810,25 @@ const I18N = {
     'units.km': 'كم', 'units.mi': 'ميل', 'units.kmh': 'كم/س', 'units.mph': 'ميل/س', 'units.perKm': '/كم', 'units.perMi': '/ميل',
     'plan.home-starter': 'بداية منزلية',
     'plan.outdoor-starter': 'بداية خارجية',
+    'photos.subtab': 'صور التقدم',
+    'photos.add': 'إضافة صور', 'photos.addTitle': 'إضافة صور', 'photos.editTitle': 'تعديل الصورة',
+    'photos.date': 'التاريخ', 'photos.note': 'ملاحظة', 'photos.optional': 'اختياري', 'photos.view': 'الوضعية',
+    'photos.viewNone': 'بدون', 'photos.viewFront': 'أمامي', 'photos.viewSide': 'جانبي', 'photos.viewBack': 'خلفي', 'photos.viewOther': 'أخرى',
+    'photos.empty': 'لا توجد صور تقدم بعد.',
+    'photos.emptyHint': 'أضف صورًا لمقارنة مظهرك مع الوقت. تبقى على هذا الجهاز.',
+    'photos.privacy': 'صورك محفوظة على هذا الجهاز فقط. لا تتم مزامنتها بين الأجهزة، ولا تُضمَّن في نسخة JSON الاحتياطية، وقد تُفقد إذا مسحت بيانات التطبيق أو المتصفح. وهي ليست مشفّرة ولا محمية بكلمة مرور.',
+    'photos.optimizeNote': 'يُحتفظ فقط بنسخة محسّنة وصورة مصغّرة — لا يُخزَّن الملف الأصلي.',
+    'photos.compare': 'مقارنة', 'photos.compareHint': 'اختر أي صورتين. يظهر التاريخ الأقدم كـ "قبل".',
+    'photos.before': 'قبل', 'photos.after': 'الآن',
+    'photos.edit': 'تعديل', 'photos.delete': 'حذف',
+    'photos.deleteTitle': 'حذف هذه الصورة؟',
+    'photos.deleteConfirm': 'سيؤدي هذا إلى حذف صورة {date} من هذا الجهاز. لا يمكن التراجع.',
+    'photos.saveToDevice': 'حفظ في الجهاز', 'photos.saveHint': 'يحفظ النسخة المحسّنة المخزّنة في GymQuest، وليس الملف الأصلي.',
+    'photos.addedOk': 'تم الحفظ على هذا الجهاز.', 'photos.needTwo': 'أضف صورتين على الأقل للمقارنة.',
+    'photos.errType': 'صورة غير مدعومة أو غير مقروءة. استخدم صيغة شائعة (JPG أو PNG أو WebP).',
+    'photos.errSize': 'الصورة كبيرة جدًا. الصور حتى 25 ميغابايت.',
+    'photos.errStorage': 'لا توجد مساحة كافية على هذا الجهاز لحفظ الصورة.',
+    'photos.openAria': 'افتح صورة {date}', 'photos.prev': 'السابقة', 'photos.next': 'التالية',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -10065,7 +10179,7 @@ function mountMediaGallery() {
    Objektové URL sa vytvárajú až pri zobrazení a hneď sa zase rušia. */
 
 const MEDIA_DB_NAME = 'gymquest-media';
-const MEDIA_DB_VERSION = 1;
+const MEDIA_DB_VERSION = 2;   // v2 pridáva obchody pre fotky progresu (existujúce zostávajú)
 const MEDIA_META_STORE = 'meta';
 const MEDIA_BLOB_STORE = 'blobs';
 const MEDIA_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -10110,6 +10224,12 @@ function openMediaDb() {
       }
       if (!db.objectStoreNames.contains(MEDIA_BLOB_STORE)) {
         db.createObjectStore(MEDIA_BLOB_STORE, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(PROGRESS_META_STORE)) {
+        db.createObjectStore(PROGRESS_META_STORE, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(PROGRESS_BLOB_STORE)) {
+        db.createObjectStore(PROGRESS_BLOB_STORE, { keyPath: 'id' });
       }
     };
     req.onsuccess = () => resolve(req.result);
@@ -10652,8 +10772,439 @@ function buildSelect(id, labelText, options, value) {
   return wrap;
 }
 
+/* ================= Fotky progresu (lokálne v IndexedDB) =================
+   Vlastné fotky používateľa na porovnanie vzhľadu v čase. Ukladajú sa IBA na
+   tomto zariadení (IndexedDB) – nikdy sa neposielajú na server, do GitHubu ani
+   iným používateľom, nie sú v JSON zálohe a NIE sú šifrované ani chránené heslom.
+   Pôvodný súbor sa NEuchováva: ukladá sa optimalizovaná kópia a náhľad. */
+
+const PROGRESS_META_STORE = 'progressMeta';
+const PROGRESS_BLOB_STORE = 'progressBlobs';
+const PROGRESS_MAX_BYTES = 25 * 1024 * 1024;   // 25 MB na fotku
+const PROGRESS_MAX_EDGE = 1600;                // dlhšia hrana optimalizovanej kópie
+const PROGRESS_THUMB_EDGE = 400;               // dlhšia hrana náhľadu
+const PROGRESS_VIEWS = ['front', 'side', 'back', 'other'];
+
+let progressReady = false;
+let progressMeta = [];
+let progressObjectUrls = [];
+let photoViewerIndex = -1;
+let photoViewerToken = 0;
+let photoCompareToken = 0;
+let pendingPhotoEditId = null;
+let pendingPhotoFiles = null;
+
+function progressViewLabel(view) {
+  if (PROGRESS_VIEWS.indexOf(view) < 0) return '';
+  return t('photos.view' + view.charAt(0).toUpperCase() + view.slice(1));
+}
+function cleanProgressMeta(m) {
+  if (!m || typeof m !== 'object' || !m.id) return null;
+  return {
+    id: String(m.id),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(m.date) ? m.date : todayISO(),
+    note: typeof m.note === 'string' ? m.note.slice(0, 500) : '',
+    view: PROGRESS_VIEWS.indexOf(m.view) >= 0 ? m.view : null,
+    seq: Number(m.seq) || 0,
+    w: Math.round(Number(m.w)) || 0,
+    h: Math.round(Number(m.h)) || 0,
+    mime: typeof m.mime === 'string' ? m.mime : '',
+    size: Number(m.size) || 0,
+    addedAt: Number(m.addedAt) || 0,
+  };
+}
+function progressSorted() {
+  return progressMeta.slice().sort((a, b) =>
+    (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.seq || 0) - (b.seq || 0)));
+}
+function releaseProgressObjectUrls() {
+  progressObjectUrls.forEach((u) => { try { URL.revokeObjectURL(u); } catch (e) {} });
+  progressObjectUrls = [];
+}
+function idbWriteProgress(meta, rec) {
+  return new Promise((resolve, reject) => {
+    const tx = mediaDb.transaction([PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    tx.objectStore(PROGRESS_META_STORE).put(meta);
+    tx.objectStore(PROGRESS_BLOB_STORE).put(rec);
+  });
+}
+function idbPutProgressMeta(meta) {
+  return new Promise((resolve, reject) => {
+    const tx = mediaDb.transaction(PROGRESS_META_STORE, 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    tx.objectStore(PROGRESS_META_STORE).put(meta);
+  });
+}
+function idbDeleteProgress(id) {
+  return new Promise((resolve, reject) => {
+    const tx = mediaDb.transaction([PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    tx.objectStore(PROGRESS_META_STORE).delete(id);
+    tx.objectStore(PROGRESS_BLOB_STORE).delete(id);
+  });
+}
+function idbGetProgress(id) {
+  return idbReq(mediaDb.transaction(PROGRESS_BLOB_STORE, 'readonly').objectStore(PROGRESS_BLOB_STORE).get(id));
+}
+
+async function initProgressPhotos() {
+  if (!mediaDb) {
+    try { mediaDb = await openMediaDb(); } catch (e) { progressReady = true; return; }
+  }
+  try {
+    const all = await idbReq(mediaDb.transaction(PROGRESS_META_STORE, 'readonly').objectStore(PROGRESS_META_STORE).getAll());
+    progressMeta = (all || []).map(cleanProgressMeta).filter(Boolean);
+  } catch (e) { progressMeta = []; }
+  progressReady = true;
+  if (pokrokView === 'photos') renderPhotos();
+}
+
+/* Orientácia sa rešpektuje: createImageBitmap s imageOrientation:'from-image',
+   s fallbackom na dekódovanie cez <img> (ktoré orientáciu tiež aplikuje). */
+async function decodeImageForProgress(file) {
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      return { src: bmp, w: bmp.width, h: bmp.height, close: () => { try { bmp.close(); } catch (e) {} } };
+    } catch (e) { /* skús fallback */ }
+  }
+  return new Promise((resolve) => {
+    let url = null;
+    try {
+      url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => resolve({ src: img, w: img.naturalWidth, h: img.naturalHeight, close: () => { try { URL.revokeObjectURL(url); } catch (e) {} } });
+      img.onerror = () => { try { URL.revokeObjectURL(url); } catch (e) {} resolve(null); };
+      img.src = url;
+    } catch (e) { resolve(null); }
+  });
+}
+function canvasToBlobP(canvas, type, q) {
+  return new Promise((resolve) => { canvas.toBlob((b) => resolve(b), type, q); });
+}
+async function drawScaledP(src, sw, sh, maxEdge, type, q) {
+  const scale = Math.min(1, maxEdge / Math.max(sw, sh));
+  const w = Math.max(1, Math.round(sw * scale));
+  const h = Math.max(1, Math.round(sh * scale));
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  c.getContext('2d').drawImage(src, 0, 0, w, h);
+  const blob = await canvasToBlobP(c, type, q);
+  return { blob, w, h };
+}
+
+/* Uloží JEDNU fotku (optimalizovaná kópia + náhľad). Vráti kľúč hlásenia. */
+async function addProgressPhoto(file, date, note, view) {
+  if (!mediaDb) return 'photos.errStorage';
+  if (!file.type || file.type.indexOf('image/') !== 0) return 'photos.errType';
+  if (typeof file.size === 'number' && file.size > PROGRESS_MAX_BYTES) return 'photos.errSize';
+  const dec = await decodeImageForProgress(file);
+  if (!dec || !dec.w || !dec.h) { if (dec && dec.close) dec.close(); return 'photos.errType'; }
+  const outType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+  let disp = null, thumb = null;
+  try {
+    disp = await drawScaledP(dec.src, dec.w, dec.h, PROGRESS_MAX_EDGE, outType, 0.85);
+    thumb = await drawScaledP(dec.src, dec.w, dec.h, PROGRESS_THUMB_EDGE, outType, 0.8);
+  } catch (e) { if (dec.close) dec.close(); return 'photos.errType'; }
+  if (dec.close) dec.close();
+  if (!disp || !disp.blob || !thumb || !thumb.blob) return 'photos.errType';
+  const id = uid();
+  const meta = {
+    id, date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : todayISO(),
+    note: String(note || '').slice(0, 500),
+    view: PROGRESS_VIEWS.indexOf(view) >= 0 ? view : null,
+    seq: Date.now() + Math.random(), w: disp.w, h: disp.h, mime: outType, size: disp.blob.size, addedAt: Date.now(),
+  };
+  try {
+    await idbWriteProgress(meta, { id, blob: disp.blob, thumb: thumb.blob, origName: String(file.name || '') });
+  } catch (e) {
+    return 'photos.errStorage';   // úspech hlásime AŽ po úspešnom uložení
+  }
+  progressMeta.push(meta);
+  return 'photos.addedOk';
+}
+
+function triggerProgressPicker() {
+  const input = document.getElementById('file-progress-photos');
+  if (!input) return;
+  input.value = '';
+  input.click();
+}
+function onProgressFilesSelected(e) {
+  const input = e.target;
+  const files = Array.prototype.slice.call(input.files || []);
+  input.value = '';
+  if (!files.length) return;                 // zrušený výber = nič
+  pendingPhotoFiles = files;
+  pendingPhotoEditId = null;
+  document.getElementById('modal-photo-add').hidden = false;
+  renderPhotoAddForm(null);
+}
+function openPhotoEdit(id) {
+  const m = progressMeta.find((x) => x.id === id);
+  if (!m) return;
+  pendingPhotoEditId = id;
+  pendingPhotoFiles = null;
+  document.getElementById('modal-photo-add').hidden = false;
+  renderPhotoAddForm(m);
+}
+function renderPhotoAddForm(m) {
+  const title = document.getElementById('photo-add-title');
+  if (title) title.textContent = t(m ? 'photos.editTitle' : 'photos.addTitle');
+  const d = document.getElementById('photo-add-date');
+  if (d) d.value = m ? m.date : todayISO();
+  const n = document.getElementById('photo-add-note');
+  if (n) n.value = m ? m.note : '';
+  const row = document.getElementById('photo-add-views');
+  if (row) {
+    row.innerHTML = [''].concat(PROGRESS_VIEWS).map((v) => {
+      const active = m ? (m.view || '') === v : v === '';
+      return '<button type="button" class="goal-chip' + (active ? ' active' : '') + '" data-photo-view="' + v + '">'
+        + esc(v ? progressViewLabel(v) : t('photos.viewNone')) + '</button>';
+    }).join('');
+  }
+  const st = document.getElementById('photo-add-status');
+  if (st) st.hidden = true;
+}
+function closePhotoAddModal() {
+  document.getElementById('modal-photo-add').hidden = true;
+  pendingPhotoEditId = null;
+  pendingPhotoFiles = null;
+  refreshUpdateBanner();
+}
+async function savePhotoAddModal() {
+  const date = ((document.getElementById('photo-add-date') || {}).value) || todayISO();
+  const note = ((document.getElementById('photo-add-note') || {}).value) || '';
+  const chip = document.querySelector('#photo-add-views .goal-chip.active');
+  const view = (chip && PROGRESS_VIEWS.indexOf(chip.dataset.photoView) >= 0) ? chip.dataset.photoView : null;
+  const st = document.getElementById('photo-add-status');
+  const fail = (key) => { if (st) { st.textContent = t(key); st.hidden = false; } };
+
+  if (pendingPhotoEditId) {
+    const m = progressMeta.find((x) => x.id === pendingPhotoEditId);
+    if (!m) { closePhotoAddModal(); return; }
+    const next = Object.assign({}, m, {
+      date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : m.date,
+      note: String(note).slice(0, 500), view,
+    });
+    try { await idbPutProgressMeta(next); } catch (e) { fail('photos.errStorage'); return; }
+    Object.assign(m, next);
+    pendingPhotoEditId = null;
+    closePhotoAddModal();
+    renderPhotos();
+    showPhotoStatus('photos.addedOk');
+    return;
+  }
+
+  const files = pendingPhotoFiles || [];
+  if (!files.length) { closePhotoAddModal(); return; }
+  /* Najprv over typ a veľkosť VŠETKÝCH súborov – pri chybe sa nič neuloží. */
+  for (const f of files) {
+    if (!f.type || f.type.indexOf('image/') !== 0) { fail('photos.errType'); return; }
+    if (typeof f.size === 'number' && f.size > PROGRESS_MAX_BYTES) { fail('photos.errSize'); return; }
+  }
+  let notice = 'photos.addedOk';
+  for (const f of files) {
+    notice = await addProgressPhoto(f, date, note, view);
+    if (notice !== 'photos.addedOk') break;   // pri chybe ostávajú predchádzajúce fotky
+  }
+  pendingPhotoFiles = null;
+  closePhotoAddModal();
+  renderPhotos();
+  showPhotoStatus(notice);
+}
+
+function showPhotoStatus(key) {
+  const el = document.getElementById('photos-status');
+  if (!el) return;
+  el.textContent = t(key);
+  el.hidden = false;
+}
+function mountProgressThumb(el, id) {
+  idbGetProgress(id).then((rec) => {
+    if (!rec || !rec.thumb || !el.isConnected) return;
+    const u = URL.createObjectURL(rec.thumb);
+    progressObjectUrls.push(u);
+    const img = document.createElement('img');
+    img.alt = ''; img.loading = 'lazy'; img.decoding = 'async'; img.src = u;
+    el.appendChild(img);
+  }).catch(() => {});
+}
+function renderPhotos() {
+  const grid = document.getElementById('photos-grid');
+  if (!grid) return;
+  const empty = document.getElementById('photos-empty');
+  const tools = document.getElementById('photos-tools');
+  const list = progressSorted();
+  releaseProgressObjectUrls();
+  grid.innerHTML = '';
+  if (tools) tools.hidden = list.length === 0;
+  if (empty) empty.hidden = !(progressReady && list.length === 0);
+  const cmp = document.getElementById('btn-photos-compare');
+  if (cmp) cmp.disabled = list.length < 2;
+  for (const m of list) {
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = 'photo-cell';
+    cell.dataset.photoId = m.id;
+    cell.setAttribute('aria-label', t('photos.openAria', { date: formatDate(m.date) }));
+    cell.innerHTML = '<span class="photo-thumb" aria-hidden="true"></span>'
+      + '<span class="photo-meta"><span class="photo-date">' + esc(formatDate(m.date)) + '</span>'
+      + (m.view ? '<span class="photo-view">' + esc(progressViewLabel(m.view)) + '</span>' : '')
+      + '</span>';
+    grid.appendChild(cell);
+    mountProgressThumb(cell.querySelector('.photo-thumb'), m.id);
+  }
+}
+
+function photoCaption(m) {
+  const parts = [formatDate(m.date)];
+  if (m.view) parts.push(progressViewLabel(m.view));
+  return parts.join(' · ');
+}
+function closePhotoViewer() {
+  photoViewerToken++;
+  const img = document.getElementById('photo-viewer-img');
+  if (img && img.dataset.url) { try { URL.revokeObjectURL(img.dataset.url); } catch (e) {} delete img.dataset.url; }
+  if (img) img.removeAttribute('src');
+  document.getElementById('modal-photo').hidden = true;
+  refreshUpdateBanner();
+}
+function openPhotoViewer(id) {
+  const list = progressSorted();
+  const idx = list.findIndex((m) => m.id === id);
+  if (idx < 0) return;
+  photoViewerIndex = idx;
+  document.getElementById('modal-photo').hidden = false;
+  renderPhotoViewer();
+}
+function renderPhotoViewer() {
+  const list = progressSorted();
+  if (photoViewerIndex < 0 || photoViewerIndex >= list.length) { closePhotoViewer(); return; }
+  const m = list[photoViewerIndex];
+  const token = ++photoViewerToken;
+  const img = document.getElementById('photo-viewer-img');
+  if (img) {
+    if (img.dataset.url) { try { URL.revokeObjectURL(img.dataset.url); } catch (e) {} delete img.dataset.url; }
+    img.removeAttribute('src');
+    idbGetProgress(m.id).then((rec) => {
+      if (token !== photoViewerToken || !rec || !rec.blob || !img.isConnected) return;
+      const u = URL.createObjectURL(rec.blob);
+      img.dataset.url = u; img.src = u;
+    }).catch(() => {});
+  }
+  const cap = document.getElementById('photo-viewer-caption');
+  if (cap) cap.textContent = photoCaption(m);
+  const note = document.getElementById('photo-viewer-note');
+  if (note) { note.textContent = m.note || ''; note.hidden = !m.note; }
+  const count = document.getElementById('photo-viewer-count');
+  if (count) count.textContent = (photoViewerIndex + 1) + ' / ' + list.length;
+  const prev = document.getElementById('btn-photo-viewer-prev');
+  const next = document.getElementById('btn-photo-viewer-next');
+  if (prev) prev.disabled = photoViewerIndex === 0;
+  if (next) next.disabled = photoViewerIndex === list.length - 1;
+}
+function photoViewerGo(delta) {
+  const list = progressSorted();
+  photoViewerIndex = Math.min(Math.max(photoViewerIndex + delta, 0), list.length - 1);
+  renderPhotoViewer();
+}
+function currentViewerPhotoId() {
+  const list = progressSorted();
+  return (photoViewerIndex >= 0 && photoViewerIndex < list.length) ? list[photoViewerIndex].id : null;
+}
+function requestDeleteProgress(id) {
+  const m = progressMeta.find((x) => x.id === id);
+  if (!m) return;
+  showGeneric(t('photos.deleteTitle'), t('photos.delete'), () => { deleteProgressPhoto(id); },
+    esc(t('photos.deleteConfirm', { date: formatDate(m.date) })));
+}
+async function deleteProgressPhoto(id) {
+  if (!mediaDb) return;
+  try { await idbDeleteProgress(id); } catch (e) { showPhotoStatus('photos.errStorage'); return; }
+  progressMeta = progressMeta.filter((m) => m.id !== id);
+  if (!document.getElementById('modal-photo').hidden) closePhotoViewer();
+  renderPhotos();
+}
+async function saveProgressPhotoToDevice(id) {
+  const m = progressMeta.find((x) => x.id === id);
+  if (!m) return;
+  try {
+    const rec = await idbGetProgress(id);
+    if (!rec || !rec.blob) { showPhotoStatus('photos.errStorage'); return; }
+    const url = URL.createObjectURL(rec.blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gymquest-photo-' + m.date + (rec.blob.type === 'image/png' ? '.png' : '.jpg');
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => { try { URL.revokeObjectURL(url); } catch (e) {} }, 4000);
+  } catch (e) { showPhotoStatus('photos.errStorage'); }
+}
+
+function openPhotoCompare() {
+  const list = progressSorted();
+  if (list.length < 2) { showPhotoStatus('photos.needTwo'); return; }
+  const a = document.getElementById('photo-compare-a');
+  const b = document.getElementById('photo-compare-b');
+  const opts = list.map((m) => '<option value="' + escAttr(m.id) + '">'
+    + esc(formatDate(m.date) + (m.view ? ' · ' + progressViewLabel(m.view) : '')) + '</option>').join('');
+  if (a) { a.innerHTML = opts; a.value = list[0].id; }
+  if (b) { b.innerHTML = opts; b.value = list[list.length - 1].id; }
+  document.getElementById('modal-photo-compare').hidden = false;
+  renderPhotoCompare();
+}
+function setComparePanel(slot, m, token) {
+  const box = document.getElementById('photo-compare-' + slot);
+  if (!box) return;
+  const img = box.querySelector('img');
+  if (img) {
+    if (img.dataset.url) { try { URL.revokeObjectURL(img.dataset.url); } catch (e) {} delete img.dataset.url; }
+    img.removeAttribute('src');
+  }
+  const labelEl = box.querySelector('.photo-compare-label');
+  if (labelEl) labelEl.textContent = t(slot === 'before' ? 'photos.before' : 'photos.after');
+  const dateEl = box.querySelector('.photo-compare-date');
+  if (dateEl) dateEl.textContent = m ? photoCaption(m) : '';
+  if (m && img) {
+    idbGetProgress(m.id).then((rec) => {
+      if (token !== photoCompareToken || !rec || !rec.blob || !img.isConnected) return;
+      const u = URL.createObjectURL(rec.blob);
+      img.dataset.url = u; img.src = u;
+    }).catch(() => {});
+  }
+}
+function renderPhotoCompare() {
+  const list = progressSorted();
+  const selA = document.getElementById('photo-compare-a');
+  const selB = document.getElementById('photo-compare-b');
+  if (!selA || !selB) return;
+  let ma = list.find((m) => m.id === selA.value) || null;
+  let mb = list.find((m) => m.id === selB.value) || null;
+  /* Predtým/Teraz sa určuje PODĽA DÁTUMU: skorší dátum je "Predtým". */
+  if (ma && mb && mb.date < ma.date) { const t = ma; ma = mb; mb = t; }
+  const token = ++photoCompareToken;
+  setComparePanel('before', ma, token);
+  setComparePanel('after', mb, token);
+}
+function closePhotoCompare() {
+  photoCompareToken++;
+  for (const slot of ['before', 'after']) {
+    const img = document.querySelector('#photo-compare-' + slot + ' img');
+    if (img && img.dataset.url) { try { URL.revokeObjectURL(img.dataset.url); } catch (e) {} delete img.dataset.url; }
+  }
+  document.getElementById('modal-photo-compare').hidden = true;
+  refreshUpdateBanner();
+}
+
 function setPokrokView(view) {
-  pokrokView = (view === 'body' || view === 'food') ? view : 'progress';
+  pokrokView = (view === 'body' || view === 'food' || view === 'photos') ? view : 'progress';
   renderPokrok();
   refreshUpdateBanner();
 }
@@ -10666,7 +11217,7 @@ function renderPokrokSubtabs() {
     b.classList.toggle('active', on);
     b.setAttribute('aria-selected', on ? 'true' : 'false');
   });
-  for (const v of ['progress', 'body', 'food']) {
+  for (const v of ['progress', 'body', 'food', 'photos']) {
     const el = document.getElementById('subview-' + v);
     if (el) el.hidden = v !== pokrokView;
   }
@@ -11528,6 +12079,7 @@ function renderPokrok() {
   renderPokrokSubtabs();
   renderBody();
   renderFoodView();
+  renderPhotos();
   const week = workoutsInWeek(currentWeekKey());
   const month = workoutsInMonth(currentMonthKey());
   const total = state.history.length;
@@ -14340,6 +14892,33 @@ function setupEvents() {
     if (btn && btn.dataset.pokrok) setPokrokView(btn.dataset.pokrok);
   });
 
+  /* ---------- Fotky progresu ---------- */
+  on('btn-photos-add', triggerProgressPicker);
+  on('btn-photos-add-empty', triggerProgressPicker);
+  on('file-progress-photos', onProgressFilesSelected, 'change');
+  on('btn-photos-compare', openPhotoCompare);
+  on('photos-grid', (e) => {
+    const cell = e.target.closest ? e.target.closest('[data-photo-id]') : null;
+    if (cell) openPhotoViewer(cell.dataset.photoId);
+  });
+  on('photo-add-views', (e) => {
+    const b = e.target.closest ? e.target.closest('[data-photo-view]') : null;
+    if (!b) return;
+    const row = b.parentNode;
+    if (row) Array.prototype.forEach.call(row.children, (c) => c.classList.toggle('active', c === b));
+  });
+  on('btn-photo-add-save', savePhotoAddModal);
+  on('btn-photo-add-cancel', closePhotoAddModal);
+  on('btn-photo-viewer-prev', () => photoViewerGo(-1));
+  on('btn-photo-viewer-next', () => photoViewerGo(1));
+  on('btn-photo-viewer-close', closePhotoViewer);
+  on('btn-photo-viewer-edit', () => { const id = currentViewerPhotoId(); if (id) { closePhotoViewer(); openPhotoEdit(id); } });
+  on('btn-photo-viewer-delete', () => { const id = currentViewerPhotoId(); if (id) requestDeleteProgress(id); });
+  on('btn-photo-viewer-save', () => { const id = currentViewerPhotoId(); if (id) saveProgressPhotoToDevice(id); });
+  on('btn-photo-compare-close', closePhotoCompare);
+  on('photo-compare-a', renderPhotoCompare, 'change');
+  on('photo-compare-b', renderPhotoCompare, 'change');
+
   on('body-units', (e) => {
     const btn = e.target.closest ? e.target.closest('.unit-chip') : null;
     if (btn && btn.dataset.units) setBodyUnits(btn.dataset.units);
@@ -14500,7 +15079,7 @@ function isBusy() {
   if (ctPanel && !ctPanel.hidden) return true;           // rozrobený vlastný čas pauzy
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
     'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food',
-    'modal-library', 'modal-exercise'];
+    'modal-library', 'modal-exercise', 'modal-photo-add', 'modal-photo', 'modal-photo-compare'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg
@@ -14590,6 +15169,8 @@ switchTab('dnes');
 renderAll();
 /* Vlastné médiá cvikov (IndexedDB) sa načítajú neblokujúco po prvom vykreslení. */
 initPersonalMedia();
+/* Fotky progresu (IndexedDB) – tiež neblokujúco. */
+initProgressPhotos();
 startDayWatcher();
 startDurationTicker();
 if (restoredSession) setSessionNote('trening.sessionRestored', 10000);

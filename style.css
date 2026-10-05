@@ -3146,6 +3146,35 @@ body.has-backup-banner .app-main {
 .act-hint { text-align: center; font-size: var(--fs-xs); color: var(--text-faint); margin: 0 0 var(--sp-2); }
 .act-kind-row { display: flex; gap: var(--sp-1); flex-wrap: wrap; margin: var(--sp-1) 0 var(--sp-2); }
 
+/* Fotky progresu (lokálne, súkromné) – mriežka, prezeranie a porovnanie. */
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2); margin-top: var(--sp-2); }
+.photo-cell {
+  display: flex; flex-direction: column; gap: 4px; padding: 0; background: none; border: none;
+  color: var(--text); font: inherit; cursor: pointer; text-align: start;
+}
+.photo-thumb {
+  display: block; width: 100%; aspect-ratio: 1 / 1; background: var(--surface-3);
+  border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden;
+}
+.photo-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.photo-date { font-size: var(--fs-xs); color: var(--text-dim); }
+.photo-view { font-size: var(--fs-xs); color: var(--text-faint); }
+#photos-empty .empty-state { margin-bottom: var(--sp-2); }
+
+.photo-viewer {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  background: #000; border-radius: var(--r-md); margin: var(--sp-2) 0; min-height: 160px;
+}
+.photo-viewer img { max-width: 100%; max-height: 60vh; object-fit: contain; display: block; }
+.photo-viewer-count { text-align: center; font-size: var(--fs-xs); color: var(--text-faint); margin: 0; }
+
+.photo-compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); margin: var(--sp-2) 0; }
+@media (max-width: 480px) { .photo-compare { grid-template-columns: 1fr; } }
+.photo-compare-panel { display: flex; flex-direction: column; gap: 4px; align-items: center; min-width: 0; }
+.photo-compare-panel img { max-width: 100%; max-height: 45vh; object-fit: contain; display: block; background: #000; border-radius: var(--r-sm); }
+.photo-compare-label { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--accent); }
+.photo-compare-date { font-size: var(--fs-xs); color: var(--text-faint); }
+
 .media-missing {
   display: flex;
   flex-direction: column;

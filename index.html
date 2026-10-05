@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=36">
+  <link rel="stylesheet" href="style.css?v=37">
 </head>
 <body>
 
@@ -217,6 +217,7 @@
         <button type="button" class="subtab active" data-pokrok="progress" role="tab" aria-selected="true" data-i18n="pokrok.subProgress">Pokrok</button>
         <button type="button" class="subtab" data-pokrok="body" role="tab" aria-selected="false" data-i18n="pokrok.subBody">Telo</button>
         <button type="button" class="subtab" data-pokrok="food" role="tab" aria-selected="false" data-i18n="pokrok.subFood">Jedlo</button>
+        <button type="button" class="subtab" data-pokrok="photos" role="tab" aria-selected="false" data-i18n="photos.subtab">Fotky progresu</button>
       </div>
 
       <!-- ---- podpohľad: Pokrok (pôvodný obsah, nezmenený) ---- -->
@@ -366,6 +367,26 @@
           </button>
           <div class="tips-body" id="food-tips-body" hidden></div>
         </div>
+      </div>
+
+      <!-- ---- podpohľad: Fotky progresu ---- -->
+      <div class="subview" id="subview-photos" hidden>
+        <div class="card">
+          <p class="card-sub" data-i18n="photos.emptyHint">Pridaj fotky a porovnaj, ako vyzeráš v čase. Ostávajú na tomto zariadení.</p>
+          <p class="card-note" data-i18n="photos.privacy">Fotky sa ukladajú iba na tomto zariadení. Nesynchronizujú sa medzi zariadeniami, nie sú v JSON zálohe a môžu sa stratiť, ak vymažeš dáta aplikácie či prehliadača. Nie sú šifrované ani chránené heslom.</p>
+          <div class="plan-actions" id="photos-tools" hidden>
+            <button type="button" class="btn btn-primary" id="btn-photos-compare" data-i18n="photos.compare">Porovnať</button>
+            <button type="button" class="btn btn-secondary" id="btn-photos-add" data-i18n="photos.add">Pridať fotky</button>
+          </div>
+          <p class="media-status" id="photos-status" role="status" hidden></p>
+        </div>
+
+        <div class="card" id="photos-empty">
+          <p class="empty-state" data-i18n="photos.empty">Zatiaľ žiadne fotky progresu.</p>
+          <button type="button" class="btn btn-primary btn-block" id="btn-photos-add-empty" data-i18n="photos.add">Pridať fotky</button>
+        </div>
+
+        <div class="photo-grid" id="photos-grid"></div>
       </div>
     </section>
 
@@ -740,7 +761,77 @@
     </div>
   </div>
 
+  <!-- ============ MODAL: pridať / upraviť fotku progresu ============ -->
+  <div class="modal-backdrop" id="modal-photo-add" hidden>
+    <div class="modal">
+      <h3 id="photo-add-title" data-i18n="photos.addTitle">Pridať fotky</h3>
+      <label class="modal-label" for="photo-add-date" data-i18n="photos.date">Dátum</label>
+      <input type="date" class="modal-input" id="photo-add-date">
+      <label class="modal-label" for="photo-add-note" data-i18n="photos.note">Poznámka</label>
+      <input type="text" class="modal-input" id="photo-add-note" maxlength="500" data-i18n-placeholder="photos.optional" placeholder="voliteľné">
+      <p class="modal-label" data-i18n="photos.view">Pohľad</p>
+      <div class="goal-chips" id="photo-add-views"></div>
+      <p class="media-status" id="photo-add-status" role="status" hidden></p>
+      <p class="card-note" data-i18n="photos.optimizeNote">Ukladá sa len optimalizovaná kópia a náhľad – pôvodný súbor sa neuchováva.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="btn-photo-add-cancel" data-i18n="common.cancel">Zrušiť</button>
+        <button type="button" class="btn btn-primary" id="btn-photo-add-save" data-i18n="common.save">Uložiť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: prezeranie fotky progresu ============ -->
+  <div class="modal-backdrop" id="modal-photo" hidden>
+    <div class="modal modal-sheet">
+      <div class="sheet-head">
+        <h3 id="photo-viewer-caption">—</h3>
+        <button type="button" class="btn-icon" id="btn-photo-viewer-close" data-i18n-title="common.close" data-i18n-aria="common.close">✕</button>
+      </div>
+      <div class="photo-viewer">
+        <button type="button" class="media-nav media-prev" id="btn-photo-viewer-prev" data-i18n-aria="photos.prev" aria-label="Predchádzajúca">‹</button>
+        <img id="photo-viewer-img" alt="">
+        <button type="button" class="media-nav media-next" id="btn-photo-viewer-next" data-i18n-aria="photos.next" aria-label="Ďalšia">›</button>
+      </div>
+      <p class="photo-viewer-count" id="photo-viewer-count"></p>
+      <p class="modal-note" id="photo-viewer-note" hidden></p>
+      <p class="card-note" data-i18n="photos.saveHint">Uloží optimalizovanú kópiu z GymQuestu, nie pôvodný súbor.</p>
+      <div class="plan-actions">
+        <button type="button" class="btn btn-secondary" id="btn-photo-viewer-save" data-i18n="photos.saveToDevice">Uložiť do zariadenia</button>
+        <button type="button" class="btn btn-secondary" id="btn-photo-viewer-edit" data-i18n="photos.edit">Upraviť</button>
+        <button type="button" class="btn btn-secondary" id="btn-photo-viewer-delete" data-i18n="photos.delete">Vymazať</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: porovnanie fotiek ============ -->
+  <div class="modal-backdrop" id="modal-photo-compare" hidden>
+    <div class="modal">
+      <h3 data-i18n="photos.compare">Porovnať</h3>
+      <p class="card-note" data-i18n="photos.compareHint">Vyber ľubovoľné dve fotky. Skorší dátum sa zobrazí ako Predtým.</p>
+      <label class="modal-label" for="photo-compare-a" data-i18n="photos.before">Predtým</label>
+      <select class="modal-input" id="photo-compare-a"></select>
+      <label class="modal-label" for="photo-compare-b" data-i18n="photos.after">Teraz</label>
+      <select class="modal-input" id="photo-compare-b"></select>
+      <div class="photo-compare">
+        <div class="photo-compare-panel" id="photo-compare-before">
+          <span class="photo-compare-label"></span>
+          <img alt="">
+          <span class="photo-compare-date"></span>
+        </div>
+        <div class="photo-compare-panel" id="photo-compare-after">
+          <span class="photo-compare-label"></span>
+          <img alt="">
+          <span class="photo-compare-date"></span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="btn-photo-compare-close" data-i18n="common.close">Zavrieť</button>
+      </div>
+    </div>
+  </div>
+
   <input type="file" id="file-media" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple hidden>
-  <script src="script.js?v=36"></script>
+  <input type="file" id="file-progress-photos" accept="image/*" multiple hidden>
+  <script src="script.js?v=37"></script>
 </body>
 </html>

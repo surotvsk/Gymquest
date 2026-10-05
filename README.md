@@ -624,6 +624,16 @@ estimate**. Every activity appears in **Progress** and the **Calendar** with a c
 conservatively — counts toward your weekly goal, streak and XP (each completed activity gives the
 base 20 XP once; editing never re-awards). Silo strength statistics are unchanged.
 
+**Progress photos.** **Progress → Photos** keeps a private timeline of your own photos. Add one or
+more at a time, set the **date** (defaults to today), and optionally a **note** and a **view** (Front
+/ Side / Back / Other). Thumbnails are listed in chronological order; tap one for a larger view with
+edit, delete (with confirmation) and **Save to device**. **Compare** any two photos: the earlier date
+is shown as *Before*, the later as *Now*, side by side (stacked on narrow screens) with their aspect
+ratios kept. Photos are stored **only on this device** in IndexedDB — **not** synced, **not** in the
+JSON backup, **not** encrypted or password-protected, and lost if you clear the app/browser data. Only
+an **optimized copy and a thumbnail** are kept (the original file is not stored), and location
+metadata is never shown or exported.
+
 **Swipe between media** with your finger, or use the **‹ ›** buttons, the dots, the counter or the arrow
 keys. Each item has a **caption** in every supported language, and the **creator and licence are printed
 under the media**. If a demonstration cannot be loaded, you get a clean **"Demonstration unavailable"**
