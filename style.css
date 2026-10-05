@@ -3107,6 +3107,32 @@ body.has-backup-banner .app-main {
 .media-status { color: var(--text); }
 .media-status[hidden] { display: none; }
 
+/* Voľba aktivity, domáci/vonkajší tréning a záznam aktivity. */
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); margin: var(--sp-2) 0 var(--sp-3); }
+.mode-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: var(--sp-3) var(--sp-2); background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-md); color: var(--text); font: inherit; cursor: pointer; min-height: 76px;
+}
+.mode-btn:active { border-color: var(--accent); }
+.mode-icon { font-size: 22px; line-height: 1; }
+.mode-label { font-size: var(--fs-sm); text-align: center; overflow-wrap: break-word; }
+.loc-list { display: flex; flex-direction: column; gap: var(--sp-2); margin: var(--sp-2) 0; }
+.loc-row {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2);
+  width: 100%; padding: var(--sp-2) var(--sp-3); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: var(--r-md); color: var(--text);
+  font: inherit; cursor: pointer; text-align: start;
+}
+.loc-name { font-weight: var(--fw-bold); overflow-wrap: break-word; }
+.loc-meta { font-size: var(--fs-xs); color: var(--text-faint); white-space: nowrap; }
+.act-elapsed {
+  font-size: 40px; font-weight: var(--fw-bold); letter-spacing: 1px; text-align: center;
+  color: var(--text); font-variant-numeric: tabular-nums; margin: var(--sp-2) 0;
+}
+.act-hint { text-align: center; font-size: var(--fs-xs); color: var(--text-faint); margin: 0 0 var(--sp-2); }
+.act-kind-row { display: flex; gap: var(--sp-1); flex-wrap: wrap; margin: var(--sp-1) 0 var(--sp-2); }
+
 .media-missing {
   display: flex;
   flex-direction: column;

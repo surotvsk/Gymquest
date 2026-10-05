@@ -78,19 +78,51 @@ const DEFAULT_PLANS = {
       { id: 'calf-raises', builtin: true, name: 'Lýtka', sets: 4, reps: 15, weight: 40 },
     ],
   },
+  /* Editable starter workouts for home and outdoors. Optional examples, not prescriptions –
+     only existing library exercises, all bodyweight (outdoors assumes no equipment). */
+  'home-starter': {
+    id: 'home-starter',
+    builtin: true,
+    customName: null,
+    location: 'home',
+    exercises: [
+      { id: 'bodyweight-squat', builtin: true, name: 'Drep s vlastnou váhou', sets: 3, reps: 12, weight: 0 },
+      { id: 'push-up', builtin: true, name: 'Klik', sets: 3, reps: 10, weight: 0 },
+      { id: 'split-squat', builtin: true, name: 'Drep v roznožení', sets: 3, reps: 10, weight: 0 },
+      { id: 'glute-bridge', builtin: true, name: 'Zdvíhanie bokov', sets: 3, reps: 12, weight: 0 },
+      { id: 'plank', builtin: true, name: 'Plank', sets: 3, reps: 1, weight: 0 },
+      { id: 'dead-bug', builtin: true, name: 'Mŕtvy chrobák', sets: 3, reps: 10, weight: 0 },
+    ],
+  },
+  'outdoor-starter': {
+    id: 'outdoor-starter',
+    builtin: true,
+    customName: null,
+    location: 'outdoor',
+    exercises: [
+      { id: 'push-up', builtin: true, name: 'Klik', sets: 3, reps: 10, weight: 0 },
+      { id: 'bodyweight-squat', builtin: true, name: 'Drep s vlastnou váhou', sets: 3, reps: 15, weight: 0 },
+      { id: 'split-squat', builtin: true, name: 'Drep v roznožení', sets: 3, reps: 10, weight: 0 },
+      { id: 'plank', builtin: true, name: 'Plank', sets: 3, reps: 1, weight: 0 },
+      { id: 'superman', builtin: true, name: 'Superman', sets: 3, reps: 12, weight: 0 },
+      { id: 'burpee', builtin: true, name: 'Burpee', sets: 3, reps: 8, weight: 0 },
+    ],
+  },
 };
 
 /* Zabudované plány sú obsahom aplikácie (prekladajú sa), vlastné plány sú používateľské dáta. */
-const BUILTIN_PLAN_IDS = ['push', 'pull', 'legs'];
-const DEFAULT_PLAN_ORDER = ['push', 'pull', 'legs'];
+const BUILTIN_PLAN_IDS = ['push', 'pull', 'legs', 'home-starter', 'outdoor-starter'];
+const DEFAULT_PLAN_ORDER = ['push', 'pull', 'legs', 'home-starter', 'outdoor-starter'];
 // kanonické (zdrojové) názvy zabudovaných plánov – ukladajú sa do histórie ako záznam
-const BUILTIN_PLAN_NAMES = { push: 'Push', pull: 'Pull', legs: 'Nohy' };
+const BUILTIN_PLAN_NAMES = { push: 'Push', pull: 'Pull', legs: 'Nohy', 'home-starter': 'Domáci štart', 'outdoor-starter': 'Vonkajší štart' };
 // akékoľvek názvy, ktoré patria zabudovanému plánu (všetky jazyky) –
 // rozlíši premenovanie od pôvodného názvu, nech ho používateľ napíše v ktoromkoľvek jazyku
 const BUILTIN_PLAN_LABELS = {
   push: ['Push', 'Poussée', 'Empuje', 'Empurrar', 'دفع'],
   pull: ['Pull', 'Tirage', 'Tirón', 'Puxar', 'سحب'],
   legs: ['Nohy', 'Legs', 'Jambes', 'Piernas', 'Pernas', 'الأرجل'],
+  'home-starter': ['Domáci štart', 'Home starter', 'Inicio en casa', 'Início em casa', 'Départ maison', 'بداية منزلية'],
+  'outdoor-starter': ['Vonkajší štart', 'Outdoor starter', 'Inicio al aire libre', 'Início ao ar livre', 'Départ extérieur', 'بداية خارجية'],
 };
 
 function isBuiltinPlanLabel(id, value) {
@@ -1749,6 +1781,62 @@ const I18N = {
     'media.replaceAria': 'Nahradiť moje médium',
     'media.deleteAria': 'Vymazať moje médium',
     'media.illustrationNote': 'Pôvodná ilustrácia vytvorená pre GymQuest. Nie je to fotografia.',
+    'mode.title': 'Čo chceš robiť?',
+    'mode.open': 'Čo chceš robiť?',
+    'mode.gym': 'Tréning v posilňovni',
+    'mode.home': 'Tréning doma',
+    'mode.outdoor': 'Tréning vonku',
+    'mode.run': 'Beh',
+    'mode.walk': 'Chôdza',
+    'mode.cycle': 'Cyklistika',
+    'actKind.run': 'Beh', 'actKind.walk': 'Chôdza', 'actKind.cycle': 'Cyklistika',
+    'location.equipment': 'Moje vybavenie',
+    'location.newWorkout': '+ Nový tréning tu',
+    'location.starterHint': 'Štartovné tréningy sú len voliteľné príklady – môžeš ich upraviť alebo vynechať.',
+    'location.noPlans': 'Pre toto miesto zatiaľ nemáš uložený tréning.',
+    'location.yourWorkouts': 'Tvoje tréningy',
+    'location.homeHint': 'Cviky, ktoré zvládneš doma – filtrované podľa tvojho vybavenia.',
+    'location.outdoorHint': 'Cviky na von. Nič nepredpokladá, že máš vybavenie.',
+    'act.title': 'Aktivita',
+    'act.pause': 'Pauza',
+    'act.resume': 'Pokračovať',
+    'act.finish': 'Dokončiť',
+    'act.discard': 'Zahodiť',
+    'act.logManually': 'Zapísať aktivitu ručne',
+    'act.distance': 'Vzdialenosť',
+    'act.note': 'Poznámka',
+    'act.optional': 'voliteľné',
+    'act.date': 'Dátum',
+    'act.duration': 'Trvanie',
+    'act.hours': 'Hodiny',
+    'act.minutes': 'Minúty',
+    'act.seconds': 'Sekundy',
+    'act.manualHint': 'Zapíš už dokončenú aktivitu bez spustenia živého merania.',
+    'act.noneActive': 'Neprebieha žiadna aktivita.',
+    'act.tooShort': 'To je príliš krátke na uloženie.',
+    'act.invalidDistance': 'Zadaj vzdialenosť medzi 0 a 500, alebo nechaj prázdne.',
+    'act.paused': 'Pozastavené – aktívny čas sa nemeria.',
+    'act.measured': 'Nameraný aktívny čas (bez prestávok).',
+    'act.pace': 'Tempo',
+    'act.speed': 'Rýchlosť',
+    'act.discardTitle': 'Zahodiť túto aktivitu?',
+    'act.discardConfirm': 'Rozbehnutá aktivita sa stratí. Do histórie sa nič neuloží.',
+    'act.deleteTitle': 'Vymazať túto aktivitu?',
+    'act.deleteConfirm': 'Vymaže aktivitu aj jej XP. Nedá sa to vrátiť.',
+    'act.editTitle': 'Upraviť aktivitu',
+    'act.editHint': 'Upraviť sa dá len to, čo si zadal. XP zostáva rovnaké.',
+    'conflict.title': 'Rozbehnutá session',
+    'conflict.text': 'Máš rozbehnutú aktivitu ({activity}). Zahodíš ju, ak chceš začať inú; zrušením si ju ponecháš a môžeš pokračovať neskôr.',
+    'conflict.textWorkout': 'Máš rozbehnutý tréning. Zahodíš ho, ak chceš začať túto aktivitu; zrušením si tréning ponecháš.',
+    'conflict.discard': 'Zahodiť a začať',
+    'pokrok.activitiesTitle': '🏃 Aktivity',
+    'pokrok.activitiesEmpty': 'Zatiaľ žiadne aktivity.',
+    'pokrok.actCount': 'Aktivity',
+    'pokrok.actTime': 'Celkový čas',
+    'pokrok.actDist': 'Vzdialenosť',
+    'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
+    'plan.home-starter': 'Domáci štart',
+    'plan.outdoor-starter': 'Vonkajší štart',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2466,6 +2554,62 @@ const I18N = {
     'media.replaceAria': 'Replace my media',
     'media.deleteAria': 'Delete my media',
     'media.illustrationNote': 'Original illustration created for GymQuest. Not a photograph.',
+    'mode.title': 'What do you want to do?',
+    'mode.open': 'What do you want to do?',
+    'mode.gym': 'Gym workout',
+    'mode.home': 'Home workout',
+    'mode.outdoor': 'Outdoor workout',
+    'mode.run': 'Run',
+    'mode.walk': 'Walk',
+    'mode.cycle': 'Cycle',
+    'actKind.run': 'Run', 'actKind.walk': 'Walk', 'actKind.cycle': 'Cycle',
+    'location.equipment': 'My equipment',
+    'location.newWorkout': '+ New workout here',
+    'location.starterHint': 'The starter workouts are optional examples you can edit or skip.',
+    'location.noPlans': 'No saved workouts for this place yet.',
+    'location.yourWorkouts': 'Your workouts',
+    'location.homeHint': 'Exercises you can do at home, filtered to the equipment you have.',
+    'location.outdoorHint': 'Exercises for the outdoors. Nothing assumes you have equipment.',
+    'act.title': 'Activity',
+    'act.pause': 'Pause',
+    'act.resume': 'Resume',
+    'act.finish': 'Finish',
+    'act.discard': 'Discard',
+    'act.logManually': 'Log activity manually',
+    'act.distance': 'Distance',
+    'act.note': 'Note',
+    'act.optional': 'optional',
+    'act.date': 'Date',
+    'act.duration': 'Duration',
+    'act.hours': 'Hours',
+    'act.minutes': 'Minutes',
+    'act.seconds': 'Seconds',
+    'act.manualHint': 'Enter a completed activity without starting a live session.',
+    'act.noneActive': 'No activity is running.',
+    'act.tooShort': 'That is too short to save.',
+    'act.invalidDistance': 'Enter a distance between 0 and 500, or leave it empty.',
+    'act.paused': 'Paused — active time is not counting.',
+    'act.measured': 'Measured active time (pauses excluded).',
+    'act.pace': 'Pace',
+    'act.speed': 'Speed',
+    'act.discardTitle': 'Discard this activity?',
+    'act.discardConfirm': 'The running activity will be lost. Nothing is saved to your history.',
+    'act.deleteTitle': 'Delete this activity?',
+    'act.deleteConfirm': 'This removes the activity and its XP. This cannot be undone.',
+    'act.editTitle': 'Edit activity',
+    'act.editHint': 'Only what you entered can be edited. XP stays the same.',
+    'conflict.title': 'Active session',
+    'conflict.text': 'You have an active activity ({activity}). Discard it to start something else, or cancel to keep it and resume later.',
+    'conflict.textWorkout': 'You have an active workout. Discard it to start this activity, or cancel to keep it.',
+    'conflict.discard': 'Discard and start',
+    'pokrok.activitiesTitle': '🏃 Activities',
+    'pokrok.activitiesEmpty': 'No activities yet.',
+    'pokrok.actCount': 'Activities',
+    'pokrok.actTime': 'Total time',
+    'pokrok.actDist': 'Distance',
+    'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
+    'plan.home-starter': 'Home starter',
+    'plan.outdoor-starter': 'Outdoor starter',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3183,6 +3327,62 @@ const I18N = {
     'media.replaceAria': 'Reemplazar mi contenido',
     'media.deleteAria': 'Eliminar mi contenido',
     'media.illustrationNote': 'Ilustración original creada para GymQuest. No es una fotografía.',
+    'mode.title': '¿Qué quieres hacer?',
+    'mode.open': '¿Qué quieres hacer?',
+    'mode.gym': 'Entrenamiento de gimnasio',
+    'mode.home': 'Entrenamiento en casa',
+    'mode.outdoor': 'Entrenamiento al aire libre',
+    'mode.run': 'Correr',
+    'mode.walk': 'Caminar',
+    'mode.cycle': 'Bici',
+    'actKind.run': 'Correr', 'actKind.walk': 'Caminar', 'actKind.cycle': 'Bici',
+    'location.equipment': 'Mi equipo',
+    'location.newWorkout': '+ Nuevo entrenamiento aquí',
+    'location.starterHint': 'Los entrenamientos iniciales son solo ejemplos opcionales: puedes editarlos u omitirlos.',
+    'location.noPlans': 'Aún no tienes entrenamientos guardados para este lugar.',
+    'location.yourWorkouts': 'Tus entrenamientos',
+    'location.homeHint': 'Ejercicios para hacer en casa, filtrados por tu equipo.',
+    'location.outdoorHint': 'Ejercicios para el exterior. Nada asume que tengas equipo.',
+    'act.title': 'Actividad',
+    'act.pause': 'Pausa',
+    'act.resume': 'Reanudar',
+    'act.finish': 'Terminar',
+    'act.discard': 'Descartar',
+    'act.logManually': 'Registrar actividad manualmente',
+    'act.distance': 'Distancia',
+    'act.note': 'Nota',
+    'act.optional': 'opcional',
+    'act.date': 'Fecha',
+    'act.duration': 'Duración',
+    'act.hours': 'Horas',
+    'act.minutes': 'Minutos',
+    'act.seconds': 'Segundos',
+    'act.manualHint': 'Registra una actividad ya completada sin iniciar una sesión en vivo.',
+    'act.noneActive': 'No hay ninguna actividad en curso.',
+    'act.tooShort': 'Es demasiado corto para guardarlo.',
+    'act.invalidDistance': 'Introduce una distancia entre 0 y 500, o déjala vacía.',
+    'act.paused': 'En pausa: el tiempo activo no cuenta.',
+    'act.measured': 'Tiempo activo medido (sin pausas).',
+    'act.pace': 'Ritmo',
+    'act.speed': 'Velocidad',
+    'act.discardTitle': '¿Descartar esta actividad?',
+    'act.discardConfirm': 'La actividad en curso se perderá. No se guarda nada en tu historial.',
+    'act.deleteTitle': '¿Eliminar esta actividad?',
+    'act.deleteConfirm': 'Elimina la actividad y su XP. No se puede deshacer.',
+    'act.editTitle': 'Editar actividad',
+    'act.editHint': 'Solo puedes editar lo que introdujiste. La XP no cambia.',
+    'conflict.title': 'Sesión activa',
+    'conflict.text': 'Tienes una actividad en curso ({activity}). Descártala para empezar otra, o cancela para conservarla y continuar luego.',
+    'conflict.textWorkout': 'Tienes un entrenamiento en curso. Descártalo para empezar esta actividad, o cancela para conservarlo.',
+    'conflict.discard': 'Descartar y empezar',
+    'pokrok.activitiesTitle': '🏃 Actividades',
+    'pokrok.activitiesEmpty': 'Aún no hay actividades.',
+    'pokrok.actCount': 'Actividades',
+    'pokrok.actTime': 'Tiempo total',
+    'pokrok.actDist': 'Distancia',
+    'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
+    'plan.home-starter': 'Inicio en casa',
+    'plan.outdoor-starter': 'Inicio al aire libre',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -3898,6 +4098,62 @@ const I18N = {
     'media.replaceAria': 'Substituir minha mídia',
     'media.deleteAria': 'Excluir minha mídia',
     'media.illustrationNote': 'Ilustração original criada para o GymQuest. Não é uma fotografia.',
+    'mode.title': 'O que você quer fazer?',
+    'mode.open': 'O que você quer fazer?',
+    'mode.gym': 'Treino de academia',
+    'mode.home': 'Treino em casa',
+    'mode.outdoor': 'Treino ao ar livre',
+    'mode.run': 'Corrida',
+    'mode.walk': 'Caminhada',
+    'mode.cycle': 'Bicicleta',
+    'actKind.run': 'Corrida', 'actKind.walk': 'Caminhada', 'actKind.cycle': 'Bicicleta',
+    'location.equipment': 'Meu equipamento',
+    'location.newWorkout': '+ Novo treino aqui',
+    'location.starterHint': 'Os treinos iniciais são apenas exemplos opcionais — você pode editá-los ou ignorá-los.',
+    'location.noPlans': 'Você ainda não tem treinos salvos para este lugar.',
+    'location.yourWorkouts': 'Seus treinos',
+    'location.homeHint': 'Exercícios para fazer em casa, filtrados pelo seu equipamento.',
+    'location.outdoorHint': 'Exercícios para o ambiente externo. Nada pressupõe que você tenha equipamento.',
+    'act.title': 'Atividade',
+    'act.pause': 'Pausar',
+    'act.resume': 'Retomar',
+    'act.finish': 'Concluir',
+    'act.discard': 'Descartar',
+    'act.logManually': 'Registrar atividade manualmente',
+    'act.distance': 'Distância',
+    'act.note': 'Nota',
+    'act.optional': 'opcional',
+    'act.date': 'Data',
+    'act.duration': 'Duração',
+    'act.hours': 'Horas',
+    'act.minutes': 'Minutos',
+    'act.seconds': 'Segundos',
+    'act.manualHint': 'Registre uma atividade já concluída sem iniciar uma sessão ao vivo.',
+    'act.noneActive': 'Nenhuma atividade em andamento.',
+    'act.tooShort': 'Isso é curto demais para salvar.',
+    'act.invalidDistance': 'Informe uma distância entre 0 e 500, ou deixe vazio.',
+    'act.paused': 'Pausado — o tempo ativo não está contando.',
+    'act.measured': 'Tempo ativo medido (sem as pausas).',
+    'act.pace': 'Ritmo',
+    'act.speed': 'Velocidade',
+    'act.discardTitle': 'Descartar esta atividade?',
+    'act.discardConfirm': 'A atividade em andamento será perdida. Nada é salvo no seu histórico.',
+    'act.deleteTitle': 'Excluir esta atividade?',
+    'act.deleteConfirm': 'Isso remove a atividade e o XP dela. Não pode ser desfeito.',
+    'act.editTitle': 'Editar atividade',
+    'act.editHint': 'Só dá para editar o que você digitou. O XP permanece igual.',
+    'conflict.title': 'Sessão ativa',
+    'conflict.text': 'Você tem uma atividade em andamento ({activity}). Descarte-a para começar outra, ou cancele para mantê-la e continuar depois.',
+    'conflict.textWorkout': 'Você tem um treino em andamento. Descarte-o para começar esta atividade, ou cancele para mantê-lo.',
+    'conflict.discard': 'Descartar e começar',
+    'pokrok.activitiesTitle': '🏃 Atividades',
+    'pokrok.activitiesEmpty': 'Ainda não há atividades.',
+    'pokrok.actCount': 'Atividades',
+    'pokrok.actTime': 'Tempo total',
+    'pokrok.actDist': 'Distância',
+    'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
+    'plan.home-starter': 'Início em casa',
+    'plan.outdoor-starter': 'Início ao ar livre',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -4613,6 +4869,62 @@ const I18N = {
     'media.replaceAria': 'Remplacer mon média',
     'media.deleteAria': 'Supprimer mon média',
     'media.illustrationNote': 'Illustration originale créée pour GymQuest. Ce n’est pas une photographie.',
+    'mode.title': 'Que veux-tu faire ?',
+    'mode.open': 'Que veux-tu faire ?',
+    'mode.gym': 'Entraînement en salle',
+    'mode.home': 'Entraînement à la maison',
+    'mode.outdoor': 'Entraînement en extérieur',
+    'mode.run': 'Course',
+    'mode.walk': 'Marche',
+    'mode.cycle': 'Vélo',
+    'actKind.run': 'Course', 'actKind.walk': 'Marche', 'actKind.cycle': 'Vélo',
+    'location.equipment': 'Mon matériel',
+    'location.newWorkout': '+ Nouvel entraînement ici',
+    'location.starterHint': 'Les entraînements de départ sont de simples exemples facultatifs : tu peux les modifier ou les ignorer.',
+    'location.noPlans': 'Aucun entraînement enregistré pour ce lieu pour l’instant.',
+    'location.yourWorkouts': 'Tes entraînements',
+    'location.homeHint': 'Des exercices à faire à la maison, filtrés selon ton matériel.',
+    'location.outdoorHint': 'Des exercices pour l’extérieur. Rien ne suppose que tu as du matériel.',
+    'act.title': 'Activité',
+    'act.pause': 'Pause',
+    'act.resume': 'Reprendre',
+    'act.finish': 'Terminer',
+    'act.discard': 'Abandonner',
+    'act.logManually': 'Enregistrer une activité manuellement',
+    'act.distance': 'Distance',
+    'act.note': 'Note',
+    'act.optional': 'facultatif',
+    'act.date': 'Date',
+    'act.duration': 'Durée',
+    'act.hours': 'Heures',
+    'act.minutes': 'Minutes',
+    'act.seconds': 'Secondes',
+    'act.manualHint': 'Saisis une activité déjà terminée sans lancer de séance en direct.',
+    'act.noneActive': 'Aucune activité en cours.',
+    'act.tooShort': 'C’est trop court pour être enregistré.',
+    'act.invalidDistance': 'Saisis une distance entre 0 et 500, ou laisse vide.',
+    'act.paused': 'En pause — le temps actif ne compte pas.',
+    'act.measured': 'Temps actif mesuré (pauses exclues).',
+    'act.pace': 'Allure',
+    'act.speed': 'Vitesse',
+    'act.discardTitle': 'Abandonner cette activité ?',
+    'act.discardConfirm': 'L’activité en cours sera perdue. Rien ne sera enregistré dans ton historique.',
+    'act.deleteTitle': 'Supprimer cette activité ?',
+    'act.deleteConfirm': 'Cela supprime l’activité et son XP. Action irréversible.',
+    'act.editTitle': 'Modifier l’activité',
+    'act.editHint': 'Seul ce que tu as saisi est modifiable. L’XP reste identique.',
+    'conflict.title': 'Séance active',
+    'conflict.text': 'Tu as une activité en cours ({activity}). Abandonne-la pour en commencer une autre, ou annule pour la garder et reprendre plus tard.',
+    'conflict.textWorkout': 'Tu as un entraînement en cours. Abandonne-le pour commencer cette activité, ou annule pour le garder.',
+    'conflict.discard': 'Abandonner et commencer',
+    'pokrok.activitiesTitle': '🏃 Activités',
+    'pokrok.activitiesEmpty': 'Aucune activité pour l’instant.',
+    'pokrok.actCount': 'Activités',
+    'pokrok.actTime': 'Temps total',
+    'pokrok.actDist': 'Distance',
+    'units.km': 'km', 'units.mi': 'mi', 'units.kmh': 'km/h', 'units.mph': 'mph', 'units.perKm': '/km', 'units.perMi': '/mi',
+    'plan.home-starter': 'Départ maison',
+    'plan.outdoor-starter': 'Départ extérieur',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -5347,6 +5659,62 @@ const I18N = {
     'media.replaceAria': 'استبدال وسائطي',
     'media.deleteAria': 'حذف وسائطي',
     'media.illustrationNote': 'رسم أصلي أُنشئ لـ GymQuest. ليس صورة فوتوغرافية.',
+    'mode.title': 'ماذا تريد أن تفعل؟',
+    'mode.open': 'ماذا تريد أن تفعل؟',
+    'mode.gym': 'تمرين في النادي',
+    'mode.home': 'تمرين في المنزل',
+    'mode.outdoor': 'تمرين في الخارج',
+    'mode.run': 'الجري',
+    'mode.walk': 'المشي',
+    'mode.cycle': 'الدراجة',
+    'actKind.run': 'الجري', 'actKind.walk': 'المشي', 'actKind.cycle': 'الدراجة',
+    'location.equipment': 'معدّاتي',
+    'location.newWorkout': '+ تمرين جديد هنا',
+    'location.starterHint': 'تمارين البداية مجرد أمثلة اختيارية — يمكنك تعديلها أو تخطّيها.',
+    'location.noPlans': 'لا يوجد تمرين محفوظ لهذا المكان بعد.',
+    'location.yourWorkouts': 'تمارينك',
+    'location.homeHint': 'تمارين يمكن أداؤها في المنزل، مرشّحة حسب معدّاتك.',
+    'location.outdoorHint': 'تمارين للخارج. لا شيء يفترض أن لديك معدّات.',
+    'act.title': 'نشاط',
+    'act.pause': 'إيقاف مؤقت',
+    'act.resume': 'استئناف',
+    'act.finish': 'إنهاء',
+    'act.discard': 'تجاهل',
+    'act.logManually': 'تسجيل نشاط يدويًا',
+    'act.distance': 'المسافة',
+    'act.note': 'ملاحظة',
+    'act.optional': 'اختياري',
+    'act.date': 'التاريخ',
+    'act.duration': 'المدة',
+    'act.hours': 'ساعات',
+    'act.minutes': 'دقائق',
+    'act.seconds': 'ثوانٍ',
+    'act.manualHint': 'سجّل نشاطًا مكتملًا دون بدء جلسة مباشرة.',
+    'act.noneActive': 'لا يوجد نشاط قيد التشغيل.',
+    'act.tooShort': 'المدة قصيرة جدًا للحفظ.',
+    'act.invalidDistance': 'أدخل مسافة بين 0 و500، أو اتركها فارغة.',
+    'act.paused': 'متوقف مؤقتًا — الوقت النشط لا يُحتسب.',
+    'act.measured': 'الوقت النشط المقيس (بدون فترات التوقف).',
+    'act.pace': 'الوتيرة',
+    'act.speed': 'السرعة',
+    'act.discardTitle': 'تجاهل هذا النشاط؟',
+    'act.discardConfirm': 'سيُفقد النشاط الجاري. لن يُحفظ شيء في سجلك.',
+    'act.deleteTitle': 'حذف هذا النشاط؟',
+    'act.deleteConfirm': 'سيحذف النشاط ونقاط XP الخاصة به. لا يمكن التراجع.',
+    'act.editTitle': 'تعديل النشاط',
+    'act.editHint': 'يمكن تعديل ما أدخلته فقط. تبقى نقاط XP كما هي.',
+    'conflict.title': 'جلسة نشطة',
+    'conflict.text': 'لديك نشاط جارٍ ({activity}). تجاهله لبدء شيء آخر، أو ألغِ للاحتفاظ به والاستئناف لاحقًا.',
+    'conflict.textWorkout': 'لديك تمرين جارٍ. تجاهله لبدء هذا النشاط، أو ألغِ للاحتفاظ به.',
+    'conflict.discard': 'تجاهل وابدأ',
+    'pokrok.activitiesTitle': '🏃 الأنشطة',
+    'pokrok.activitiesEmpty': 'لا توجد أنشطة بعد.',
+    'pokrok.actCount': 'الأنشطة',
+    'pokrok.actTime': 'الوقت الإجمالي',
+    'pokrok.actDist': 'المسافة',
+    'units.km': 'كم', 'units.mi': 'ميل', 'units.kmh': 'كم/س', 'units.mph': 'ميل/س', 'units.perKm': '/كم', 'units.perMi': '/ميل',
+    'plan.home-starter': 'بداية منزلية',
+    'plan.outdoor-starter': 'بداية خارجية',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -6233,6 +6601,9 @@ function defaultState() {
     achievements: {},
     demo: false,
     activeSession: null, // rozbehnutý tréning (trvá iba do dokončenia alebo potvrdeného resetu)
+    /* Zaznamenané behy/chôdze/cyklistika (kanonicky km) a rozbehnutá aktivita. */
+    activities: [],
+    activeActivity: null,
   };
 }
 
@@ -6554,6 +6925,8 @@ function normalizePlans() {
     }
     delete plan.name;
     if (!Array.isArray(plan.exercises)) plan.exercises = [];
+    /* Miesto tréningu (gym/home/outdoor) – voliteľné; neznáma hodnota sa vyprázdni. */
+    plan.location = (plan.location === 'gym' || plan.location === 'home' || plan.location === 'outdoor') ? plan.location : null;
   }
   const ids = Object.keys(state.plans);
   const order = Array.isArray(state.planOrder) ? state.planOrder.filter(id => ids.includes(id)) : [];
@@ -6570,6 +6943,21 @@ function backfillState() {
   state.settings.restPresets = Array.isArray(state.settings.restPresets)
     ? cleanRestPresets(state.settings.restPresets)
     : defaultRestPresets();
+  /* Vlastné aktivity (beh/chôdza/cyklistika): idempotentná normalizácia.
+     Stará záloha bez aktivít naimportuje prázdny zoznam. */
+  if (!Array.isArray(state.activities)) state.activities = [];
+  state.activities = state.activities.map(cleanActivity).filter(Boolean);
+  /* Zabudované štartovné plány (doma/vonku) sa doplnia RAZ – cez príznak v nastaveniach,
+     aby ich používateľ mohol upraviť alebo zmazať a už sa nevracali. */
+  if (state.settings.startersAdded !== true) {
+    for (const id of ['home-starter', 'outdoor-starter']) {
+      if (!state.plans[id]) {
+        state.plans[id] = JSON.parse(JSON.stringify(DEFAULT_PLANS[id]));
+        if (!state.planOrder.includes(id)) state.planOrder.push(id);
+      }
+    }
+    state.settings.startersAdded = true;
+  }
   for (const id of Object.keys(state.plans)) {
     const plan = state.plans[id];
     plan.exercises = plan.exercises.map(ex => {
@@ -6676,6 +7064,9 @@ function migrateV2toV3(parsed) {
     achievements: (base.achievements && typeof base.achievements === 'object') ? base.achievements : {},
     demo: base.demo === true,
     activeSession: normalizeActiveSession(base.activeSession),
+    /* Zaznamenané aktivity a rozbehnutá aktivita. Stará záloha bez nich naimportuje prázdne. */
+    activities: Array.isArray(base.activities) ? base.activities.map(cleanActivity).filter(Boolean) : [],
+    activeActivity: normalizeActiveActivity(base.activeActivity),
     /* Voliteľné rozšírenia: stará záloha bez nich naimportuje prázdne polia.
        Platné záznamy zostávajú presne také, aké boli. */
     measurements: Array.isArray(base.measurements) ? base.measurements.map(cleanMeasurement).filter(Boolean) : [],
@@ -6843,8 +7234,14 @@ function achievementXP() {
   return sum;
 }
 
+/* XP získané aktivitami (beh/chôdza/cyklistika). Uložené raz v zázname, takže
+   úprava, obnovenie ani opätovné otvorenie nepridá XP znova. */
+function activityXP() {
+  return (state.activities || []).reduce((sum, a) => sum + (Number(a.xp) || 0), 0);
+}
+
 function totalXP() {
-  return workoutXP() + achievementXP();
+  return workoutXP() + activityXP() + achievementXP();
 }
 
 function workoutsInWeek(key) {
@@ -6853,6 +7250,17 @@ function workoutsInWeek(key) {
 
 function workoutsInMonth(key) {
   return state.history.filter(w => monthKey(parseDate(w.date)) === key).length;
+}
+
+/* Aktivity (beh/chôdza/cyklistika) v danom ISO týždni. */
+function activitiesInWeek(key) {
+  return (state.activities || []).filter(a => weekKey(parseDate(a.date)) === key).length;
+}
+
+/* Tréningové jednotky = tréningy + aktivity. Používa sa pre týždenný cieľ a sériu,
+   aby aj beh či chôdza počítali do cieľa; silové štatistiky ostávajú iba tréningy. */
+function sessionsInWeek(key) {
+  return workoutsInWeek(key) + activitiesInWeek(key);
 }
 
 /* Séria = počet po sebe idúcich DOKONČENÝCH ISO týždňov, v ktorých bol splnený cieľ.
@@ -6868,7 +7276,7 @@ function computeStreak() {
   let activeWeek = true;    // true len pri prvom kroku = prebiehajúci týždeň
 
   for (let guard = 0; guard < 1040; guard++) {   // 20 rokov; poškodený kľúč nikdy nezacyklí appku
-    const met = workoutsInWeek(week) >= goalForWeek(week);
+    const met = sessionsInWeek(week) >= goalForWeek(week);
 
     if (met) {
       streak++;                                  // cieľ splnený -> počíta sa (aj prebiehajúci týždeň)
@@ -6893,7 +7301,7 @@ function hasCompletedGoalWeek() {
   const weeks = new Set(state.history.map(w => weekKey(parseDate(w.date))));
   for (const k of weeks) {
     if (k === current) continue;
-    if (workoutsInWeek(k) >= goalForWeek(k)) return true;
+    if (sessionsInWeek(k) >= goalForWeek(k)) return true;
   }
   return false;
 }
@@ -7147,7 +7555,7 @@ function staticAchievementDefs() {
     { id: 'pr5', icon: '🥇', category: 'records', xp: 150, nameKey: 'achievements.pr5', descKey: 'achievements.pr5Desc', cond: () => pr.prEvents >= 5 },
     { id: 'pr10', icon: '🎖️', category: 'records', xp: 300, nameKey: 'achievements.pr10', descKey: 'achievements.pr10Desc', cond: () => pr.prEvents >= 10 },
     { id: 'improve', icon: '📊', category: 'records', xp: 100, nameKey: 'achievements.improve', descKey: 'achievements.improveDesc', cond: () => pr.improvements >= 1 },
-    { id: 'xp200', icon: '⭐', category: 'records', xp: 0, nameKey: 'achievements.xp200', descKey: 'achievements.xp200Desc', cond: () => workoutXP() >= 200 },
+    { id: 'xp200', icon: '⭐', category: 'records', xp: 0, nameKey: 'achievements.xp200', descKey: 'achievements.xp200Desc', cond: () => (workoutXP() + activityXP()) >= 200 },
 
     /* --- Prispôsobenie tréningu --- */
     { id: 'customplan', icon: '🧩', category: 'customization', xp: 50, nameKey: 'achievements.customplan', descKey: 'achievements.customplanDesc', cond: () => customPlans >= 1 },
@@ -7478,7 +7886,7 @@ function randomSetMessage() {
 
 function renderDnes() {
   const goal = weeklyGoal();
-  const weekCount = workoutsInWeek(currentWeekKey());
+  const weekCount = sessionsInWeek(currentWeekKey());
   const streak = computeStreak();
   const excused = state.excusedWeeks.includes(currentWeekKey());
 
@@ -8089,6 +8497,8 @@ function startEditPlan(id) {
   editingPlan = id;
   selectedPlan = id;
   editDraft = JSON.parse(JSON.stringify(plan.exercises));
+  /* Knižnica pri editácii plánu rovno filtruje na jeho miesto (doma/vonku). */
+  libLocation = plan.location || null;
   document.getElementById('edit-error').hidden = true;
   // meno sa nastaví LEN tu – žiadné prekreslenie riadkov cvikov ho nesmie prepísať
   document.getElementById('edit-plan-name').value = planDisplayName(plan);
@@ -9143,7 +9553,11 @@ function libraryResults() {
   const equip = availableEquipment();
   let list = libraryAll();
   if (libLocation) list = list.filter((e) => e.locations.includes(libLocation));
-  list = list.filter((e) => equipmentSatisfied(e, equip));
+  /* Doma/vonku sa NIKDY nepredpokladá vybavenie: bez zvoleného vybavenia
+     sa ponúknu len cviky bez náčinia. */
+  const effectiveEquip = ((libLocation === 'home' || libLocation === 'outdoor') && (!Array.isArray(equip) || !equip.length))
+    ? ['none'] : equip;
+  list = list.filter((e) => equipmentSatisfied(e, effectiveEquip));
   if (libDifficulty) list = list.filter((e) => e.difficulty === libDifficulty);
   if (libPattern) list = list.filter((e) => e.pattern === libPattern);
   if (libCategory) list = list.filter((e) => e.category === libCategory);
@@ -11174,6 +11588,8 @@ function renderPokrok() {
       history.appendChild(row);
     }
   }
+
+  renderActivities();
 }
 
 function esc(s) {
@@ -11239,6 +11655,17 @@ function historyByDate() {
     if (!w || !w.date) continue;
     if (!map[w.date]) map[w.date] = [];
     map[w.date].push(w);
+  }
+  return map;
+}
+
+/* Jedna O(n) prechádzka aktivitami na mapu podľa lokálneho dátumu. */
+function activitiesByDate() {
+  const map = {};
+  for (const a of (state.activities || [])) {
+    if (!a || !a.date) continue;
+    if (!map[a.date]) map[a.date] = [];
+    map[a.date].push(a);
   }
   return map;
 }
@@ -11341,6 +11768,7 @@ function dayStatusText(key, count) {
 
 function renderKalendar() {
   const byDate = historyByDate();
+  const byActs = activitiesByDate();
   const today = todayISO();
   const lang = activeLang();
 
@@ -11380,23 +11808,24 @@ function renderKalendar() {
     const date = new Date(viewYear, viewMonth, dayNum);
     const key = localDateKey(date);
     const workouts = byDate[key] || [];
+    const count = workouts.length + ((byActs[key] || []).length);
     const isToday = key === today;
     const isFuture = key > today;
-    const status = dayStatusText(key, workouts.length);
+    const status = dayStatusText(key, count);
 
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.dataset.day = key;
     btn.className = 'cal-cell'
-      + (workouts.length ? ' cal-done' : (isFuture || isToday ? '' : ' cal-miss'))
+      + (count ? ' cal-done' : (isFuture || isToday ? '' : ' cal-miss'))
       + (isToday ? ' cal-today' : '')
       + (isFuture ? ' cal-future' : '')
       + (key === selectedDayKey ? ' cal-selected' : '');
     let aria = t('kalendar.ariaDay', { date: formatFullDate(date), status });
-    if (workouts.length > 1) aria += ' · ' + tPlural('kalendar.ariaWorkoutCount', workouts.length);
+    if (count > 1) aria += ' · ' + tPlural('kalendar.ariaWorkoutCount', count);
     btn.setAttribute('aria-label', aria);
     btn.innerHTML = `<span class="cal-num">${dayNum}</span>`
-      + (workouts.length > 1 ? `<span class="cal-badge">${workouts.length}</span>` : '');
+      + (count > 1 ? `<span class="cal-badge">${count}</span>` : '');
     grid.appendChild(btn);
   }
 }
@@ -11465,19 +11894,39 @@ function workoutBlock(w) {
   return div;
 }
 
+function activityBlock(a) {
+  const div = document.createElement('div');
+  div.className = 'day-workout';
+  const parts = [formatClock(a.activeSeconds)];
+  if (a.distanceKm !== null) parts.push(formatDistanceValue(a.distanceKm));
+  const pace = activityPaceOrSpeed(a);
+  if (pace) parts.push(t(pace.type === 'speed' ? 'act.speed' : 'act.pace') + ': ' + pace.label);
+  div.innerHTML = `
+    <div class="day-workout-head">
+      <span class="day-workout-name">${esc(activityKindLabel(a.kind))}</span>
+      <span class="day-workout-xp">+${a.xp} ${t('units.xp')}</span>
+    </div>
+    <div class="day-workout-date">${esc(formatDate(a.date))}</div>
+    <div class="day-ex-meta">${esc(parts.join(' · '))}</div>
+    ${a.note ? `<div class="modal-note">“${esc(a.note)}”</div>` : ''}`;
+  return div;
+}
+
 function renderDayDetail(key) {
   const date = parseDate(key);
   const today = todayISO();
   const isFuture = key > today;
   const workouts = historyByDate()[key] || [];
+  const acts = activitiesByDate()[key] || [];
+  const total = workouts.length + acts.length;
 
   document.getElementById('day-title').textContent = formatFullDate(date);
 
   const statusEl = document.getElementById('day-status');
-  statusEl.className = 'day-status ' + (workouts.length ? 'day-status-done'
+  statusEl.className = 'day-status ' + (total ? 'day-status-done'
     : isFuture ? 'day-status-future'
     : key === today ? 'day-status-today' : 'day-status-miss');
-  statusEl.textContent = dayStatusText(key, workouts.length);
+  statusEl.textContent = dayStatusText(key, total);
 
   const body = document.getElementById('day-body');
   body.innerHTML = '';
@@ -11485,10 +11934,11 @@ function renderDayDetail(key) {
     body.innerHTML = `<p class="card-note">${esc(t('kalendar.statusFuture'))}</p>`;
     return;
   }
-  if (!workouts.length) {
+  if (!total) {
     body.innerHTML = `<p class="card-note">${esc(t('kalendar.emptyPast'))}</p>`;
   } else {
     for (const w of workouts) body.appendChild(workoutBlock(w));
+    for (const a of acts) body.appendChild(activityBlock(a));
   }
 
   const achIds = achievementsByDate()[key] || [];
@@ -11942,6 +12392,7 @@ function isStandaloneApp() {
 function backupPayload() {
   const snapshot = Object.assign({}, state);
   delete snapshot.activeSession;
+  delete snapshot.activeActivity;   // rozbehnutá aktivita patrí len tomuto zariadeniu
   return JSON.stringify(snapshot, null, 2);
 }
 
@@ -12130,6 +12581,7 @@ function exportData() {
      aby sa cez export/import neprenášal nedokončený tréning. */
   const snapshot = Object.assign({}, state);
   delete snapshot.activeSession;
+  delete snapshot.activeActivity;   // rozbehnutá aktivita patrí len tomuto zariadeniu
   const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -12167,6 +12619,7 @@ function importFile(file) {
           /* Najbezpečnejšie správanie: rozbehnutá session sa importom vždy vyčistí.
              Cudzia nedokončená session by inak mohla previazať nové dáta na starý plán. */
           delete data.activeSession;
+          delete data.activeActivity;   // cudzia rozbehnutá aktivita sa nikdy neobnoví
           const incoming = data.version === 1 ? migrateV1toV2(data) : data;
           state = migrateV2toV3(incoming);
           reconcileAchievements();
@@ -13063,6 +13516,572 @@ function on(id, handler, event) {
   return el;
 }
 
+/* ================= Aktivity: beh, chôdza, cyklistika =================
+   Bez GPS, máp, trás, živého tempa ani kalórií. Vzdialenosť je VŽDY len to, čo
+   používateľ zadá. Čas sa odvodzuje z uložených časových značiek, nie z ticker-a. */
+
+const ACTIVITY_KINDS = ['run', 'walk', 'cycle'];
+
+function isActivityKind(k) { return ACTIVITY_KINDS.indexOf(k) >= 0; }
+function activityKindLabel(k) { return t(isActivityKind(k) ? 'actKind.' + k : 'actKind.run'); }
+
+function cleanActivity(a) {
+  if (!a || typeof a !== 'object') return null;
+  const kind = isActivityKind(a.kind) ? a.kind : null;
+  const startedAt = Number(a.startedAt);
+  const endedAt = Number(a.endedAt);
+  const activeSeconds = Math.round(Number(a.activeSeconds));
+  if (!kind || !Number.isFinite(startedAt) || !Number.isFinite(endedAt) || !Number.isFinite(activeSeconds)) return null;
+  if (activeSeconds <= 0) return null;
+  const raw = Number(a.distanceKm);
+  const distanceKm = (Number.isFinite(raw) && raw > 0 && raw <= 500) ? raw : null;
+  const xp = Number.isFinite(Number(a.xp)) ? Math.max(0, Math.round(Number(a.xp))) : 0;
+  return {
+    id: typeof a.id === 'string' && a.id ? a.id : uid(),
+    kind,
+    date: /^\d{4}-\d{2}-\d{2}$/.test(a.date) ? a.date : todayISO(),
+    startedAt, endedAt, activeSeconds, distanceKm,
+    note: typeof a.note === 'string' ? a.note.slice(0, 1000) : '',
+    xp,
+  };
+}
+
+/* Rozbehnutá aktivita: activeMs = naakumulovaný aktívny čas, runningSince = beží od kedy. */
+function normalizeActiveActivity(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (!isActivityKind(raw.kind)) return null;
+  const startedAt = Number(raw.startedAt);
+  if (!Number.isFinite(startedAt) || startedAt <= 0) return null;
+  const activeMs = Math.max(0, Math.round(Number(raw.activeMs) || 0));
+  const runningSince = (Number.isFinite(Number(raw.runningSince)) && Number(raw.runningSince) > 0) ? Number(raw.runningSince) : null;
+  return {
+    id: typeof raw.id === 'string' && raw.id ? raw.id : uid(),
+    kind: raw.kind, startedAt, activeMs, runningSince,
+    distanceText: typeof raw.distanceText === 'string' ? raw.distanceText.slice(0, 20) : '',
+    note: typeof raw.note === 'string' ? raw.note.slice(0, 1000) : '',
+  };
+}
+
+function getActiveActivity() { return state.activeActivity || null; }
+function activityElapsedMs(a) {
+  if (!a) return 0;
+  return (Number(a.activeMs) || 0) + (a.runningSince ? (Date.now() - a.runningSince) : 0);
+}
+function activityElapsedSeconds(a) { return Math.floor(activityElapsedMs(a) / 1000); }
+function activityIsRunning(a) { return !!(a && a.runningSince); }
+
+/* Jednotky vzdialenosti: zhodné s jednotkami telesných mier (metric/imperial). */
+function distanceUnit() { return state.settings.bodyUnits === 'imperial' ? 'mi' : 'km'; }
+function kmToDisplay(km) { return state.settings.bodyUnits === 'imperial' ? km / 1.609344 : km; }
+function displayToKm(v) { return state.settings.bodyUnits === 'imperial' ? v * 1.609344 : v; }
+function formatDistanceValue(km) {
+  if (km === null || km === undefined || !Number.isFinite(km)) return '';
+  const v = kmToDisplay(km);
+  return v >= 100 ? Math.round(v) + ' ' + t('units.' + distanceUnit())
+    : v.toFixed(2).replace(/\.?0+$/, '') + ' ' + t('units.' + distanceUnit());
+}
+
+/* Čistý prevod medzery alebo desatinnej čiarky na číslo; prázdne = null. */
+function parseDistanceText(text) {
+  const s = String(text == null ? '' : text).trim().replace(',', '.');
+  if (!s) return { empty: true, value: null };
+  const n = Number(s);
+  if (!Number.isFinite(n) || n <= 0) return { invalid: true, value: null };
+  const km = displayToKm(n);
+  /* Rovnaký limit ako cleanActivity – kanonicky v km, aby sa hodnota nestratila po obnovení. */
+  if (!Number.isFinite(km) || km <= 0 || km > 500) return { invalid: true, value: null };
+  return { value: km };
+}
+
+/* Tempo (beh/chôdza) alebo rýchlosť (cyklistika) – LEN ak existuje platná vzdialenosť aj čas. */
+function activityPaceOrSpeed(a) {
+  if (!a || a.distanceKm === null || !(a.distanceKm > 0) || !(a.activeSeconds > 0)) return null;
+  const disp = kmToDisplay(a.distanceKm);
+  if (a.kind === 'cycle') {
+    const speed = disp / (a.activeSeconds / 3600);
+    return { type: 'speed', value: speed, label: speed.toFixed(1) + ' ' + t(state.settings.bodyUnits === 'imperial' ? 'units.mph' : 'units.kmh') };
+  }
+  const secPerUnit = a.activeSeconds / disp;
+  const mm = Math.floor(secPerUnit / 60);
+  const ss = Math.round(secPerUnit % 60);
+  const pad = ss === 60 ? '00' : (ss < 10 ? '0' + ss : String(ss));
+  const m = ss === 60 ? mm + 1 : mm;
+  return { type: 'pace', value: secPerUnit, label: m + ':' + pad + ' ' + t(state.settings.bodyUnits === 'imperial' ? 'units.perMi' : 'units.perKm') };
+}
+
+function formatClock(seconds) {
+  const s = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = s % 60;
+  const pad = (n) => (n < 10 ? '0' + n : String(n));
+  return pad(h) + ':' + pad(m) + ':' + pad(ss);
+}
+
+/* ---------- Živý záznam aktivity ---------- */
+let activityTicker = null;
+let activityManual = false;
+
+function startActivity(kind) {
+  state.activeActivity = { id: uid(), kind, startedAt: Date.now(), activeMs: 0, runningSince: Date.now(), distanceText: '', note: '' };
+  saveState();
+}
+
+function pauseActivity() {
+  const a = getActiveActivity();
+  if (!a || !a.runningSince) return;
+  a.activeMs = (Number(a.activeMs) || 0) + (Date.now() - a.runningSince);
+  a.runningSince = null;
+  saveState();
+  renderActivityModal();
+}
+
+function resumeActivity() {
+  const a = getActiveActivity();
+  if (!a || a.runningSince) return;
+  a.runningSince = Date.now();
+  saveState();
+  renderActivityModal();
+}
+
+function discardActivity() {
+  state.activeActivity = null;
+  saveState();
+  closeActivityModal();
+  renderAll();
+}
+
+function finishActivity() {
+  const a = getActiveActivity();
+  if (!a) return;
+  const activeSeconds = activityElapsedSeconds(a);
+  if (activeSeconds < 1) { showActivityStatus('act.tooShort'); return; }
+  const dist = parseDistanceText(a.distanceText);
+  if (dist.invalid) { showActivityStatus('act.invalidDistance'); return; }
+  const distanceKm = dist.value;
+  const before = Object.keys(state.achievements);
+  const beforeAchXP = achievementXP();
+  const record = {
+    id: uid(), kind: a.kind, date: todayISO(),
+    startedAt: a.startedAt, endedAt: Date.now(), activeSeconds, distanceKm,
+    note: String(a.note || '').trim().slice(0, 500), xp: BASE_XP,
+  };
+  state.activities.push(record);
+  syncGoalSnapshot();
+  state.demo = false;
+  localStorage.setItem(STORAGE_KEY + '_real', '1');
+  reconcileAchievements();
+  saveState();
+  lastUnlocked = Object.keys(state.achievements).filter(id => !before.includes(id));
+  lastAchXP = achievementXP() - beforeAchXP;
+  lastXP = record.xp;
+  state.activeActivity = null;
+  saveState();
+  closeActivityModal();
+  showResultModal();
+  renderAll();
+}
+
+function openActivityModal() {
+  const a = getActiveActivity();
+  activityManual = false;
+  document.getElementById('activity-title').textContent = a ? activityKindLabel(a.kind) : t('act.title');
+  document.getElementById('modal-activity').hidden = false;
+  renderActivityModal();
+  startActivityTicker();
+}
+
+function openManualActivity() {
+  const a = getActiveActivity();
+  if (a) return;              // nikdy nezačni ručný záznam popri bežiacej aktivite
+  activityManual = true;
+  document.getElementById('activity-title').textContent = t('act.logManually');
+  document.getElementById('modal-activity').hidden = false;
+  renderActivityModal();
+  stopActivityTicker();
+}
+
+function closeActivityModal() {
+  document.getElementById('modal-activity').hidden = true;
+  stopActivityTicker();
+  refreshUpdateBanner();
+}
+
+function startActivityTicker() {
+  stopActivityTicker();
+  activityTicker = setInterval(() => {
+    if (document.getElementById('modal-activity').hidden) { stopActivityTicker(); return; }
+    renderActivityClock();
+  }, 1000);
+}
+function stopActivityTicker() { if (activityTicker) { clearInterval(activityTicker); activityTicker = null; } }
+
+function renderActivityClock() {
+  const a = getActiveActivity();
+  if (!a || activityManual) return;
+  const el = document.getElementById('act-elapsed');
+  if (el) el.textContent = formatClock(activityElapsedSeconds(a));
+}
+
+function showActivityStatus(key) {
+  const el = document.getElementById('act-status');
+  if (!el) return;
+  el.textContent = t(key);
+  el.hidden = false;
+}
+
+function renderActivityModal() {
+  const body = document.getElementById('activity-body');
+  if (!body) return;
+  const a = getActiveActivity();
+  const h = [];
+  if (activityManual) {
+    /* Ručný záznam dokončenej aktivity – bez živej session. */
+    h.push('<p class="card-note">' + esc(t('act.manualHint')) + '</p>');
+    h.push('<div class="act-kind-row" id="act-kind-row">'
+      + ACTIVITY_KINDS.map(k => '<button type="button" class="goal-chip' + (k === (a ? a.kind : 'run') ? ' active' : '') + '" data-act-kind="' + k + '">'
+        + esc(activityKindLabel(k)) + '</button>').join('')
+      + '</div>');
+    h.push('<label class="modal-label" for="act-h-date">' + esc(t('act.date')) + '</label>'
+      + '<input type="date" class="modal-input" id="act-h-date" value="' + todayISO() + '">');
+    h.push('<p class="modal-label">' + esc(t('act.duration')) + '</p>');
+    h.push('<div class="custom-fields">'
+      + '<div class="custom-field"><label for="act-h-h">' + esc(t('act.hours')) + '</label><input type="number" min="0" max="99" inputmode="numeric" id="act-h-h" value="0"></div>'
+      + '<div class="custom-field"><label for="act-h-m">' + esc(t('act.minutes')) + '</label><input type="number" min="0" max="59" inputmode="numeric" id="act-h-m" value="30"></div>'
+      + '<div class="custom-field"><label for="act-h-s">' + esc(t('act.seconds')) + '</label><input type="number" min="0" max="59" inputmode="numeric" id="act-h-s" value="0"></div>'
+      + '</div>');
+    h.push('<label class="modal-label" for="act-h-dist">' + esc(t('act.distance') + ' (' + t('units.' + distanceUnit()) + ')') + '</label>'
+      + '<input type="text" class="modal-input" id="act-h-dist" inputmode="decimal" placeholder="' + escAttr(t('act.optional')) + '">');
+    h.push('<label class="modal-label" for="act-h-note">' + esc(t('act.note')) + '</label>'
+      + '<input type="text" class="modal-input" id="act-h-note" maxlength="500" placeholder="' + escAttr(t('act.optional')) + '">');
+    h.push('<p class="media-status" id="act-status" role="status" hidden></p>');
+    h.push('<div class="row-actions">'
+      + '<button type="button" class="btn btn-secondary" id="btn-act-manual-cancel">' + esc(t('common.cancel')) + '</button>'
+      + '<button type="button" class="btn btn-primary" id="btn-act-manual-save">' + esc(t('common.save')) + '</button>'
+      + '</div>');
+  } else if (a) {
+    /* Živý záznam. */
+    h.push('<div class="act-elapsed" id="act-elapsed">' + formatClock(activityElapsedSeconds(a)) + '</div>');
+    h.push('<p class="act-hint">' + esc(a.runningSince ? t('act.measured') : t('act.paused')) + '</p>');
+    h.push('<label class="modal-label" for="act-distance">' + esc(t('act.distance') + ' (' + t('units.' + distanceUnit()) + ')') + '</label>'
+      + '<input type="text" class="modal-input" id="act-distance" inputmode="decimal" value="' + escAttr(a.distanceText) + '" placeholder="' + escAttr(t('act.optional')) + '">');
+    h.push('<label class="modal-label" for="act-note">' + esc(t('act.note')) + '</label>'
+      + '<input type="text" class="modal-input" id="act-note" maxlength="500" value="' + escAttr(a.note) + '" placeholder="' + escAttr(t('act.optional')) + '">');
+    h.push('<p class="media-status" id="act-status" role="status" hidden></p>');
+    h.push('<div class="row-actions">'
+      + (a.runningSince
+        ? '<button type="button" class="btn btn-secondary" id="btn-act-pause">' + esc(t('act.pause')) + '</button>'
+        : '<button type="button" class="btn btn-primary" id="btn-act-resume">' + esc(t('act.resume')) + '</button>')
+      + '<button type="button" class="btn btn-primary" id="btn-act-finish">' + esc(t('act.finish')) + '</button>'
+      + '</div>');
+    h.push('<button type="button" class="btn btn-secondary btn-block" id="btn-act-discard">' + esc(t('act.discard')) + '</button>');
+  } else {
+    h.push('<p class="card-note">' + esc(t('act.noneActive')) + '</p>');
+  }
+  body.innerHTML = h.join('');
+}
+
+/* Čítanie vstupov priebežne, aby prežili prekreslenie (ticker). */
+function syncActivityInputs() {
+  const a = getActiveActivity();
+  if (!a || activityManual) return;
+  const d = document.getElementById('act-distance');
+  const n = document.getElementById('act-note');
+  if (d) a.distanceText = d.value;
+  if (n) a.note = n.value;
+}
+
+function saveManualActivity() {
+  const hs = Math.max(0, Math.min(99, Math.round(Number((document.getElementById('act-h-h') || {}).value) || 0)));
+  const ms = Math.max(0, Math.min(59, Math.round(Number((document.getElementById('act-h-m') || {}).value) || 0)));
+  const ss = Math.max(0, Math.min(59, Math.round(Number((document.getElementById('act-h-s') || {}).value) || 0)));
+  const activeSeconds = hs * 3600 + ms * 60 + ss;
+  if (activeSeconds < 1) { showActivityStatus('act.tooShort'); return; }
+  const kindBtn = document.querySelector('#act-kind-row .goal-chip.active');
+  const kind = isActivityKind(kindBtn && kindBtn.dataset.actKind) ? kindBtn.dataset.actKind : 'run';
+  const dist = parseDistanceText((document.getElementById('act-h-dist') || {}).value);
+  if (dist.invalid) { showActivityStatus('act.invalidDistance'); return; }
+  const dateVal = (document.getElementById('act-h-date') || {}).value;
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(dateVal) ? dateVal : todayISO();
+  const before = Object.keys(state.achievements);
+  const beforeAchXP = achievementXP();
+  const now = Date.now();
+  state.activities.push({
+    id: uid(), kind, date, startedAt: now - activeSeconds * 1000, endedAt: now,
+    activeSeconds, distanceKm: dist.value,
+    note: String((document.getElementById('act-h-note') || {}).value || '').trim().slice(0, 500),
+    xp: BASE_XP,
+  });
+  syncGoalSnapshot();
+  state.demo = false;
+  localStorage.setItem(STORAGE_KEY + '_real', '1');
+  reconcileAchievements();
+  saveState();
+  lastUnlocked = Object.keys(state.achievements).filter(id => !before.includes(id));
+  lastAchXP = achievementXP() - beforeAchXP;
+  lastXP = BASE_XP;
+  closeActivityModal();
+  showResultModal();
+  renderAll();
+}
+
+function requestDiscardActivity() {
+  const a = getActiveActivity();
+  if (!a) { closeActivityModal(); return; }
+  showGeneric(t('act.discardTitle'), t('act.discard'), () => discardActivity(), esc(t('act.discardConfirm')));
+}
+
+/* ---------- Voľba aktivity (bez nových kariet) ---------- */
+function renderModeGrid() {
+  const grid = document.getElementById('mode-grid');
+  if (!grid) return;
+  const items = [
+    ['gym', '🏋️'], ['home', '🏠'], ['outdoor', '🌳'],
+    ['run', '🏃'], ['walk', '🚶'], ['cycle', '🚴'],
+  ];
+  grid.innerHTML = items.map(([mode, icon]) =>
+    '<button type="button" class="mode-btn" data-mode="' + mode + '">'
+    + '<span class="mode-icon" aria-hidden="true">' + icon + '</span>'
+    + '<span class="mode-label">' + esc(t('mode.' + mode)) + '</span></button>').join('');
+}
+
+function openActivityChoice() {
+  renderModeGrid();
+  document.getElementById('modal-mode').hidden = false;
+}
+function closeModeModal() { document.getElementById('modal-mode').hidden = true; refreshUpdateBanner(); }
+
+function chooseMode(mode) {
+  closeModeModal();
+  if (mode === 'gym') { switchTab('trening'); return; }
+  if (mode === 'home' || mode === 'outdoor') { openLocationSheet(mode); return; }
+  if (isActivityKind(mode)) chooseActivity(mode);
+}
+
+/* Konflikt: nikdy potichu nezruší rozbehnutú session. */
+function showActivityConflict(existing, onDiscard) {
+  showGeneric(t('conflict.title'), t('conflict.discard'), onDiscard,
+    esc(t('conflict.text', { activity: activityKindLabel(existing.kind) })));
+}
+function showWorkoutConflict(onDiscard) {
+  showGeneric(t('conflict.title'), t('conflict.discard'), onDiscard, esc(t('conflict.textWorkout')));
+}
+
+function chooseActivity(kind) {
+  const active = getActiveActivity();
+  if (active && active.kind === kind) { openActivityModal(); return; }
+  if (active) {
+    showActivityConflict(active, () => { state.activeActivity = null; saveState(); startActivity(kind); openActivityModal(); });
+    return;
+  }
+  if (getSession()) {
+    showWorkoutConflict(() => { clearSession(); stopTimer(); startActivity(kind); openActivityModal(); });
+    return;
+  }
+  startActivity(kind);
+  openActivityModal();
+}
+
+function startWorkoutNow() {
+  if (getActiveActivity()) {
+    showActivityConflict(getActiveActivity(), () => {
+      state.activeActivity = null; saveState(); startWorkoutNow();
+    });
+    return;
+  }
+  const rec = recommendedPlan();
+  if (rec) selectedPlan = rec;
+  if (ensureSession()) saveState();
+  switchTab('trening');
+}
+
+/* ---------- Domáce a vonkajšie tréningy ---------- */
+let locationSheetLoc = 'home';
+function openLocationSheet(loc) {
+  locationSheetLoc = (loc === 'outdoor') ? 'outdoor' : 'home';
+  document.getElementById('location-title').textContent = t('mode.' + locationSheetLoc);
+  renderLocationSheet();
+  document.getElementById('modal-location').hidden = false;
+}
+function closeLocationSheet() { document.getElementById('modal-location').hidden = true; refreshUpdateBanner(); }
+
+function locationEquipChipsHtml() {
+  const sel = availableEquipment() || [];
+  const noneExplicit = sel.includes('none');
+  const noneActive = noneExplicit || sel.length === 0;
+  return '<p class="sheet-label">' + esc(t('location.equipment')) + '</p>'
+    + '<div class="goal-chips">' + EQUIPMENT_CODES.map(c => {
+      const active = noneActive ? c === 'none' : sel.includes(c);
+      const disabled = noneExplicit && c !== 'none';
+      return '<button type="button" class="goal-chip' + (active ? ' active' : '') + '"'
+        + (disabled ? ' disabled' : '') + ' data-equip="' + c + '">' + esc(t('equip.' + c)) + '</button>';
+    }).join('') + '</div>';
+}
+
+function renderLocationSheet() {
+  const loc = locationSheetLoc;
+  const box = document.getElementById('location-body');
+  if (!box) return;
+  const h = [];
+  h.push('<p class="card-note">' + esc(t(loc === 'outdoor' ? 'location.outdoorHint' : 'location.homeHint')) + '</p>');
+  h.push(locationEquipChipsHtml());
+  const plans = activePlanIds().filter(id => { const p = getPlan(id); return p && p.location === loc; });
+  h.push('<p class="sheet-label">' + esc(t('location.yourWorkouts')) + '</p>');
+  if (plans.length) {
+    h.push('<div class="loc-list">' + plans.map(id => {
+      const p = getPlan(id);
+      return '<button type="button" class="loc-row" data-loc-plan="' + escAttr(id) + '">'
+        + '<span class="loc-name">' + esc(planDisplayName(p)) + '</span>'
+        + '<span class="loc-meta">' + esc(tPlural('pokrok.setsCount', planExerciseCount(p))) + '</span></button>';
+    }).join('') + '</div>');
+  } else {
+    h.push('<p class="empty-state">' + esc(t('location.noPlans')) + '</p>');
+  }
+  h.push('<button type="button" class="btn btn-primary btn-block" id="btn-loc-new">' + esc(t('location.newWorkout')) + '</button>');
+  h.push('<p class="card-note">' + esc(t('location.starterHint')) + '</p>');
+  box.innerHTML = h.join('');
+}
+
+function pickLocationPlan(id) {
+  if (!getPlan(id)) return;
+  /* Rozbehnutá aktivita sa nikdy nezruší potichu – rovnaký konfliktný dialóg ako inde. */
+  if (getActiveActivity()) {
+    showActivityConflict(getActiveActivity(), () => { state.activeActivity = null; saveState(); pickLocationPlan(id); });
+    return;
+  }
+  selectedPlan = id;
+  if (ensureSession()) saveState();
+  closeLocationSheet();
+  switchTab('trening');
+}
+
+function addPlanAtLocation(loc) {
+  const id = 'p-' + uid();
+  state.plans[id] = { id, builtin: false, customName: t('plan.newName'), location: loc, exercises: [] };
+  state.planOrder.push(id);
+  selectedPlan = id;
+  newPlanId = id;
+  saveState();
+  closeLocationSheet();
+  switchTab('trening');
+  startEditPlan(id);
+}
+
+/* ---------- Prehľad aktivít (Pokrok) ---------- */
+function renderActivities() {
+  const list = document.getElementById('activities-list');
+  if (!list) return;
+  const acts = (state.activities || []).slice().sort((a, b) => (b.date + b.id).localeCompare(a.date + a.id));
+  const totalTime = acts.reduce((s, a) => s + (a.activeSeconds || 0), 0);
+  const totalKm = acts.reduce((s, a) => s + (a.distanceKm || 0), 0);
+  const countEl = document.getElementById('act-count');
+  const timeEl = document.getElementById('act-time');
+  const distEl = document.getElementById('act-dist');
+  if (countEl) countEl.textContent = String(acts.length);
+  if (timeEl) timeEl.textContent = formatClock(totalTime);
+  if (distEl) distEl.textContent = totalKm > 0 ? formatDistanceValue(totalKm) : '—';
+  list.innerHTML = '';
+  if (!acts.length) { list.innerHTML = '<p class="empty-state">' + esc(t('pokrok.activitiesEmpty')) + '</p>'; return; }
+  for (const a of acts) {
+    const pace = activityPaceOrSpeed(a);
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    const parts = [formatDate(a.date)];
+    if (a.distanceKm !== null) parts.push(formatDistanceValue(a.distanceKm));
+    parts.push(formatClock(a.activeSeconds));
+    if (pace) parts.push(t(pace.type === 'speed' ? 'act.speed' : 'act.pace') + ': ' + pace.label);
+    row.innerHTML = `
+      <div class="history-main">
+        <div class="history-name">${esc(activityKindLabel(a.kind))}</div>
+        <div class="history-detail">${esc(parts.join(' · '))}</div>
+        ${a.note ? `<div class="history-note">“${esc(a.note)}”</div>` : ''}
+      </div>
+      <div class="history-side">
+        <div class="history-xp">+${a.xp} ${t('units.xp')}</div>
+        <div class="history-actions">
+          <button class="btn-icon-sm" data-act-action="edit" title="${t('history.editTitle')}">✏️</button>
+          <button class="btn-icon-sm btn-icon-danger" data-act-action="delete" title="${t('history.deleteTitle')}">🗑️</button>
+        </div>
+      </div>`;
+    row.querySelector('[data-act-action="edit"]').addEventListener('click', () => openActivityEdit(a.id));
+    row.querySelector('[data-act-action="delete"]').addEventListener('click', () => requestDeleteActivity(a.id));
+    list.appendChild(row);
+  }
+}
+
+function requestDeleteActivity(id) {
+  showGeneric(t('act.deleteTitle'), t('common.delete'), () => {
+    state.activities = (state.activities || []).filter(a => a.id !== id);
+    recalculateAll();
+    saveState();
+    renderPokrok();
+  }, esc(t('act.deleteConfirm')));
+}
+
+/* Úprava aktivity: mení sa iba to, čo zadal používateľ (dátum, čas, vzdialenosť, poznámka).
+   XP sa NEprepočítava ani nepridáva – záznam si drží svoje pôvodné XP. */
+let actEditId = null;
+function openActivityEdit(id) {
+  const a = (state.activities || []).find(x => x.id === id);
+  if (!a) return;
+  actEditId = id;
+  document.getElementById('activity-title').textContent = t('act.editTitle');
+  activityManual = true;
+  document.getElementById('modal-activity').hidden = false;
+  renderActivityEditForm(a);
+  stopActivityTicker();
+}
+function renderActivityEditForm(a) {
+  const body = document.getElementById('activity-body');
+  const h = [];
+  h.push('<p class="card-note">' + esc(t('act.editHint')) + '</p>');
+  h.push('<div class="act-kind-row">' + ACTIVITY_KINDS.map(k =>
+    '<button type="button" class="goal-chip' + (k === a.kind ? ' active' : '') + '" data-act-kind="' + k + '">'
+    + esc(activityKindLabel(k)) + '</button>').join('') + '</div>');
+  h.push('<label class="modal-label" for="act-e-date">' + esc(t('act.date')) + '</label>'
+    + '<input type="date" class="modal-input" id="act-e-date" value="' + escAttr(a.date) + '">');
+  h.push('<p class="modal-label">' + esc(t('act.duration')) + '</p>');
+  const hh = Math.floor(a.activeSeconds / 3600), mm = Math.floor((a.activeSeconds % 3600) / 60), ss = a.activeSeconds % 60;
+  h.push('<div class="custom-fields">'
+    + '<div class="custom-field"><label for="act-e-h">' + esc(t('act.hours')) + '</label><input type="number" min="0" max="99" inputmode="numeric" id="act-e-h" value="' + hh + '"></div>'
+    + '<div class="custom-field"><label for="act-e-m">' + esc(t('act.minutes')) + '</label><input type="number" min="0" max="59" inputmode="numeric" id="act-e-m" value="' + mm + '"></div>'
+    + '<div class="custom-field"><label for="act-e-s">' + esc(t('act.seconds')) + '</label><input type="number" min="0" max="59" inputmode="numeric" id="act-e-s" value="' + ss + '"></div>'
+    + '</div>');
+  h.push('<label class="modal-label" for="act-e-dist">' + esc(t('act.distance') + ' (' + t('units.' + distanceUnit()) + ')') + '</label>'
+    + '<input type="text" class="modal-input" id="act-e-dist" inputmode="decimal" value="' + escAttr(a.distanceKm === null ? '' : String(Number(kmToDisplay(a.distanceKm).toFixed(2)))) + '" placeholder="' + escAttr(t('act.optional')) + '">');
+  h.push('<label class="modal-label" for="act-e-note">' + esc(t('act.note')) + '</label>'
+    + '<input type="text" class="modal-input" id="act-e-note" maxlength="500" value="' + escAttr(a.note) + '">');
+  h.push('<p class="media-status" id="act-status" role="status" hidden></p>');
+  h.push('<div class="row-actions">'
+    + '<button type="button" class="btn btn-secondary" id="btn-act-edit-cancel">' + esc(t('common.cancel')) + '</button>'
+    + '<button type="button" class="btn btn-primary" id="btn-act-edit-save">' + esc(t('common.save')) + '</button>'
+    + '</div>');
+  body.innerHTML = h.join('');
+}
+function saveActivityEdit() {
+  const a = (state.activities || []).find(x => x.id === actEditId);
+  if (!a) { closeActivityModal(); return; }
+  const hs = Math.max(0, Math.min(99, Math.round(Number((document.getElementById('act-e-h') || {}).value) || 0)));
+  const ms = Math.max(0, Math.min(59, Math.round(Number((document.getElementById('act-e-m') || {}).value) || 0)));
+  const ss = Math.max(0, Math.min(59, Math.round(Number((document.getElementById('act-e-s') || {}).value) || 0)));
+  const activeSeconds = hs * 3600 + ms * 60 + ss;
+  if (activeSeconds < 1) { showActivityStatus('act.tooShort'); return; }
+  const kindBtn = document.querySelector('#activity-body .goal-chip.active');
+  if (kindBtn && isActivityKind(kindBtn.dataset.actKind)) a.kind = kindBtn.dataset.actKind;
+  const dist = parseDistanceText((document.getElementById('act-e-dist') || {}).value);
+  if (dist.invalid) { showActivityStatus('act.invalidDistance'); return; }
+  a.distanceKm = dist.value;
+  const dateVal = (document.getElementById('act-e-date') || {}).value;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) a.date = dateVal;
+  a.activeSeconds = activeSeconds;
+  a.note = String((document.getElementById('act-e-note') || {}).value || '').trim().slice(0, 500);
+  /* XP ostáva nezmenené – úprava nikdy nepridá odmenu znova. */
+  actEditId = null;
+  closeActivityModal();
+  saveState();
+  renderPokrok();
+}
+
 function setupEvents() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
@@ -13072,13 +14091,53 @@ function setupEvents() {
   on('btn-lang-cancel', hideLanguagePicker);
   on('btn-settings', openSettings);
 
-  on('btn-start-workout', () => {
-    const rec = recommendedPlan();
-    if (rec) selectedPlan = rec;
-    /* Meranie trvania sa spúšťa tu – absolútny čas štartu sa ukladá do session. */
-    if (ensureSession()) saveState();
-    switchTab('trening');
+  on('btn-start-workout', startWorkoutNow);
+  on('btn-choose-mode', openActivityChoice);
+  on('btn-choose-manual', openManualActivity);
+  on('btn-mode-cancel', closeModeModal);
+  on('btn-location-close', closeLocationSheet);
+  on('btn-activity-close', () => { if (!activityManual) syncActivityInputs(); closeActivityModal(); });
+
+  /* Voľba aktivity (gym/doma/vonku/beh/chôdza/cyklistika). */
+  on('mode-grid', (e) => {
+    const b = e.target.closest ? e.target.closest('[data-mode]') : null;
+    if (b) chooseMode(b.dataset.mode);
   });
+
+  /* Domáci a vonkajší tréning: vybavenie, výber plánu, nový plán. */
+  on('location-body', (e) => {
+    const eq = e.target.closest ? e.target.closest('[data-equip]') : null;
+    if (eq) { toggleEquipment(eq.dataset.equip); renderLocationSheet(); return; }
+    const plan = e.target.closest ? e.target.closest('[data-loc-plan]') : null;
+    if (plan) { pickLocationPlan(plan.dataset.locPlan); return; }
+    const nb = e.target.closest ? e.target.closest('#btn-loc-new') : null;
+    if (nb) addPlanAtLocation(locationSheetLoc);
+  });
+
+  /* Živý záznam aktivity, ručný záznam a úprava. */
+  on('activity-body', (e) => {
+    const b = e.target.closest ? e.target.closest('button') : null;
+    if (!b) return;
+    if (b.id === 'btn-act-pause') { syncActivityInputs(); pauseActivity(); }
+    else if (b.id === 'btn-act-resume') resumeActivity();
+    else if (b.id === 'btn-act-finish') { syncActivityInputs(); finishActivity(); }
+    else if (b.id === 'btn-act-discard') { syncActivityInputs(); requestDiscardActivity(); }
+    else if (b.id === 'btn-act-manual-save') saveManualActivity();
+    else if (b.id === 'btn-act-manual-cancel') closeActivityModal();
+    else if (b.id === 'btn-act-edit-save') saveActivityEdit();
+    else if (b.id === 'btn-act-edit-cancel') { actEditId = null; closeActivityModal(); }
+    else if (b.dataset && b.dataset.actKind) {
+      syncActivityInputs();
+      const row = b.parentNode;
+      if (row) Array.prototype.forEach.call(row.children, (c) => c.classList.toggle('active', c === b));
+    }
+  });
+  on('activity-body', (e) => {
+    if (e.target && (e.target.id === 'act-distance' || e.target.id === 'act-note')) syncActivityInputs();
+  }, 'input');
+  on('activity-body', (e) => {
+    if (e.target && (e.target.id === 'act-distance' || e.target.id === 'act-note')) { syncActivityInputs(); saveState(); }
+  }, 'change');
 
   on('btn-excuse', () => {
     const key = currentWeekKey();

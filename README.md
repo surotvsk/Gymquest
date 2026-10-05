@@ -611,6 +611,19 @@ sent to GitHub, a server, analytics or other users, and **not synced between dev
 app's data. Photos (JPG, PNG, WebP, GIF) up to 15 MB and videos (MP4, WebM, MOV) up to 60 MB are
 accepted, up to 12 of your own items per exercise.
 
+**Beyond the gym.** From **Today**, *What do you want to do?* lets you choose a **gym**, **home** or
+**outdoor** workout, or a **run**, **walk** or **cycle**. Home and outdoor training reuse the same
+exercise library, filtered by place and by the equipment you have (the outdoors assumes none), and
+ship with two optional, editable **starter workouts** — `for example` *Home starter* and *Outdoor
+starter* — that you can rename, edit or delete. Runs, walks and cycles are recorded with
+**start / pause / resume / finish / discard**, or logged **manually** after the fact: the timer
+measures **active time only** (pauses excluded, derived from saved timestamps), **distance is only
+ever what you type**, and **pace** (run/walk) or **average speed** (cycle) is **calculated** from the
+two and shown only when both are valid. There is **no GPS, map, route, live speed or calorie
+estimate**. Every activity appears in **Progress** and the **Calendar** with a clear label, and —
+conservatively — counts toward your weekly goal, streak and XP (each completed activity gives the
+base 20 XP once; editing never re-awards). Silo strength statistics are unchanged.
+
 **Swipe between media** with your finger, or use the **‹ ›** buttons, the dots, the counter or the arrow
 keys. Each item has a **caption** in every supported language, and the **creator and licence are printed
 under the media**. If a demonstration cannot be loaded, you get a clean **"Demonstration unavailable"**

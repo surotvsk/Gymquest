@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=33">
+  <link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 
@@ -77,6 +77,8 @@
       <p class="card-sub next-plan" id="dnes-next-plan"></p>
 
       <button class="btn btn-primary btn-big" id="btn-start-workout" data-i18n="dnes.start">Začať tréning</button>
+      <button class="btn btn-secondary btn-block" id="btn-choose-mode" data-i18n="mode.open">Čo chceš robiť?</button>
+      <button class="btn btn-secondary btn-block" id="btn-choose-manual" data-i18n="act.logManually">Zapísať aktivitu ručne</button>
     </section>
 
     <!-- ============ TRÉNING ============ -->
@@ -242,6 +244,16 @@
         <div class="card">
           <h3 class="card-title" data-i18n="pokrok.historyTitle">📋 História tréningov</h3>
           <div id="history-list"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title" data-i18n="pokrok.activitiesTitle">🏃 Aktivity</h3>
+          <div class="stats-row">
+            <div class="stat-card"><span class="stat-value" id="act-count">0</span><span class="stat-label" data-i18n="pokrok.actCount">Aktivity</span></div>
+            <div class="stat-card"><span class="stat-value" id="act-time">00:00:00</span><span class="stat-label" data-i18n="pokrok.actTime">Celkový čas</span></div>
+            <div class="stat-card"><span class="stat-value" id="act-dist">—</span><span class="stat-label" data-i18n="pokrok.actDist">Vzdialenosť</span></div>
+          </div>
+          <div id="activities-list"></div>
         </div>
       </div>
 
@@ -695,7 +707,40 @@
     </div>
   </div>
 
+  <!-- ============ MODAL: voľba aktivity ============ -->
+  <div class="modal-backdrop" id="modal-mode" hidden>
+    <div class="modal">
+      <h3 id="mode-title" data-i18n="mode.title">Čo chceš robiť?</h3>
+      <div class="mode-grid" id="mode-grid"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-mode-cancel" data-i18n="common.cancel">Zrušiť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: domáci / vonkajší tréning ============ -->
+  <div class="modal-backdrop" id="modal-location" hidden>
+    <div class="modal">
+      <h3 id="location-title">Doma</h3>
+      <div id="location-body"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-location-close" data-i18n="common.close">Zavrieť</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: aktivita (beh/chôdza/cyklistika) ============ -->
+  <div class="modal-backdrop" id="modal-activity" hidden>
+    <div class="modal">
+      <h3 id="activity-title">Beh</h3>
+      <div id="activity-body"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-activity-close" data-i18n="common.close">Zavrieť</button>
+      </div>
+    </div>
+  </div>
+
   <input type="file" id="file-media" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple hidden>
-  <script src="script.js?v=33"></script>
+  <script src="script.js?v=34"></script>
 </body>
 </html>
