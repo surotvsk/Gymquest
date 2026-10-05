@@ -30,3 +30,7 @@ Desktop.ini
 *.log
 *.tmp
 node_modules/
+
+# --- Supabase CLI local link state (machine-specific; may contain connection URLs) ---
+supabase/.temp/
+supabase/.branches/
