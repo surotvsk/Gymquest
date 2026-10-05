@@ -3191,6 +3191,38 @@ label.btn { cursor: pointer; }
 .community-status-badge { font-size: var(--fs-xs); color: var(--accent); margin: 0; }
 #community-body .goal-chips { margin-bottom: var(--sp-2); }
 
+/* ===== Community modal: mobile spacing, alignment, destructive separation =====
+   Scoped to #modal-community so the shared .modal-sheet / .sheet-head /
+   .sheet-scroll (also used by the exercise library) are left untouched. */
+#modal-community .modal-sheet { max-height: calc(100dvh - var(--sp-5) * 2); }
+#modal-community .sheet-head { padding: var(--sp-3) var(--sp-4); }
+#community-body { overflow-wrap: break-word; }
+
+/* Center label-buttons (e.g. Change avatar) like real buttons instead of
+   top-aligning their text. Scoped to the Community modal so no other screen
+   that uses a <label class="btn"> changes. */
+#modal-community label.btn { display: inline-flex; align-items: center; justify-content: center; }
+
+/* Clear gap between the form / instructions above and any action row — the auth
+   password input previously touched the Sign in button. */
+#community-body .plan-actions { margin-top: var(--sp-4); }
+#community-body .plan-actions:first-child { margin-top: 0; }
+
+/* Consistent separation for explanatory text and status lines. */
+#community-body .card-note { margin-top: var(--sp-3); }
+#community-body .card-title + .card-note { margin-top: var(--sp-2); }
+#community-body .media-status { margin-top: var(--sp-3); }
+
+/* Tabs get a little breathing room before the first card. */
+#community-body #community-tabs { margin-bottom: var(--sp-3); }
+
+/* The destructive delete sits apart from ordinary profile actions. */
+#community-body .community-danger-row {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border);
+}
+
 .media-missing {
   display: flex;
   flex-direction: column;

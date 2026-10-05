@@ -11774,12 +11774,16 @@ async function communityProfileHtml(sb, user) {
     + (p.role === 'moderator' ? '<p class="card-note">' + esc(t('community.moderatorBadge')) + '</p>' : '')
     + (p.suspended ? '<p class="card-note">' + esc(t('community.suspendedBadge')) + '</p>' : '')
     + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
-    + '<div class="plan-actions">'
+    + '<input type="file" id="community-avatar" accept="image/*" hidden>'
+    + '<div class="plan-actions community-actions-primary">'
     + '<button type="button" class="btn btn-primary" data-community-action="save-profile">' + esc(t('common.save')) + '</button>'
     + '<label class="btn btn-secondary" for="community-avatar">' + esc(t('community.changeAvatar')) + '</label>'
-    + '<input type="file" id="community-avatar" accept="image/*" hidden>'
     + (p.role === 'moderator' ? '<button type="button" class="btn btn-secondary" data-community-view="moderate">' + esc(t('community.tabModerate')) + '</button>' : '')
-    + '<button type="button" class="btn btn-secondary" data-community-action="delete-account">' + esc(t('community.deleteAccount')) + '</button>'
+    + '</div>'
+    + '<div class="plan-actions community-danger-row">'
+    + '<button type="button" class="btn btn-danger" data-community-action="delete-account">' + esc(t('community.deleteAccount')) + '</button>'
+    + '</div>'
+    + '<div class="plan-actions">'
     + '<button type="button" class="btn btn-secondary" data-community-action="signout">' + esc(t('community.signOut')) + '</button>'
     + '</div></div>';
 }
@@ -15833,7 +15837,10 @@ function setupEvents() {
   on('btn-community', communityOpen);
   on('btn-community-settings', communityOpen);
   on('btn-photo-viewer-share', () => { const id = currentViewerPhotoId(); if (id) communityAskShare(id); });
-  on('community-body', (e) => {
+  /* Delegated on the whole modal (not just #community-body): the header ✕ lives
+     in .sheet-head, a sibling of #community-body, so a body-only listener never
+     received its clicks and the close button did nothing on a tap. */
+  on('modal-community', (e) => {
     const tab = e.target.closest ? e.target.closest('[data-community-view]') : null;
     if (tab && tab.dataset.communityView) { communitySetView(tab.dataset.communityView); return; }
     const a = e.target.closest ? e.target.closest('[data-community-action]') : null;
