@@ -12,9 +12,10 @@ exactly as before: fully offline, no accounts, no network requests. Nothing belo
    (Project settings → API). These two are safe in frontend code.
 
 ## 2. Run the database migrations
-Run **both** migrations, in order:
+Run **all three** migrations, in order:
 1. [`migrations/0001_community.sql`](./migrations/0001_community.sql) — tables, functions, triggers, RLS, buckets.
 2. [`migrations/0002_community_grants.sql`](./migrations/0002_community_grants.sql) — explicit `GRANT`s.
+3. [`migrations/0003_community_moderation_and_upload_caps.sql`](./migrations/0003_community_moderation_and_upload_caps.sql) — moderator suspension policy and a per-user Storage object cap.
 
 SQL editor → paste a file → Run, **or** with the CLI: `supabase db push`.
 
@@ -23,10 +24,15 @@ tables have no privileges for the `authenticated` role and the API cannot reach 
 the minimum columns/tables the app uses (`role` is deliberately **not** granted, so it can only be set
 by the owner via SQL).
 
+`0003` fixes two things the first review surfaced: a moderator could not actually suspend another
+user (only an own-row update policy existed, so the update was filtered to 0 rows), and the post quota
+counted `posts` rows rather than stored objects, so a direct caller could upload unlimited objects. It
+adds the moderator update policy and a per-user object cap enforced on upload.
+
 `0001` creates `profiles`, `posts`, `reports`, `blocks`, the helper functions, the triggers (new-user
 profile, role/suspension guard, post guard), all RLS policies, and the two Storage buckets
 (`community` private, `avatars` public) with their policies. Each file is safe to run once — **never
-re-run an already-applied migration** (if `0001` is already applied, run only `0002`).
+re-run an already-applied migration** (if `0001` and `0002` are already applied, run only `0003`).
 
 Verify afterwards: **Storage** shows `community` (private, 6 MB limit) and `avatars` (public, 2 MB).
 

@@ -1856,7 +1856,7 @@ const I18N = {
     'photos.errSize': 'Obrázok je príliš veľký. Fotky do 25 MB.',
     'photos.errStorage': 'Na tomto zariadení nie je dosť miesta na uloženie fotky.',
     'photos.openAria': 'Otvoriť fotku z {date}', 'photos.prev': 'Predchádzajúca', 'photos.next': 'Ďalšia',
-    'community.title': 'Community', 'community.open': 'Community', 'community.loading': 'Načítava sa…',
+    'community.title': 'Community', 'community.open': 'Community', 'community.loading': 'Načítava sa…', 'community.settingsHint': 'Voliteľná online komunita. Predvolene vypnutá a nič neposiela, kým ju nezapneš.',
     'community.setupTitle': 'Community zatiaľ nie je nastavená',
     'community.setupBody': 'Toto zostavenie má Community vypnutú. Nič sa nenahráva a nevykonávajú sa žiadne sieťové požiadavky.',
     'community.setupSteps': 'Vlastník aplikácie musí nastaviť Supabase (pozri návod) a vyplniť community-config.js.',
@@ -1895,6 +1895,24 @@ const I18N = {
     'community.errImage': 'Tento obrázok sa nepodarilo prečítať.', 'community.errTooLarge': 'Obrázok je príliš veľký na zdieľanie.',
     'community.errModeration': 'Pridávanie je vypnuté, kým nie je nastavené moderovanie (musí existovať moderátor).',
     'community.errNotAllowed': 'Táto akcia nie je povolená.',
+    'auth.title': 'Účet',
+    'auth.forgotPassword': 'Zabudol si heslo?',
+    'auth.confirmSuccess': 'E-mail potvrdený. Môžeš sa prihlásiť.',
+    'auth.confirmSignedIn': 'E-mail potvrdený. Si prihlásený.',
+    'auth.expiredLink': 'Tento odkaz je neplatný alebo vypršal. Pošli si nový.',
+    'auth.recoveryTitle': 'Zadaj nové heslo.',
+    'auth.newPassword': 'Nové heslo',
+    'auth.confirmPassword': 'Potvrď nové heslo',
+    'auth.setPassword': 'Nastaviť heslo',
+    'auth.passwordUpdated': 'Heslo bolo zmenené.',
+    'auth.passwordMismatch': 'Heslá sa nezhodujú.',
+    'auth.passwordTooShort': 'Heslo musí mať aspoň 6 znakov.',
+    'auth.errorGeneric': 'Niečo sa pokazilo. Skús to znova.',
+    'auth.forgotHint': 'Zadaj svoj e-mail a pošleme ti odkaz na obnovenie hesla.',
+    'auth.sendResetEmail': 'Poslať odkaz',
+    'auth.resetSent': 'Ak účet existuje, poslali sme odkaz na obnovenie hesla.',
+    'auth.resetNeedEmail': 'Zadaj e-mail.',
+    'auth.resetFailed': 'Odkaz sa nepodarilo poslať. Skús to znova.',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2687,7 +2705,7 @@ const I18N = {
     'photos.errSize': 'That image is too large. Photos up to 25 MB.',
     'photos.errStorage': 'Not enough storage on this device to save the photo.',
     'photos.openAria': 'Open photo from {date}', 'photos.prev': 'Previous', 'photos.next': 'Next',
-    'community.title': 'Community', 'community.open': 'Community', 'community.loading': 'Loading…',
+    'community.title': 'Community', 'community.open': 'Community', 'community.loading': 'Loading…', 'community.settingsHint': 'An optional online community. Off by default and sends nothing until you enable it.',
     'community.setupTitle': 'Community is not set up yet',
     'community.setupBody': 'This build ships with Community disabled. Nothing is uploaded and no network requests are made.',
     'community.setupSteps': 'The app owner must configure Supabase (see the setup guide) and fill in community-config.js.',
@@ -2732,6 +2750,24 @@ const I18N = {
     'community.errImage': 'That image could not be read.', 'community.errTooLarge': 'The image is too large to share.',
     'community.errModeration': 'Posting is disabled until moderation is configured (a moderator must exist).',
     'community.errNotAllowed': 'That action is not allowed.',
+    'auth.title': 'Account',
+    'auth.forgotPassword': 'Forgot password?',
+    'auth.confirmSuccess': 'Email confirmed. You can sign in.',
+    'auth.confirmSignedIn': 'Email confirmed. You are signed in.',
+    'auth.expiredLink': 'This link is invalid or has expired. Request a new one.',
+    'auth.recoveryTitle': 'Choose a new password.',
+    'auth.newPassword': 'New password',
+    'auth.confirmPassword': 'Confirm new password',
+    'auth.setPassword': 'Set password',
+    'auth.passwordUpdated': 'Your password has been changed.',
+    'auth.passwordMismatch': 'The passwords do not match.',
+    'auth.passwordTooShort': 'The password must be at least 6 characters.',
+    'auth.errorGeneric': 'Something went wrong. Please try again.',
+    'auth.forgotHint': 'Enter your email and we’ll send you a password reset link.',
+    'auth.sendResetEmail': 'Send link',
+    'auth.resetSent': 'If the account exists, we’ve sent a password reset link.',
+    'auth.resetNeedEmail': 'Enter your email.',
+    'auth.resetFailed': 'Could not send the link. Please try again.',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3524,7 +3560,7 @@ const I18N = {
     'photos.errSize': 'La imagen es demasiado grande. Fotos hasta 25 MB.',
     'photos.errStorage': 'No hay suficiente espacio en este dispositivo para guardar la foto.',
     'photos.openAria': 'Abrir la foto del {date}', 'photos.prev': 'Anterior', 'photos.next': 'Siguiente',
-    'community.title': 'Comunidad', 'community.open': 'Comunidad', 'community.loading': 'Cargando…',
+    'community.title': 'Comunidad', 'community.open': 'Comunidad', 'community.loading': 'Cargando…', 'community.settingsHint': 'Una comunidad en línea opcional. Desactivada por defecto y no envía nada hasta que la actives.',
     'community.setupTitle': 'La Comunidad aún no está configurada',
     'community.setupBody': 'Esta versión incluye la Comunidad desactivada. No se sube nada y no se hace ninguna petición de red.',
     'community.setupSteps': 'El propietario de la app debe configurar Supabase (ver la guía) y rellenar community-config.js.',
@@ -3563,6 +3599,24 @@ const I18N = {
     'community.errImage': 'No se pudo leer esa imagen.', 'community.errTooLarge': 'La imagen es demasiado grande para compartirla.',
     'community.errModeration': 'La publicación está desactivada hasta que se configure la moderación (debe existir un moderador).',
     'community.errNotAllowed': 'Esa acción no está permitida.',
+    'auth.title': 'Cuenta',
+    'auth.forgotPassword': '¿Olvidaste tu contraseña?',
+    'auth.confirmSuccess': 'Correo confirmado. Ya puedes iniciar sesión.',
+    'auth.confirmSignedIn': 'Correo confirmado. Has iniciado sesión.',
+    'auth.expiredLink': 'Este enlace no es válido o ha caducado. Solicita uno nuevo.',
+    'auth.recoveryTitle': 'Elige una nueva contraseña.',
+    'auth.newPassword': 'Nueva contraseña',
+    'auth.confirmPassword': 'Confirma la nueva contraseña',
+    'auth.setPassword': 'Establecer contraseña',
+    'auth.passwordUpdated': 'Tu contraseña se ha cambiado.',
+    'auth.passwordMismatch': 'Las contraseñas no coinciden.',
+    'auth.passwordTooShort': 'La contraseña debe tener al menos 6 caracteres.',
+    'auth.errorGeneric': 'Algo salió mal. Inténtalo de nuevo.',
+    'auth.forgotHint': 'Escribe tu correo y te enviaremos un enlace para restablecer la contraseña.',
+    'auth.sendResetEmail': 'Enviar enlace',
+    'auth.resetSent': 'Si la cuenta existe, hemos enviado un enlace para restablecer la contraseña.',
+    'auth.resetNeedEmail': 'Escribe tu correo.',
+    'auth.resetFailed': 'No se pudo enviar el enlace. Inténtalo de nuevo.',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4353,7 +4407,7 @@ const I18N = {
     'photos.errSize': 'A imagem é grande demais. Fotos até 25 MB.',
     'photos.errStorage': 'Não há espaço suficiente neste dispositivo para salvar a foto.',
     'photos.openAria': 'Abrir a foto de {date}', 'photos.prev': 'Anterior', 'photos.next': 'Próxima',
-    'community.title': 'Comunidade', 'community.open': 'Comunidade', 'community.loading': 'Carregando…',
+    'community.title': 'Comunidade', 'community.open': 'Comunidade', 'community.loading': 'Carregando…', 'community.settingsHint': 'Uma comunidade online opcional. Desativada por padrão e não envia nada até você ativá-la.',
     'community.setupTitle': 'A Comunidade ainda não está configurada',
     'community.setupBody': 'Esta versão vem com a Comunidade desativada. Nada é enviado e nenhuma requisição de rede é feita.',
     'community.setupSteps': 'O dono do app precisa configurar o Supabase (veja o guia) e preencher o community-config.js.',
@@ -4392,6 +4446,24 @@ const I18N = {
     'community.errImage': 'Não foi possível ler essa imagem.', 'community.errTooLarge': 'A imagem é grande demais para compartilhar.',
     'community.errModeration': 'A publicação está desativada até a moderação ser configurada (precisa existir um moderador).',
     'community.errNotAllowed': 'Essa ação não é permitida.',
+    'auth.title': 'Conta',
+    'auth.forgotPassword': 'Esqueceu a senha?',
+    'auth.confirmSuccess': 'E-mail confirmado. Você já pode entrar.',
+    'auth.confirmSignedIn': 'E-mail confirmado. Você está conectado.',
+    'auth.expiredLink': 'Este link é inválido ou expirou. Solicite um novo.',
+    'auth.recoveryTitle': 'Escolha uma nova senha.',
+    'auth.newPassword': 'Nova senha',
+    'auth.confirmPassword': 'Confirme a nova senha',
+    'auth.setPassword': 'Definir senha',
+    'auth.passwordUpdated': 'Sua senha foi alterada.',
+    'auth.passwordMismatch': 'As senhas não coincidem.',
+    'auth.passwordTooShort': 'A senha precisa ter pelo menos 6 caracteres.',
+    'auth.errorGeneric': 'Algo deu errado. Tente novamente.',
+    'auth.forgotHint': 'Digite seu e-mail e enviaremos um link para redefinir a senha.',
+    'auth.sendResetEmail': 'Enviar link',
+    'auth.resetSent': 'Se a conta existir, enviamos um link para redefinir a senha.',
+    'auth.resetNeedEmail': 'Digite seu e-mail.',
+    'auth.resetFailed': 'Não foi possível enviar o link. Tente novamente.',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5182,7 +5254,7 @@ const I18N = {
     'photos.errSize': 'Cette image est trop volumineuse. Photos jusqu’à 25 Mo.',
     'photos.errStorage': 'Pas assez d’espace sur cet appareil pour enregistrer la photo.',
     'photos.openAria': 'Ouvrir la photo du {date}', 'photos.prev': 'Précédente', 'photos.next': 'Suivante',
-    'community.title': 'Communauté', 'community.open': 'Communauté', 'community.loading': 'Chargement…',
+    'community.title': 'Communauté', 'community.open': 'Communauté', 'community.loading': 'Chargement…', 'community.settingsHint': 'Une communauté en ligne facultative. Désactivée par défaut et n’envoie rien tant que tu ne l’actives pas.',
     'community.setupTitle': 'La Communauté n’est pas encore configurée',
     'community.setupBody': 'Cette version est livrée avec la Communauté désactivée. Rien n’est envoyé et aucune requête réseau n’est faite.',
     'community.setupSteps': 'Le propriétaire de l’application doit configurer Supabase (voir le guide) et remplir community-config.js.',
@@ -5221,6 +5293,24 @@ const I18N = {
     'community.errImage': 'Impossible de lire cette image.', 'community.errTooLarge': 'L’image est trop volumineuse pour être partagée.',
     'community.errModeration': 'La publication est désactivée tant que la modération n’est pas configurée (un modérateur doit exister).',
     'community.errNotAllowed': 'Cette action n’est pas autorisée.',
+    'auth.title': 'Compte',
+    'auth.forgotPassword': 'Mot de passe oublié ?',
+    'auth.confirmSuccess': 'E-mail confirmé. Tu peux te connecter.',
+    'auth.confirmSignedIn': 'E-mail confirmé. Tu es connecté.',
+    'auth.expiredLink': 'Ce lien est invalide ou a expiré. Demande-en un nouveau.',
+    'auth.recoveryTitle': 'Choisis un nouveau mot de passe.',
+    'auth.newPassword': 'Nouveau mot de passe',
+    'auth.confirmPassword': 'Confirme le nouveau mot de passe',
+    'auth.setPassword': 'Définir le mot de passe',
+    'auth.passwordUpdated': 'Ton mot de passe a été modifié.',
+    'auth.passwordMismatch': 'Les mots de passe ne correspondent pas.',
+    'auth.passwordTooShort': 'Le mot de passe doit contenir au moins 6 caractères.',
+    'auth.errorGeneric': 'Une erreur est survenue. Réessaie.',
+    'auth.forgotHint': 'Saisis ton e-mail et nous t’enverrons un lien de réinitialisation.',
+    'auth.sendResetEmail': 'Envoyer le lien',
+    'auth.resetSent': 'Si le compte existe, nous avons envoyé un lien de réinitialisation.',
+    'auth.resetNeedEmail': 'Saisis ton e-mail.',
+    'auth.resetFailed': 'Impossible d’envoyer le lien. Réessaie.',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -6030,7 +6120,7 @@ const I18N = {
     'photos.errSize': 'الصورة كبيرة جدًا. الصور حتى 25 ميغابايت.',
     'photos.errStorage': 'لا توجد مساحة كافية على هذا الجهاز لحفظ الصورة.',
     'photos.openAria': 'افتح صورة {date}', 'photos.prev': 'السابقة', 'photos.next': 'التالية',
-    'community.title': 'المجتمع', 'community.open': 'المجتمع', 'community.loading': 'جارٍ التحميل…',
+    'community.title': 'المجتمع', 'community.open': 'المجتمع', 'community.loading': 'جارٍ التحميل…', 'community.settingsHint': 'مجتمع إلكتروني اختياري. مُعطّل افتراضيًا ولا يرسل شيئًا حتى تُفعّله.',
     'community.setupTitle': 'لم يتم إعداد المجتمع بعد',
     'community.setupBody': 'تأتي هذه النسخة والمجتمع معطّل. لا يتم رفع أي شيء ولا تُرسل أي طلبات شبكة.',
     'community.setupSteps': 'على مالك التطبيق إعداد Supabase (انظر الدليل) وتعبئة ملف community-config.js.',
@@ -6069,6 +6159,24 @@ const I18N = {
     'community.errImage': 'تعذّرت قراءة هذه الصورة.', 'community.errTooLarge': 'الصورة كبيرة جدًا للمشاركة.',
     'community.errModeration': 'النشر معطّل حتى يُضبط الإشراف (يجب وجود مشرف).',
     'community.errNotAllowed': 'هذا الإجراء غير مسموح.',
+    'auth.title': 'الحساب',
+    'auth.forgotPassword': 'هل نسيت كلمة المرور؟',
+    'auth.confirmSuccess': 'تم تأكيد البريد الإلكتروني. يمكنك تسجيل الدخول.',
+    'auth.confirmSignedIn': 'تم تأكيد البريد الإلكتروني. أنت مسجّل الدخول.',
+    'auth.expiredLink': 'هذا الرابط غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.',
+    'auth.recoveryTitle': 'اختر كلمة مرور جديدة.',
+    'auth.newPassword': 'كلمة المرور الجديدة',
+    'auth.confirmPassword': 'أكّد كلمة المرور الجديدة',
+    'auth.setPassword': 'تعيين كلمة المرور',
+    'auth.passwordUpdated': 'تم تغيير كلمة المرور.',
+    'auth.passwordMismatch': 'كلمتا المرور غير متطابقتين.',
+    'auth.passwordTooShort': 'يجب أن تتكوّن كلمة المرور من 6 أحرف على الأقل.',
+    'auth.errorGeneric': 'حدث خطأ ما. حاول مرة أخرى.',
+    'auth.forgotHint': 'أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.',
+    'auth.sendResetEmail': 'إرسال الرابط',
+    'auth.resetSent': 'إذا كان الحساب موجودًا، فقد أرسلنا رابط إعادة تعيين كلمة المرور.',
+    'auth.resetNeedEmail': 'أدخل بريدك الإلكتروني.',
+    'auth.resetFailed': 'تعذّر إرسال الرابط. حاول مرة أخرى.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -11471,16 +11579,22 @@ function communityConfigured() {
   return !!(url && c.supabaseAnonKey && /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url));
 }
 function communityOptIn() { return state.settings.communityOptIn === true; }
-function communityClient() {
-  if (!communityConfigured() || !communityOptIn()) return null;
+/* Jediný Supabase klient pre celú auth (aj pred zapnutím Community).
+   Session sa ukladá pod vlastným kľúčom, takže sa nikdy nedotkne 'gymquest'. */
+function communitySb() {
+  if (!communityConfigured()) return null;
   if (communityClientRef) return communityClientRef;
   if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
   try {
     communityClientRef = window.supabase.createClient(String(communityCfg().supabaseUrl).replace(/\/+$/, ''), communityCfg().supabaseAnonKey, {
-      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'gymquest-community-auth' },
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'gymquest-community-auth' },
     });
   } catch (e) { communityClientRef = null; }
   return communityClientRef;
+}
+function communityClient() {
+  if (!communityConfigured() || !communityOptIn()) return null;
+  return communitySb();
 }
 function communityPublicUrl(sb, bucket, path) {
   if (!sb || !path) return '';
@@ -11578,6 +11692,7 @@ function communityAuthHtml() {
     + '<div class="plan-actions">'
     + '<button type="button" class="btn btn-primary" data-community-action="signin">' + esc(t('community.signIn')) + '</button>'
     + '<button type="button" class="btn btn-secondary" data-community-action="signup">' + esc(t('community.signUp')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="forgot">' + esc(t('auth.forgotPassword')) + '</button>'
     + '</div>'
     + '<p class="card-note">' + esc(t('community.emailConfirmNote')) + '</p>'
     + '<p class="card-note">' + esc(t('community.offlineNote')) + '</p>'
@@ -11736,7 +11851,7 @@ async function communitySignUp() {
   const sb = communityClient(); if (!sb) return;
   const c = communityCredentials();
   communitySetMessage('');
-  const { error } = await sb.auth.signUp({ email: c.email, password: c.password });
+  const { error } = await sb.auth.signUp({ email: c.email, password: c.password, options: { emailRedirectTo: authRedirectUrl() } });
   if (error) { communitySetMessage('community.errSignUp'); renderCommunity(); return; }
   communitySetMessage('community.signUpDone');
   renderCommunity();
@@ -11888,6 +12003,147 @@ function communityDeleteAccount() {
       });
     }).catch(() => { communitySetMessage('community.errNetwork'); renderCommunity(); });
   }, esc(t('community.deleteAccountConfirm')));
+}
+
+/* ---------- E-mailové odkazy: potvrdenie účtu a obnova hesla ----------
+   Spracúva sa aj pred zapnutím Community. Adresa s tokenom sa nikdy
+   nezapisuje do logov a citlivé parametre sa hneď odstránia z adresného
+   riadka. Nič sa neposiela a žiadne lokálne dáta sa nemenia. */
+let authCallbackState = { view: 'idle', message: '', email: '' };
+
+function authRedirectUrl() {
+  try { return location.origin + location.pathname; } catch (e) { return location.href; }
+}
+function authHashParams() {
+  const hash = location.hash && location.hash.charAt(0) === '#' ? location.hash.slice(1) : '';
+  const search = location.search && location.search.charAt(0) === '?' ? location.search.slice(1) : '';
+  const h = new URLSearchParams(hash);
+  const q = new URLSearchParams(search);
+  return { h: h, q: q, get: (k) => h.get(k) || q.get(k) || '' };
+}
+/* Odstráni tokeny z adresného riadka (celý hash aj citlivé query parametre). */
+function authStripUrl() {
+  try {
+    const url = new URL(location.href);
+    ['code', 'error', 'error_code', 'error_description', 'type', 'access_token', 'refresh_token',
+      'expires_in', 'expires_at', 'token_type', 'provider_token', 'provider_refresh_token']
+      .forEach((k) => url.searchParams.delete(k));
+    const q = url.searchParams.toString();
+    history.replaceState(null, '', url.pathname + (q ? '?' + q : ''));
+  } catch (e) { try { history.replaceState(null, '', location.pathname); } catch (e2) {} }
+}
+function authOpen() { const m = document.getElementById('modal-auth'); if (m) m.hidden = false; renderAuthModal(); }
+function authClose() { const m = document.getElementById('modal-auth'); if (m) m.hidden = true; refreshUpdateBanner(); }
+function authAskReset(email) { authCallbackState = { view: 'reset-request', message: '', email: email || '' }; authOpen(); }
+function authStatusHtml() { return '<p class="media-status" id="auth-status" role="status" hidden></p>'; }
+function authPrimary(key, action) {
+  return '<div class="modal-actions">'
+    + '<button type="button" class="btn btn-secondary" data-auth-action="close">' + esc(t('common.close')) + '</button>'
+    + '<button type="button" class="btn btn-primary" data-auth-action="' + action + '">' + esc(t(key)) + '</button>'
+    + '</div>';
+}
+/* Informational states have no distinct secondary action: a single primary
+   (orange) button, so the same action is never offered twice. */
+function authPrimaryOnly(key, action) {
+  return '<div class="modal-actions">'
+    + '<button type="button" class="btn btn-primary" data-auth-action="' + action + '">' + esc(t(key)) + '</button>'
+    + '</div>';
+}
+function authEmailField(value) {
+  return '<label class="modal-label" for="auth-email">' + esc(t('community.email')) + '</label>'
+    + '<input type="email" class="modal-input" id="auth-email" autocomplete="email" value="' + escAttr(value || '') + '">';
+}
+function renderAuthModal() {
+  const body = document.getElementById('auth-body');
+  if (!body) return;
+  const v = authCallbackState.view;
+  if (v === 'confirmed') {
+    body.innerHTML = '<p class="card-note">' + esc(t(authCallbackState.signedIn ? 'auth.confirmSignedIn' : 'auth.confirmSuccess')) + '</p>' + authPrimaryOnly('common.close', 'close');
+  } else if (v === 'expired') {
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.expiredLink')) + '</p>' + authEmailField('') + authStatusHtml() + authPrimary('auth.sendResetEmail', 'send-reset');
+  } else if (v === 'reset-request') {
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.forgotHint')) + '</p>' + authEmailField(authCallbackState.email) + authStatusHtml() + authPrimary('auth.sendResetEmail', 'send-reset');
+  } else if (v === 'recovery') {
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.recoveryTitle')) + '</p>'
+      + '<label class="modal-label" for="auth-newpass">' + esc(t('auth.newPassword')) + '</label>'
+      + '<input type="password" class="modal-input" id="auth-newpass" autocomplete="new-password">'
+      + '<label class="modal-label" for="auth-newpass2">' + esc(t('auth.confirmPassword')) + '</label>'
+      + '<input type="password" class="modal-input" id="auth-newpass2" autocomplete="new-password">'
+      + authStatusHtml()
+      + '<div class="modal-actions">'
+      + '<button type="button" class="btn btn-secondary" data-auth-action="close">' + esc(t('common.cancel')) + '</button>'
+      + '<button type="button" class="btn btn-primary" data-auth-action="set-password">' + esc(t('auth.setPassword')) + '</button></div>';
+  } else if (v === 'updated') {
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.passwordUpdated')) + '</p>' + authPrimaryOnly('common.close', 'close');
+  } else if (v === 'sent') {
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.resetSent')) + '</p>' + authPrimaryOnly('common.close', 'close');
+  } else if (v === 'error') {
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.errorGeneric')) + '</p>' + authPrimaryOnly('common.close', 'close');
+  } else {
+    body.innerHTML = '';
+  }
+  if (authCallbackState.message) {
+    const s = document.getElementById('auth-status');
+    if (s) { s.textContent = authCallbackState.message; s.hidden = false; }
+  }
+  refreshUpdateBanner();
+}
+async function authSendReset() {
+  const el = document.getElementById('auth-email');
+  const email = el ? el.value.trim() : '';
+  const setMsg = (key) => { const s = document.getElementById('auth-status'); if (s) { s.textContent = t(key); s.hidden = false; } };
+  if (!email) { setMsg('auth.resetNeedEmail'); return; }
+  const sb = communitySb();
+  if (!sb) { setMsg('auth.errorGeneric'); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() });
+  if (error) { setMsg('auth.resetFailed'); return; }
+  authCallbackState = { view: 'sent', message: '', email: '' };
+  renderAuthModal();
+}
+async function authSetNewPassword() {
+  const p1 = document.getElementById('auth-newpass');
+  const p2 = document.getElementById('auth-newpass2');
+  const v1 = p1 ? p1.value : '';
+  const v2 = p2 ? p2.value : '';
+  if (v1.length < 6) { authCallbackState.message = t('auth.passwordTooShort'); renderAuthModal(); return; }
+  if (v1 !== v2) { authCallbackState.message = t('auth.passwordMismatch'); renderAuthModal(); return; }
+  const sb = communitySb();
+  if (!sb) { authCallbackState.message = t('auth.errorGeneric'); renderAuthModal(); return; }
+  const { error } = await sb.auth.updateUser({ password: v1 });
+  if (error) { authCallbackState.message = t('auth.errorGeneric'); renderAuthModal(); return; }
+  authCallbackState = { view: 'updated', message: '', email: '' };
+  renderAuthModal();
+}
+/* Štart: citlivé parametre zmiznú z adresného riadka hneď po prečítaní. */
+async function initAuthCallback() {
+  const p = authHashParams();
+  if (!p.h.has('access_token') && !p.q.has('code') && !p.get('error') && !p.get('error_code')) return;
+  const type = p.get('type');
+  const errorCode = p.get('error_code') || p.get('error');
+  const accessToken = p.h.get('access_token');
+  const refreshToken = p.h.get('refresh_token');
+  const code = p.q.get('code');
+  const sb = communitySb();   // klient musí adresu ešte vidieť (implicit flow)
+  authStripUrl();             // tokeny z adresného riadka preč
+  if (errorCode) { authCallbackState = { view: 'expired', message: '', email: '' }; authOpen(); return; }
+  if (!sb) { authCallbackState = { view: 'error', message: '', email: '' }; authOpen(); return; }
+  /* The result of setSession/exchangeCodeForSession is authoritative: it gives
+     the established session directly, whereas a later getSession() can briefly
+     still be empty and would then be misread as an expired link. Only fall back
+     to polling when the call returned no session. */
+  let session = null;
+  if (accessToken && refreshToken) {
+    try { const r = await sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }); session = r && r.data ? r.data.session : null; } catch (e) {}
+  } else if (code) {
+    try { const r = await sb.auth.exchangeCodeForSession(code); session = r && r.data ? r.data.session : null; } catch (e) {}
+  }
+  for (let i = 0; i < 20 && !session; i++) {
+    try { const r = await sb.auth.getSession(); session = r && r.data ? r.data.session : null; } catch (e) {}
+    if (!session) await new Promise((r) => setTimeout(r, 100));
+  }
+  if (type === 'recovery') authCallbackState = { view: session ? 'recovery' : 'expired', message: '', email: '', signedIn: !!session };
+  else authCallbackState = { view: session ? 'confirmed' : 'expired', message: '', email: '', signedIn: !!session };
+  authOpen();
 }
 
 function setPokrokView(view) {
@@ -15599,6 +15855,7 @@ function setupEvents() {
     else if (act === 'resolve-report') communityModerate('resolve-report', a.dataset.report);
     else if (act === 'suspend') communityModerate('suspend', a.dataset.user);
     else if (act === 'delete-account') communityDeleteAccount();
+    else if (act === 'forgot') { const em = document.getElementById('community-email'); authAskReset(em ? em.value.trim() : ''); }
   });
   on('community-body', (e) => {
     if (e.target && e.target.id === 'community-avatar' && e.target.files && e.target.files[0]) {
@@ -15609,6 +15866,15 @@ function setupEvents() {
   }, 'change');
   on('btn-community-caption-cancel', () => { communityCaptionPostId = null; document.getElementById('modal-community-caption').hidden = true; });
   on('btn-community-caption-save', communitySaveCaption);
+
+  on('auth-body', (e) => {
+    const a = e.target.closest ? e.target.closest('[data-auth-action]') : null;
+    if (!a) return;
+    const act = a.dataset.authAction;
+    if (act === 'close') authClose();
+    else if (act === 'set-password') authSetNewPassword();
+    else if (act === 'send-reset') authSendReset();
+  });
 
   on('pokrok-subtabs', (e) => {
     const btn = e.target.closest ? e.target.closest('.subtab') : null;
@@ -15803,7 +16069,7 @@ function isBusy() {
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
     'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food',
     'modal-library', 'modal-exercise', 'modal-photo-add', 'modal-photo', 'modal-photo-compare',
-    'modal-community', 'modal-community-caption'];
+    'modal-community', 'modal-community-caption', 'modal-auth'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg
@@ -15895,6 +16161,8 @@ renderAll();
 initPersonalMedia();
 /* Fotky progresu (IndexedDB) – tiež neblokujúco. */
 initProgressPhotos();
+/* E-mailové odkazy (potvrdenie / obnova hesla) – fungujú aj pred zapnutím Community. */
+initAuthCallback();
 startDayWatcher();
 startDurationTicker();
 if (restoredSession) setSessionNote('trening.sessionRestored', 10000);

@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=39">
+  <link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
 
@@ -501,6 +501,12 @@
         <button type="button" class="btn btn-secondary btn-block" id="btn-change-lang" data-i18n="settings.changeLanguage">Zmeniť jazyk</button>
       </div>
 
+      <div class="setting-block">
+        <span class="card-title" data-i18n="community.title">Community</span>
+        <span class="card-sub" data-i18n="community.settingsHint">Voliteľná online komunita. Predvolene vypnutá a nič neposiela, kým ju nezapneš.</span>
+        <button type="button" class="btn btn-secondary btn-block" id="btn-community-settings" data-i18n="community.open">Community</button>
+      </div>
+
       <div class="goal-head">
         <span class="card-title" data-i18n="settings.goalLabel">Týždenný cieľ tréningov</span>
         <span class="card-value" id="settings-goal-value">3</span>
@@ -858,8 +864,16 @@
     </div>
   </div>
 
-  <script src="community-config.js?v=39"></script>
-  <script src="vendor/supabase-js.js?v=39"></script>
-  <script src="script.js?v=39"></script>
+  <!-- ============ MODAL: e-mailové odkazy (potvrdenie / obnova hesla) ============ -->
+  <div class="modal-backdrop" id="modal-auth" hidden>
+    <div class="modal">
+      <h3 id="auth-title" data-i18n="auth.title">Účet</h3>
+      <div id="auth-body"></div>
+    </div>
+  </div>
+
+  <script src="community-config.js?v=40"></script>
+  <script src="vendor/supabase-js.js?v=40"></script>
+  <script src="script.js?v=40"></script>
 </body>
 </html>
