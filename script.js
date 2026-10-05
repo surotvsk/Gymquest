@@ -11791,21 +11791,12 @@ function renderKalendar() {
   grid.innerHTML = '';
   for (let i = 0; i < totalCells; i++) {
     const dayNum = i - lead + 1;
-    if (dayNum < 1 || dayNum > daysInMonth) {
-      /* Deň z vedľajšieho mesiaca: stlmený, neinteraktívny, bez stavových farieb.
-         Zámerné správanie: kliknutie nič nerobí (nie je to tlačidlo). */
-      const other = dayNum < 1
-        ? new Date(viewYear, viewMonth, dayNum)
-        : new Date(viewYear, viewMonth + 1, dayNum - daysInMonth);
-      const span = document.createElement('span');
-      span.className = 'cal-cell cal-outside';
-      span.setAttribute('aria-hidden', 'true');
-      span.textContent = String(other.getDate());
-      grid.appendChild(span);
-      continue;
-    }
-
-    const date = new Date(viewYear, viewMonth, dayNum);
+    const outside = dayNum < 1 || dayNum > daysInMonth;
+    /* Aj deň z vedľajšieho mesiaca sa počíta z AKTUÁLNEHO celého dátumu (rok/mesiac/deň),
+       takže jeho stav nikdy nezdieľa rovnaké číslo dňa v inom mesiaci. */
+    const date = dayNum < 1
+      ? new Date(viewYear, viewMonth, dayNum)
+      : (dayNum > daysInMonth ? new Date(viewYear, viewMonth + 1, dayNum - daysInMonth) : new Date(viewYear, viewMonth, dayNum));
     const key = localDateKey(date);
     const workouts = byDate[key] || [];
     const count = workouts.length + ((byActs[key] || []).length);
@@ -11820,11 +11811,12 @@ function renderKalendar() {
       + (count ? ' cal-done' : (isFuture || isToday ? '' : ' cal-miss'))
       + (isToday ? ' cal-today' : '')
       + (isFuture ? ' cal-future' : '')
-      + (key === selectedDayKey ? ' cal-selected' : '');
+      + (key === selectedDayKey ? ' cal-selected' : '')
+      + (outside ? ' cal-outside' : '');
     let aria = t('kalendar.ariaDay', { date: formatFullDate(date), status });
     if (count > 1) aria += ' · ' + tPlural('kalendar.ariaWorkoutCount', count);
     btn.setAttribute('aria-label', aria);
-    btn.innerHTML = `<span class="cal-num">${dayNum}</span>`
+    btn.innerHTML = `<span class="cal-num">${date.getDate()}</span>`
       + (count > 1 ? `<span class="cal-badge">${count}</span>` : '');
     grid.appendChild(btn);
   }

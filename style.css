@@ -1039,13 +1039,10 @@ button.cal-cell:hover { border-color: var(--border-strong); }
 
 .cal-cell.cal-selected { outline: 2px solid var(--border-strong); outline-offset: 1px; }
 
-.cal-cell.cal-outside {
-  background: transparent;
-  border-color: transparent;
-  color: var(--text-faint);
-  cursor: default;
-  opacity: 0.6;
-}
+/* Deň z vedľajšieho mesiaca: číslo dňa je stlmené, ale stavové indikátory
+   (zelená/červená, oranžový dnešok) sa zobrazujú rovnako ako v aktuálnom mesiaci. */
+.cal-cell.cal-outside { cursor: pointer; }
+.cal-cell.cal-outside .cal-num { color: var(--text-faint); }
 
 .cal-badge {
   position: absolute;
