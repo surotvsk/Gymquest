@@ -366,6 +366,22 @@ body {
   box-shadow: var(--shadow-2);
 }
 
+/* Stacked full-width action buttons keep a clear gap so their rounded edges never
+   touch and two actions never look joined. Scoped to block/big buttons and action
+   rows only — deliberately NOT a blanket margin on every `.btn`. */
+.btn-block + .btn-block,
+.btn-big + .btn-block,
+.btn-block + .btn-big,
+.card-sub + .btn-block,
+.btn-block + .row-actions {
+  margin-top: var(--sp-3);
+}
+
+/* `.row-actions` already carries a 12 px bottom margin: don't double it before a
+   following block button, and give the primary Finish button 12 + 4 = 16 px. */
+.row-actions + .btn-block { margin-top: 0; }
+.row-actions + .btn-big { margin-top: var(--sp-1); }
+
 /* ===== Motivation ===== */
 
 .motivation-card {
