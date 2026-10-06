@@ -1,20 +1,26 @@
 // ============================================================================
-// GymQuest Community — Edge Function: delete-account
+// GymQuest — Edge Function: delete-account
 // ----------------------------------------------------------------------------
-// Privileged: removes the CALLER's own community profile, posts and stored
-// media. The service_role key lives ONLY here (in the function's secrets) and
-// is never exposed to the browser.
+// Privileged. Two modes, both authenticated by the caller's JWT:
 //
-// This deletes community data only. It does NOT and cannot touch the user's
-// private on-device workouts; and it cannot remove copies other people already
-// saved.
+//   mode = 'community'  -> "Leave Community": removes the caller's posts,
+//                          community/avatar media, reports and blocks, and
+//                          clears bio + avatar. KEEPS the auth account and the
+//                          private cloud backup. (No auth user deletion.)
+//
+//   mode = 'full'       -> "Delete my account and all cloud data": removes the
+//                          caller's community artifacts AND the private backup
+//                          (backups bucket objects + backups row via cascade),
+//                          then deletes the auth user.
+//
+// It never touches the user's private ON-DEVICE workouts (the app keeps those).
+// The service_role key lives ONLY here (function secrets) and is never exposed
+// to the browser.
 //
 // Deploy (as the project owner):
 //   supabase functions deploy delete-account
 // SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY are RESERVED
-// secrets that Supabase provides to Edge Functions automatically — do NOT set
-// them manually (attempting to is rejected). The service_role key is read from
-// Deno.env at runtime and never placed in frontend code or logs.
+// secrets Supabase provides automatically — never set them manually.
 // ============================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -34,6 +40,9 @@ Deno.serve(async (req: Request) => {
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!serviceKey) return json({ error: 'server_not_configured' }, 500);
 
+  const body = await req.json().catch(() => ({}));
+  const mode = body && body.mode === 'community' ? 'community' : 'full';
+
   // 1. Identify the caller from their JWT (never trust a body-supplied id).
   const authHeader = req.headers.get('Authorization') ?? '';
   const caller = createClient(supabaseUrl, anonKey, {
@@ -43,20 +52,50 @@ Deno.serve(async (req: Request) => {
   const uid = userData?.user?.id;
   if (userErr || !uid) return json({ error: 'unauthorized' }, 401);
 
-  // 2. Admin client (service_role) — remove the caller's storage objects.
   const admin = createClient(supabaseUrl, serviceKey);
-  for (const bucket of ['community', 'avatars']) {
-    const { data: list } = await admin.storage.from(bucket).list(uid, { limit: 1000 });
-    const paths = (list ?? []).map((f) => `${uid}/${f.name}`);
+
+  // 2. Remove the caller's storage objects.
+  const buckets = mode === 'full'
+    ? ['community', 'avatars', 'backups']
+    : ['community', 'avatars'];
+  for (const bucket of buckets) {
+    // backups keeps media under <uid>/media/; list both levels.
+    const prefixes = bucket === 'backups' ? [uid, `${uid}/media`] : [uid];
+    const paths: string[] = [];
+    for (const prefix of prefixes) paths.push(...await listPrefix(admin, bucket, prefix));
     if (paths.length) await admin.storage.from(bucket).remove(paths);
   }
 
-  // 3. Delete the auth user; profiles/posts/reports/blocks cascade from it.
+  // 3. Community content: posts, reports and blocks authored/owned by the caller.
+  await admin.from('posts').delete().eq('user_id', uid);
+  await admin.from('reports').delete().eq('reporter_id', uid);
+  await admin.from('blocks').delete().eq('blocker_id', uid);
+  await admin.from('blocks').delete().eq('blocked_id', uid);
+
+  if (mode === 'community') {
+    // Keep the account and the private backup; just clear the public profile bits.
+    await admin.from('profiles').update({ bio: '', avatar_path: null }).eq('id', uid);
+    return json({ ok: true, mode: 'community' }, 200);
+  }
+
+  // 4. Full delete: private backup row (cascade) + the auth user.
+  //    profiles/posts/reports/blocks cascade from auth.users.
+  await admin.from('backups').delete().eq('user_id', uid);
   const { error: delErr } = await admin.auth.admin.deleteUser(uid);
   if (delErr) return json({ error: 'delete_failed' }, 500);
 
-  return json({ ok: true }, 200);
+  return json({ ok: true, mode: 'full' }, 200);
 });
+
+async function listPrefix(admin: ReturnType<typeof createClient>, bucket: string, prefix: string): Promise<string[]> {
+  const out: string[] = [];
+  const { data } = await admin.storage.from(bucket).list(prefix, { limit: 1000 });
+  for (const f of data ?? []) {
+    // Folder entries come back with no id/metadata; skip them (we list subpaths explicitly).
+    if (f && f.id) out.push(`${prefix}/${f.name}`);
+  }
+  return out;
+}
 
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {

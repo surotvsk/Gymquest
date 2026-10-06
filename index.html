@@ -11,7 +11,7 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=43">
+  <link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
 
@@ -557,6 +557,31 @@
       <p class="card-note" id="auto-backup-last"></p>
       <button class="btn btn-secondary btn-block" id="btn-backup-now" data-i18n="backup.saveNow">Uložiť zálohu teraz</button>
 
+      <!-- Súkromné cloudové zálohovanie (voliteľné, len pre prihlásených) -->
+      <div class="setting-row">
+        <div class="setting-main">
+          <span class="card-title" data-i18n="cloud.title">Súkromná cloudová záloha</span>
+          <span class="card-sub" data-i18n="cloud.hint">Po prihlásení sa tvoje tréningy a fotky zálohujú do tvojho účtu. Nikdy sa nezverejňujú.</span>
+        </div>
+        <div class="setting-control">
+          <span class="setting-state" id="cloud-state">Vypnuté</span>
+          <button type="button" class="switch" id="btn-cloud-backup" role="switch" aria-checked="false"
+                  data-i18n-title="cloud.title" data-i18n-aria="cloud.title">
+            <span class="switch-knob" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <p class="card-note" id="cloud-status-line" hidden></p>
+      <p class="card-note" id="cloud-status" role="status" hidden></p>
+      <p class="card-note" data-i18n="cloud.privacyNote">Záloha je súkromná — vidíš ju len ty vo svojom účte. Moderátori Community k nej nemajú prístup. Toto nie je automatická synchronizácia medzi zariadeniami.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-cloud-backup-now" data-i18n="cloud.now">Zálohovať teraz</button>
+        <button class="btn btn-secondary" id="btn-cloud-restore" data-i18n="cloud.restore">Obnoviť…</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-cloud-delete" data-i18n="cloud.delete">Zmazať cloudovú zálohu</button>
+      </div>
+
       <div class="modal-actions">
         <button class="btn btn-secondary" id="btn-export" data-i18n="settings.export">Exportovať dáta</button>
         <button class="btn btn-secondary" id="btn-import" data-i18n="settings.import">Importovať dáta</button>
@@ -877,8 +902,8 @@
     </div>
   </div>
 
-  <script src="community-config.js?v=43"></script>
-  <script src="vendor/supabase-js.js?v=43"></script>
-  <script src="script.js?v=43"></script>
+  <script src="community-config.js?v=44"></script>
+  <script src="vendor/supabase-js.js?v=44"></script>
+  <script src="script.js?v=44"></script>
 </body>
 </html>

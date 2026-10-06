@@ -1915,6 +1915,27 @@ const I18N = {
     'auth.resetFailed': 'Odkaz sa nepodarilo poslať. Skús to znova.',
     'about.title': 'O aplikácii',
     'about.credits': 'Aplikáciu vytvorili Martin Šuriak a Vera Magdy Fakhry.',
+    'cloud.title': 'Súkromná cloudová záloha',
+    'cloud.hint': 'Po prihlásení sa tvoje tréningy a fotky zálohujú do tvojho účtu. Nikdy sa nezverejňujú.',
+    'cloud.now': 'Zálohovať teraz', 'cloud.restore': 'Obnoviť…', 'cloud.delete': 'Zmazať cloudovú zálohu',
+    'cloud.privacyNote': 'Záloha je súkromná — vidíš ju len ty vo svojom účte. Moderátori Community k nej nemajú prístup. Toto nie je automatická synchronizácia medzi zariadeniami.',
+    'cloud.idle': 'Neaktívne.', 'cloud.saving': 'Ukladám…', 'cloud.saved': 'Uložené.', 'cloud.savedAt': 'Uložené {when}.',
+    'cloud.pending': 'Čaká (skúsi znova).', 'cloud.offline': 'Offline — skúsi znova.', 'cloud.error': 'Záloha zlyhala — skúsi znova.',
+    'cloud.conflict': 'Iné zariadenie uložilo novšie dáta. Vyber, čo ponechať.', 'cloud.blocked': 'Toto zariadenie obsahuje dáta iného účtu.',
+    'cloud.notSignedIn': 'Prihlás sa, aby sa dalo zálohovať.',
+    'cloud.choiceTitle': 'Cloud a zariadenie sa líšia',
+    'cloud.choiceBody': 'V cloude je {cloud} tréningov, na zariadení {local}. Ponechať cloud, alebo zariadenie a prepísať cloud?',
+    'cloud.keepCloud': 'Ponechať cloud',
+    'cloud.restoreTitle': 'Obnoviť z cloudu?', 'cloud.restoreBody': 'Nahradí dáta na tomto zariadení tvojou cloudovou zálohou. Najprv sa uloží lokálna snímka.',
+    'cloud.noBackup': 'Nenašla sa žiadna cloudová záloha.', 'cloud.incompatible': 'Táto záloha je z inej verzie aplikácie.',
+    'cloud.restored': 'Obnovené z cloudu.', 'cloud.restoreFailed': 'Obnovenie zlyhalo.',
+    'cloud.deleteTitle': 'Zmazať cloudovú zálohu?', 'cloud.deleteBody': 'Odstráni tvoju cloudovú zálohu aj médiá. Dáta na tomto zariadení zostanú nedotknuté.',
+    'cloud.deleted': 'Cloudová záloha zmazaná.', 'cloud.deleteFailed': 'Cloudovú zálohu sa nepodarilo zmazať.',
+    'cloud.videosSkipped': '{n} veľké video sa nezálohovalo.',
+    'community.leave': 'Opustiť Community',
+    'community.leaveTitle': 'Opustiť Community?',
+    'community.leaveConfirm': 'Odstráni tvoje príspevky a verejné údaje v Community, ale ZACHOVÁ tvoj účet a súkromnú cloudovú zálohu.',
+    'community.leftCommunity': 'Community opustená.',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2772,6 +2793,27 @@ const I18N = {
     'auth.resetFailed': 'Could not send the link. Please try again.',
     'about.title': 'About the app',
     'about.credits': 'The app was created by Martin Šuriak and Vera Magdy Fakhry.',
+    'cloud.title': 'Private cloud backup',
+    'cloud.hint': 'When signed in, your workouts and photos are backed up to your own account. They are never published.',
+    'cloud.now': 'Back up now', 'cloud.restore': 'Restore…', 'cloud.delete': 'Delete cloud backup',
+    'cloud.privacyNote': 'Your backup is private — only you can see it in your account. Community moderators cannot access it. This is not automatic multi-device sync.',
+    'cloud.idle': 'Inactive.', 'cloud.saving': 'Saving…', 'cloud.saved': 'Saved.', 'cloud.savedAt': 'Saved {when}.',
+    'cloud.pending': 'Pending (will retry).', 'cloud.offline': 'Offline — will retry.', 'cloud.error': 'Backup failed — will retry.',
+    'cloud.conflict': 'Another device saved newer data. Choose what to keep.', 'cloud.blocked': 'This device holds data for another account.',
+    'cloud.notSignedIn': 'Sign in to back up.',
+    'cloud.choiceTitle': 'Cloud and device differ',
+    'cloud.choiceBody': 'The cloud has {cloud} workouts, this device has {local}. Keep the cloud copy, or keep this device and overwrite the cloud?',
+    'cloud.keepCloud': 'Keep cloud',
+    'cloud.restoreTitle': 'Restore from cloud?', 'cloud.restoreBody': 'This replaces the data on this device with your cloud backup. A local snapshot is saved first.',
+    'cloud.noBackup': 'No cloud backup found.', 'cloud.incompatible': 'This backup is from a different app version.',
+    'cloud.restored': 'Restored from cloud.', 'cloud.restoreFailed': 'Restore failed.',
+    'cloud.deleteTitle': 'Delete cloud backup?', 'cloud.deleteBody': 'Removes your cloud backup and media. Your data on this device is not affected.',
+    'cloud.deleted': 'Cloud backup deleted.', 'cloud.deleteFailed': 'Could not delete the cloud backup.',
+    'cloud.videosSkipped': '{n} large video(s) were too big to back up.',
+    'community.leave': 'Leave Community',
+    'community.leaveTitle': 'Leave Community?',
+    'community.leaveConfirm': 'Removes your posts and public profile details from Community, but KEEPS your account and private cloud backup.',
+    'community.leftCommunity': 'You have left Community.',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3623,6 +3665,27 @@ const I18N = {
     'auth.resetFailed': 'No se pudo enviar el enlace. Inténtalo de nuevo.',
     'about.title': 'Acerca de la app',
     'about.credits': 'La aplicación fue creada por Martin Šuriak y Vera Magdy Fakhry.',
+    'cloud.title': 'Copia de seguridad privada en la nube',
+    'cloud.hint': 'Al iniciar sesión, tus entrenamientos y fotos se guardan en tu propia cuenta. Nunca se publican.',
+    'cloud.now': 'Guardar ahora', 'cloud.restore': 'Restaurar…', 'cloud.delete': 'Eliminar copia en la nube',
+    'cloud.privacyNote': 'Tu copia es privada: solo tú puedes verla en tu cuenta. Los moderadores de la Comunidad no pueden acceder a ella. No es una sincronización automática entre dispositivos.',
+    'cloud.idle': 'Inactivo.', 'cloud.saving': 'Guardando…', 'cloud.saved': 'Guardado.', 'cloud.savedAt': 'Guardado {when}.',
+    'cloud.pending': 'Pendiente (se reintentará).', 'cloud.offline': 'Sin conexión: se reintentará.', 'cloud.error': 'La copia falló: se reintentará.',
+    'cloud.conflict': 'Otro dispositivo guardó datos más recientes. Elige qué conservar.', 'cloud.blocked': 'Este dispositivo contiene datos de otra cuenta.',
+    'cloud.notSignedIn': 'Inicia sesión para hacer copias.',
+    'cloud.choiceTitle': 'La nube y el dispositivo difieren',
+    'cloud.choiceBody': 'La nube tiene {cloud} entrenamientos y este dispositivo {local}. ¿Conservar la nube, o el dispositivo y sobrescribir la nube?',
+    'cloud.keepCloud': 'Conservar la nube',
+    'cloud.restoreTitle': '¿Restaurar desde la nube?', 'cloud.restoreBody': 'Reemplaza los datos de este dispositivo con tu copia en la nube. Primero se guarda una instantánea local.',
+    'cloud.noBackup': 'No se encontró ninguna copia en la nube.', 'cloud.incompatible': 'Esta copia es de otra versión de la app.',
+    'cloud.restored': 'Restaurado desde la nube.', 'cloud.restoreFailed': 'La restauración falló.',
+    'cloud.deleteTitle': '¿Eliminar la copia en la nube?', 'cloud.deleteBody': 'Elimina tu copia en la nube y sus medios. Los datos de este dispositivo no se tocan.',
+    'cloud.deleted': 'Copia en la nube eliminada.', 'cloud.deleteFailed': 'No se pudo eliminar la copia en la nube.',
+    'cloud.videosSkipped': '{n} vídeo(s) grande(s) no se pudieron guardar.',
+    'community.leave': 'Salir de la Comunidad',
+    'community.leaveTitle': '¿Salir de la Comunidad?',
+    'community.leaveConfirm': 'Elimina tus publicaciones y datos públicos de la Comunidad, pero CONSERVA tu cuenta y tu copia privada en la nube.',
+    'community.leftCommunity': 'Has salido de la Comunidad.',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4472,6 +4535,27 @@ const I18N = {
     'auth.resetFailed': 'Não foi possível enviar o link. Tente novamente.',
     'about.title': 'Sobre o app',
     'about.credits': 'O aplicativo foi criado por Martin Šuriak e Vera Magdy Fakhry.',
+    'cloud.title': 'Backup privado na nuvem',
+    'cloud.hint': 'Ao entrar, seus treinos e fotos são salvos na sua própria conta. Nunca são publicados.',
+    'cloud.now': 'Fazer backup agora', 'cloud.restore': 'Restaurar…', 'cloud.delete': 'Excluir backup da nuvem',
+    'cloud.privacyNote': 'Seu backup é privado — só você o vê na sua conta. Moderadores da Comunidade não têm acesso. Isto não é sincronização automática entre dispositivos.',
+    'cloud.idle': 'Inativo.', 'cloud.saving': 'Salvando…', 'cloud.saved': 'Salvo.', 'cloud.savedAt': 'Salvo {when}.',
+    'cloud.pending': 'Pendente (vai tentar de novo).', 'cloud.offline': 'Offline — vai tentar de novo.', 'cloud.error': 'O backup falhou — vai tentar de novo.',
+    'cloud.conflict': 'Outro dispositivo salvou dados mais novos. Escolha o que manter.', 'cloud.blocked': 'Este dispositivo contém dados de outra conta.',
+    'cloud.notSignedIn': 'Entre para fazer backup.',
+    'cloud.choiceTitle': 'Nuvem e dispositivo diferentes',
+    'cloud.choiceBody': 'A nuvem tem {cloud} treinos e este dispositivo {local}. Manter a nuvem, ou o dispositivo e sobrescrever a nuvem?',
+    'cloud.keepCloud': 'Manter a nuvem',
+    'cloud.restoreTitle': 'Restaurar da nuvem?', 'cloud.restoreBody': 'Substitui os dados deste dispositivo pelo seu backup na nuvem. Uma cópia local é salva primeiro.',
+    'cloud.noBackup': 'Nenhum backup na nuvem encontrado.', 'cloud.incompatible': 'Este backup é de outra versão do app.',
+    'cloud.restored': 'Restaurado da nuvem.', 'cloud.restoreFailed': 'A restauração falhou.',
+    'cloud.deleteTitle': 'Excluir o backup da nuvem?', 'cloud.deleteBody': 'Remove seu backup na nuvem e a mídia. Os dados deste dispositivo não são afetados.',
+    'cloud.deleted': 'Backup da nuvem excluído.', 'cloud.deleteFailed': 'Não foi possível excluir o backup da nuvem.',
+    'cloud.videosSkipped': '{n} vídeo(s) grande(s) não couberam no backup.',
+    'community.leave': 'Sair da Comunidade',
+    'community.leaveTitle': 'Sair da Comunidade?',
+    'community.leaveConfirm': 'Remove seus posts e dados públicos da Comunidade, mas MANTÉM sua conta e o backup privado na nuvem.',
+    'community.leftCommunity': 'Você saiu da Comunidade.',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5321,6 +5405,27 @@ const I18N = {
     'auth.resetFailed': 'Impossible d’envoyer le lien. Réessaie.',
     'about.title': 'À propos de l’application',
     'about.credits': 'L’application a été créée par Martin Šuriak et Vera Magdy Fakhry.',
+    'cloud.title': 'Sauvegarde privée dans le cloud',
+    'cloud.hint': 'Une fois connecté, tes entraînements et photos sont sauvegardés dans ton propre compte. Ils ne sont jamais publiés.',
+    'cloud.now': 'Sauvegarder maintenant', 'cloud.restore': 'Restaurer…', 'cloud.delete': 'Supprimer la sauvegarde cloud',
+    'cloud.privacyNote': 'Ta sauvegarde est privée — toi seul la vois dans ton compte. Les modérateurs de la Communauté n’y ont pas accès. Ce n’est pas une synchronisation automatique entre appareils.',
+    'cloud.idle': 'Inactif.', 'cloud.saving': 'Sauvegarde…', 'cloud.saved': 'Sauvegardé.', 'cloud.savedAt': 'Sauvegardé {when}.',
+    'cloud.pending': 'En attente (nouvel essai).', 'cloud.offline': 'Hors ligne — nouvel essai.', 'cloud.error': 'Échec — nouvel essai.',
+    'cloud.conflict': 'Un autre appareil a enregistré des données plus récentes. Choisis quoi garder.', 'cloud.blocked': 'Cet appareil contient les données d’un autre compte.',
+    'cloud.notSignedIn': 'Connecte-toi pour sauvegarder.',
+    'cloud.choiceTitle': 'Cloud et appareil diffèrent',
+    'cloud.choiceBody': 'Le cloud contient {cloud} entraînements, cet appareil {local}. Garder le cloud, ou l’appareil et écraser le cloud ?',
+    'cloud.keepCloud': 'Garder le cloud',
+    'cloud.restoreTitle': 'Restaurer depuis le cloud ?', 'cloud.restoreBody': 'Remplace les données de cet appareil par ta sauvegarde cloud. Un instantané local est d’abord enregistré.',
+    'cloud.noBackup': 'Aucune sauvegarde cloud trouvée.', 'cloud.incompatible': 'Cette sauvegarde provient d’une autre version de l’app.',
+    'cloud.restored': 'Restauré depuis le cloud.', 'cloud.restoreFailed': 'Échec de la restauration.',
+    'cloud.deleteTitle': 'Supprimer la sauvegarde cloud ?', 'cloud.deleteBody': 'Supprime ta sauvegarde cloud et ses médias. Les données de cet appareil ne sont pas touchées.',
+    'cloud.deleted': 'Sauvegarde cloud supprimée.', 'cloud.deleteFailed': 'Impossible de supprimer la sauvegarde cloud.',
+    'cloud.videosSkipped': '{n} grande(s) vidéo(s) n’ont pas pu être sauvegardées.',
+    'community.leave': 'Quitter la Communauté',
+    'community.leaveTitle': 'Quitter la Communauté ?',
+    'community.leaveConfirm': 'Supprime tes publications et tes données publiques de la Communauté, mais CONSERVE ton compte et ta sauvegarde privée dans le cloud.',
+    'community.leftCommunity': 'Tu as quitté la Communauté.',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -6189,6 +6294,27 @@ const I18N = {
     'auth.resetFailed': 'تعذّر إرسال الرابط. حاول مرة أخرى.',
     'about.title': 'حول التطبيق',
     'about.credits': 'أنشأ التطبيق \u2066Martin Šuriak\u2069 و\u2066Vera Magdy Fakhry\u2069.',
+    'cloud.title': 'نسخ احتياطي سحابي خاص',
+    'cloud.hint': 'بعد تسجيل الدخول، تُنسخ تمارينك وصورك احتياطيًا إلى حسابك. ولا تُنشر أبدًا.',
+    'cloud.now': 'انسخ الآن', 'cloud.restore': 'استعادة…', 'cloud.delete': 'حذف النسخة السحابية',
+    'cloud.privacyNote': 'نسختك خاصة — لا يراها إلا أنت في حسابك. لا يمكن لمشرفي المجتمع الوصول إليها. هذا ليس مزامنة تلقائية بين الأجهزة.',
+    'cloud.idle': 'غير نشط.', 'cloud.saving': 'جارٍ الحفظ…', 'cloud.saved': 'تم الحفظ.', 'cloud.savedAt': 'تم الحفظ {when}.',
+    'cloud.pending': 'قيد الانتظار (ستُعاد المحاولة).', 'cloud.offline': 'دون اتصال — ستُعاد المحاولة.', 'cloud.error': 'فشل النسخ — ستُعاد المحاولة.',
+    'cloud.conflict': 'حفظ جهاز آخر بيانات أحدث. اختر ما تُبقيه.', 'cloud.blocked': 'يحتوي هذا الجهاز على بيانات حساب آخر.',
+    'cloud.notSignedIn': 'سجّل الدخول للنسخ الاحتياطي.',
+    'cloud.choiceTitle': 'السحابة والجهاز مختلفان',
+    'cloud.choiceBody': 'السحابة تحتوي {cloud} تمرينًا وهذا الجهاز {local}. هل تُبقي السحابة، أم الجهاز وتستبدل السحابة؟',
+    'cloud.keepCloud': 'الإبقاء على السحابة',
+    'cloud.restoreTitle': 'الاستعادة من السحابة؟', 'cloud.restoreBody': 'يستبدل بيانات هذا الجهاز بنسختك السحابية. تُحفظ لقطة محلية أولًا.',
+    'cloud.noBackup': 'لا توجد نسخة سحابية.', 'cloud.incompatible': 'هذه النسخة من إصدار تطبيق مختلف.',
+    'cloud.restored': 'تمت الاستعادة من السحابة.', 'cloud.restoreFailed': 'فشلت الاستعادة.',
+    'cloud.deleteTitle': 'حذف النسخة السحابية؟', 'cloud.deleteBody': 'يزيل نسختك السحابية ووسائطها. لا تتأثر بيانات هذا الجهاز.',
+    'cloud.deleted': 'تم حذف النسخة السحابية.', 'cloud.deleteFailed': 'تعذّر حذف النسخة السحابية.',
+    'cloud.videosSkipped': 'تعذّر نسخ {n} من الفيديوهات الكبيرة.',
+    'community.leave': 'مغادرة المجتمع',
+    'community.leaveTitle': 'مغادرة المجتمع؟',
+    'community.leaveConfirm': 'يزيل منشوراتك وبياناتك العامة من المجتمع، لكنه يُبقي حسابك ونسختك السحابية الخاصة.',
+    'community.leftCommunity': 'لقد غادرت المجتمع.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -7073,6 +7199,8 @@ function defaultState() {
       availableEquipment: null,
       /* Voliteľná online Community: predvolene VYPNUTÁ (žiadne požiadavky). */
       communityOptIn: false,
+      /* Súkromné cloudové zálohovanie do Supabase účtu: predvolene VYPNUTÉ. */
+      cloudBackup: false,
     },
     achievements: {},
     demo: false,
@@ -7588,6 +7716,8 @@ function migrateV2toV3(parsed) {
   out.settings.availableEquipment = normalizeEquipment(out.settings.availableEquipment);
   /* Community: len explicitné true ju zapne; stará záloha zostáva offline. */
   if (out.settings.communityOptIn !== true) out.settings.communityOptIn = false;
+  /* Súkromné cloudové zálohovanie: len explicitné true ho zapne. */
+  if (out.settings.cloudBackup !== true) out.settings.cloudBackup = false;
   /* Cieľ pre týždne spred zavedenia snapshotov. Je to ODVODENÁ hodnota (nie zaznamenaná)
      a zmrazí sa presne raz – pri prvom načítaní. Nikdy sa neprepočítava, takže neskoršia
      zmena cieľa nemôže prepísať už uzavreté týždne. */
@@ -7649,6 +7779,8 @@ function saveState() {
     console.error('Nepodarilo sa uložiť dáta:', e);
     showStorageWarning(true);
   }
+  /* Súkromná cloudová záloha je naviazaná na jediný bod zápisu stavu. */
+  scheduleCloudBackup();
 }
 
 /* ---------- Počítané údaje ---------- */
@@ -11796,6 +11928,7 @@ async function communityProfileHtml(sb, user) {
     + '<button type="button" class="btn btn-danger" data-community-action="delete-account">' + esc(t('community.deleteAccount')) + '</button>'
     + '</div>'
     + '<div class="plan-actions">'
+    + '<button type="button" class="btn btn-secondary" data-community-action="leave">' + esc(t('community.leave')) + '</button>'
     + '<button type="button" class="btn btn-secondary" data-community-action="signout">' + esc(t('community.signOut')) + '</button>'
     + '</div></div>';
 }
@@ -11873,6 +12006,8 @@ async function communitySignUp() {
   renderCommunity();
 }
 async function communitySignOut() {
+  cloudCancelPending();          // izolácia účtu: zruš čakajúce cloudové zápisy
+  cloudStatus = 'idle';
   const sb = communityClient(); if (!sb) return;
   await sb.auth.signOut();
   communityProfile = null;
@@ -12007,13 +12142,29 @@ async function communityModerate(action, id) {
   communitySetMessage(denied ? 'community.errNotAllowed' : 'community.saved');
   renderCommunity();
 }
+/* Opustenie Community: odstráni príspevky a verejné údaje, ale ZACHOVÁ účet aj
+   súkromnú cloudovú zálohu. (Server: delete-account mode 'community'.) */
+function communityLeaveCommunity() {
+  showGeneric(t('community.leaveTitle'), t('community.leaveConfirm'), () => {
+    const sb = communityClient(); if (!sb) return;
+    sb.functions.invoke('delete-account', { method: 'POST', body: { mode: 'community' } }).then((res) => {
+      if (res && res.error) { communitySetMessage('community.errNetwork'); renderCommunity(); return null; }
+      communityProfile = null;
+      communitySetMessage('community.leftCommunity');
+      renderCommunity();
+    }).catch(() => { communitySetMessage('community.errNetwork'); renderCommunity(); });
+  }, esc(t('community.leave')));
+}
+/* Úplné zmazanie účtu: zmaže účet aj všetky cloudové dáta (vrátane zálohy).
+   (Server: delete-account mode 'full'.) Lokálne tréningy na zariadení zostávajú. */
 function communityDeleteAccount() {
   showGeneric(t('community.deleteAccountTitle'), t('community.deleteAccount'), () => {
     const sb = communityClient(); if (!sb) return;
-    sb.functions.invoke('delete-account', { method: 'POST' }).then((res) => {
+    sb.functions.invoke('delete-account', { method: 'POST', body: { mode: 'full' } }).then((res) => {
       if (res && res.error) { communitySetMessage('community.errNetwork'); renderCommunity(); return null; }
       return sb.auth.signOut().then(() => {
         communityProfile = null;
+        cloudCancelPending();
         communitySetMessage('community.accountDeleted');
         renderCommunity();
       });
@@ -13829,6 +13980,7 @@ function openSettings() {
   setGoalReadout(weeklyGoal());
   renderLangSetting();
   renderAutoBackupSetting();
+  renderCloudBackupSetting();
   renderRestSoundSetting();
   const removeBtn = document.getElementById('btn-remove-demo');
   if (removeBtn) {
@@ -14981,6 +15133,7 @@ function applyStaticI18n() {
   renderLangSetting();
   renderLangList();
   renderAutoBackupSetting();
+  renderCloudBackupSetting();
   renderBackupStrip();   // jazyková zmena musí prekresliť aj lištu zálohy
   updatePlanManageButton();   // prepínač plánov má v každom jazyku správny text
   renderTimerPresets();       // názvy predvolieb časovača sú v každom jazyku iné
@@ -15585,6 +15738,308 @@ function saveActivityEdit() {
   renderPokrok();
 }
 
+/* ============================================================================
+   Súkromné cloudové zálohovanie (Supabase) — voliteľné, iba pre prihlásených.
+   NIE je to Community a NIE je to automatická synchronizácia zariadení.
+   Záloha je viazaná presne na prihlásené uid; pri odhlásení/zmene účtu sa
+   čakajúce zápisy zrušia, aby sa dáta účtu A nikdy nenahrali pod účet B.
+   ========================================================================== */
+const CLOUD_OWNER_KEY = 'gymquest_backup_owner';
+const CLOUD_PENDING_KEY = 'gymquest_backup_pending';
+const CLOUD_DEVICE_KEY = 'gymquest_device_id';
+const CLOUD_MEDIA_INDEX_PREFIX = 'gymquest_backup_media_idx:';
+const CLOUD_SNAPSHOT_KEY = 'gymquest_restore_snapshot';
+const CLOUD_DEBOUNCE_MS = 4000;
+const CLOUD_MAXLATENCY_MS = 60000;
+const CLOUD_MEDIA_MAX_BYTES = 50 * 1024 * 1024;   // Supabase Free per-file limit
+const BACKUP_SCHEMA_VERSION = 3;                  // zhoduje sa s state.version
+
+let cloudStatus = 'idle';      // idle|saving|saved|pending|offline|error|conflict|blocked|signedout
+let cloudLastAt = 0;
+let cloudRevision = 0;
+let cloudDebounceTimer = null;
+let cloudMaxTimer = null;
+let cloudRetryDelay = 5000;
+let cloudInFlight = false;
+let cloudRestoring = false;
+
+function cloudEnabled() {
+  return !!(state && state.settings && state.settings.cloudBackup === true && communityConfigured());
+}
+function cloudOwner() { try { return localStorage.getItem(CLOUD_OWNER_KEY) || null; } catch (e) { return null; } }
+function cloudSetOwner(id) { try { if (id) localStorage.setItem(CLOUD_OWNER_KEY, id); else localStorage.removeItem(CLOUD_OWNER_KEY); } catch (e) {} }
+function cloudDeviceId() {
+  try { let d = localStorage.getItem(CLOUD_DEVICE_KEY); if (!d) { d = 'dev-' + Math.random().toString(36).slice(2, 10); localStorage.setItem(CLOUD_DEVICE_KEY, d); } return d; }
+  catch (e) { return 'dev-unknown'; }
+}
+async function cloudUid() {
+  const sb = communitySb(); if (!sb) return null;
+  try { const r = await sb.auth.getSession(); const s = r && r.data ? r.data.session : null; return s && s.user ? s.user.id : null; }
+  catch (e) { return null; }
+}
+function cloudStatusKey() {
+  const map = { saving: 'cloud.saving', saved: 'cloud.saved', pending: 'cloud.pending', offline: 'cloud.offline',
+    error: 'cloud.error', conflict: 'cloud.conflict', blocked: 'cloud.blocked', signedout: 'cloud.notSignedIn', idle: 'cloud.idle' };
+  return map[cloudStatus] || 'cloud.idle';
+}
+
+/* Jediný bod zápisu stavu → debounce + maximálna latencia. */
+function scheduleCloudBackup() {
+  if (!cloudEnabled() || cloudRestoring) return;
+  if (cloudDebounceTimer) clearTimeout(cloudDebounceTimer);
+  cloudDebounceTimer = setTimeout(() => { cloudDebounceTimer = null; runCloudBackup(); }, CLOUD_DEBOUNCE_MS);
+  if (!cloudMaxTimer) cloudMaxTimer = setTimeout(() => { cloudMaxTimer = null; runCloudBackup(); }, CLOUD_MAXLATENCY_MS);
+}
+function cloudCancelPending() {
+  if (cloudDebounceTimer) { clearTimeout(cloudDebounceTimer); cloudDebounceTimer = null; }
+  if (cloudMaxTimer) { clearTimeout(cloudMaxTimer); cloudMaxTimer = null; }
+}
+
+/* Payload = celý stav okrem rozpracovaného tréningu/aktivity + manifest médií. */
+async function cloudBuildPayload() {
+  const snap = Object.assign({}, state);
+  delete snap.activeSession;
+  delete snap.activeActivity;
+  snap.media = await cloudBuildMediaManifest();
+  return snap;
+}
+
+async function idbGetAll(storeName) {
+  const db = await openMediaDb();
+  return await new Promise((res, rej) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const rq = tx.objectStore(storeName).getAll();
+    rq.onsuccess = () => res(rq.result || []);
+    rq.onerror = () => rej(rq.error);
+  });
+}
+
+/* Manifest médií: referencie na privátne Storage objekty (nie samotné binárky).
+   Veľké videá sa vynechajú a stav to povie používateľovi. */
+async function cloudBuildMediaManifest() {
+  const out = { progress: [], personal: [], skippedVideos: 0, ref: 'media' };
+  try {
+    const pmeta = await idbGetAll('progressMeta');
+    for (const m of pmeta) out.progress.push({ id: m.id, date: m.date, note: m.note, view: m.view, seq: m.seq, w: m.w, h: m.h, mime: m.mime, size: m.size, addedAt: m.addedAt });
+  } catch (e) {}
+  try {
+    const meta = await idbGetAll('meta');
+    for (const m of meta) out.personal.push({ id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name, type: m.type, size: m.size, seq: m.seq, hasPoster: !!m.hasPoster });
+  } catch (e) {}
+  return out;
+}
+
+/* Lokálny index nahratých médií (id → 'size:mime'), aby sa NEZMENENÉ médiá
+   nikdy nenahrávali znova. Kľúč je viazaný na konkrétne uid. */
+function cloudMediaIndexKey(uid) { return CLOUD_MEDIA_INDEX_PREFIX + uid; }
+function cloudMediaIndexGet(uid) {
+  try { const raw = localStorage.getItem(cloudMediaIndexKey(uid)); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+}
+function cloudMediaIndexSet(uid, idx) {
+  try { localStorage.setItem(cloudMediaIndexKey(uid), JSON.stringify(idx)); } catch (e) {}
+}
+
+/* Nahrá binárky médií do privátneho bucketu 'backups' pod <uid>/media/.
+   Nezmenené médiá (rovnaká veľkosť aj typ) sa preskočia. */
+async function cloudUploadMedia(sb, uid, manifest) {
+  const idx = cloudMediaIndexGet(uid);
+  let uploaded = 0, skipped = 0;
+  const put = async (path, blob, mime, key) => {
+    const sig = blob.size + ':' + (blob.type || mime || '');
+    if (idx[key] === sig) return;                       // nezmenené → nenahrávať znova
+    const r = await sb.storage.from('backups').upload(`${uid}/media/${path}`, blob, { upsert: true, contentType: blob.type || mime || 'application/octet-stream' });
+    if (!r.error) { uploaded++; idx[key] = sig; }
+  };
+  for (const p of manifest.progress) {
+    const rec = await idbGetProgress(p.id);
+    if (!rec) continue;
+    if (rec.blob) await put(p.id, rec.blob, p.mime || 'image/jpeg', 'p:' + p.id);
+    if (rec.thumb) await put(p.id + '_thumb', rec.thumb, 'image/jpeg', 'p:' + p.id + ':t');
+  }
+  for (const m of manifest.personal) {
+    const rec = await idbGetBlob(m.id);
+    if (!rec || !rec.blob) continue;
+    if (rec.blob.size > CLOUD_MEDIA_MAX_BYTES) { skipped++; continue; }
+    await put(m.id, rec.blob, m.type || 'application/octet-stream', 'm:' + m.id);
+    if (rec.posterBlob) await put(m.id + '_poster', rec.posterBlob, 'image/jpeg', 'm:' + m.id + ':p');
+  }
+  manifest.skippedVideos = skipped;
+  cloudMediaIndexSet(uid, idx);
+  return uploaded;
+}
+
+async function runCloudBackup(opts) {
+  if (!cloudEnabled()) return;
+  if (cloudInFlight) return;
+  const uid = await cloudUid();
+  if (!uid) { cloudStatus = 'signedout'; renderCloudBackupSetting(); return; }
+  const owner = cloudOwner();
+  if (owner && owner !== uid) { cloudStatus = 'blocked'; renderCloudBackupSetting(); return; }   // iné konto → nikdy
+  cloudInFlight = true;
+  cloudStatus = 'saving'; renderCloudBackupSetting();
+  try {
+    const sb = communitySb();
+    const payload = await cloudBuildPayload();
+    const { data, error } = await sb.rpc('save_backup', {
+      p_payload: payload, p_schema: BACKUP_SCHEMA_VERSION,
+      p_base_revision: cloudRevision || 0, p_device: cloudDeviceId(),
+      p_app_version: (window.GYMQUEST_VERSION || ''),
+    });
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row && row.conflict) {
+      cloudRevision = Number(row.revision) || cloudRevision;
+      cloudStatus = 'conflict'; renderCloudBackupSetting();
+      return;
+    }
+    cloudRevision = row && row.revision ? Number(row.revision) : (cloudRevision || 0) + 1;
+    cloudSetOwner(uid);
+    try { await cloudUploadMedia(sb, uid, payload.media); } catch (e) {}
+    cloudLastAt = Date.now();
+    cloudStatus = 'saved';
+    try { localStorage.removeItem(CLOUD_PENDING_KEY); } catch (e) {}
+    cloudRetryDelay = 5000;
+    renderCloudBackupSetting();
+    if (payload.media && payload.media.skippedVideos > 0) cloudSetMessage('cloud.videosSkipped', { n: payload.media.skippedVideos });
+  } catch (e) {
+    const offline = (typeof navigator !== 'undefined' && navigator.onLine === false);
+    cloudStatus = offline ? 'offline' : 'error';
+    try { localStorage.setItem(CLOUD_PENDING_KEY, JSON.stringify({ uid: uid, at: Date.now() })); } catch (e2) {}
+    renderCloudBackupSetting();
+    cloudRetryDelay = Math.min(cloudRetryDelay * 2, 300000);
+    setTimeout(() => runCloudBackup(), cloudRetryDelay);
+  } finally {
+    cloudInFlight = false;
+  }
+}
+
+async function cloudBackupNow() {
+  const uid = await cloudUid();
+  if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
+  cloudCancelPending();
+  cloudRetryDelay = 5000;
+  runCloudBackup();
+}
+
+/* Prvé prihlásenie: žiadna záloha → nahrať; iba cloud → ponúknuť obnovu;
+   obe a rozdielne → explicitná voľba (nikdy ticho neprepísať). */
+async function cloudReconcileOnSignIn() {
+  if (!cloudEnabled()) return;
+  const uid = await cloudUid();
+  if (!uid || cloudStatus === 'conflict') return;
+  try {
+    const sb = communitySb();
+    const { data } = await sb.from('backups').select('revision,schema_version,payload').eq('user_id', uid).maybeSingle();
+    if (!data) { cloudRevision = 0; runCloudBackup(); return; }
+    cloudRevision = Number(data.revision) || 0;
+    const cloudCount = (data.payload && Array.isArray(data.payload.history)) ? data.payload.history.length : 0;
+    const localCount = Array.isArray(state.history) ? state.history.length : 0;
+    const owner = cloudOwner();
+    if (owner && owner !== uid) { cloudStatus = 'blocked'; renderCloudBackupSetting(); return; }
+    if (localCount === 0 && cloudCount > 0) { askCloudRestore(); return; }
+    if (localCount !== cloudCount) { askCloudChoice(cloudCount, localCount); return; }
+    runCloudBackup();
+  } catch (e) { /* offline: ponechať pending */ }
+}
+
+function askCloudChoice(cloudCount, localCount) {
+  showGeneric(t('cloud.choiceTitle'),
+    t('cloud.choiceBody', { cloud: cloudCount, local: localCount }),
+    () => { askCloudRestore(); }, t('cloud.keepCloud'));
+}
+
+function askCloudRestore() {
+  showGeneric(t('cloud.restoreTitle'), t('cloud.restoreBody'),
+    () => { cloudRestore(); }, t('cloud.restore'));
+}
+
+/* Obnova: lokálna obnoviteľná snímka → overenie schémy → aplikácia + médiá. */
+async function cloudRestore() {
+  const uid = await cloudUid();
+  if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
+  const sb = communitySb();
+  try {
+    const { data, error } = await sb.from('backups').select('schema_version,payload').eq('user_id', uid).maybeSingle();
+    if (error || !data || !data.payload) { cloudSetMessage('cloud.noBackup'); return; }
+    if (Number(data.schema_version) !== BACKUP_SCHEMA_VERSION) { cloudSetMessage('cloud.incompatible'); return; }
+    try { localStorage.setItem(CLOUD_SNAPSHOT_KEY, JSON.stringify(Object.assign({}, state))); } catch (e) {}
+    const incoming = data.payload;
+    const mediaManifest = incoming.media || null;
+    delete incoming.media;
+    const migrated = incoming.version === 1 ? migrateV1toV2(incoming) : incoming;
+    cloudRestoring = true;
+    state = migrateV2toV3(migrated);
+    reconcileAchievements();
+    saveState();
+    if (mediaManifest) await cloudRestoreMedia(sb, uid, mediaManifest);
+    cloudRestoring = false;
+    renderAll();
+    cloudSetMessage('cloud.restored');
+  } catch (e) { cloudRestoring = false; cloudSetMessage('cloud.restoreFailed'); }
+}
+
+async function cloudRestoreMedia(sb, uid, manifest) {
+  for (const p of manifest.progress || []) {
+    const blobRes = await sb.storage.from('backups').download(`${uid}/media/${p.id}`);
+    if (blobRes.error || !blobRes.data) continue;
+    let thumb = null;
+    const thumbRes = await sb.storage.from('backups').download(`${uid}/media/${p.id}_thumb`);
+    if (!thumbRes.error && thumbRes.data) thumb = thumbRes.data;
+    await idbWriteProgress({ id: p.id, date: p.date, note: p.note || '', view: p.view || null, seq: p.seq || 0, w: p.w || 0, h: p.h || 0, mime: p.mime || 'image/jpeg', size: p.size || 0, addedAt: p.addedAt || Date.now() }, { id: p.id, blob: blobRes.data, thumb: thumb, origName: '' });
+  }
+  for (const m of manifest.personal || []) {
+    const blobRes = await sb.storage.from('backups').download(`${uid}/media/${m.id}`);
+    if (blobRes.error || !blobRes.data) continue;
+    let posterBlob = null;
+    const postRes = await sb.storage.from('backups').download(`${uid}/media/${m.id}_poster`);
+    if (!postRes.error && postRes.data) posterBlob = postRes.data;
+    await idbWriteMetaAndBlob({ id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name || '', type: m.type || '', size: m.size || 0, seq: m.seq || 0, hasPoster: !!posterBlob }, { id: m.id, blob: blobRes.data, posterBlob: posterBlob });
+  }
+}
+
+/* Zmazanie cloudovej zálohy (NIKDY nemazá lokálne dáta). */
+async function cloudDeleteBackup() {
+  const uid = await cloudUid();
+  if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
+  showGeneric(t('cloud.deleteTitle'), t('cloud.deleteBody'), async () => {
+    const sb = communitySb();
+    try {
+      for (const prefix of [uid, `${uid}/media`]) {
+        const list = await sb.storage.from('backups').list(prefix, { limit: 1000 });
+        const paths = (list.data || []).filter((f) => f && f.id).map((f) => `${prefix}/${f.name}`);
+        if (paths.length) await sb.storage.from('backups').remove(paths);
+      }
+      await sb.from('backups').delete().eq('user_id', uid);
+      cloudRevision = 0;
+      cloudSetOwner(null);
+      try { localStorage.removeItem(cloudMediaIndexKey(uid)); } catch (e) {}
+      cloudStatus = 'idle';
+      renderCloudBackupSetting();
+      cloudSetMessage('cloud.deleted');
+    } catch (e) { cloudSetMessage('cloud.deleteFailed'); }
+  }, t('cloud.delete'));
+}
+
+function cloudSetMessage(key, vars) {
+  cloudStatus = cloudStatus; // no-op guard
+  const el = document.getElementById('cloud-status');
+  if (el) { el.textContent = t(key, vars); el.hidden = false; }
+}
+
+function renderCloudBackupSetting() {
+  const sw = document.getElementById('btn-cloud-backup');
+  const stEl = document.getElementById('cloud-state');
+  const status = document.getElementById('cloud-status-line');
+  const on = !!(state && state.settings && state.settings.cloudBackup === true);
+  if (sw) { sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on ? 'true' : 'false'); }
+  if (stEl) stEl.textContent = on ? t('settings.on') : t('settings.off');
+  if (status) {
+    let line = t(cloudStatusKey());
+    if (cloudStatus === 'saved' && cloudLastAt) line = t('cloud.savedAt', { when: new Date(cloudLastAt).toLocaleString() });
+    status.textContent = line;
+  }
+}
+
 function setupEvents() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
@@ -15758,6 +16213,18 @@ function setupEvents() {
   });
   on('btn-backup-save', saveBackupNow);
   on('btn-backup-now', saveBackupNow);
+  /* Súkromná cloudová záloha (nezávislá od Community). */
+  on('btn-cloud-backup', () => {
+    const on = state.settings.cloudBackup !== true;
+    state.settings.cloudBackup = on;
+    if (!on) { cloudCancelPending(); cloudStatus = 'idle'; }
+    saveState();
+    renderCloudBackupSetting();
+    if (on) cloudReconcileOnSignIn();
+  });
+  on('btn-cloud-backup-now', cloudBackupNow);
+  on('btn-cloud-restore', () => { askCloudRestore(); });
+  on('btn-cloud-delete', cloudDeleteBackup);
   on('backup-dismiss', () => {
     backupDismissed = true;      // len do konca tejto relácie
     hideBackupStrip();
@@ -15873,6 +16340,7 @@ function setupEvents() {
     else if (act === 'approve' || act === 'reject') communityModerate(act, a.dataset.post);
     else if (act === 'resolve-report') communityModerate('resolve-report', a.dataset.report);
     else if (act === 'suspend') communityModerate('suspend', a.dataset.user);
+    else if (act === 'leave') communityLeaveCommunity();
     else if (act === 'delete-account') communityDeleteAccount();
     else if (act === 'forgot') { const em = document.getElementById('community-email'); authAskReset(em ? em.value.trim() : ''); }
   });
@@ -16182,6 +16650,8 @@ initPersonalMedia();
 initProgressPhotos();
 /* E-mailové odkazy (potvrdenie / obnova hesla) – fungujú aj pred zapnutím Community. */
 initAuthCallback();
+/* Súkromná cloudová záloha: po štarte vyrovnaj lokálne a cloudové dáta. */
+cloudReconcileOnSignIn();
 startDayWatcher();
 startDurationTicker();
 if (restoredSession) setSessionNote('trening.sessionRestored', 10000);
