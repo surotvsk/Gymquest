@@ -1913,6 +1913,8 @@ const I18N = {
     'auth.resetSent': 'Ak účet existuje, poslali sme odkaz na obnovenie hesla.',
     'auth.resetNeedEmail': 'Zadaj e-mail.',
     'auth.resetFailed': 'Odkaz sa nepodarilo poslať. Skús to znova.',
+    'about.title': 'O aplikácii',
+    'about.credits': 'Aplikáciu vytvorili Martin Šuriak a Vera Magdy Fakhry.',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2768,6 +2770,8 @@ const I18N = {
     'auth.resetSent': 'If the account exists, we’ve sent a password reset link.',
     'auth.resetNeedEmail': 'Enter your email.',
     'auth.resetFailed': 'Could not send the link. Please try again.',
+    'about.title': 'About the app',
+    'about.credits': 'The app was created by Martin Šuriak and Vera Magdy Fakhry.',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3617,6 +3621,8 @@ const I18N = {
     'auth.resetSent': 'Si la cuenta existe, hemos enviado un enlace para restablecer la contraseña.',
     'auth.resetNeedEmail': 'Escribe tu correo.',
     'auth.resetFailed': 'No se pudo enviar el enlace. Inténtalo de nuevo.',
+    'about.title': 'Acerca de la app',
+    'about.credits': 'La aplicación fue creada por Martin Šuriak y Vera Magdy Fakhry.',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4464,6 +4470,8 @@ const I18N = {
     'auth.resetSent': 'Se a conta existir, enviamos um link para redefinir a senha.',
     'auth.resetNeedEmail': 'Digite seu e-mail.',
     'auth.resetFailed': 'Não foi possível enviar o link. Tente novamente.',
+    'about.title': 'Sobre o app',
+    'about.credits': 'O aplicativo foi criado por Martin Šuriak e Vera Magdy Fakhry.',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5311,6 +5319,8 @@ const I18N = {
     'auth.resetSent': 'Si le compte existe, nous avons envoyé un lien de réinitialisation.',
     'auth.resetNeedEmail': 'Saisis ton e-mail.',
     'auth.resetFailed': 'Impossible d’envoyer le lien. Réessaie.',
+    'about.title': 'À propos de l’application',
+    'about.credits': 'L’application a été créée par Martin Šuriak et Vera Magdy Fakhry.',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -6177,6 +6187,8 @@ const I18N = {
     'auth.resetSent': 'إذا كان الحساب موجودًا، فقد أرسلنا رابط إعادة تعيين كلمة المرور.',
     'auth.resetNeedEmail': 'أدخل بريدك الإلكتروني.',
     'auth.resetFailed': 'تعذّر إرسال الرابط. حاول مرة أخرى.',
+    'about.title': 'حول التطبيق',
+    'about.credits': 'أنشأ التطبيق \u2066Martin Šuriak\u2069 و\u2066Vera Magdy Fakhry\u2069.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
