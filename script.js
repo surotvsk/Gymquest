@@ -16034,6 +16034,8 @@ async function cloudFetchMedia(sb, uid, manifest) {
   for (const p of manifest.progress || []) {
     const blob = await dl(p.ref, p.id);
     if (!blob) { staged.missing++; continue; }
+    /* Over obsah: stiahnutý blob musí zodpovedať hashu z manifestu. */
+    if (p.hash && (await cloudSha256(blob)) !== p.hash) { staged.missing++; continue; }
     let thumb = null;
     if (p.thumbRef) thumb = await dl(p.thumbRef, p.id + '_thumb');
     else { const t = await sb.storage.from('backups').download(`${uid}/media/${p.id}_thumb`); if (!t.error && t.data) thumb = t.data; }
@@ -16042,6 +16044,7 @@ async function cloudFetchMedia(sb, uid, manifest) {
   for (const m of manifest.personal || []) {
     const blob = await dl(m.ref, m.id);
     if (!blob) { staged.missing++; continue; }
+    if (m.hash && (await cloudSha256(blob)) !== m.hash) { staged.missing++; continue; }
     let poster = null;
     if (m.posterRef) poster = await dl(m.posterRef, m.id + '_poster');
     else { const t = await sb.storage.from('backups').download(`${uid}/media/${m.id}_poster`); if (!t.error && t.data) poster = t.data; }
