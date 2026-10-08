@@ -59,11 +59,13 @@ Deno.serve(async (req: Request) => {
     ? ['community', 'avatars', 'backups']
     : ['community', 'avatars'];
   for (const bucket of buckets) {
-    // backups keeps media under <uid>/media/; list both levels.
-    const prefixes = bucket === 'backups' ? [uid, `${uid}/media`] : [uid];
-    const paths: string[] = [];
-    for (const prefix of prefixes) paths.push(...await listPrefix(admin, bucket, prefix));
-    if (paths.length) await admin.storage.from(bucket).remove(paths);
+    // Recursive + paginated: handles nested backups media paths <uid>/media/<id>/<hash>.
+    const paths = await listAllRecursive(admin, bucket, uid);
+    if (paths.length) {
+      // Never silently ignore a Storage failure — a partial deletion must surface.
+      const { error: rmErr } = await admin.storage.from(bucket).remove(paths);
+      if (rmErr) return json({ error: 'storage_delete_failed', bucket }, 500);
+    }
   }
 
   // 3. Community content: posts, reports and blocks authored/owned by the caller.
@@ -87,12 +89,20 @@ Deno.serve(async (req: Request) => {
   return json({ ok: true, mode: 'full' }, 200);
 });
 
-async function listPrefix(admin: ReturnType<typeof createClient>, bucket: string, prefix: string): Promise<string[]> {
+async function listAllRecursive(admin: ReturnType<typeof createClient>, bucket: string, prefix: string): Promise<string[]> {
   const out: string[] = [];
-  const { data } = await admin.storage.from(bucket).list(prefix, { limit: 1000 });
-  for (const f of data ?? []) {
-    // Folder entries come back with no id/metadata; skip them (we list subpaths explicitly).
-    if (f && f.id) out.push(`${prefix}/${f.name}`);
+  let offset = 0;
+  while (true) {
+    const { data, error } = await admin.storage.from(bucket).list(prefix, { limit: 1000, offset });
+    if (error) throw new Error('storage_list_failed: ' + bucket + ': ' + error.message);
+    if (!data || data.length === 0) break;
+    for (const f of data) {
+      const path = `${prefix}/${f.name}`;
+      if (f && f.id) out.push(path);              // a file
+      else out.push(...await listAllRecursive(admin, bucket, path));   // a folder → recurse
+    }
+    if (data.length < 1000) break;                // last page
+    offset += data.length;                        // paginate
   }
   return out;
 }

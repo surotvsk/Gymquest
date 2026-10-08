@@ -1936,6 +1936,9 @@ const I18N = {
     'community.leaveTitle': 'Opustiť Community?',
     'community.leaveConfirm': 'Odstráni tvoje príspevky a verejné údaje v Community, ale ZACHOVÁ tvoj účet a súkromnú cloudovú zálohu.',
     'community.leftCommunity': 'Community opustená.',
+    'cloud.incomplete': 'Uložené s upozornením: {n} položiek sa nezálohovalo.',
+    'cloud.incompleteShort': 'Uložené s upozornením.',
+    'cloud.restoredIncomplete': 'Obnovené, ale {n} médií sa nepodarilo stiahnuť.',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2814,6 +2817,9 @@ const I18N = {
     'community.leaveTitle': 'Leave Community?',
     'community.leaveConfirm': 'Removes your posts and public profile details from Community, but KEEPS your account and private cloud backup.',
     'community.leftCommunity': 'You have left Community.',
+    'cloud.incomplete': 'Saved with a warning: {n} item(s) were not backed up.',
+    'cloud.incompleteShort': 'Saved with a warning.',
+    'cloud.restoredIncomplete': 'Restored, but {n} media item(s) could not be downloaded.',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3686,6 +3692,9 @@ const I18N = {
     'community.leaveTitle': '¿Salir de la Comunidad?',
     'community.leaveConfirm': 'Elimina tus publicaciones y datos públicos de la Comunidad, pero CONSERVA tu cuenta y tu copia privada en la nube.',
     'community.leftCommunity': 'Has salido de la Comunidad.',
+    'cloud.incomplete': 'Guardado con aviso: {n} elemento(s) no se copiaron.',
+    'cloud.incompleteShort': 'Guardado con aviso.',
+    'cloud.restoredIncomplete': 'Restaurado, pero {n} archivo(s) no se pudieron descargar.',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4556,6 +4565,9 @@ const I18N = {
     'community.leaveTitle': 'Sair da Comunidade?',
     'community.leaveConfirm': 'Remove seus posts e dados públicos da Comunidade, mas MANTÉM sua conta e o backup privado na nuvem.',
     'community.leftCommunity': 'Você saiu da Comunidade.',
+    'cloud.incomplete': 'Salvo com aviso: {n} item(ns) não foram copiados.',
+    'cloud.incompleteShort': 'Salvo com aviso.',
+    'cloud.restoredIncomplete': 'Restaurado, mas {n} mídia(s) não puderam ser baixadas.',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5426,6 +5438,9 @@ const I18N = {
     'community.leaveTitle': 'Quitter la Communauté ?',
     'community.leaveConfirm': 'Supprime tes publications et tes données publiques de la Communauté, mais CONSERVE ton compte et ta sauvegarde privée dans le cloud.',
     'community.leftCommunity': 'Tu as quitté la Communauté.',
+    'cloud.incomplete': 'Sauvegardé avec avertissement : {n} élément(s) non sauvegardés.',
+    'cloud.incompleteShort': 'Sauvegardé avec avertissement.',
+    'cloud.restoredIncomplete': 'Restauré, mais {n} média(s) n’ont pas pu être téléchargés.',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -6315,6 +6330,9 @@ const I18N = {
     'community.leaveTitle': 'مغادرة المجتمع؟',
     'community.leaveConfirm': 'يزيل منشوراتك وبياناتك العامة من المجتمع، لكنه يُبقي حسابك ونسختك السحابية الخاصة.',
     'community.leftCommunity': 'لقد غادرت المجتمع.',
+    'cloud.incomplete': 'تم الحفظ مع تحذير: {n} عنصرًا لم يُنسخ.',
+    'cloud.incompleteShort': 'تم الحفظ مع تحذير.',
+    'cloud.restoredIncomplete': 'تمت الاستعادة، لكن تعذّر تنزيل {n} من الوسائط.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -10741,7 +10759,7 @@ function idbReq(request) {
 function idbWriteMetaAndBlob(meta, rec) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => resolve(true);
+    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(MEDIA_META_STORE).put(meta);
@@ -10751,7 +10769,7 @@ function idbWriteMetaAndBlob(meta, rec) {
 function idbDeleteMetaAndBlob(id) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => resolve(true);
+    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(MEDIA_META_STORE).delete(id);
@@ -11320,7 +11338,7 @@ function releaseProgressObjectUrls() {
 function idbWriteProgress(meta, rec) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => resolve(true);
+    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(PROGRESS_META_STORE).put(meta);
@@ -11330,7 +11348,7 @@ function idbWriteProgress(meta, rec) {
 function idbPutProgressMeta(meta) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction(PROGRESS_META_STORE, 'readwrite');
-    tx.oncomplete = () => resolve(true);
+    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(PROGRESS_META_STORE).put(meta);
@@ -11339,7 +11357,7 @@ function idbPutProgressMeta(meta) {
 function idbDeleteProgress(id) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => resolve(true);
+    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(PROGRESS_META_STORE).delete(id);
@@ -15779,7 +15797,7 @@ async function cloudUid() {
 }
 function cloudStatusKey() {
   const map = { saving: 'cloud.saving', saved: 'cloud.saved', pending: 'cloud.pending', offline: 'cloud.offline',
-    error: 'cloud.error', conflict: 'cloud.conflict', blocked: 'cloud.blocked', signedout: 'cloud.notSignedIn', idle: 'cloud.idle' };
+    error: 'cloud.error', conflict: 'cloud.conflict', blocked: 'cloud.blocked', signedout: 'cloud.notSignedIn', idle: 'cloud.idle', incomplete: 'cloud.incompleteShort' };
   return map[cloudStatus] || 'cloud.idle';
 }
 
@@ -15813,24 +15831,63 @@ async function idbGetAll(storeName) {
     rq.onerror = () => rej(rq.error);
   });
 }
+async function idbGetOne(storeName, id) {
+  const db = await openMediaDb();
+  return await new Promise((res, rej) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const rq = tx.objectStore(storeName).get(id);
+    rq.onsuccess = () => res(rq.result || null);
+    rq.onerror = () => rej(rq.error);
+  });
+}
 
-/* Manifest médií: referencie na privátne Storage objekty (nie samotné binárky).
-   Veľké videá sa vynechajú a stav to povie používateľovi. */
+/* SHA-256 obsahu – dedup a content-addressed cesty médií. */
+async function cloudSha256(blob) {
+  try {
+    const buf = await blob.arrayBuffer();
+    const d = await crypto.subtle.digest('SHA-256', buf);
+    return Array.prototype.map.call(new Uint8Array(d), (x) => x.toString(16).padStart(2, '0')).join('');
+  } catch (e) { return null; }
+}
+
+/* Manifest médií (verzia 2): každá položka nesie PRESNÚ, content-addressed cestu
+   objektu (<id>/<hash>), takže staršie verzie si vždy vedia obnoviť svoje médium.
+   Chýbajúce a príliš veľké binárky sa zapíšu do `skipped` (stav to povie). */
 async function cloudBuildMediaManifest() {
-  const out = { progress: [], personal: [], skippedVideos: 0, ref: 'media' };
+  const out = { version: 2, progress: [], personal: [], skipped: [] };
   try {
     const pmeta = await idbGetAll('progressMeta');
-    for (const m of pmeta) out.progress.push({ id: m.id, date: m.date, note: m.note, view: m.view, seq: m.seq, w: m.w, h: m.h, mime: m.mime, size: m.size, addedAt: m.addedAt });
+    for (const m of pmeta) {
+      const rec = await idbGetProgress(m.id);
+      if (!rec || !rec.blob) { out.skipped.push({ id: m.id, reason: 'missing' }); continue; }
+      if (rec.blob.size > CLOUD_MEDIA_MAX_BYTES) { out.skipped.push({ id: m.id, reason: 'oversized' }); continue; }
+      const hash = await cloudSha256(rec.blob);
+      if (!hash) { out.skipped.push({ id: m.id, reason: 'unreadable' }); continue; }
+      const ent = { id: m.id, date: m.date, note: m.note, view: m.view, seq: m.seq, w: m.w, h: m.h, mime: m.mime || rec.blob.type, size: m.size, addedAt: m.addedAt, hash, ref: 'media/' + m.id + '/' + hash };
+      if (rec.thumb) { const th = await cloudSha256(rec.thumb); if (th) { ent.thumbHash = th; ent.thumbRef = 'media/' + m.id + '/' + th + '_thumb'; } }
+      out.progress.push(ent);
+    }
   } catch (e) {}
   try {
     const meta = await idbGetAll('meta');
-    for (const m of meta) out.personal.push({ id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name, type: m.type, size: m.size, seq: m.seq, hasPoster: !!m.hasPoster });
+    for (const m of meta) {
+      const rec = await idbGetBlob(m.id);
+      if (!rec || !rec.blob) { out.skipped.push({ id: m.id, reason: 'missing' }); continue; }
+      if (rec.blob.size > CLOUD_MEDIA_MAX_BYTES) { out.skipped.push({ id: m.id, reason: 'oversized' }); continue; }
+      const hash = await cloudSha256(rec.blob);
+      if (!hash) { out.skipped.push({ id: m.id, reason: 'unreadable' }); continue; }
+      const ent = { id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name, type: m.type, size: m.size, seq: m.seq, hash, ref: 'media/' + m.id + '/' + hash };
+      if (rec.posterBlob) { const ph = await cloudSha256(rec.posterBlob); if (ph) { ent.posterHash = ph; ent.posterRef = 'media/' + m.id + '/' + ph + '_poster'; } }
+      out.personal.push(ent);
+    }
   } catch (e) {}
+  out.skippedVideos = out.skipped.filter((s) => s.reason === 'oversized').length;
   return out;
 }
 
-/* Lokálny index nahratých médií (id → 'size:mime'), aby sa NEZMENENÉ médiá
-   nikdy nenahrávali znova. Kľúč je viazaný na konkrétne uid. */
+/* Lokálny index obsahu médií (id → hash), aby sa NEZMENENÉ médiá nenahrávali
+   znova. Keďže cesta obsahuje hash, zmena obsahu vytvorí NOVÝ objekt a starý
+   zostane pre staršie verzie. */
 function cloudMediaIndexKey(uid) { return CLOUD_MEDIA_INDEX_PREFIX + uid; }
 function cloudMediaIndexGet(uid) {
   try { const raw = localStorage.getItem(cloudMediaIndexKey(uid)); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
@@ -15839,31 +15896,29 @@ function cloudMediaIndexSet(uid, idx) {
   try { localStorage.setItem(cloudMediaIndexKey(uid), JSON.stringify(idx)); } catch (e) {}
 }
 
-/* Nahrá binárky médií do privátneho bucketu 'backups' pod <uid>/media/.
-   Nezmenené médiá (rovnaká veľkosť aj typ) sa preskočia. */
+/* Nahrá binárky médií na ich content-addressed cesty. Nezmenené (rovnaký hash)
+   sa preskočia; zlyhania sa spočítajú (nikdy ticho). */
 async function cloudUploadMedia(sb, uid, manifest) {
   const idx = cloudMediaIndexGet(uid);
-  let uploaded = 0, skipped = 0;
-  const put = async (path, blob, mime, key) => {
-    const sig = blob.size + ':' + (blob.type || mime || '');
-    if (idx[key] === sig) return;                       // nezmenené → nenahrávať znova
-    const r = await sb.storage.from('backups').upload(`${uid}/media/${path}`, blob, { upsert: true, contentType: blob.type || mime || 'application/octet-stream' });
-    if (!r.error) { uploaded++; idx[key] = sig; }
+  let uploaded = 0, failed = 0;
+  const up = async (ref, blob, mime, key) => {
+    if (!blob || !ref) return;
+    const hash = ref.split('/').pop();
+    if (key && idx[key] === hash) return;               // rovnaký obsah → nenahrávať
+    const r = await sb.storage.from('backups').upload(`${uid}/${ref}`, blob, { upsert: true, contentType: blob.type || mime || 'application/octet-stream' });
+    if (r.error) failed++; else { uploaded++; if (key) idx[key] = hash; }
   };
   for (const p of manifest.progress) {
     const rec = await idbGetProgress(p.id);
-    if (!rec) continue;
-    if (rec.blob) await put(p.id, rec.blob, p.mime || 'image/jpeg', 'p:' + p.id);
-    if (rec.thumb) await put(p.id + '_thumb', rec.thumb, 'image/jpeg', 'p:' + p.id + ':t');
+    if (rec && rec.blob) await up(p.ref, rec.blob, p.mime, 'p:' + p.id);
+    if (rec && rec.thumb && p.thumbRef) await up(p.thumbRef, rec.thumb, 'image/jpeg', 'p:' + p.id + ':t');
   }
   for (const m of manifest.personal) {
     const rec = await idbGetBlob(m.id);
-    if (!rec || !rec.blob) continue;
-    if (rec.blob.size > CLOUD_MEDIA_MAX_BYTES) { skipped++; continue; }
-    await put(m.id, rec.blob, m.type || 'application/octet-stream', 'm:' + m.id);
-    if (rec.posterBlob) await put(m.id + '_poster', rec.posterBlob, 'image/jpeg', 'm:' + m.id + ':p');
+    if (rec && rec.blob) await up(m.ref, rec.blob, m.type, 'm:' + m.id);
+    if (rec && rec.posterBlob && m.posterRef) await up(m.posterRef, rec.posterBlob, 'image/jpeg', 'm:' + m.id + ':p');
   }
-  manifest.skippedVideos = skipped;
+  manifest.uploaded = uploaded; manifest.failedUploads = failed;
   cloudMediaIndexSet(uid, idx);
   return uploaded;
 }
@@ -15894,11 +15949,21 @@ async function runCloudBackup(opts) {
     }
     cloudRevision = row && row.revision ? Number(row.revision) : (cloudRevision || 0) + 1;
     cloudSetOwner(uid);
-    try { await cloudUploadMedia(sb, uid, payload.media); } catch (e) {}
+    let mediaFail = 0;
+    try { await cloudUploadMedia(sb, uid, payload.media); } catch (e) { mediaFail = 1; }
     cloudLastAt = Date.now();
-    cloudStatus = 'saved';
     try { localStorage.removeItem(CLOUD_PENDING_KEY); } catch (e) {}
     cloudRetryDelay = 5000;
+    /* Nikdy neukazuj čisté "Uložené", ak niečo chýba alebo sa nenahralo. */
+    const mediaSkipped = (payload.media && payload.media.skipped) ? payload.media.skipped.length : 0;
+    const mediaFailed = ((payload.media && payload.media.failedUploads) || 0) + mediaFail;
+    if (mediaSkipped > 0 || mediaFailed > 0) {
+      cloudStatus = 'incomplete';
+      renderCloudBackupSetting();
+      cloudSetMessage('cloud.incomplete', { n: mediaSkipped + mediaFailed });
+      return;
+    }
+    cloudStatus = 'saved';
     renderCloudBackupSetting();
     if (payload.media && payload.media.skippedVideos > 0) cloudSetMessage('cloud.videosSkipped', { n: payload.media.skippedVideos });
   } catch (e) {
@@ -15927,6 +15992,11 @@ async function cloudReconcileOnSignIn() {
   if (!cloudEnabled()) return;
   const uid = await cloudUid();
   if (!uid || cloudStatus === 'conflict') return;
+  /* Po reštarte aplikácie obnov čakajúcu (nedokončenú) zálohu pre tohto používateľa. */
+  try {
+    const pend = JSON.parse(localStorage.getItem(CLOUD_PENDING_KEY) || 'null');
+    if (pend && pend.uid === uid) { runCloudBackup(); return; }
+  } catch (e) {}
   try {
     const sb = communitySb();
     const { data } = await sb.from('backups').select('revision,schema_version,payload').eq('user_id', uid).maybeSingle();
@@ -15953,48 +16023,86 @@ function askCloudRestore() {
     () => { cloudRestore(); }, t('cloud.restore'));
 }
 
-/* Obnova: lokálna obnoviteľná snímka → overenie schémy → aplikácia + médiá. */
+/* Stiahne médiá do pamäte (pred akýmkoľvek zápisom). ref = nová content-addressed
+   cesta; ak chýba, použije sa stará legacy plochá cesta <id> / <id>_thumb. */
+async function cloudFetchMedia(sb, uid, manifest) {
+  const staged = { progress: [], personal: [], missing: 0 };
+  const dl = async (ref, legacy) => {
+    if (ref) { const d = await sb.storage.from('backups').download(`${uid}/${ref}`); return (d.error || !d.data) ? null : d.data; }
+    const d = await sb.storage.from('backups').download(`${uid}/media/${legacy}`); return (d.error || !d.data) ? null : d.data;
+  };
+  for (const p of manifest.progress || []) {
+    const blob = await dl(p.ref, p.id);
+    if (!blob) { staged.missing++; continue; }
+    let thumb = null;
+    if (p.thumbRef) thumb = await dl(p.thumbRef, p.id + '_thumb');
+    else { const t = await sb.storage.from('backups').download(`${uid}/media/${p.id}_thumb`); if (!t.error && t.data) thumb = t.data; }
+    staged.progress.push({ meta: { id: p.id, date: p.date, note: p.note || '', view: p.view || null, seq: p.seq || 0, w: p.w || 0, h: p.h || 0, mime: p.mime || 'image/jpeg', size: p.size || 0, addedAt: p.addedAt || Date.now() }, blob: blob, thumb: thumb });
+  }
+  for (const m of manifest.personal || []) {
+    const blob = await dl(m.ref, m.id);
+    if (!blob) { staged.missing++; continue; }
+    let poster = null;
+    if (m.posterRef) poster = await dl(m.posterRef, m.id + '_poster');
+    else { const t = await sb.storage.from('backups').download(`${uid}/media/${m.id}_poster`); if (!t.error && t.data) poster = t.data; }
+    staged.personal.push({ meta: { id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name || '', type: m.type || '', size: m.size || 0, seq: m.seq || 0, hasPoster: !!poster }, blob: blob, poster: poster });
+  }
+  return staged;
+}
+
+/* Obnova (F): najprv STIAHNI a over VŠETKO (dáta aj médiá), ulož obnoviteľnú
+   snímku, a až potom prepíš lokálny stav. Pri zlyhaní zápisu sa vráti späť,
+   takže lokálne dáta ani médiá nikdy nezostanú napoly prepísané. */
 async function cloudRestore() {
   const uid = await cloudUid();
   if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
   const sb = communitySb();
+  const stateSnapshot = JSON.stringify(Object.assign({}, state));
   try {
     const { data, error } = await sb.from('backups').select('schema_version,payload').eq('user_id', uid).maybeSingle();
     if (error || !data || !data.payload) { cloudSetMessage('cloud.noBackup'); return; }
     if (Number(data.schema_version) !== BACKUP_SCHEMA_VERSION) { cloudSetMessage('cloud.incompatible'); return; }
-    try { localStorage.setItem(CLOUD_SNAPSHOT_KEY, JSON.stringify(Object.assign({}, state))); } catch (e) {}
-    const incoming = data.payload;
-    const mediaManifest = incoming.media || null;
-    delete incoming.media;
-    const migrated = incoming.version === 1 ? migrateV1toV2(incoming) : incoming;
-    cloudRestoring = true;
-    state = migrateV2toV3(migrated);
-    reconcileAchievements();
-    saveState();
-    if (mediaManifest) await cloudRestoreMedia(sb, uid, mediaManifest);
-    cloudRestoring = false;
-    renderAll();
-    cloudSetMessage('cloud.restored');
-  } catch (e) { cloudRestoring = false; cloudSetMessage('cloud.restoreFailed'); }
-}
 
-async function cloudRestoreMedia(sb, uid, manifest) {
-  for (const p of manifest.progress || []) {
-    const blobRes = await sb.storage.from('backups').download(`${uid}/media/${p.id}`);
-    if (blobRes.error || !blobRes.data) continue;
-    let thumb = null;
-    const thumbRes = await sb.storage.from('backups').download(`${uid}/media/${p.id}_thumb`);
-    if (!thumbRes.error && thumbRes.data) thumb = thumbRes.data;
-    await idbWriteProgress({ id: p.id, date: p.date, note: p.note || '', view: p.view || null, seq: p.seq || 0, w: p.w || 0, h: p.h || 0, mime: p.mime || 'image/jpeg', size: p.size || 0, addedAt: p.addedAt || Date.now() }, { id: p.id, blob: blobRes.data, thumb: thumb, origName: '' });
-  }
-  for (const m of manifest.personal || []) {
-    const blobRes = await sb.storage.from('backups').download(`${uid}/media/${m.id}`);
-    if (blobRes.error || !blobRes.data) continue;
-    let posterBlob = null;
-    const postRes = await sb.storage.from('backups').download(`${uid}/media/${m.id}_poster`);
-    if (!postRes.error && postRes.data) posterBlob = postRes.data;
-    await idbWriteMetaAndBlob({ id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name || '', type: m.type || '', size: m.size || 0, seq: m.seq || 0, hasPoster: !!posterBlob }, { id: m.id, blob: blobRes.data, posterBlob: posterBlob });
-  }
+    const incoming = data.payload;
+    const mediaManifest = incoming.media ? JSON.parse(JSON.stringify(incoming.media)) : null;
+    delete incoming.media;
+
+    // 1) Stage médií PRED akýmkoľvek lokálnym zápisom.
+    const staged = mediaManifest ? await cloudFetchMedia(sb, uid, mediaManifest) : { progress: [], personal: [], missing: 0 };
+
+    // 1b) Ak čokoľvek chýba, obnova ZLYHÁ bez toho, aby sa dotkla lokálnych dát.
+    if (staged.missing > 0) { cloudSetMessage('cloud.restoreFailed'); return; }
+
+    // 2) Obnoviteľná snímka stavu + predchádzajúcich médií (pre prípad rollbacku).
+    try { localStorage.setItem(CLOUD_SNAPSHOT_KEY, stateSnapshot); } catch (e) {}
+    const prevP = new Map(), prevM = new Map();
+    for (const it of staged.progress) { try { prevP.set(it.meta.id, { meta: await idbGetOne('progressMeta', it.meta.id), rec: await idbGetProgress(it.meta.id) }); } catch (e) {} }
+    for (const it of staged.personal) { try { prevM.set(it.meta.id, { meta: await idbGetOne('meta', it.meta.id), rec: await idbGetBlob(it.meta.id) }); } catch (e) {} }
+
+    // 3) Commit.
+    cloudRestoring = true;
+    try {
+      const migrated = incoming.version === 1 ? migrateV1toV2(incoming) : incoming;
+      state = migrateV2toV3(migrated);
+      reconcileAchievements();
+      for (const it of staged.progress) await idbWriteProgress(it.meta, { id: it.meta.id, blob: it.blob, thumb: it.thumb, origName: '' });
+      for (const it of staged.personal) await idbWriteMetaAndBlob(it.meta, { id: it.meta.id, blob: it.blob, posterBlob: it.poster });
+      saveState();
+      renderAll();
+    } catch (commitErr) {
+      // 4) Rollback: stav zo snímky + pôvodné médiá.
+      try { state = JSON.parse(stateSnapshot); } catch (e) {}
+      for (const it of staged.progress) { const p = prevP.get(it.meta.id); try { if (p && p.rec && p.meta) await idbWriteProgress(p.meta, p.rec); else await idbDeleteProgress(it.meta.id); } catch (e) {} }
+      for (const it of staged.personal) { const p = prevM.get(it.meta.id); try { if (p && p.rec && p.meta) await idbWriteMetaAndBlob(p.meta, p.rec); else await idbDeleteMetaAndBlob(it.meta.id); } catch (e) {} }
+      cloudRestoring = false;
+      renderAll();
+      cloudSetMessage('cloud.restoreFailed');
+      return;
+    }
+    cloudRestoring = false;
+    if (staged.missing > 0) cloudSetMessage('cloud.restoredIncomplete', { n: staged.missing });
+    else cloudSetMessage('cloud.restored');
+  } catch (e) { cloudRestoring = false; cloudSetMessage('cloud.restoreFailed'); }
 }
 
 /* Zmazanie cloudovej zálohy (NIKDY nemazá lokálne dáta). */
