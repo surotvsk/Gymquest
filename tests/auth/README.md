@@ -29,9 +29,9 @@ node tests/auth/inbox-e2e.js verify-reset
 Auth log; Supabase fails the request if SMTP rejects it) and "received in the inbox" (a person saw it)
 are reported separately — only the last one proves delivery.
 
-## Results — v44 (2026-10-10)
+## Results — v45 (2026-10-10)
 
-Automated (`run-auth.js`, local build): **31 / 31 passed**.
+Automated (`run-auth.js`): **47 / 47 passed** on the local build. Scenario L fails on v44 (a double-click sent two requests) and passes on v45.
 
 | Scenario | What it proves |
 |---|---|
@@ -40,8 +40,10 @@ Automated (`run-auth.js`, local build): **31 / 31 passed**.
 | K | reset for an unknown address and for an existing account look identical |
 | H / I / J | reset link opens the GymQuest set-password form and clears the tokens from the address bar; short password refused; new password works, old one does not, normal sign-in works; reused and tampered links show the "invalid or expired, nothing changed" page offering a new reset or confirmation link |
 | C | an email sign-in link returns to GymQuest and signs in the intended account in its own workspace |
+| L | a real mouse double-click on *Resend confirmation email*, *Send link* (reset) and *Set password* sends exactly one request; the button is disabled while it runs and restored after success (cooldown / result view), failure, a 30 s no-response timeout, or closing and reopening the dialog |
 
-Real inbox (`inbox-e2e.js`, one authorized Gmail address, local build):
+Real inbox (`inbox-e2e.js`, one authorized Gmail address; v44 local build, and one reset on the live
+v44 site):
 
 | Step | Accepted | Received | Link behaviour |
 |---|---|---|---|

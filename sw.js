@@ -6,7 +6,7 @@
    so no update would ever be offered.
    Bump it and the new worker installs, re-fetches everything and deletes the old cache. */
 
-const CACHE_VERSION = 'v44';
+const CACHE_VERSION = 'v45';
 const CACHE_PREFIX = 'gymquest-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
@@ -14,10 +14,10 @@ const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
    Cache kľúč je celá URL, takže "style.css" a "style.css?v=27" sú dve rôzne položky. */
 const PRECACHE = [
   'index.html',
-  'style.css?v=48',
-  'script.js?v=48',
-  'community-config.js?v=48',
-  'vendor/supabase-js.js?v=48',
+  'style.css?v=49',
+  'script.js?v=49',
+  'community-config.js?v=49',
+  'vendor/supabase-js.js?v=49',
   'manifest.json',
   'apple-touch-icon.png',
   'icon-192.png',

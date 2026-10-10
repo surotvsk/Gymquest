@@ -12513,15 +12513,31 @@ function authStartCooldown(kind, seconds) {
   } catch (e) {}
   authTickCooldowns();
 }
+/* Prebiehajúce požiadavky (poslať potvrdenie / obnovu hesla, uložiť nové heslo): kým beží,
+   jej tlačidlo je neaktívne a druhé kliknutie nič nepošle. Po dokončení, chybe alebo
+   vypršaní času (bez odpovede) sa tlačidlo vráti do správneho stavu. */
+let AUTH_REQUEST_TIMEOUT_MS = 30000;
+const authBusy = new Map();   // druh → token práve bežiacej požiadavky
+function authIsBusy(kind) { return authBusy.has(kind); }
+async function authOnce(kind, fn) {
+  if (authBusy.has(kind)) return;
+  const token = {};
+  authBusy.set(kind, token);
+  const release = () => { if (authBusy.get(kind) === token) { authBusy.delete(kind); authTickCooldowns(); } };
+  const timer = setTimeout(release, AUTH_REQUEST_TIMEOUT_MS);
+  authTickCooldowns();
+  try { await fn(); } finally { clearTimeout(timer); release(); }
+}
 /* Tlačidlá posielania e-mailov ukazujú zostávajúci čas a počas odpočtu sú neaktívne. */
 function authTickCooldowns() {
   let active = false;
   document.querySelectorAll('[data-mail-kind]').forEach((b) => {
     const left = authCooldownLeft(b.dataset.mailKind);
-    b.disabled = left > 0;
+    b.disabled = left > 0 || authIsBusy(b.dataset.mailKind);
     b.textContent = left > 0 ? t('auth.waitButton', { n: left }) : t(b.dataset.mailLabel);
     if (left > 0) active = true;
   });
+  document.querySelectorAll('[data-busy-kind]').forEach((b) => { b.disabled = authIsBusy(b.dataset.busyKind); });
   if (authCooldownTimer) { clearTimeout(authCooldownTimer); authCooldownTimer = null; }
   if (active) authCooldownTimer = setTimeout(authTickCooldowns, 1000);
 }
@@ -12548,7 +12564,7 @@ function authMailButton(kind, labelKey, attrs) {
   const left = authCooldownLeft(kind);
   setTimeout(authTickCooldowns, 0);
   return '<button type="button" class="btn btn-secondary" data-mail-kind="' + kind + '" data-mail-label="' + labelKey + '" ' + attrs
-    + (left > 0 ? ' disabled' : '') + '>' + esc(left > 0 ? t('auth.waitButton', { n: left }) : t(labelKey)) + '</button>';
+    + (left > 0 || authIsBusy(kind) ? ' disabled' : '') + '>' + esc(left > 0 ? t('auth.waitButton', { n: left }) : t(labelKey)) + '</button>';
 }
 async function communitySignUp() {
   const sb = communityClient(); if (!sb) return;
@@ -12574,7 +12590,8 @@ async function communitySignUp() {
   renderCommunity();
 }
 /* Opätovné poslanie potvrdzujúceho e-mailu (predošlé odkazy tým prestanú platiť). */
-async function authResendConfirmation(email, onDone) {
+function authResendConfirmation(email, onDone) { return authOnce('confirm', () => authResendConfirmationNow(email, onDone)); }
+async function authResendConfirmationNow(email, onDone) {
   const sb = communitySb(); if (!sb) return;
   const done = (text) => { if (onDone) onDone(text); };
   authLastEmail = email;
@@ -12843,7 +12860,7 @@ function renderAuthModal() {
       + authStatusHtml()
       + '<div class="modal-actions">'
       + '<button type="button" class="btn btn-secondary" data-auth-action="close">' + esc(t('common.cancel')) + '</button>'
-      + '<button type="button" class="btn btn-primary" data-auth-action="set-password">' + esc(t('auth.setPassword')) + '</button></div>';
+      + '<button type="button" class="btn btn-primary" data-auth-action="set-password" data-busy-kind="setpw"' + (authIsBusy('setpw') ? ' disabled' : '') + '>' + esc(t('auth.setPassword')) + '</button></div>';
   } else if (v === 'updated') {
     body.innerHTML = '<p class="card-note">' + esc(t('auth.passwordUpdated')) + '</p>' + authPrimaryOnly('common.close', 'close');
   } else if (v === 'sent') {
@@ -12860,7 +12877,8 @@ function renderAuthModal() {
   refreshUpdateBanner();
 }
 function authStatusText(text) { const s = document.getElementById('auth-status'); if (s) { s.textContent = text; s.hidden = false; } }
-async function authSendReset() {
+function authSendReset() { return authOnce('reset', authSendResetNow); }
+async function authSendResetNow() {
   const el = document.getElementById('auth-email');
   const email = el ? el.value.trim() : '';
   if (!email) { authStatusText(t('auth.resetNeedEmail')); return; }
@@ -12883,7 +12901,8 @@ async function authResendFromModal() {
   const el = document.getElementById('auth-email');
   await authResendConfirmation(el ? el.value.trim() : '', authStatusText);
 }
-async function authSetNewPassword() {
+function authSetNewPassword() { return authOnce('setpw', authSetNewPasswordNow); }
+async function authSetNewPasswordNow() {
   const p1 = document.getElementById('auth-newpass');
   const p2 = document.getElementById('auth-newpass2');
   const v1 = p1 ? p1.value : '';

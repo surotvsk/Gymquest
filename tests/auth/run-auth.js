@@ -51,25 +51,44 @@ async function clickCommunity(p, action) { await p.eval(`(document.querySelector
 async function clickAuth(p, action) { await p.eval(`(document.querySelector('[data-auth-action="${action}"]').click(), true)`); }
 async function settle(p) { await p.eval(`new Promise((r) => setTimeout(r, 600)).then(() => true)`); }
 
-/* Browser-level substitution of Auth responses (no request reaches Supabase). */
-async function intercept(p, pattern, responder) {
+/* Browser-level substitution of Auth responses (no request reaches Supabase unless the responder
+   says `pass`). Responder options: status/body, fail, delay (ms), hold (never answer), pass (send it). */
+async function intercept(p, pattern, responder, methods) {
   const hits = [];
+  const held = [];
   await p.c.send('Fetch.enable', { patterns: [{ urlPattern: pattern, requestStage: 'Request' }] });
   const handler = async (ev) => {
-    if (ev.request.method === 'OPTIONS') {
-      await p.c.send('Fetch.fulfillRequest', { requestId: ev.requestId, responseCode: 200, responseHeaders: cors() });
+    if (ev.request.method === 'OPTIONS' || (methods && methods.indexOf(ev.request.method) < 0)) {
+      await p.c.send('Fetch.continueRequest', { requestId: ev.requestId });
       return;
     }
     hits.push(ev.request.url.replace(/\?.*$/, ''));
     const r = responder(hits.length);
+    if (r.delay) await new Promise((res) => setTimeout(res, r.delay));
+    if (r.hold) { held.push(ev.requestId); return; }
+    if (r.pass) { await p.c.send('Fetch.continueRequest', { requestId: ev.requestId }); return; }
     if (r.fail) { await p.c.send('Fetch.failRequest', { requestId: ev.requestId, errorReason: r.fail }); return; }
     await p.c.send('Fetch.fulfillRequest', { requestId: ev.requestId, responseCode: r.status,
       responseHeaders: cors().concat([{ name: 'Content-Type', value: 'application/json' }]),
       body: Buffer.from(JSON.stringify(r.body || {})).toString('base64') });
   };
   p.c.on('Fetch.requestPaused', handler);
-  return { hits, async stop() { p.c.off('Fetch.requestPaused', handler); await p.c.send('Fetch.disable'); } };
+  return { hits, async stop() {
+    for (const id of held.splice(0)) await p.c.send('Fetch.failRequest', { requestId: id, errorReason: 'Aborted' }).catch(() => {});
+    p.c.off('Fetch.requestPaused', handler); await p.c.send('Fetch.disable');
+  } };
 }
+/* A real mouse double-click (two press/release pairs, clickCount 1 then 2) at the button's centre. */
+async function dblclick(p, selector) {
+  const pt = await p.eval(`(() => { const b = document.querySelector(${JSON.stringify(selector)}); b.scrollIntoView({ block: 'center' });
+    const r = b.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; })()`);
+  for (const clickCount of [1, 2]) {
+    await p.c.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: pt.x, y: pt.y, button: 'left', clickCount });
+    await p.c.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: pt.x, y: pt.y, button: 'left', clickCount });
+  }
+}
+const btnState = (p, selector) => p.eval(`(() => { const b = document.querySelector(${JSON.stringify(selector)}); return b ? { disabled: b.disabled, text: b.textContent } : null; })()`);
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 function cors() {
   return [{ name: 'Access-Control-Allow-Origin', value: '*' }, { name: 'Access-Control-Allow-Headers', value: '*' }, { name: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,OPTIONS' }];
 }
@@ -234,6 +253,106 @@ scenario('C (partial): an email sign-in link returns to GymQuest and signs in th
   check('lands on GymQuest with the "email confirmed / signed in" view', await p.eval(`authCallbackState.view === 'confirmed' && authCallbackState.signedIn === true`));
   check('signed in as the intended account and bound to its workspace', (await p.eval(`syncSessionUser().then((u) => u && u.id)`)) === ctx.B.id && (await p.eval('wsSlot.owner')) === ctx.B.id);
   check('tokens removed from the address bar', !(await p.eval(`/access_token|refresh_token|token=/.test(location.href)`)));
+});
+
+scenario('L: a double-click sends exactly one request; the button is disabled meanwhile and restored after success, failure, timeout or closing', async (ctx) => {
+  const { p } = await device('l');
+  const email = 'gq-dbl@gymquest-tests.com';
+  const OK = { status: 200, body: {} };
+  const noCooldown = () => p.eval(`(localStorage.removeItem('gymquest_mail_cooldown'), true)`);
+  /* Resend confirmation (sign-in form). */
+  await openSignInForm(p);
+  await fill(p, email, '');
+  const RS = '[data-community-action="resend-confirm"]';
+  let ic = await intercept(p, '*auth/v1/resend*', () => Object.assign({ delay: 1500 }, OK));
+  await dblclick(p, RS);
+  await wait(300);
+  check('resend: button disabled while the request runs', (await btnState(p, RS)).disabled === true);
+  await wait(2500);
+  check('resend: double-click sent exactly one request', ic.hits.length === 1, ic.hits.length);
+  check('resend: success message shown, button in its cooldown', (await communityMsg(p)) === (await T(p, 'auth.resendRequested')) && (await btnState(p, RS)).disabled && /\d/.test((await btnState(p, RS)).text));
+  await ic.stop();
+  await noCooldown(); await p.eval('(renderCommunity(), true)'); await fill(p, email, '');
+  ic = await intercept(p, '*auth/v1/resend*', () => Object.assign({ delay: 800 }, SEND_FAIL));
+  await dblclick(p, RS);
+  await wait(2000);
+  const label = await T(p, 'auth.resendConfirmation');
+  let b = await btnState(p, RS);
+  check('resend failure: one request, error shown, button enabled again', ic.hits.length === 1 && (await communityMsg(p)) === (await T(p, 'auth.errEmailNotSent')) && !b.disabled && b.text === label, { hits: ic.hits.length, b });
+  await ic.stop();
+  ic = await intercept(p, '*auth/v1/resend*', () => OK);
+  await p.eval(`(authResendConfirmation(${JSON.stringify(email)}, () => {}), authResendConfirmation(${JSON.stringify(email)}, () => {}), true)`);
+  await wait(1500);
+  check('resend: two calls in the same instant send one request', ic.hits.length === 1, ic.hits.length);
+  await ic.stop();
+  await noCooldown(); await p.eval('(renderCommunity(), true)'); await fill(p, email, '');
+  await p.eval('(AUTH_REQUEST_TIMEOUT_MS = 1500, true)');
+  ic = await intercept(p, '*auth/v1/resend*', () => ({ hold: true }));
+  await dblclick(p, RS);
+  await wait(500);
+  const during = await btnState(p, RS);
+  await wait(2000);
+  b = await btnState(p, RS);
+  check('resend timeout: disabled while waiting, enabled again after the timeout', during.disabled && !b.disabled && ic.hits.length === 1, { during, b, hits: ic.hits.length });
+  await ic.stop();
+  await wait(500);
+  await p.eval('(AUTH_REQUEST_TIMEOUT_MS = 30000, true)');
+  /* Send reset link (auth modal). */
+  const SR = '[data-auth-action="send-reset"]';
+  await noCooldown();
+  await p.eval(`(authAskReset(${JSON.stringify(email)}), true)`);
+  ic = await intercept(p, '*auth/v1/recover*', () => Object.assign({ delay: 1500 }, OK));
+  await dblclick(p, SR);
+  await wait(300);
+  check('reset: button disabled while the request runs', (await btnState(p, SR)).disabled === true);
+  await wait(2500);
+  check('reset: double-click sent exactly one request and showed the sent view', ic.hits.length === 1 && (await p.eval(`authCallbackState.view === 'sent'`)), ic.hits.length);
+  await ic.stop();
+  await noCooldown();
+  await p.eval(`(authAskReset(${JSON.stringify(email)}), true)`);
+  ic = await intercept(p, '*auth/v1/recover*', () => Object.assign({ delay: 800 }, RATE));
+  await dblclick(p, SR);
+  await wait(2000);
+  b = await btnState(p, SR);
+  check('reset failure (rate limit): one request, wait time shown, button enabled again', ic.hits.length === 1 && (await authMsg(p)).indexOf('42') >= 0 && !b.disabled, { hits: ic.hits.length, b });
+  await ic.stop();
+  ic = await intercept(p, '*auth/v1/recover*', () => Object.assign({ delay: 1500 }, OK));
+  await p.eval(`(document.querySelector('${SR}').click(), authClose(), authAskReset(${JSON.stringify(email)}), true)`);
+  await wait(200);
+  check('reset closed and reopened mid-request: button still disabled', (await btnState(p, SR)).disabled === true);
+  await wait(2500);
+  check('reset closed mid-request: one request, not left busy', ic.hits.length === 1 && !(await p.eval(`authIsBusy('reset')`)));
+  await ic.stop();
+  await p.eval('(authClose(), true)');
+  /* Set new password (real recovery link; the one real request is delayed, a second would reach the server). */
+  const tmp = path.join(WORK, 'd' + Date.now().toString(36));
+  const link = genLink('recovery', ctx.A.email, tmp);
+  const d2 = await device('l2');
+  await openLink(d2.p, link);
+  await waitFor(() => d2.p.eval(`!!document.getElementById('auth-newpass')`).catch(() => false), 30000, 'recovery form');
+  const SP = '[data-auth-action="set-password"]';
+  const newPw = 'Gq-' + Math.random().toString(36).slice(2, 12) + '-D1';
+  const fillPw = () => d2.p.eval(`(() => { document.getElementById('auth-newpass').value = ${JSON.stringify(newPw)}; document.getElementById('auth-newpass2').value = ${JSON.stringify(newPw)}; return true; })()`);
+  await fillPw();
+  ic = await intercept(d2.p, '*auth/v1/user*', () => ({ delay: 800, status: 500, body: { code: 'unexpected_failure', msg: 'Internal error' } }), ['PUT']);
+  await dblclick(d2.p, SP);
+  await wait(2000);
+  b = await btnState(d2.p, SP);
+  check('set password failure: one request, still on the form, button enabled again', ic.hits.length === 1 && (await d2.p.eval(`authCallbackState.view === 'recovery'`)) && b && !b.disabled, { hits: ic.hits.length, b });
+  await ic.stop();
+  await fillPw();
+  ic = await intercept(d2.p, '*auth/v1/user*', () => ({ delay: 1500, pass: true }), ['PUT']);
+  await dblclick(d2.p, SP);
+  await wait(300);
+  check('set password: button disabled while the request runs', (await btnState(d2.p, SP)).disabled === true);
+  await waitFor(() => d2.p.eval(`authCallbackState.view !== 'recovery'`), 30000, 'password result');
+  await wait(1500);
+  check('set password: double-click sent exactly one request and showed "password updated"', ic.hits.length === 1 && (await d2.p.eval(`authCallbackState.view === 'updated'`)), { hits: ic.hits.length, view: await d2.p.eval('authCallbackState.view') });
+  await ic.stop();
+  ctx.A.password = newPw;
+  ctx.saveCreds('a', ctx.A);
+  check('set password: the new password works', await new Observer(ctx.cfg, ctx.A).login().then(() => true).catch(() => false));
+  check('no page exceptions', p.errors.length === 0 && d2.p.errors.length === 0, p.errors.concat(d2.p.errors));
 });
 
 (async () => {
