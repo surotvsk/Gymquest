@@ -1765,7 +1765,6 @@ const I18N = {
     'media.addPersonal': 'Pridať vlastnú fotku alebo video',
     'media.myDemo': 'Moja ukážka',
     'media.limits': 'Fotky: JPG, PNG, WebP alebo GIF do 15 MB. Videá: MP4, WebM alebo MOV do 60 MB. Najviac 12 položiek na cvik.',
-    'media.personalNote': 'Vlastné médiá ostávajú iba na tomto zariadení. Nesynchronizujú sa medzi zariadeniami, nie sú súčasťou JSON zálohy a môžu sa stratiť, ak vymažeš dáta aplikácie.',
     'media.personalGalleryNote': 'Tvoja vlastná ukážka, uložená na tomto zariadení.',
     'media.replaceMedia': 'Nahradiť',
     'media.deleteMedia': 'Vymazať',
@@ -1843,7 +1842,6 @@ const I18N = {
     'photos.viewNone': 'Žiadny', 'photos.viewFront': 'Zpredu', 'photos.viewSide': 'Zboku', 'photos.viewBack': 'Zozadu', 'photos.viewOther': 'Iný',
     'photos.empty': 'Zatiaľ žiadne fotky progresu.',
     'photos.emptyHint': 'Pridaj fotky a porovnaj, ako vyzeráš v čase. Ostávajú na tomto zariadení.',
-    'photos.privacy': 'Fotky sa ukladajú iba na tomto zariadení. Nesynchronizujú sa medzi zariadeniami, nie sú v JSON zálohe a môžu sa stratiť, ak vymažeš dáta aplikácie či prehliadača. Nie sú šifrované ani chránené heslom.',
     'photos.optimizeNote': 'Ukladá sa len optimalizovaná kópia a náhľad – pôvodný súbor sa neuchováva.',
     'photos.compare': 'Porovnať', 'photos.compareHint': 'Vyber ľubovoľné dve fotky. Skorší dátum sa zobrazí ako Predtým.',
     'photos.before': 'Predtým', 'photos.after': 'Teraz',
@@ -1915,30 +1913,16 @@ const I18N = {
     'auth.resetFailed': 'Odkaz sa nepodarilo poslať. Skús to znova.',
     'about.title': 'O aplikácii',
     'about.credits': 'Aplikáciu vytvorili Martin Šuriak a Vera Magdy Fakhry.',
-    'cloud.title': 'Súkromná cloudová záloha',
-    'cloud.hint': 'Po prihlásení sa tvoje tréningy a fotky zálohujú do tvojho účtu. Nikdy sa nezverejňujú.',
-    'cloud.now': 'Zálohovať teraz', 'cloud.restore': 'Obnoviť…', 'cloud.delete': 'Zmazať cloudovú zálohu',
-    'cloud.privacyNote': 'Záloha je súkromná — vidíš ju len ty vo svojom účte. Moderátori Community k nej nemajú prístup. Toto nie je automatická synchronizácia medzi zariadeniami.',
-    'cloud.idle': 'Neaktívne.', 'cloud.saving': 'Ukladám…', 'cloud.saved': 'Uložené.', 'cloud.savedAt': 'Uložené {when}.',
-    'cloud.pending': 'Čaká (skúsi znova).', 'cloud.offline': 'Offline — skúsi znova.', 'cloud.error': 'Záloha zlyhala — skúsi znova.',
-    'cloud.conflict': 'Iné zariadenie uložilo novšie dáta. Vyber, čo ponechať.', 'cloud.blocked': 'Toto zariadenie obsahuje dáta iného účtu.',
+    'cloud.delete': 'Zmazať cloudovú zálohu',
     'cloud.notSignedIn': 'Prihlás sa, aby sa dalo zálohovať.',
-    'cloud.choiceTitle': 'Cloud a zariadenie sa líšia',
-    'cloud.choiceBody': 'V cloude je {cloud} tréningov, na zariadení {local}. Ponechať cloud, alebo zariadenie a prepísať cloud?',
-    'cloud.keepCloud': 'Ponechať cloud',
-    'cloud.restoreTitle': 'Obnoviť z cloudu?', 'cloud.restoreBody': 'Nahradí dáta na tomto zariadení tvojou cloudovou zálohou. Najprv sa uloží lokálna snímka.',
     'cloud.noBackup': 'Nenašla sa žiadna cloudová záloha.', 'cloud.incompatible': 'Táto záloha je z inej verzie aplikácie.',
-    'cloud.restored': 'Obnovené z cloudu.', 'cloud.restoreFailed': 'Obnovenie zlyhalo.',
-    'cloud.deleteTitle': 'Zmazať cloudovú zálohu?', 'cloud.deleteBody': 'Odstráni tvoju cloudovú zálohu aj médiá. Dáta na tomto zariadení zostanú nedotknuté.',
-    'cloud.deleted': 'Cloudová záloha zmazaná.', 'cloud.deleteFailed': 'Cloudovú zálohu sa nepodarilo zmazať.',
-    'cloud.videosSkipped': '{n} veľké video sa nezálohovalo.',
+    'cloud.restored': 'Obnovené z cloudu.',
+    'cloud.deleteTitle': 'Zmazať cloudovú zálohu?',
+    'cloud.deleteFailed': 'Cloudovú zálohu sa nepodarilo zmazať.',
     'community.leave': 'Opustiť Community',
     'community.leaveTitle': 'Opustiť Community?',
     'community.leaveConfirm': 'Odstráni tvoje príspevky a verejné údaje v Community, ale ZACHOVÁ tvoj účet a súkromnú cloudovú zálohu.',
     'community.leftCommunity': 'Community opustená.',
-    'cloud.incomplete': 'Uložené s upozornením: {n} položiek sa nezálohovalo.',
-    'cloud.incompleteShort': 'Uložené s upozornením.',
-    'cloud.restoredIncomplete': 'Obnovené, ale {n} médií sa nepodarilo stiahnuť.',
 
     /* --- Predvoľby časovača oddychu --- */
     'rest.startOnce': 'Spustiť raz',
@@ -2640,7 +2624,6 @@ const I18N = {
     'media.addPersonal': 'Add my photo or video',
     'media.myDemo': 'My demonstration',
     'media.limits': 'Photos: JPG, PNG, WebP or GIF up to 15 MB. Videos: MP4, WebM or MOV up to 60 MB. Up to 12 items per exercise.',
-    'media.personalNote': 'Your own media stays on this device only. It is not synced between devices, it is not included in the JSON backup, and it may be lost if you clear the app data.',
     'media.personalGalleryNote': 'Your own demonstration, stored on this device.',
     'media.replaceMedia': 'Replace',
     'media.deleteMedia': 'Delete',
@@ -2718,7 +2701,6 @@ const I18N = {
     'photos.viewNone': 'None', 'photos.viewFront': 'Front', 'photos.viewSide': 'Side', 'photos.viewBack': 'Back', 'photos.viewOther': 'Other',
     'photos.empty': 'No progress photos yet.',
     'photos.emptyHint': 'Add photos to compare how you look over time. They stay on this device.',
-    'photos.privacy': 'Your photos are stored only on this device. They are not synced between devices, not included in the JSON backup, and may be lost if you clear the app or browser data. They are not encrypted and not password-protected.',
     'photos.optimizeNote': 'Only an optimized copy and a thumbnail are kept — the original file is not stored.',
     'photos.compare': 'Compare', 'photos.compareHint': 'Pick any two photos. The earlier date is shown as Before.',
     'photos.before': 'Before', 'photos.after': 'Now',
@@ -2796,30 +2778,16 @@ const I18N = {
     'auth.resetFailed': 'Could not send the link. Please try again.',
     'about.title': 'About the app',
     'about.credits': 'The app was created by Martin Šuriak and Vera Magdy Fakhry.',
-    'cloud.title': 'Private cloud backup',
-    'cloud.hint': 'When signed in, your workouts and photos are backed up to your own account. They are never published.',
-    'cloud.now': 'Back up now', 'cloud.restore': 'Restore…', 'cloud.delete': 'Delete cloud backup',
-    'cloud.privacyNote': 'Your backup is private — only you can see it in your account. Community moderators cannot access it. This is not automatic multi-device sync.',
-    'cloud.idle': 'Inactive.', 'cloud.saving': 'Saving…', 'cloud.saved': 'Saved.', 'cloud.savedAt': 'Saved {when}.',
-    'cloud.pending': 'Pending (will retry).', 'cloud.offline': 'Offline — will retry.', 'cloud.error': 'Backup failed — will retry.',
-    'cloud.conflict': 'Another device saved newer data. Choose what to keep.', 'cloud.blocked': 'This device holds data for another account.',
+    'cloud.delete': 'Delete cloud backup',
     'cloud.notSignedIn': 'Sign in to back up.',
-    'cloud.choiceTitle': 'Cloud and device differ',
-    'cloud.choiceBody': 'The cloud has {cloud} workouts, this device has {local}. Keep the cloud copy, or keep this device and overwrite the cloud?',
-    'cloud.keepCloud': 'Keep cloud',
-    'cloud.restoreTitle': 'Restore from cloud?', 'cloud.restoreBody': 'This replaces the data on this device with your cloud backup. A local snapshot is saved first.',
     'cloud.noBackup': 'No cloud backup found.', 'cloud.incompatible': 'This backup is from a different app version.',
-    'cloud.restored': 'Restored from cloud.', 'cloud.restoreFailed': 'Restore failed.',
-    'cloud.deleteTitle': 'Delete cloud backup?', 'cloud.deleteBody': 'Removes your cloud backup and media. Your data on this device is not affected.',
-    'cloud.deleted': 'Cloud backup deleted.', 'cloud.deleteFailed': 'Could not delete the cloud backup.',
-    'cloud.videosSkipped': '{n} large video(s) were too big to back up.',
+    'cloud.restored': 'Restored from cloud.',
+    'cloud.deleteTitle': 'Delete cloud backup?',
+    'cloud.deleteFailed': 'Could not delete the cloud backup.',
     'community.leave': 'Leave Community',
     'community.leaveTitle': 'Leave Community?',
     'community.leaveConfirm': 'Removes your posts and public profile details from Community, but KEEPS your account and private cloud backup.',
     'community.leftCommunity': 'You have left Community.',
-    'cloud.incomplete': 'Saved with a warning: {n} item(s) were not backed up.',
-    'cloud.incompleteShort': 'Saved with a warning.',
-    'cloud.restoredIncomplete': 'Restored, but {n} media item(s) could not be downloaded.',
 
     /* --- Rest timer presets --- */
     'rest.startOnce': 'Start once',
@@ -3521,7 +3489,6 @@ const I18N = {
     'media.addPersonal': 'Añadir mi foto o vídeo',
     'media.myDemo': 'Mi demostración',
     'media.limits': 'Fotos: JPG, PNG, WebP o GIF hasta 15 MB. Vídeos: MP4, WebM o MOV hasta 60 MB. Máximo 12 elementos por ejercicio.',
-    'media.personalNote': 'Tu propio material se queda solo en este dispositivo. No se sincroniza entre dispositivos, no se incluye en la copia JSON y puede perderse si borras los datos de la aplicación.',
     'media.personalGalleryNote': 'Tu propia demostración, guardada en este dispositivo.',
     'media.replaceMedia': 'Reemplazar',
     'media.deleteMedia': 'Eliminar',
@@ -3599,7 +3566,6 @@ const I18N = {
     'photos.viewNone': 'Ninguna', 'photos.viewFront': 'Frontal', 'photos.viewSide': 'Lateral', 'photos.viewBack': 'Trasera', 'photos.viewOther': 'Otra',
     'photos.empty': 'Aún no hay fotos de progreso.',
     'photos.emptyHint': 'Añade fotos para comparar cómo te ves con el tiempo. Se quedan en este dispositivo.',
-    'photos.privacy': 'Tus fotos se guardan solo en este dispositivo. No se sincronizan entre dispositivos, no están en la copia JSON y pueden perderse si borras los datos de la aplicación o del navegador. No están cifradas ni protegidas con contraseña.',
     'photos.optimizeNote': 'Solo se guardan una copia optimizada y una miniatura: el archivo original no se almacena.',
     'photos.compare': 'Comparar', 'photos.compareHint': 'Elige dos fotos cualesquiera. La fecha más antigua se muestra como Antes.',
     'photos.before': 'Antes', 'photos.after': 'Ahora',
@@ -3671,30 +3637,16 @@ const I18N = {
     'auth.resetFailed': 'No se pudo enviar el enlace. Inténtalo de nuevo.',
     'about.title': 'Acerca de la app',
     'about.credits': 'La aplicación fue creada por Martin Šuriak y Vera Magdy Fakhry.',
-    'cloud.title': 'Copia de seguridad privada en la nube',
-    'cloud.hint': 'Al iniciar sesión, tus entrenamientos y fotos se guardan en tu propia cuenta. Nunca se publican.',
-    'cloud.now': 'Guardar ahora', 'cloud.restore': 'Restaurar…', 'cloud.delete': 'Eliminar copia en la nube',
-    'cloud.privacyNote': 'Tu copia es privada: solo tú puedes verla en tu cuenta. Los moderadores de la Comunidad no pueden acceder a ella. No es una sincronización automática entre dispositivos.',
-    'cloud.idle': 'Inactivo.', 'cloud.saving': 'Guardando…', 'cloud.saved': 'Guardado.', 'cloud.savedAt': 'Guardado {when}.',
-    'cloud.pending': 'Pendiente (se reintentará).', 'cloud.offline': 'Sin conexión: se reintentará.', 'cloud.error': 'La copia falló: se reintentará.',
-    'cloud.conflict': 'Otro dispositivo guardó datos más recientes. Elige qué conservar.', 'cloud.blocked': 'Este dispositivo contiene datos de otra cuenta.',
+    'cloud.delete': 'Eliminar copia en la nube',
     'cloud.notSignedIn': 'Inicia sesión para hacer copias.',
-    'cloud.choiceTitle': 'La nube y el dispositivo difieren',
-    'cloud.choiceBody': 'La nube tiene {cloud} entrenamientos y este dispositivo {local}. ¿Conservar la nube, o el dispositivo y sobrescribir la nube?',
-    'cloud.keepCloud': 'Conservar la nube',
-    'cloud.restoreTitle': '¿Restaurar desde la nube?', 'cloud.restoreBody': 'Reemplaza los datos de este dispositivo con tu copia en la nube. Primero se guarda una instantánea local.',
     'cloud.noBackup': 'No se encontró ninguna copia en la nube.', 'cloud.incompatible': 'Esta copia es de otra versión de la app.',
-    'cloud.restored': 'Restaurado desde la nube.', 'cloud.restoreFailed': 'La restauración falló.',
-    'cloud.deleteTitle': '¿Eliminar la copia en la nube?', 'cloud.deleteBody': 'Elimina tu copia en la nube y sus medios. Los datos de este dispositivo no se tocan.',
-    'cloud.deleted': 'Copia en la nube eliminada.', 'cloud.deleteFailed': 'No se pudo eliminar la copia en la nube.',
-    'cloud.videosSkipped': '{n} vídeo(s) grande(s) no se pudieron guardar.',
+    'cloud.restored': 'Restaurado desde la nube.',
+    'cloud.deleteTitle': '¿Eliminar la copia en la nube?',
+    'cloud.deleteFailed': 'No se pudo eliminar la copia en la nube.',
     'community.leave': 'Salir de la Comunidad',
     'community.leaveTitle': '¿Salir de la Comunidad?',
     'community.leaveConfirm': 'Elimina tus publicaciones y datos públicos de la Comunidad, pero CONSERVA tu cuenta y tu copia privada en la nube.',
     'community.leftCommunity': 'Has salido de la Comunidad.',
-    'cloud.incomplete': 'Guardado con aviso: {n} elemento(s) no se copiaron.',
-    'cloud.incompleteShort': 'Guardado con aviso.',
-    'cloud.restoredIncomplete': 'Restaurado, pero {n} archivo(s) no se pudieron descargar.',
 
     /* --- Ajustes del temporizador de descanso --- */
     'rest.startOnce': 'Iniciar una vez',
@@ -4394,7 +4346,6 @@ const I18N = {
     'media.addPersonal': 'Adicionar minha foto ou vídeo',
     'media.myDemo': 'Minha demonstração',
     'media.limits': 'Fotos: JPG, PNG, WebP ou GIF até 15 MB. Vídeos: MP4, WebM ou MOV até 60 MB. No máximo 12 itens por exercício.',
-    'media.personalNote': 'Seu próprio material fica somente neste dispositivo. Não é sincronizado entre dispositivos, não entra no backup JSON e pode ser perdido se você limpar os dados do aplicativo.',
     'media.personalGalleryNote': 'Sua própria demonstração, guardada neste dispositivo.',
     'media.replaceMedia': 'Substituir',
     'media.deleteMedia': 'Excluir',
@@ -4472,7 +4423,6 @@ const I18N = {
     'photos.viewNone': 'Nenhuma', 'photos.viewFront': 'Frente', 'photos.viewSide': 'Lado', 'photos.viewBack': 'Costas', 'photos.viewOther': 'Outra',
     'photos.empty': 'Ainda não há fotos de progresso.',
     'photos.emptyHint': 'Adicione fotos para comparar como você fica ao longo do tempo. Elas ficam neste dispositivo.',
-    'photos.privacy': 'Suas fotos são guardadas somente neste dispositivo. Não são sincronizadas entre dispositivos, não entram no backup JSON e podem ser perdidas se você limpar os dados do aplicativo ou do navegador. Não são criptografadas nem protegidas por senha.',
     'photos.optimizeNote': 'Apenas uma cópia otimizada e uma miniatura são guardadas — o arquivo original não é armazenado.',
     'photos.compare': 'Comparar', 'photos.compareHint': 'Escolha duas fotos quaisquer. A data mais antiga aparece como Antes.',
     'photos.before': 'Antes', 'photos.after': 'Agora',
@@ -4544,30 +4494,16 @@ const I18N = {
     'auth.resetFailed': 'Não foi possível enviar o link. Tente novamente.',
     'about.title': 'Sobre o app',
     'about.credits': 'O aplicativo foi criado por Martin Šuriak e Vera Magdy Fakhry.',
-    'cloud.title': 'Backup privado na nuvem',
-    'cloud.hint': 'Ao entrar, seus treinos e fotos são salvos na sua própria conta. Nunca são publicados.',
-    'cloud.now': 'Fazer backup agora', 'cloud.restore': 'Restaurar…', 'cloud.delete': 'Excluir backup da nuvem',
-    'cloud.privacyNote': 'Seu backup é privado — só você o vê na sua conta. Moderadores da Comunidade não têm acesso. Isto não é sincronização automática entre dispositivos.',
-    'cloud.idle': 'Inativo.', 'cloud.saving': 'Salvando…', 'cloud.saved': 'Salvo.', 'cloud.savedAt': 'Salvo {when}.',
-    'cloud.pending': 'Pendente (vai tentar de novo).', 'cloud.offline': 'Offline — vai tentar de novo.', 'cloud.error': 'O backup falhou — vai tentar de novo.',
-    'cloud.conflict': 'Outro dispositivo salvou dados mais novos. Escolha o que manter.', 'cloud.blocked': 'Este dispositivo contém dados de outra conta.',
+    'cloud.delete': 'Excluir backup da nuvem',
     'cloud.notSignedIn': 'Entre para fazer backup.',
-    'cloud.choiceTitle': 'Nuvem e dispositivo diferentes',
-    'cloud.choiceBody': 'A nuvem tem {cloud} treinos e este dispositivo {local}. Manter a nuvem, ou o dispositivo e sobrescrever a nuvem?',
-    'cloud.keepCloud': 'Manter a nuvem',
-    'cloud.restoreTitle': 'Restaurar da nuvem?', 'cloud.restoreBody': 'Substitui os dados deste dispositivo pelo seu backup na nuvem. Uma cópia local é salva primeiro.',
     'cloud.noBackup': 'Nenhum backup na nuvem encontrado.', 'cloud.incompatible': 'Este backup é de outra versão do app.',
-    'cloud.restored': 'Restaurado da nuvem.', 'cloud.restoreFailed': 'A restauração falhou.',
-    'cloud.deleteTitle': 'Excluir o backup da nuvem?', 'cloud.deleteBody': 'Remove seu backup na nuvem e a mídia. Os dados deste dispositivo não são afetados.',
-    'cloud.deleted': 'Backup da nuvem excluído.', 'cloud.deleteFailed': 'Não foi possível excluir o backup da nuvem.',
-    'cloud.videosSkipped': '{n} vídeo(s) grande(s) não couberam no backup.',
+    'cloud.restored': 'Restaurado da nuvem.',
+    'cloud.deleteTitle': 'Excluir o backup da nuvem?',
+    'cloud.deleteFailed': 'Não foi possível excluir o backup da nuvem.',
     'community.leave': 'Sair da Comunidade',
     'community.leaveTitle': 'Sair da Comunidade?',
     'community.leaveConfirm': 'Remove seus posts e dados públicos da Comunidade, mas MANTÉM sua conta e o backup privado na nuvem.',
     'community.leftCommunity': 'Você saiu da Comunidade.',
-    'cloud.incomplete': 'Salvo com aviso: {n} item(ns) não foram copiados.',
-    'cloud.incompleteShort': 'Salvo com aviso.',
-    'cloud.restoredIncomplete': 'Restaurado, mas {n} mídia(s) não puderam ser baixadas.',
 
     /* --- Predefinições do cronômetro de descanso --- */
     'rest.startOnce': 'Iniciar uma vez',
@@ -5267,7 +5203,6 @@ const I18N = {
     'media.addPersonal': 'Ajouter ma photo ou ma vidéo',
     'media.myDemo': 'Ma démonstration',
     'media.limits': 'Photos : JPG, PNG, WebP ou GIF jusqu’à 15 Mo. Vidéos : MP4, WebM ou MOV jusqu’à 60 Mo. 12 éléments maximum par exercice.',
-    'media.personalNote': 'Tes propres médias restent uniquement sur cet appareil. Ils ne sont pas synchronisés entre appareils, ne sont pas inclus dans la sauvegarde JSON et peuvent être perdus si tu effaces les données de l’application.',
     'media.personalGalleryNote': 'Ta propre démonstration, stockée sur cet appareil.',
     'media.replaceMedia': 'Remplacer',
     'media.deleteMedia': 'Supprimer',
@@ -5345,7 +5280,6 @@ const I18N = {
     'photos.viewNone': 'Aucune', 'photos.viewFront': 'Face', 'photos.viewSide': 'Profil', 'photos.viewBack': 'Dos', 'photos.viewOther': 'Autre',
     'photos.empty': 'Aucune photo de progrès pour l’instant.',
     'photos.emptyHint': 'Ajoute des photos pour comparer ton apparence dans le temps. Elles restent sur cet appareil.',
-    'photos.privacy': 'Tes photos sont stockées uniquement sur cet appareil. Elles ne sont pas synchronisées entre appareils, ne sont pas incluses dans la sauvegarde JSON et peuvent être perdues si tu effaces les données de l’application ou du navigateur. Elles ne sont ni chiffrées ni protégées par mot de passe.',
     'photos.optimizeNote': 'Seules une copie optimisée et une miniature sont conservées — le fichier d’origine n’est pas stocké.',
     'photos.compare': 'Comparer', 'photos.compareHint': 'Choisis deux photos. La date la plus ancienne apparaît comme Avant.',
     'photos.before': 'Avant', 'photos.after': 'Maintenant',
@@ -5417,30 +5351,16 @@ const I18N = {
     'auth.resetFailed': 'Impossible d’envoyer le lien. Réessaie.',
     'about.title': 'À propos de l’application',
     'about.credits': 'L’application a été créée par Martin Šuriak et Vera Magdy Fakhry.',
-    'cloud.title': 'Sauvegarde privée dans le cloud',
-    'cloud.hint': 'Une fois connecté, tes entraînements et photos sont sauvegardés dans ton propre compte. Ils ne sont jamais publiés.',
-    'cloud.now': 'Sauvegarder maintenant', 'cloud.restore': 'Restaurer…', 'cloud.delete': 'Supprimer la sauvegarde cloud',
-    'cloud.privacyNote': 'Ta sauvegarde est privée — toi seul la vois dans ton compte. Les modérateurs de la Communauté n’y ont pas accès. Ce n’est pas une synchronisation automatique entre appareils.',
-    'cloud.idle': 'Inactif.', 'cloud.saving': 'Sauvegarde…', 'cloud.saved': 'Sauvegardé.', 'cloud.savedAt': 'Sauvegardé {when}.',
-    'cloud.pending': 'En attente (nouvel essai).', 'cloud.offline': 'Hors ligne — nouvel essai.', 'cloud.error': 'Échec — nouvel essai.',
-    'cloud.conflict': 'Un autre appareil a enregistré des données plus récentes. Choisis quoi garder.', 'cloud.blocked': 'Cet appareil contient les données d’un autre compte.',
+    'cloud.delete': 'Supprimer la sauvegarde cloud',
     'cloud.notSignedIn': 'Connecte-toi pour sauvegarder.',
-    'cloud.choiceTitle': 'Cloud et appareil diffèrent',
-    'cloud.choiceBody': 'Le cloud contient {cloud} entraînements, cet appareil {local}. Garder le cloud, ou l’appareil et écraser le cloud ?',
-    'cloud.keepCloud': 'Garder le cloud',
-    'cloud.restoreTitle': 'Restaurer depuis le cloud ?', 'cloud.restoreBody': 'Remplace les données de cet appareil par ta sauvegarde cloud. Un instantané local est d’abord enregistré.',
     'cloud.noBackup': 'Aucune sauvegarde cloud trouvée.', 'cloud.incompatible': 'Cette sauvegarde provient d’une autre version de l’app.',
-    'cloud.restored': 'Restauré depuis le cloud.', 'cloud.restoreFailed': 'Échec de la restauration.',
-    'cloud.deleteTitle': 'Supprimer la sauvegarde cloud ?', 'cloud.deleteBody': 'Supprime ta sauvegarde cloud et ses médias. Les données de cet appareil ne sont pas touchées.',
-    'cloud.deleted': 'Sauvegarde cloud supprimée.', 'cloud.deleteFailed': 'Impossible de supprimer la sauvegarde cloud.',
-    'cloud.videosSkipped': '{n} grande(s) vidéo(s) n’ont pas pu être sauvegardées.',
+    'cloud.restored': 'Restauré depuis le cloud.',
+    'cloud.deleteTitle': 'Supprimer la sauvegarde cloud ?',
+    'cloud.deleteFailed': 'Impossible de supprimer la sauvegarde cloud.',
     'community.leave': 'Quitter la Communauté',
     'community.leaveTitle': 'Quitter la Communauté ?',
     'community.leaveConfirm': 'Supprime tes publications et tes données publiques de la Communauté, mais CONSERVE ton compte et ta sauvegarde privée dans le cloud.',
     'community.leftCommunity': 'Tu as quitté la Communauté.',
-    'cloud.incomplete': 'Sauvegardé avec avertissement : {n} élément(s) non sauvegardés.',
-    'cloud.incompleteShort': 'Sauvegardé avec avertissement.',
-    'cloud.restoredIncomplete': 'Restauré, mais {n} média(s) n’ont pas pu être téléchargés.',
 
     /* --- Préréglages du minuteur de repos --- */
     'rest.startOnce': 'Lancer une fois',
@@ -6159,7 +6079,6 @@ const I18N = {
     'media.addPersonal': 'إضافة صورتي أو فيديوي',
     'media.myDemo': 'عرضي الخاص',
     'media.limits': 'الصور: JPG أو PNG أو WebP أو GIF حتى 15 ميغابايت. الفيديوهات: MP4 أو WebM أو MOV حتى 60 ميغابايت. بحد أقصى 12 عنصرًا لكل تمرين.',
-    'media.personalNote': 'وسائطك الخاصة تبقى على هذا الجهاز فقط. لا تتم مزامنتها بين الأجهزة، ولا تُضمَّن في نسخة JSON الاحتياطية، وقد تُفقد إذا مسحت بيانات التطبيق.',
     'media.personalGalleryNote': 'عرضك الخاص، محفوظ على هذا الجهاز.',
     'media.replaceMedia': 'استبدال',
     'media.deleteMedia': 'حذف',
@@ -6237,7 +6156,6 @@ const I18N = {
     'photos.viewNone': 'بدون', 'photos.viewFront': 'أمامي', 'photos.viewSide': 'جانبي', 'photos.viewBack': 'خلفي', 'photos.viewOther': 'أخرى',
     'photos.empty': 'لا توجد صور تقدم بعد.',
     'photos.emptyHint': 'أضف صورًا لمقارنة مظهرك مع الوقت. تبقى على هذا الجهاز.',
-    'photos.privacy': 'صورك محفوظة على هذا الجهاز فقط. لا تتم مزامنتها بين الأجهزة، ولا تُضمَّن في نسخة JSON الاحتياطية، وقد تُفقد إذا مسحت بيانات التطبيق أو المتصفح. وهي ليست مشفّرة ولا محمية بكلمة مرور.',
     'photos.optimizeNote': 'يُحتفظ فقط بنسخة محسّنة وصورة مصغّرة — لا يُخزَّن الملف الأصلي.',
     'photos.compare': 'مقارنة', 'photos.compareHint': 'اختر أي صورتين. يظهر التاريخ الأقدم كـ "قبل".',
     'photos.before': 'قبل', 'photos.after': 'الآن',
@@ -6309,30 +6227,16 @@ const I18N = {
     'auth.resetFailed': 'تعذّر إرسال الرابط. حاول مرة أخرى.',
     'about.title': 'حول التطبيق',
     'about.credits': 'أنشأ التطبيق \u2066Martin Šuriak\u2069 و\u2066Vera Magdy Fakhry\u2069.',
-    'cloud.title': 'نسخ احتياطي سحابي خاص',
-    'cloud.hint': 'بعد تسجيل الدخول، تُنسخ تمارينك وصورك احتياطيًا إلى حسابك. ولا تُنشر أبدًا.',
-    'cloud.now': 'انسخ الآن', 'cloud.restore': 'استعادة…', 'cloud.delete': 'حذف النسخة السحابية',
-    'cloud.privacyNote': 'نسختك خاصة — لا يراها إلا أنت في حسابك. لا يمكن لمشرفي المجتمع الوصول إليها. هذا ليس مزامنة تلقائية بين الأجهزة.',
-    'cloud.idle': 'غير نشط.', 'cloud.saving': 'جارٍ الحفظ…', 'cloud.saved': 'تم الحفظ.', 'cloud.savedAt': 'تم الحفظ {when}.',
-    'cloud.pending': 'قيد الانتظار (ستُعاد المحاولة).', 'cloud.offline': 'دون اتصال — ستُعاد المحاولة.', 'cloud.error': 'فشل النسخ — ستُعاد المحاولة.',
-    'cloud.conflict': 'حفظ جهاز آخر بيانات أحدث. اختر ما تُبقيه.', 'cloud.blocked': 'يحتوي هذا الجهاز على بيانات حساب آخر.',
+    'cloud.delete': 'حذف النسخة السحابية',
     'cloud.notSignedIn': 'سجّل الدخول للنسخ الاحتياطي.',
-    'cloud.choiceTitle': 'السحابة والجهاز مختلفان',
-    'cloud.choiceBody': 'السحابة تحتوي {cloud} تمرينًا وهذا الجهاز {local}. هل تُبقي السحابة، أم الجهاز وتستبدل السحابة؟',
-    'cloud.keepCloud': 'الإبقاء على السحابة',
-    'cloud.restoreTitle': 'الاستعادة من السحابة؟', 'cloud.restoreBody': 'يستبدل بيانات هذا الجهاز بنسختك السحابية. تُحفظ لقطة محلية أولًا.',
     'cloud.noBackup': 'لا توجد نسخة سحابية.', 'cloud.incompatible': 'هذه النسخة من إصدار تطبيق مختلف.',
-    'cloud.restored': 'تمت الاستعادة من السحابة.', 'cloud.restoreFailed': 'فشلت الاستعادة.',
-    'cloud.deleteTitle': 'حذف النسخة السحابية؟', 'cloud.deleteBody': 'يزيل نسختك السحابية ووسائطها. لا تتأثر بيانات هذا الجهاز.',
-    'cloud.deleted': 'تم حذف النسخة السحابية.', 'cloud.deleteFailed': 'تعذّر حذف النسخة السحابية.',
-    'cloud.videosSkipped': 'تعذّر نسخ {n} من الفيديوهات الكبيرة.',
+    'cloud.restored': 'تمت الاستعادة من السحابة.',
+    'cloud.deleteTitle': 'حذف النسخة السحابية؟',
+    'cloud.deleteFailed': 'تعذّر حذف النسخة السحابية.',
     'community.leave': 'مغادرة المجتمع',
     'community.leaveTitle': 'مغادرة المجتمع؟',
     'community.leaveConfirm': 'يزيل منشوراتك وبياناتك العامة من المجتمع، لكنه يُبقي حسابك ونسختك السحابية الخاصة.',
     'community.leftCommunity': 'لقد غادرت المجتمع.',
-    'cloud.incomplete': 'تم الحفظ مع تحذير: {n} عنصرًا لم يُنسخ.',
-    'cloud.incompleteShort': 'تم الحفظ مع تحذير.',
-    'cloud.restoredIncomplete': 'تمت الاستعادة، لكن تعذّر تنزيل {n} من الوسائط.',
 
     /* --- الإعدادات المسبقة لمؤقت الراحة --- */
     'rest.startOnce': 'تشغيل مرة واحدة',
@@ -6715,6 +6619,433 @@ const I18N = {
   },
 };
 
+
+/* Preklady synchronizácie účtu (všetkých 6 jazykov na jednom mieste);
+   pri štarte sa vlejú do I18N. */
+const SYNC_I18N = {
+  sk: {
+    'sync.title': 'Synchronizácia účtu',
+    'sync.toggle': 'Synchronizovať tento účet na tomto zariadení',
+    'sync.privacyNote': 'Synchronizácia je súkromná — dáta vo svojom účte vidíš len ty. Moderátori Community k nim nemajú prístup. Všetko sa najprv uloží na tomto zariadení, takže aplikácia funguje aj offline.',
+    'sync.now': 'Synchronizovať teraz',
+    'sync.resolve': 'Vyriešiť konflikt…',
+    'sync.linkOpen': 'Dáta tohto zariadenia…',
+    'sync.loadOpen': 'Načítať z účtu…',
+    'sync.recoveryOpen': 'Kópie na obnovu…',
+    'sync.loadTitle': 'Načítať z účtu?',
+    'sync.loadConfirm': 'Načítať',
+    'sync.accountLine': 'Prihlásený účet: {email}.',
+    'sync.guestLine': 'Nie si prihlásený — dáta zostávajú na tomto zariadení. Na synchronizáciu sa prihlás cez Community.',
+    'sync.local.saved': 'Uložené na tomto zariadení · {when}',
+    'sync.local.failed': 'Na toto zariadenie sa nepodarilo uložiť — úložisko môže byť plné.',
+    'sync.st.guest': 'Synchronizácia: neprihlásený.',
+    'sync.st.link': 'Synchronizácia: rozhodni, čo s dátami tohto zariadenia.',
+    'sync.st.off': 'Synchronizácia je pre tento účet na tomto zariadení vypnutá.',
+    'sync.st.unavailable': 'Synchronizácia nie je dostupná.',
+    'sync.st.conflict': 'Synchronizácia pozastavená: zariadenie aj účet majú rozdielne zmeny. Vyber, čo ponechať.',
+    'sync.st.loading': 'Načítavam dáta z účtu…',
+    'sync.st.syncing': 'Synchronizujem…',
+    'sync.st.offlinePending': 'Offline — zmeny sú uložené na zariadení a zosynchronizujú sa po pripojení.',
+    'sync.st.offline': 'Offline — synchronizuje sa po pripojení.',
+    'sync.st.signedout': 'Prihlásenie vypršalo — prihlás sa znova. Zmeny sú uložené na tomto zariadení.',
+    'sync.st.other': 'Prihlásený je iný účet — znovu otvor aplikáciu.',
+    'sync.st.hash': 'Dáta z účtu neprešli kontrolou a nenačítali sa. Skúsi sa znova.',
+    'sync.st.local': 'Do úložiska zariadenia sa nepodarilo zapísať. Nič sa neprepísalo.',
+    'sync.st.error': 'Synchronizácia zlyhala — skúsi sa znova. Zmeny sú uložené na tomto zariadení.',
+    'sync.st.pending': 'Zmeny čakajú na synchronizáciu…',
+    'sync.st.incomplete': 'Zosynchronizované s upozornením: {n} médií nie je v účte (príliš veľké alebo chýbajú).',
+    'sync.st.synced': 'Zosynchronizované s účtom · {when}',
+    'sync.missingMedia': '{n} médií v účte chýba a nepodarilo sa ich načítať.',
+    'sync.rolledBack': 'Prerušené načítanie z účtu bolo vrátené späť. Predošlé dáta sú nedotknuté.',
+    'sync.keptCloud': 'Dáta z účtu sú načítané. Kópia predošlých dát zariadenia sa uložila.',
+    'sync.keptDevice': 'Dáta tohto zariadenia sa uložili do účtu. Kópia predošlých dát účtu sa uložila.',
+    'sync.recovered': 'Kópia obnovená. Zosynchronizuje sa do účtu.',
+    'sync.deleted': 'Cloudová záloha zmazaná. Synchronizácia je pre tento účet na tomto zariadení vypnutá.',
+    'sync.deleteBody': 'Odstráni dáta a médiá účtu v cloude. Dáta na tomto zariadení zostanú a synchronizácia sa na ňom vypne.',
+    'sync.loadBody': 'Nahradí dáta na tomto zariadení dátami z účtu. Najprv sa uloží kópia dát zariadenia na obnovu.',
+    'sync.conflictTitle': 'Zariadenie a účet sa líšia',
+    'sync.conflictBody': 'Zariadenie aj účet majú zmeny, ktoré druhá strana nemá (účet: {cloud} tréningov, zariadenie: {local}). Ktorú verziu ponechať?',
+    'sync.conflictEmptyBody': 'Toto zariadenie nemá žiadne tréningy, ale účet áno. Ponechať dáta účtu, alebo ich nahradiť prázdnymi dátami zariadenia?',
+    'sync.conflictCopies': 'Najprv sa uloží kópia OBOCH verzií. Kým nevyberieš, nič sa nenahrá ani neprepíše.',
+    'sync.keepDevice': 'Ponechať zariadenie',
+    'sync.keepCloud': 'Ponechať účet',
+    'sync.decideLater': 'Rozhodnúť neskôr',
+    'sync.linkTitle': 'Dáta na tomto zariadení',
+    'sync.linkBody': 'Na tomto zariadení sú dáta GymQuestu, ktoré nepatria žiadnemu účtu. Priradiť ich k účtu {email}?',
+    'sync.linkSeparateHint': '„Ponechať oddelene“ ich nechá na zariadení pre použitie bez prihlásenia a načíta dáta z účtu.',
+    'sync.linkSeparate': 'Ponechať oddelene',
+    'sync.linkYes': 'Priradiť k účtu',
+    'sync.recoveryTitle': 'Kópie na obnovu',
+    'sync.recoveryHint': 'Kópie uložené pred voľbou pri konflikte alebo pred načítaním z účtu. Pri obnove sa najprv uloží kópia súčasných dát.',
+    'sync.recoveryEmpty': 'Žiadne kópie na obnovu.',
+    'sync.copyCloud': 'Verzia z účtu ({n} tréningov)',
+    'sync.copyDevice': 'Toto zariadenie ({n} tréningov)',
+    'sync.copyLegacy': 'Staršia snímka ({n} tréningov)',
+    'sync.restoreCopy': 'Obnoviť',
+    'sync.restoreCopyTitle': 'Obnoviť túto kópiu?',
+    'sync.restoreCopyBody': 'Kópia nahradí súčasné dáta na tomto zariadení a potom sa zosynchronizuje do účtu. Najprv sa uloží kópia súčasných dát.',
+    'sync.deleteCopy': 'Zmazať',
+    'sync.deleteCopyTitle': 'Zmazať túto kópiu na obnovu?',
+    'sync.tabTitle': 'GymQuest je otvorený v inej karte',
+    'sync.tabBody': 'Aby sa dáta navzájom neprepísali, aplikácia beží naraz len v jednej karte. Tvoje dáta sú uložené.',
+    'sync.tabUseHere': 'Použiť tu',
+    'sync.tabWaiting': 'Čakám, kým druhá karta dokončí synchronizáciu…',
+    'photos.privacy': 'Fotky sa ukladajú na tomto zariadení. Ak si prihlásený a synchronizácia je zapnutá, súkromne sa uložia aj do tvojho účtu a načítajú sa na ďalších zariadeniach. Nie sú v JSON exporte a nikdy sa nezverejňujú.',
+    'media.personalNote': 'Vlastné médiá sa ukladajú na tomto zariadení. Ak si prihlásený a synchronizácia je zapnutá, súkromne sa uložia aj do tvojho účtu (videá nad 50 MB zostanú len na zariadení). Nie sú v JSON exporte.',
+  },
+  en: {
+    'sync.title': 'Account sync',
+    'sync.toggle': 'Sync this account on this device',
+    'sync.privacyNote': 'Sync is private — only you can see your data in your account. Community moderators cannot access it. Everything is saved on this device first, so the app also works offline.',
+    'sync.now': 'Sync now',
+    'sync.resolve': 'Resolve conflict…',
+    'sync.linkOpen': 'This device’s data…',
+    'sync.loadOpen': 'Load from account…',
+    'sync.recoveryOpen': 'Recovery copies…',
+    'sync.loadTitle': 'Load from account?',
+    'sync.loadConfirm': 'Load',
+    'sync.accountLine': 'Signed in as {email}.',
+    'sync.guestLine': 'Not signed in — your data stays on this device. Sign in via Community to sync.',
+    'sync.local.saved': 'Saved on this device · {when}',
+    'sync.local.failed': 'Could not save on this device — storage may be full.',
+    'sync.st.guest': 'Account sync: not signed in.',
+    'sync.st.link': 'Account sync: choose what to do with this device’s data.',
+    'sync.st.off': 'Account sync is off for this account on this device.',
+    'sync.st.unavailable': 'Account sync is not available.',
+    'sync.st.conflict': 'Sync paused: this device and your account have different changes. Choose what to keep.',
+    'sync.st.loading': 'Loading your account data…',
+    'sync.st.syncing': 'Syncing…',
+    'sync.st.offlinePending': 'Offline — changes are saved on this device and will sync when you are back online.',
+    'sync.st.offline': 'Offline — will sync when you are back online.',
+    'sync.st.signedout': 'Session expired — sign in again to sync. Your changes are saved on this device.',
+    'sync.st.other': 'A different account is signed in — reopen the app.',
+    'sync.st.hash': 'Account data failed verification and was not loaded. Will retry.',
+    'sync.st.local': 'Could not write to this device’s storage. Nothing was overwritten.',
+    'sync.st.error': 'Sync failed — will retry. Your changes are saved on this device.',
+    'sync.st.pending': 'Changes waiting to sync…',
+    'sync.st.incomplete': 'Synced with a warning: {n} media item(s) are not in your account (too large or missing).',
+    'sync.st.synced': 'Synced with your account · {when}',
+    'sync.missingMedia': '{n} media item(s) are missing from your account and could not be loaded.',
+    'sync.rolledBack': 'An interrupted account load was undone. Your previous data is intact.',
+    'sync.keptCloud': 'Account data loaded. A copy of this device’s previous data was kept.',
+    'sync.keptDevice': 'This device’s data was saved to your account. A copy of the previous account data was kept.',
+    'sync.recovered': 'Copy restored. It will sync to your account.',
+    'sync.deleted': 'Cloud backup deleted. Sync is now off for this account on this device.',
+    'sync.deleteBody': 'Removes your account’s cloud data and media. Data on this device is not affected, and sync is turned off on this device.',
+    'sync.loadBody': 'Replaces the data on this device with your account data. A recovery copy of this device’s data is kept first.',
+    'sync.conflictTitle': 'Device and account differ',
+    'sync.conflictBody': 'This device and your account both have changes the other does not (account: {cloud} workouts, this device: {local}). Which version do you want to keep?',
+    'sync.conflictEmptyBody': 'This device has no workout data, but your account does. Keep the account data, or replace it with this device’s empty data?',
+    'sync.conflictCopies': 'A recovery copy of BOTH versions is saved first. Until you choose, nothing is uploaded or overwritten.',
+    'sync.keepDevice': 'Keep this device',
+    'sync.keepCloud': 'Keep account',
+    'sync.decideLater': 'Decide later',
+    'sync.linkTitle': 'Data on this device',
+    'sync.linkBody': 'This device has GymQuest data that is not linked to any account. Link it to {email}?',
+    'sync.linkSeparateHint': '“Keep separate” leaves it on this device for use when signed out, and loads your account data instead.',
+    'sync.linkSeparate': 'Keep separate',
+    'sync.linkYes': 'Link to this account',
+    'sync.recoveryTitle': 'Recovery copies',
+    'sync.recoveryHint': 'Copies saved before a conflict choice or an account load. Restoring keeps a copy of the current data first.',
+    'sync.recoveryEmpty': 'No recovery copies.',
+    'sync.copyCloud': 'Account version ({n} workouts)',
+    'sync.copyDevice': 'This device ({n} workouts)',
+    'sync.copyLegacy': 'Earlier snapshot ({n} workouts)',
+    'sync.restoreCopy': 'Restore',
+    'sync.restoreCopyTitle': 'Restore this copy?',
+    'sync.restoreCopyBody': 'The copy replaces the current data on this device and then syncs to your account. A copy of the current data is kept first.',
+    'sync.deleteCopy': 'Delete',
+    'sync.deleteCopyTitle': 'Delete this recovery copy?',
+    'sync.tabTitle': 'GymQuest is open in another tab',
+    'sync.tabBody': 'To keep your data from being overwritten, the app runs in only one tab at a time. Your data is saved.',
+    'sync.tabUseHere': 'Use here',
+    'sync.tabWaiting': 'Waiting for the other tab to finish syncing…',
+    'photos.privacy': 'Your photos are stored on this device. When you are signed in with sync on, they are also saved privately to your account and loaded on your other devices. They are not in the JSON export and are never published.',
+    'media.personalNote': 'Your own media is stored on this device. When you are signed in with sync on, it is also saved privately to your account (videos over 50 MB stay on this device only). It is not in the JSON export.',
+  },
+  es: {
+    'sync.title': 'Sincronización de la cuenta',
+    'sync.toggle': 'Sincronizar esta cuenta en este dispositivo',
+    'sync.privacyNote': 'La sincronización es privada: solo tú puedes ver tus datos en tu cuenta. Los moderadores de la Comunidad no tienen acceso. Todo se guarda primero en este dispositivo, así que la app también funciona sin conexión.',
+    'sync.now': 'Sincronizar ahora',
+    'sync.resolve': 'Resolver conflicto…',
+    'sync.linkOpen': 'Datos de este dispositivo…',
+    'sync.loadOpen': 'Cargar desde la cuenta…',
+    'sync.recoveryOpen': 'Copias de recuperación…',
+    'sync.loadTitle': '¿Cargar desde la cuenta?',
+    'sync.loadConfirm': 'Cargar',
+    'sync.accountLine': 'Sesión iniciada como {email}.',
+    'sync.guestLine': 'No has iniciado sesión: tus datos se quedan en este dispositivo. Inicia sesión en la Comunidad para sincronizar.',
+    'sync.local.saved': 'Guardado en este dispositivo · {when}',
+    'sync.local.failed': 'No se pudo guardar en este dispositivo: el almacenamiento puede estar lleno.',
+    'sync.st.guest': 'Sincronización: sin sesión.',
+    'sync.st.link': 'Sincronización: elige qué hacer con los datos de este dispositivo.',
+    'sync.st.off': 'La sincronización está desactivada para esta cuenta en este dispositivo.',
+    'sync.st.unavailable': 'La sincronización no está disponible.',
+    'sync.st.conflict': 'Sincronización en pausa: este dispositivo y tu cuenta tienen cambios distintos. Elige qué conservar.',
+    'sync.st.loading': 'Cargando los datos de tu cuenta…',
+    'sync.st.syncing': 'Sincronizando…',
+    'sync.st.offlinePending': 'Sin conexión: los cambios están guardados en este dispositivo y se sincronizarán al volver la conexión.',
+    'sync.st.offline': 'Sin conexión: se sincronizará al volver la conexión.',
+    'sync.st.signedout': 'La sesión caducó: vuelve a iniciar sesión para sincronizar. Tus cambios están guardados en este dispositivo.',
+    'sync.st.other': 'Hay otra cuenta con la sesión iniciada: vuelve a abrir la app.',
+    'sync.st.hash': 'Los datos de la cuenta no superaron la verificación y no se cargaron. Se reintentará.',
+    'sync.st.local': 'No se pudo escribir en el almacenamiento del dispositivo. No se sobrescribió nada.',
+    'sync.st.error': 'La sincronización falló: se reintentará. Tus cambios están guardados en este dispositivo.',
+    'sync.st.pending': 'Cambios pendientes de sincronizar…',
+    'sync.st.incomplete': 'Sincronizado con aviso: {n} archivo(s) no están en tu cuenta (demasiado grandes o ausentes).',
+    'sync.st.synced': 'Sincronizado con tu cuenta · {when}',
+    'sync.missingMedia': 'Faltan {n} archivo(s) en tu cuenta y no se pudieron cargar.',
+    'sync.rolledBack': 'Se deshizo una carga interrumpida desde la cuenta. Tus datos anteriores están intactos.',
+    'sync.keptCloud': 'Datos de la cuenta cargados. Se guardó una copia de los datos anteriores de este dispositivo.',
+    'sync.keptDevice': 'Los datos de este dispositivo se guardaron en tu cuenta. Se guardó una copia de los datos anteriores de la cuenta.',
+    'sync.recovered': 'Copia restaurada. Se sincronizará con tu cuenta.',
+    'sync.deleted': 'Copia en la nube eliminada. La sincronización queda desactivada para esta cuenta en este dispositivo.',
+    'sync.deleteBody': 'Elimina los datos y archivos de tu cuenta en la nube. Los datos de este dispositivo no se tocan y la sincronización se desactiva en él.',
+    'sync.loadBody': 'Reemplaza los datos de este dispositivo con los de tu cuenta. Antes se guarda una copia de recuperación de los datos del dispositivo.',
+    'sync.conflictTitle': 'El dispositivo y la cuenta difieren',
+    'sync.conflictBody': 'Este dispositivo y tu cuenta tienen cambios que el otro no tiene (cuenta: {cloud} entrenamientos, dispositivo: {local}). ¿Qué versión quieres conservar?',
+    'sync.conflictEmptyBody': 'Este dispositivo no tiene entrenamientos, pero tu cuenta sí. ¿Conservar los datos de la cuenta o reemplazarlos por los datos vacíos de este dispositivo?',
+    'sync.conflictCopies': 'Primero se guarda una copia de AMBAS versiones. Hasta que elijas, no se sube ni se sobrescribe nada.',
+    'sync.keepDevice': 'Conservar el dispositivo',
+    'sync.keepCloud': 'Conservar la cuenta',
+    'sync.decideLater': 'Decidir más tarde',
+    'sync.linkTitle': 'Datos en este dispositivo',
+    'sync.linkBody': 'Este dispositivo tiene datos de GymQuest que no están vinculados a ninguna cuenta. ¿Vincularlos a {email}?',
+    'sync.linkSeparateHint': '«Mantener aparte» los deja en este dispositivo para usarlos sin sesión y carga los datos de tu cuenta.',
+    'sync.linkSeparate': 'Mantener aparte',
+    'sync.linkYes': 'Vincular a esta cuenta',
+    'sync.recoveryTitle': 'Copias de recuperación',
+    'sync.recoveryHint': 'Copias guardadas antes de elegir en un conflicto o de cargar desde la cuenta. Al restaurar, primero se guarda una copia de los datos actuales.',
+    'sync.recoveryEmpty': 'No hay copias de recuperación.',
+    'sync.copyCloud': 'Versión de la cuenta ({n} entrenamientos)',
+    'sync.copyDevice': 'Este dispositivo ({n} entrenamientos)',
+    'sync.copyLegacy': 'Instantánea anterior ({n} entrenamientos)',
+    'sync.restoreCopy': 'Restaurar',
+    'sync.restoreCopyTitle': '¿Restaurar esta copia?',
+    'sync.restoreCopyBody': 'La copia reemplaza los datos actuales de este dispositivo y luego se sincroniza con tu cuenta. Antes se guarda una copia de los datos actuales.',
+    'sync.deleteCopy': 'Eliminar',
+    'sync.deleteCopyTitle': '¿Eliminar esta copia de recuperación?',
+    'sync.tabTitle': 'GymQuest está abierto en otra pestaña',
+    'sync.tabBody': 'Para que tus datos no se sobrescriban, la app funciona en una sola pestaña a la vez. Tus datos están guardados.',
+    'sync.tabUseHere': 'Usar aquí',
+    'sync.tabWaiting': 'Esperando a que la otra pestaña termine de sincronizar…',
+    'photos.privacy': 'Tus fotos se guardan en este dispositivo. Si has iniciado sesión con la sincronización activada, también se guardan de forma privada en tu cuenta y se cargan en tus otros dispositivos. No están en la exportación JSON y nunca se publican.',
+    'media.personalNote': 'Tu propio material se guarda en este dispositivo. Si has iniciado sesión con la sincronización activada, también se guarda de forma privada en tu cuenta (los vídeos de más de 50 MB se quedan solo en el dispositivo). No está en la exportación JSON.',
+  },
+  'pt-BR': {
+    'sync.title': 'Sincronização da conta',
+    'sync.toggle': 'Sincronizar esta conta neste dispositivo',
+    'sync.privacyNote': 'A sincronização é privada: só você vê seus dados na sua conta. Os moderadores da Comunidade não têm acesso. Tudo é salvo primeiro neste dispositivo, então o app também funciona offline.',
+    'sync.now': 'Sincronizar agora',
+    'sync.resolve': 'Resolver conflito…',
+    'sync.linkOpen': 'Dados deste dispositivo…',
+    'sync.loadOpen': 'Carregar da conta…',
+    'sync.recoveryOpen': 'Cópias de recuperação…',
+    'sync.loadTitle': 'Carregar da conta?',
+    'sync.loadConfirm': 'Carregar',
+    'sync.accountLine': 'Conectado como {email}.',
+    'sync.guestLine': 'Você não está conectado: seus dados ficam neste dispositivo. Entre pela Comunidade para sincronizar.',
+    'sync.local.saved': 'Salvo neste dispositivo · {when}',
+    'sync.local.failed': 'Não foi possível salvar neste dispositivo: o armazenamento pode estar cheio.',
+    'sync.st.guest': 'Sincronização: não conectado.',
+    'sync.st.link': 'Sincronização: escolha o que fazer com os dados deste dispositivo.',
+    'sync.st.off': 'A sincronização está desativada para esta conta neste dispositivo.',
+    'sync.st.unavailable': 'A sincronização não está disponível.',
+    'sync.st.conflict': 'Sincronização pausada: este dispositivo e sua conta têm alterações diferentes. Escolha o que manter.',
+    'sync.st.loading': 'Carregando os dados da sua conta…',
+    'sync.st.syncing': 'Sincronizando…',
+    'sync.st.offlinePending': 'Offline: as alterações estão salvas neste dispositivo e serão sincronizadas quando a conexão voltar.',
+    'sync.st.offline': 'Offline: sincroniza quando a conexão voltar.',
+    'sync.st.signedout': 'A sessão expirou: entre novamente para sincronizar. Suas alterações estão salvas neste dispositivo.',
+    'sync.st.other': 'Outra conta está conectada: abra o app novamente.',
+    'sync.st.hash': 'Os dados da conta não passaram na verificação e não foram carregados. Será tentado de novo.',
+    'sync.st.local': 'Não foi possível gravar no armazenamento do dispositivo. Nada foi sobrescrito.',
+    'sync.st.error': 'A sincronização falhou: será tentado de novo. Suas alterações estão salvas neste dispositivo.',
+    'sync.st.pending': 'Alterações aguardando sincronização…',
+    'sync.st.incomplete': 'Sincronizado com aviso: {n} mídia(s) não estão na sua conta (grandes demais ou ausentes).',
+    'sync.st.synced': 'Sincronizado com sua conta · {when}',
+    'sync.missingMedia': '{n} mídia(s) estão faltando na sua conta e não puderam ser carregadas.',
+    'sync.rolledBack': 'Um carregamento interrompido da conta foi desfeito. Seus dados anteriores estão intactos.',
+    'sync.keptCloud': 'Dados da conta carregados. Uma cópia dos dados anteriores deste dispositivo foi guardada.',
+    'sync.keptDevice': 'Os dados deste dispositivo foram salvos na sua conta. Uma cópia dos dados anteriores da conta foi guardada.',
+    'sync.recovered': 'Cópia restaurada. Ela será sincronizada com sua conta.',
+    'sync.deleted': 'Backup na nuvem excluído. A sincronização foi desativada para esta conta neste dispositivo.',
+    'sync.deleteBody': 'Remove os dados e mídias da sua conta na nuvem. Os dados deste dispositivo não são afetados e a sincronização é desativada nele.',
+    'sync.loadBody': 'Substitui os dados deste dispositivo pelos dados da sua conta. Antes, uma cópia de recuperação dos dados do dispositivo é guardada.',
+    'sync.conflictTitle': 'Dispositivo e conta são diferentes',
+    'sync.conflictBody': 'Este dispositivo e sua conta têm alterações que o outro não tem (conta: {cloud} treinos, dispositivo: {local}). Qual versão você quer manter?',
+    'sync.conflictEmptyBody': 'Este dispositivo não tem treinos, mas sua conta tem. Manter os dados da conta ou substituí-los pelos dados vazios deste dispositivo?',
+    'sync.conflictCopies': 'Primeiro é guardada uma cópia de AMBAS as versões. Até você escolher, nada é enviado nem sobrescrito.',
+    'sync.keepDevice': 'Manter o dispositivo',
+    'sync.keepCloud': 'Manter a conta',
+    'sync.decideLater': 'Decidir depois',
+    'sync.linkTitle': 'Dados neste dispositivo',
+    'sync.linkBody': 'Este dispositivo tem dados do GymQuest que não estão vinculados a nenhuma conta. Vinculá-los a {email}?',
+    'sync.linkSeparateHint': '“Manter separado” os deixa neste dispositivo para uso sem login e carrega os dados da sua conta.',
+    'sync.linkSeparate': 'Manter separado',
+    'sync.linkYes': 'Vincular a esta conta',
+    'sync.recoveryTitle': 'Cópias de recuperação',
+    'sync.recoveryHint': 'Cópias guardadas antes de uma escolha de conflito ou de carregar da conta. Ao restaurar, primeiro é guardada uma cópia dos dados atuais.',
+    'sync.recoveryEmpty': 'Nenhuma cópia de recuperação.',
+    'sync.copyCloud': 'Versão da conta ({n} treinos)',
+    'sync.copyDevice': 'Este dispositivo ({n} treinos)',
+    'sync.copyLegacy': 'Instantâneo anterior ({n} treinos)',
+    'sync.restoreCopy': 'Restaurar',
+    'sync.restoreCopyTitle': 'Restaurar esta cópia?',
+    'sync.restoreCopyBody': 'A cópia substitui os dados atuais deste dispositivo e depois é sincronizada com sua conta. Antes, uma cópia dos dados atuais é guardada.',
+    'sync.deleteCopy': 'Excluir',
+    'sync.deleteCopyTitle': 'Excluir esta cópia de recuperação?',
+    'sync.tabTitle': 'O GymQuest está aberto em outra aba',
+    'sync.tabBody': 'Para que seus dados não sejam sobrescritos, o app funciona em apenas uma aba por vez. Seus dados estão salvos.',
+    'sync.tabUseHere': 'Usar aqui',
+    'sync.tabWaiting': 'Aguardando a outra aba terminar a sincronização…',
+    'photos.privacy': 'Suas fotos são guardadas neste dispositivo. Se você estiver conectado com a sincronização ativada, elas também são salvas de forma privada na sua conta e carregadas nos seus outros dispositivos. Não entram no export JSON e nunca são publicadas.',
+    'media.personalNote': 'Seu próprio material é guardado neste dispositivo. Se você estiver conectado com a sincronização ativada, ele também é salvo de forma privada na sua conta (vídeos acima de 50 MB ficam só no dispositivo). Não entra no export JSON.',
+  },
+  fr: {
+    'sync.title': 'Synchronisation du compte',
+    'sync.toggle': 'Synchroniser ce compte sur cet appareil',
+    'sync.privacyNote': 'La synchronisation est privée : toi seul vois tes données dans ton compte. Les modérateurs de la Communauté n’y ont pas accès. Tout est d’abord enregistré sur cet appareil, donc l’app fonctionne aussi hors ligne.',
+    'sync.now': 'Synchroniser maintenant',
+    'sync.resolve': 'Résoudre le conflit…',
+    'sync.linkOpen': 'Données de cet appareil…',
+    'sync.loadOpen': 'Charger depuis le compte…',
+    'sync.recoveryOpen': 'Copies de récupération…',
+    'sync.loadTitle': 'Charger depuis le compte ?',
+    'sync.loadConfirm': 'Charger',
+    'sync.accountLine': 'Connecté en tant que {email}.',
+    'sync.guestLine': 'Non connecté : tes données restent sur cet appareil. Connecte-toi via la Communauté pour synchroniser.',
+    'sync.local.saved': 'Enregistré sur cet appareil · {when}',
+    'sync.local.failed': 'Impossible d’enregistrer sur cet appareil : le stockage est peut-être plein.',
+    'sync.st.guest': 'Synchronisation : non connecté.',
+    'sync.st.link': 'Synchronisation : choisis quoi faire des données de cet appareil.',
+    'sync.st.off': 'La synchronisation est désactivée pour ce compte sur cet appareil.',
+    'sync.st.unavailable': 'La synchronisation n’est pas disponible.',
+    'sync.st.conflict': 'Synchronisation en pause : cet appareil et ton compte ont des modifications différentes. Choisis quoi garder.',
+    'sync.st.loading': 'Chargement des données de ton compte…',
+    'sync.st.syncing': 'Synchronisation…',
+    'sync.st.offlinePending': 'Hors ligne : les modifications sont enregistrées sur cet appareil et seront synchronisées au retour de la connexion.',
+    'sync.st.offline': 'Hors ligne : synchronisation au retour de la connexion.',
+    'sync.st.signedout': 'Session expirée : reconnecte-toi pour synchroniser. Tes modifications sont enregistrées sur cet appareil.',
+    'sync.st.other': 'Un autre compte est connecté : rouvre l’app.',
+    'sync.st.hash': 'Les données du compte n’ont pas passé la vérification et n’ont pas été chargées. Nouvel essai plus tard.',
+    'sync.st.local': 'Impossible d’écrire dans le stockage de l’appareil. Rien n’a été écrasé.',
+    'sync.st.error': 'La synchronisation a échoué : nouvel essai plus tard. Tes modifications sont enregistrées sur cet appareil.',
+    'sync.st.pending': 'Modifications en attente de synchronisation…',
+    'sync.st.incomplete': 'Synchronisé avec avertissement : {n} média(s) ne sont pas dans ton compte (trop volumineux ou manquants).',
+    'sync.st.synced': 'Synchronisé avec ton compte · {when}',
+    'sync.missingMedia': '{n} média(s) manquent dans ton compte et n’ont pas pu être chargés.',
+    'sync.rolledBack': 'Un chargement interrompu depuis le compte a été annulé. Tes données précédentes sont intactes.',
+    'sync.keptCloud': 'Données du compte chargées. Une copie des données précédentes de cet appareil a été conservée.',
+    'sync.keptDevice': 'Les données de cet appareil ont été enregistrées dans ton compte. Une copie des données précédentes du compte a été conservée.',
+    'sync.recovered': 'Copie restaurée. Elle sera synchronisée avec ton compte.',
+    'sync.deleted': 'Sauvegarde cloud supprimée. La synchronisation est désactivée pour ce compte sur cet appareil.',
+    'sync.deleteBody': 'Supprime les données et médias de ton compte dans le cloud. Les données de cet appareil ne sont pas touchées et la synchronisation y est désactivée.',
+    'sync.loadBody': 'Remplace les données de cet appareil par celles de ton compte. Une copie de récupération des données de l’appareil est d’abord conservée.',
+    'sync.conflictTitle': 'L’appareil et le compte diffèrent',
+    'sync.conflictBody': 'Cet appareil et ton compte ont des modifications que l’autre n’a pas (compte : {cloud} séances, appareil : {local}). Quelle version garder ?',
+    'sync.conflictEmptyBody': 'Cet appareil n’a aucune séance, mais ton compte en a. Garder les données du compte, ou les remplacer par les données vides de cet appareil ?',
+    'sync.conflictCopies': 'Une copie des DEUX versions est d’abord conservée. Tant que tu n’as pas choisi, rien n’est envoyé ni écrasé.',
+    'sync.keepDevice': 'Garder l’appareil',
+    'sync.keepCloud': 'Garder le compte',
+    'sync.decideLater': 'Décider plus tard',
+    'sync.linkTitle': 'Données sur cet appareil',
+    'sync.linkBody': 'Cet appareil contient des données GymQuest liées à aucun compte. Les lier à {email} ?',
+    'sync.linkSeparateHint': '« Garder séparé » les laisse sur cet appareil pour une utilisation sans connexion et charge les données de ton compte.',
+    'sync.linkSeparate': 'Garder séparé',
+    'sync.linkYes': 'Lier à ce compte',
+    'sync.recoveryTitle': 'Copies de récupération',
+    'sync.recoveryHint': 'Copies conservées avant un choix de conflit ou un chargement depuis le compte. Avant une restauration, une copie des données actuelles est conservée.',
+    'sync.recoveryEmpty': 'Aucune copie de récupération.',
+    'sync.copyCloud': 'Version du compte ({n} séances)',
+    'sync.copyDevice': 'Cet appareil ({n} séances)',
+    'sync.copyLegacy': 'Instantané antérieur ({n} séances)',
+    'sync.restoreCopy': 'Restaurer',
+    'sync.restoreCopyTitle': 'Restaurer cette copie ?',
+    'sync.restoreCopyBody': 'La copie remplace les données actuelles de cet appareil puis se synchronise avec ton compte. Une copie des données actuelles est d’abord conservée.',
+    'sync.deleteCopy': 'Supprimer',
+    'sync.deleteCopyTitle': 'Supprimer cette copie de récupération ?',
+    'sync.tabTitle': 'GymQuest est ouvert dans un autre onglet',
+    'sync.tabBody': 'Pour éviter que tes données soient écrasées, l’app ne fonctionne que dans un seul onglet à la fois. Tes données sont enregistrées.',
+    'sync.tabUseHere': 'Utiliser ici',
+    'sync.tabWaiting': 'En attente de la fin de la synchronisation dans l’autre onglet…',
+    'photos.privacy': 'Tes photos sont stockées sur cet appareil. Si tu es connecté avec la synchronisation activée, elles sont aussi enregistrées en privé dans ton compte et chargées sur tes autres appareils. Elles ne sont pas dans l’export JSON et ne sont jamais publiées.',
+    'media.personalNote': 'Tes propres médias sont stockés sur cet appareil. Si tu es connecté avec la synchronisation activée, ils sont aussi enregistrés en privé dans ton compte (les vidéos de plus de 50 Mo restent uniquement sur l’appareil). Ils ne sont pas dans l’export JSON.',
+  },
+  ar: {
+    'sync.title': 'مزامنة الحساب',
+    'sync.toggle': 'مزامنة هذا الحساب على هذا الجهاز',
+    'sync.privacyNote': 'المزامنة خاصة — لا يرى بياناتك في حسابك أحد غيرك. لا يمكن لمشرفي المجتمع الوصول إليها. يُحفظ كل شيء أولًا على هذا الجهاز، لذلك يعمل التطبيق أيضًا دون اتصال.',
+    'sync.now': 'زامن الآن',
+    'sync.resolve': 'حل التعارض…',
+    'sync.linkOpen': 'بيانات هذا الجهاز…',
+    'sync.loadOpen': 'تحميل من الحساب…',
+    'sync.recoveryOpen': 'نسخ الاسترداد…',
+    'sync.loadTitle': 'التحميل من الحساب؟',
+    'sync.loadConfirm': 'تحميل',
+    'sync.accountLine': 'تم تسجيل الدخول باسم {email}.',
+    'sync.guestLine': 'لم تسجّل الدخول — تبقى بياناتك على هذا الجهاز. سجّل الدخول عبر المجتمع للمزامنة.',
+    'sync.local.saved': 'تم الحفظ على هذا الجهاز · {when}',
+    'sync.local.failed': 'تعذّر الحفظ على هذا الجهاز — قد تكون مساحة التخزين ممتلئة.',
+    'sync.st.guest': 'المزامنة: غير مسجّل الدخول.',
+    'sync.st.link': 'المزامنة: اختر ما تريد فعله ببيانات هذا الجهاز.',
+    'sync.st.off': 'المزامنة متوقفة لهذا الحساب على هذا الجهاز.',
+    'sync.st.unavailable': 'المزامنة غير متاحة.',
+    'sync.st.conflict': 'المزامنة متوقفة مؤقتًا: لدى هذا الجهاز وحسابك تغييرات مختلفة. اختر ما تريد الاحتفاظ به.',
+    'sync.st.loading': 'جارٍ تحميل بيانات حسابك…',
+    'sync.st.syncing': 'جارٍ المزامنة…',
+    'sync.st.offlinePending': 'دون اتصال — التغييرات محفوظة على هذا الجهاز وستُزامن عند عودة الاتصال.',
+    'sync.st.offline': 'دون اتصال — ستتم المزامنة عند عودة الاتصال.',
+    'sync.st.signedout': 'انتهت الجلسة — سجّل الدخول مجددًا للمزامنة. تغييراتك محفوظة على هذا الجهاز.',
+    'sync.st.other': 'حساب آخر مسجّل الدخول — أعد فتح التطبيق.',
+    'sync.st.hash': 'لم تجتز بيانات الحساب التحقق ولم تُحمَّل. ستُعاد المحاولة.',
+    'sync.st.local': 'تعذّرت الكتابة في تخزين الجهاز. لم يُستبدل أي شيء.',
+    'sync.st.error': 'فشلت المزامنة — ستُعاد المحاولة. تغييراتك محفوظة على هذا الجهاز.',
+    'sync.st.pending': 'تغييرات بانتظار المزامنة…',
+    'sync.st.incomplete': 'تمت المزامنة مع تحذير: {n} من الوسائط ليست في حسابك (كبيرة جدًا أو مفقودة).',
+    'sync.st.synced': 'تمت المزامنة مع حسابك · {when}',
+    'sync.missingMedia': '{n} من الوسائط مفقودة من حسابك وتعذّر تحميلها.',
+    'sync.rolledBack': 'تم التراجع عن تحميل متقطع من الحساب. بياناتك السابقة سليمة.',
+    'sync.keptCloud': 'تم تحميل بيانات الحساب. حُفظت نسخة من بيانات هذا الجهاز السابقة.',
+    'sync.keptDevice': 'حُفظت بيانات هذا الجهاز في حسابك. حُفظت نسخة من بيانات الحساب السابقة.',
+    'sync.recovered': 'تمت استعادة النسخة. ستُزامن مع حسابك.',
+    'sync.deleted': 'تم حذف النسخة السحابية. المزامنة متوقفة الآن لهذا الحساب على هذا الجهاز.',
+    'sync.deleteBody': 'يحذف بيانات حسابك ووسائطه من السحابة. لا تتأثر البيانات على هذا الجهاز، وتتوقف المزامنة عليه.',
+    'sync.loadBody': 'يستبدل البيانات على هذا الجهاز ببيانات حسابك. تُحفظ أولًا نسخة استرداد من بيانات الجهاز.',
+    'sync.conflictTitle': 'الجهاز والحساب مختلفان',
+    'sync.conflictBody': 'لدى هذا الجهاز وحسابك تغييرات لا توجد لدى الطرف الآخر (الحساب: {cloud} تمرينًا، الجهاز: {local}). أي نسخة تريد الاحتفاظ بها؟',
+    'sync.conflictEmptyBody': 'لا توجد تمارين على هذا الجهاز، لكنها موجودة في حسابك. هل تحتفظ ببيانات الحساب، أم تستبدلها ببيانات هذا الجهاز الفارغة؟',
+    'sync.conflictCopies': 'تُحفظ أولًا نسخة من النسختين كلتيهما. إلى أن تختار، لا يُرفع أي شيء ولا يُستبدل.',
+    'sync.keepDevice': 'الاحتفاظ بالجهاز',
+    'sync.keepCloud': 'الاحتفاظ بالحساب',
+    'sync.decideLater': 'القرار لاحقًا',
+    'sync.linkTitle': 'البيانات على هذا الجهاز',
+    'sync.linkBody': 'على هذا الجهاز بيانات GymQuest غير مرتبطة بأي حساب. هل تربطها بالحساب {email}؟',
+    'sync.linkSeparateHint': '«الإبقاء منفصلة» يتركها على هذا الجهاز للاستخدام دون تسجيل الدخول ويحمّل بيانات حسابك.',
+    'sync.linkSeparate': 'الإبقاء منفصلة',
+    'sync.linkYes': 'ربط بهذا الحساب',
+    'sync.recoveryTitle': 'نسخ الاسترداد',
+    'sync.recoveryHint': 'نسخ حُفظت قبل اختيار في تعارض أو قبل التحميل من الحساب. عند الاستعادة تُحفظ أولًا نسخة من البيانات الحالية.',
+    'sync.recoveryEmpty': 'لا توجد نسخ استرداد.',
+    'sync.copyCloud': 'نسخة الحساب ({n} تمرينًا)',
+    'sync.copyDevice': 'هذا الجهاز ({n} تمرينًا)',
+    'sync.copyLegacy': 'لقطة سابقة ({n} تمرينًا)',
+    'sync.restoreCopy': 'استعادة',
+    'sync.restoreCopyTitle': 'استعادة هذه النسخة؟',
+    'sync.restoreCopyBody': 'تستبدل النسخة البيانات الحالية على هذا الجهاز ثم تُزامن مع حسابك. تُحفظ أولًا نسخة من البيانات الحالية.',
+    'sync.deleteCopy': 'حذف',
+    'sync.deleteCopyTitle': 'حذف نسخة الاسترداد هذه؟',
+    'sync.tabTitle': 'GymQuest مفتوح في علامة تبويب أخرى',
+    'sync.tabBody': 'حتى لا تُستبدل بياناتك، يعمل التطبيق في علامة تبويب واحدة فقط في كل مرة. بياناتك محفوظة.',
+    'sync.tabUseHere': 'استخدم هنا',
+    'sync.tabWaiting': 'بانتظار انتهاء المزامنة في علامة التبويب الأخرى…',
+    'photos.privacy': 'تُحفظ صورك على هذا الجهاز. إذا كنت مسجّل الدخول والمزامنة مفعّلة، تُحفظ أيضًا بشكل خاص في حسابك وتُحمَّل على أجهزتك الأخرى. ليست ضمن تصدير JSON ولا تُنشر أبدًا.',
+    'media.personalNote': 'تُحفظ وسائطك الخاصة على هذا الجهاز. إذا كنت مسجّل الدخول والمزامنة مفعّلة، تُحفظ أيضًا بشكل خاص في حسابك (تبقى مقاطع الفيديو الأكبر من 50 ميغابايت على الجهاز فقط). ليست ضمن تصدير JSON.',
+  },
+};
+for (const lang of Object.keys(SYNC_I18N)) Object.assign(I18N[lang] || (I18N[lang] = {}), SYNC_I18N[lang]);
+
 function t(key, vars) {
   const dict = I18N[activeLang()] || I18N.en;
   let s = dict[key];
@@ -6886,7 +7217,9 @@ function todayLabel() {
 
 /* ---------- Konstanty ---------- */
 
-const STORAGE_KEY = 'gymquest';
+/* Kľúč stavu AKTÍVNEHO pracovného priestoru (nastaví wsInit pred loadState):
+   pôvodné dáta 'gymquest', priestor účtu 'gymquest@<id>'. */
+let STORAGE_KEY = 'gymquest';
 const BASE_XP = 20;          // XP za tréning
 const XP_PER_SET = 2;        // XP za každú dokončenú sériu
 const XP_PER_LEVEL = 100;    // XP potrebných na ďalšiu úroveň
@@ -7755,12 +8088,17 @@ function migrateV2toV3(parsed) {
   return out;
 }
 
+/* Načítanie a normalizácia NIE sú zmeny používateľa: zapisujú sa cez persistState,
+   takže sa nič neoznačí ako čakajúce na synchronizáciu. Poškodené alebo neznáme
+   dáta sa NIKDY neprepíšu predvoleným stavom – zostanú v úložisku nedotknuté. */
 function loadState() {
+  let raw = null;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { raw = null; }
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       state = defaultState();
-      saveState();
+      deviceSettingsApply(state);
+      persistState();
       return;
     }
     const parsed = JSON.parse(raw);
@@ -7770,17 +8108,21 @@ function loadState() {
     } else if (parsed.version === 2 || parsed.version === 3) {
       state = migrateV2toV3(parsed);
     } else {
-      state = defaultState();
-      saveState();
-      return;
+      throw new Error('unknown version');
     }
+    /* Značka posledného aplikovania z účtu (dôkaz, že sa nový stav naozaj uložil na disk). */
+    if (typeof parsed._applyId === 'string') state._applyId = parsed._applyId;
     reconcileAchievements();
-    saveState();
+    deviceSettingsApply(state);
+    persistState();
   } catch (e) {
+    console.error('GymQuest: uložené dáta sa nepodarilo načítať, zostávajú nedotknuté:', e);
     state = defaultState();
-    saveState();
+    deviceSettingsApply(state);
+    unreadableStateRaw = raw;   // pred prvým zápisom sa odloží bokom (pozri persistState)
   }
 }
+let unreadableStateRaw = null;
 
 /* Uloženie nikdy nesmie zlyhať potichu – ak prehliadač zápis odmietne,
    používateľ to musí vidieť, inak si myslí, že premenovanie/ cieľ nefunguje. */
@@ -7789,16 +8131,38 @@ function showStorageWarning(on) {
   if (el) el.hidden = !on;
 }
 
-function saveState() {
+/* Trvalý zápis stavu aktívneho priestoru na zariadenie (bez označenia zmeny). */
+function persistState() {
+  if (appYielded) return false;   // aplikáciu prevzala iná karta – táto už nezapisuje
   try {
+    if (unreadableStateRaw !== null) {
+      localStorage.setItem(STORAGE_KEY + '_unreadable', unreadableStateRaw);   // nečitateľné dáta sa neprepíšu bez kópie
+      unreadableStateRaw = null;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    deviceSettingsSave();
     showStorageWarning(false);
+    localSavedAt = Date.now();
+    if (localSaveFailed && wsSlot) syncMetaUpdate((m) => { m.localStale = false; });
+    localSaveFailed = false;
+    return true;
   } catch (e) {
     console.error('Nepodarilo sa uložiť dáta:', e);
     showStorageWarning(true);
+    /* Uložená kópia je staršia než stav v pamäti (ten sa môže medzitým nahrať do
+       účtu). Pri ďalšom štarte sa preto uložená kópia nepovažuje za synchronizovanú. */
+    if (!localSaveFailed && wsSlot) syncMetaUpdate((m) => { m.localStale = true; });
+    localSaveFailed = true;
+    return false;
   }
-  /* Súkromná cloudová záloha je naviazaná na jediný bod zápisu stavu. */
-  scheduleCloudBackup();
+}
+
+/* Zmena používateľa: najprv sa uloží na zariadení (online aj offline), potom sa
+   označí ako čakajúca na synchronizáciu účtu. */
+function saveState() {
+  const ok = persistState();
+  syncNoteLocalChange();
+  return ok;
 }
 
 /* ---------- Počítané údaje ---------- */
@@ -10692,7 +11056,7 @@ function mountMediaGallery() {
    médium (žiadne base64) – ukladajú sa len binárne bloby v IndexedDB.
    Objektové URL sa vytvárajú až pri zobrazení a hneď sa zase rušia. */
 
-const MEDIA_DB_NAME = 'gymquest-media';
+let MEDIA_DB_NAME = 'gymquest-media';   // médiá aktívneho priestoru (nastaví wsInit)
 const MEDIA_DB_VERSION = 2;   // v2 pridáva obchody pre fotky progresu (existujúce zostávajú)
 const MEDIA_META_STORE = 'meta';
 const MEDIA_BLOB_STORE = 'blobs';
@@ -10759,7 +11123,7 @@ function idbReq(request) {
 function idbWriteMetaAndBlob(meta, rec) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
+    tx.oncomplete = () => { resolve(true); syncNoteMediaChange('m', meta.id); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(MEDIA_META_STORE).put(meta);
@@ -10769,7 +11133,7 @@ function idbWriteMetaAndBlob(meta, rec) {
 function idbDeleteMetaAndBlob(id) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
+    tx.oncomplete = () => { resolve(true); syncNoteMediaChange('m', id); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(MEDIA_META_STORE).delete(id);
@@ -11338,7 +11702,7 @@ function releaseProgressObjectUrls() {
 function idbWriteProgress(meta, rec) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
+    tx.oncomplete = () => { resolve(true); syncNoteMediaChange('p', meta.id); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(PROGRESS_META_STORE).put(meta);
@@ -11348,7 +11712,7 @@ function idbWriteProgress(meta, rec) {
 function idbPutProgressMeta(meta) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction(PROGRESS_META_STORE, 'readwrite');
-    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
+    tx.oncomplete = () => { resolve(true); syncNoteMediaChange('p', meta.id); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(PROGRESS_META_STORE).put(meta);
@@ -11357,7 +11721,7 @@ function idbPutProgressMeta(meta) {
 function idbDeleteProgress(id) {
   return new Promise((resolve, reject) => {
     const tx = mediaDb.transaction([PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
-    tx.oncomplete = () => { resolve(true); scheduleCloudBackup(); };
+    tx.oncomplete = () => { resolve(true); syncNoteMediaChange('p', id); };
     tx.onerror = () => reject(tx.error || new Error('tx'));
     tx.onabort = () => reject(tx.error || new Error('tx-abort'));
     tx.objectStore(PROGRESS_META_STORE).delete(id);
@@ -12006,30 +12370,46 @@ function communityCredentials() {
   const p = document.getElementById('community-password');
   return { email: e ? e.value.trim() : '', password: p ? p.value : '' };
 }
+/* Zmena účtu sa nikdy neprekrýva s bežiacou synchronizáciou: najprv sa fronta
+   zastaví a dobehne, až potom sa mení session. */
 async function communitySignIn() {
   const sb = communityClient(); if (!sb) return;
   const c = communityCredentials();
   communitySetMessage('');
+  await syncQuiesce();
   const { error } = await sb.auth.signInWithPassword({ email: c.email, password: c.password });
+  syncResume();
   if (error) { communitySetMessage('community.errSignIn'); renderCommunity(); return; }
   renderCommunity();
+  await wsBindSession(true);   // vlastný priestor účtu + automatické načítanie
 }
 async function communitySignUp() {
   const sb = communityClient(); if (!sb) return;
   const c = communityCredentials();
   communitySetMessage('');
+  await syncQuiesce();
   const { error } = await sb.auth.signUp({ email: c.email, password: c.password, options: { emailRedirectTo: authRedirectUrl() } });
+  syncResume();
   if (error) { communitySetMessage('community.errSignUp'); renderCommunity(); return; }
   communitySetMessage('community.signUpDone');
   renderCommunity();
+  await wsBindSession(true);   // ak je potvrdenie vypnuté a session už existuje
 }
+/* Odhlásenie: čakajúce zmeny zostávajú v priestore účtu (synchronizujú sa po
+   ďalšom prihlásení); zariadenie sa prepne do hosťovského priestoru. Odhlasuje
+   sa len toto zariadenie (scope 'local'), nie ostatné zariadenia účtu. */
 async function communitySignOut() {
-  cloudCancelPending();          // izolácia účtu: zruš čakajúce cloudové zápisy
-  cloudStatus = 'idle';
-  const sb = communityClient(); if (!sb) return;
-  await sb.auth.signOut();
+  const sb = communitySb(); if (!sb) return;
+  await syncQuiesce();
+  persistState();
+  try { await sb.auth.signOut({ scope: 'local' }); } catch (e) {}
   communityProfile = null;
   communityFeed = { items: [], offset: 0, done: false, loading: false };
+  const guest = wsRegistry.guest;
+  if (wsSlot.id !== guest) { await wsSwitchTo(guest); return; }
+  syncResume();
+  wsLinkUser = null;
+  syncRender();
   renderCommunity();
 }
 async function communitySaveProfile() {
@@ -12176,17 +12556,19 @@ function communityLeaveCommunity() {
 /* Úplné zmazanie účtu: zmaže účet aj všetky cloudové dáta (vrátane zálohy).
    (Server: delete-account mode 'full'.) Lokálne tréningy na zariadení zostávajú. */
 function communityDeleteAccount() {
-  showGeneric(t('community.deleteAccountTitle'), t('community.deleteAccount'), () => {
+  showGeneric(t('community.deleteAccountTitle'), t('community.deleteAccount'), async () => {
     const sb = communityClient(); if (!sb) return;
-    sb.functions.invoke('delete-account', { method: 'POST', body: { mode: 'full' } }).then((res) => {
-      if (res && res.error) { communitySetMessage('community.errNetwork'); renderCommunity(); return null; }
-      return sb.auth.signOut().then(() => {
-        communityProfile = null;
-        cloudCancelPending();
-        communitySetMessage('community.accountDeleted');
-        renderCommunity();
-      });
-    }).catch(() => { communitySetMessage('community.errNetwork'); renderCommunity(); });
+    const user = await syncSessionUser();
+    await syncQuiesce();   // žiadna synchronizácia nesmie po zmazaní zálohu znovu vytvoriť
+    let res = null;
+    try { res = await sb.functions.invoke('delete-account', { method: 'POST', body: { mode: 'full' } }); }
+    catch (e) { res = { error: e }; }
+    if (!res || res.error) { syncResume(); communitySetMessage('community.errNetwork'); renderCommunity(); return; }
+    try { await sb.auth.signOut({ scope: 'local' }); } catch (e) {}
+    communityProfile = null;
+    if (user) wsDetachAfterAccountDeletion(user.id);   // lokálne dáta zostávajú ako hosťovský priestor
+    try { sessionStorage.setItem('gq_notice', 'community.accountDeleted'); } catch (e) {}
+    location.reload();
   }, esc(t('community.deleteAccountConfirm')));
 }
 
@@ -12329,6 +12711,7 @@ async function initAuthCallback() {
   if (type === 'recovery') authCallbackState = { view: session ? 'recovery' : 'expired', message: '', email: '', signedIn: !!session };
   else authCallbackState = { view: session ? 'confirmed' : 'expired', message: '', email: '', signedIn: !!session };
   authOpen();
+  /* Priradenie účtu k priestoru (a načítanie) urobí syncStartup po tejto funkcii. */
 }
 
 function setPokrokView(view) {
@@ -14312,9 +14695,13 @@ function importFile(file) {
 
 function requestResetData() {
   showGeneric(t('settings.resetTitle'), t('settings.resetConfirmAction'), () => {
-    showGeneric(t('settings.resetFinal'), t('settings.resetFinalAction'), () => {
+    showGeneric(t('settings.resetFinal'), t('settings.resetFinalAction'), async () => {
+      await syncQuiesce();
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(STORAGE_KEY + '_seeded');
+      /* Reset dát zariadenia nikdy nesmie viesť k prepísaniu účtu prázdnym stavom:
+         priestor sa vráti do stavu „ešte nesynchronizované“ → účet sa znovu načíta. */
+      if (wsSlot && wsSlot.owner) syncMetaUpdate((m) => { m.rev = null; m.hash = null; m.localHash = null; m.conflict = null; m.seq = 0; m.syncedSeq = 0; m.mediaFailed = []; });
       location.reload();
     }, t('settings.resetFinalConfirm'));
   }, t('settings.resetConfirm'));
@@ -15757,73 +16144,367 @@ function saveActivityEdit() {
 }
 
 /* ============================================================================
-   Súkromné cloudové zálohovanie (Supabase) — voliteľné, iba pre prihlásených.
-   NIE je to Community a NIE je to automatická synchronizácia zariadení.
-   Záloha je viazaná presne na prihlásené uid; pri odhlásení/zmene účtu sa
-   čakajúce zápisy zrušia, aby sa dáta účtu A nikdy nenahrali pod účet B.
+   Pracovné priestory (workspaces) a offline-first synchronizácia účtu (Supabase).
+
+   Každý účet má na zariadení VLASTNÝ priestor: vlastný kľúč stavu v localStorage,
+   vlastnú IndexedDB s médiami a vlastné metadáta synchronizácie. Odhlásený
+   používateľ pracuje v samostatnom hosťovskom priestore. Prepnutie účtu znovu
+   načíta stránku, takže žiadna neskorá async úloha starého účtu nemôže siahnuť
+   na stav ani médiá nového účtu.
+
+   Pôvodné dáta (kľúč 'gymquest' + DB 'gymquest-media') sa NIKDY nepresúvajú ani
+   nekopírujú: tvoria priestor 'legacy'. Priradenie k účtu je len zmena vlastníka
+   v registri (jeden atomický zápis) – automaticky iba pri overenom vlastníkovi
+   (uid poslednej úspešnej zálohy z tohto zariadenia), inak až po výslovnom súhlase.
+
+   Lokálne ukladanie vždy funguje nezávisle od synchronizácie. Synchronizácia je
+   trojcestná podľa obsahu: revízia + hash naposledy synchronizovaného obsahu +
+   počítadlo lokálnych zmien. Nikdy ticho neprepíše žiadnu stranu – rozdielne
+   zmeny na oboch stranách = trvalý konflikt, kým používateľ nevyberie.
+
+   Iba na zariadení (nikdy sa nenahrávajú a cloud ich neprepíše):
+     settings.lang, restSound, restSoundLength, customRestMinutes, customRestSeconds,
+     autoBackup, autoBackupOfferedAt, autoBackupWorkoutCount, communityOptIn,
+     cloudBackup (starý prepínač), activeSession, activeActivity, odpočet pauzy.
+   Všetko ostatné (história, plány, cviky, aktivity, miery, jedlo, profil, ciele,
+   úspechy, predvoľby časovača, jednotky, vybavenie, médiá) patrí účtu.
    ========================================================================== */
-const CLOUD_OWNER_KEY = 'gymquest_backup_owner';
-const CLOUD_PENDING_KEY = 'gymquest_backup_pending';
+const WS_REGISTRY_KEY = 'gymquest_workspaces';
+const DEVICE_SETTINGS_KEY = 'gymquest_device';
+const SYNC_META_PREFIX = 'gymquest_sync@';
+const SYNC_DB_PREFIX = 'gymquest-sync@';
+const CLOUD_OWNER_KEY = 'gymquest_backup_owner';            // v42: uid poslednej úspešnej zálohy
+const CLOUD_PENDING_KEY = 'gymquest_backup_pending';        // v42: nedokončená záloha { uid }
 const CLOUD_DEVICE_KEY = 'gymquest_device_id';
-const CLOUD_MEDIA_INDEX_PREFIX = 'gymquest_backup_media_idx:';
-const CLOUD_SNAPSHOT_KEY = 'gymquest_restore_snapshot';
-const CLOUD_DEBOUNCE_MS = 4000;
-const CLOUD_MAXLATENCY_MS = 60000;
+const CLOUD_MEDIA_INDEX_PREFIX = 'gymquest_backup_media_idx:';   // v42: id → hash nahraných médií
+const CLOUD_SNAPSHOT_KEY = 'gymquest_restore_snapshot';     // v42: snímka pred obnovou (nikdy sa nečistila)
+const SYNC_DEBOUNCE_MS = 4000;
+const SYNC_MAXLATENCY_MS = 60000;
+const SYNC_POLL_MS = 5 * 60 * 1000;
+const SYNC_TRIGGER_THROTTLE_MS = 10000;
 const CLOUD_MEDIA_MAX_BYTES = 50 * 1024 * 1024;   // Supabase Free per-file limit
 const BACKUP_SCHEMA_VERSION = 3;                  // zhoduje sa s state.version
+const DEVICE_SETTING_KEYS = ['lang', 'restSound', 'restSoundLength', 'customRestMinutes', 'customRestSeconds',
+  'autoBackup', 'autoBackupOfferedAt', 'autoBackupWorkoutCount', 'communityOptIn', 'cloudBackup'];
+const DEVICE_STATE_KEYS = ['activeSession', 'activeActivity'];
 
-let cloudStatus = 'idle';      // idle|saving|saved|pending|offline|error|conflict|blocked|signedout
-let cloudLastAt = 0;
-let cloudRevision = 0;
-let cloudDebounceTimer = null;
-let cloudMaxTimer = null;
-let cloudRetryDelay = 5000;
-let cloudInFlight = false;
-let cloudRestoring = false;
-
-function cloudEnabled() {
-  return !!(state && state.settings && state.settings.cloudBackup === true && communityConfigured());
-}
-function cloudOwner() { try { return localStorage.getItem(CLOUD_OWNER_KEY) || null; } catch (e) { return null; } }
-function cloudSetOwner(id) { try { if (id) localStorage.setItem(CLOUD_OWNER_KEY, id); else localStorage.removeItem(CLOUD_OWNER_KEY); } catch (e) {} }
-function cloudDeviceId() {
-  try { let d = localStorage.getItem(CLOUD_DEVICE_KEY); if (!d) { d = 'dev-' + Math.random().toString(36).slice(2, 10); localStorage.setItem(CLOUD_DEVICE_KEY, d); } return d; }
-  catch (e) { return 'dev-unknown'; }
-}
-async function cloudUid() {
-  const sb = communitySb(); if (!sb) return null;
-  try { const r = await sb.auth.getSession(); const s = r && r.data ? r.data.session : null; return s && s.user ? s.user.id : null; }
-  catch (e) { return null; }
-}
-function cloudStatusKey() {
-  const map = { saving: 'cloud.saving', saved: 'cloud.saved', pending: 'cloud.pending', offline: 'cloud.offline',
-    error: 'cloud.error', conflict: 'cloud.conflict', blocked: 'cloud.blocked', signedout: 'cloud.notSignedIn', idle: 'cloud.idle', incomplete: 'cloud.incompleteShort' };
-  return map[cloudStatus] || 'cloud.idle';
+/* Testovací háčik: v produkcii nič nerobí. Testy ním vkladajú deterministické
+   bariéry a simulované zlyhania (window.__GQ_TEST__ sa nastavuje len v testoch). */
+function gqHook(name, data) {
+  try {
+    const h = typeof window !== 'undefined' ? window.__GQ_TEST__ : null;
+    if (h && typeof h.hook === 'function') return Promise.resolve(h.hook(name, data));
+  } catch (e) { return Promise.reject(e); }
+  return Promise.resolve();
 }
 
-/* Jediný bod zápisu stavu → debounce + maximálna latencia. */
-function scheduleCloudBackup() {
-  if (!cloudEnabled() || cloudRestoring) return;
-  if (cloudDebounceTimer) clearTimeout(cloudDebounceTimer);
-  cloudDebounceTimer = setTimeout(() => { cloudDebounceTimer = null; runCloudBackup(); }, CLOUD_DEBOUNCE_MS);
-  if (!cloudMaxTimer) cloudMaxTimer = setTimeout(() => { cloudMaxTimer = null; runCloudBackup(); }, CLOUD_MAXLATENCY_MS);
+/* ---------- Register priestorov ---------- */
+let wsRegistry = null;
+let wsSlot = null;
+let wsLinkUser = null;          // prihlásený účet čakajúci na rozhodnutie o pôvodných dátach
+
+function wsSlotFields(id) {
+  if (id === 'legacy') return { state: 'gymquest', media: 'gymquest-media' };
+  return { state: 'gymquest@' + id, media: 'gymquest-media@' + id };
 }
-function cloudCancelPending() {
-  if (cloudDebounceTimer) { clearTimeout(cloudDebounceTimer); cloudDebounceTimer = null; }
-  if (cloudMaxTimer) { clearTimeout(cloudMaxTimer); cloudMaxTimer = null; }
+function wsNewId(prefix) { return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function wsSaveRegistry(reg) {
+  try { localStorage.setItem(WS_REGISTRY_KEY, JSON.stringify(reg)); return true; }
+  catch (e) { console.error('GymQuest: register priestorov sa nepodarilo uložiť:', e); return false; }
+}
+function wsLegacyHints() {
+  let owner = null, pendingUid = null;
+  try { owner = localStorage.getItem(CLOUD_OWNER_KEY) || null; } catch (e) {}
+  try { const p = JSON.parse(localStorage.getItem(CLOUD_PENDING_KEY) || 'null'); pendingUid = p && p.uid ? String(p.uid) : null; } catch (e) {}
+  return { hintOwner: owner, hintPendingUid: pendingUid };
+}
+/* Poškodený/chýbajúci register sa znovu zostaví: pôvodný priestor + priestory,
+   ktoré majú vlastné metadáta (tie nesú vlastníka). Dáta sa nikdy nemažú. */
+function wsBuildRegistry() {
+  const reg = { v: 1, active: 'legacy', guest: 'legacy', declined: {}, detached: [],
+    slots: { legacy: Object.assign({ id: 'legacy', owner: null, created: Date.now() }, wsSlotFields('legacy'), wsLegacyHints()) } };
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || k.indexOf(SYNC_META_PREFIX) !== 0) continue;
+      const id = k.slice(SYNC_META_PREFIX.length);
+      let m = null; try { m = JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) {}
+      if (!m) continue;
+      if (id === 'legacy') { reg.slots.legacy.owner = m.owner || null; continue; }
+      reg.slots[id] = Object.assign({ id, owner: m.owner || null, created: m.created || 0 }, wsSlotFields(id));
+      if (!m.owner && m.guest) reg.guest = id;
+    }
+  } catch (e) {}
+  if (reg.slots.legacy.owner && reg.guest === 'legacy') {
+    const g = wsNewId('g'); reg.slots[g] = Object.assign({ id: g, owner: null, created: Date.now() }, wsSlotFields(g)); reg.guest = g;
+  }
+  reg.active = reg.guest;
+  return reg;
+}
+/* Volá sa pred loadState(): vyberie aktívny priestor a nastaví jeho úložiská. */
+function wsInit() {
+  let reg = null;
+  try { reg = JSON.parse(localStorage.getItem(WS_REGISTRY_KEY) || 'null'); } catch (e) { reg = null; }
+  if (!reg || reg.v !== 1 || !reg.slots || !reg.slots.legacy) {
+    reg = wsBuildRegistry();
+    wsSaveRegistry(reg);   // ak zlyhá, beží sa v pôvodnom priestore bez zmeny dát
+  }
+  reg.declined = reg.declined || {};
+  reg.detached = reg.detached || [];
+  if (!reg.slots[reg.guest]) reg.guest = 'legacy';
+  if (!reg.slots[reg.active]) reg.active = reg.guest;
+  wsRegistry = reg;
+  wsSlot = reg.slots[reg.active];
+  STORAGE_KEY = wsSlot.state;
+  MEDIA_DB_NAME = wsSlot.media;
+  /* Neodoslané vývojové kľúče (nikdy neboli v produkcii) – plná kópia stavu zbytočne míňa kvótu. */
+  try { localStorage.removeItem('gymquest_cloud_local_sig'); localStorage.removeItem('gymquest_cloud_dirty'); } catch (e) {}
+}
+function wsFindSlotByOwner(uid) {
+  for (const id of Object.keys(wsRegistry.slots)) if (wsRegistry.slots[id].owner === uid) return wsRegistry.slots[id];
+  return null;
+}
+/* Aktuálny register z úložiska (iná karta ho mohla zmeniť); pri chybe pamäťová kópia. */
+function wsFreshRegistry() {
+  try {
+    const r = JSON.parse(localStorage.getItem(WS_REGISTRY_KEY) || 'null');
+    if (r && r.v === 1 && r.slots && r.slots.legacy) { r.declined = r.declined || {}; r.detached = r.detached || []; return r; }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(wsRegistry));
+}
+/* Prepnutie priestoru = uložiť, zastaviť synchronizáciu, zapísať register, znovu načítať. */
+async function wsSwitchTo(id) {
+  await syncQuiesce();
+  persistState();
+  try {
+    const m = document.getElementById('modal-auth');
+    if (m && !m.hidden) sessionStorage.setItem('gq_auth_state', JSON.stringify(authCallbackState));
+  } catch (e) {}
+  const reg = wsFreshRegistry();
+  for (const sid of Object.keys(wsRegistry.slots)) if (!reg.slots[sid]) reg.slots[sid] = wsRegistry.slots[sid];
+  reg.declined = Object.assign({}, reg.declined, wsRegistry.declined);
+  reg.active = id;
+  if (!wsSaveRegistry(reg)) { syncResume(); syncSetError('local'); return false; }
+  wsRegistry = reg;
+  await gqHook('ws:beforeReload', { id });
+  location.reload();
+  return true;
+}
+function wsCreateAccountSlot(user) {
+  const id = wsNewId('u');
+  const slot = Object.assign({ id, owner: user.id, email: user.email || '', created: Date.now() }, wsSlotFields(id));
+  const meta = syncMetaDefault(user.id);
+  meta.created = slot.created;
+  if (!syncMetaWrite(meta, slot)) return null;
+  /* Nový účet na zariadení: úvodné nastavenie sa nepýta – dáta prídu z účtu. */
+  try { localStorage.setItem(slot.state + '_seeded', '1'); } catch (e) {}
+  wsRegistry.slots[id] = slot;
+  return slot;
+}
+async function wsSlotHasData(slot) {
+  if (slot.id === wsSlot.id) return stateMeaningful(state) || (await syncLocalMediaCount()) > 0;
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(slot.state) || 'null'); } catch (e) {}
+  if (s && stateMeaningful(syncNormalize(s))) return true;
+  try {
+    const db = await syncOpenDb(slot.media, true);
+    if (!db) return false;
+    const n = await syncCountStores(db, [PROGRESS_META_STORE, MEDIA_META_STORE]);
+    db.close();
+    return n > 0;
+  } catch (e) { return false; }
+}
+/* Pôvodné dáta sa priradia účtu: nič sa nekopíruje, mení sa len vlastník v registri. */
+function wsLinkLegacy(user) {
+  const legacy = wsRegistry.slots.legacy;
+  const meta = syncMetaRead(legacy);
+  meta.owner = user.id;
+  meta.rev = null; meta.hash = null; meta.conflict = null;
+  if (legacy.hintPendingUid === user.id) meta.seq = (meta.seq || 0) + 1;   // v42 mala nedokončenú zálohu
+  try {
+    const idx = JSON.parse(localStorage.getItem(CLOUD_MEDIA_INDEX_PREFIX + user.id) || 'null');
+    if (idx && typeof idx === 'object') meta.published = Object.assign({}, idx, meta.published || {});
+  } catch (e) {}
+  if (!syncMetaWrite(meta, legacy)) return false;
+  const g = wsNewId('g');
+  const guest = Object.assign({ id: g, owner: null, created: Date.now() }, wsSlotFields(g));
+  const gm = syncMetaDefault(null); gm.guest = true;
+  syncMetaWrite(gm, guest);
+  const reg = wsFreshRegistry();
+  if (reg.slots.legacy.owner && reg.slots.legacy.owner !== user.id) return false;   // medzitým priradené inak
+  reg.slots.legacy.owner = user.id;
+  reg.slots.legacy.email = user.email || '';
+  reg.slots[g] = guest;
+  reg.guest = g;
+  if (!wsSaveRegistry(reg)) return false;   // jediný atomický krok priradenia
+  wsRegistry = reg;
+  if (wsSlot.id === 'legacy') wsSlot = reg.slots.legacy;
+  return true;
+}
+/* Po prihlásení / pri štarte: priraď prihlásený účet k jeho priestoru.
+   explicit = používateľ sa práve prihlásil (prepne sa aj pri otvorenom dialógu). */
+async function wsBindSession(explicit) {
+  const user = await syncSessionUser();
+  if (!user) { syncRender(); return; }
+  const own = wsFindSlotByOwner(user.id);
+  if (own) {
+    if (own.id !== wsSlot.id) { if (explicit || !isBusy()) await wsSwitchTo(own.id); else syncRender(); return; }
+    wsLinkUser = null;
+    syncKick('bind');
+    return;
+  }
+  const legacy = wsRegistry.slots.legacy;
+  if (!legacy.owner && !wsRegistry.declined[user.id] && await wsSlotHasData(legacy)) {
+    if (legacy.hintOwner && legacy.hintOwner === user.id) {
+      /* Overené: toto zariadenie už úspešne zálohovalo práve pre tento účet. */
+      if (!wsLinkLegacy(user)) { syncSetError('local'); return; }
+      if (wsSlot.id !== 'legacy') { await wsSwitchTo('legacy'); return; }
+      syncKick('link');
+      return;
+    }
+    wsLinkUser = user;   // neznámy vlastník → výslovná otázka, nikdy nie automaticky
+    syncRender();
+    syncOpenLinkDialog();
+    return;
+  }
+  const slot = wsCreateAccountSlot(user);
+  if (!slot) { syncSetError('local'); return; }
+  await wsSwitchTo(slot.id);
+}
+async function wsResolveLink(choice) {
+  const user = wsLinkUser;
+  if (!user) return;
+  const now = await syncSessionUser();
+  if (!now || now.id !== user.id) { wsLinkUser = null; syncRender(); return; }
+  if (choice === 'link') {
+    if (!wsLinkLegacy(user)) { syncSetError('local'); return; }
+    wsLinkUser = null;
+    if (wsSlot.id !== 'legacy') { await wsSwitchTo('legacy'); return; }
+    syncKick('link');
+    return;
+  }
+  wsRegistry.declined[user.id] = true;
+  const slot = wsCreateAccountSlot(user);
+  if (!slot) { syncSetError('local'); return; }
+  wsLinkUser = null;
+  await wsSwitchTo(slot.id);
+}
+/* Úplné zmazanie účtu: lokálne dáta zostanú – priestor sa stane hosťovským. */
+function wsDetachAfterAccountDeletion(uid) {
+  const slot = wsFindSlotByOwner(uid);
+  if (!slot) return;
+  const meta = syncMetaRead(slot);
+  Object.assign(meta, { owner: null, rev: null, hash: null, conflict: null, published: {}, mediaFailed: [], disabled: false, guest: true });
+  syncMetaWrite(meta, slot);
+  const reg = wsFreshRegistry();
+  if (!reg.slots[slot.id]) return;
+  if (reg.guest && reg.guest !== slot.id) reg.detached.push(reg.guest);   // predošlý hosťovský priestor sa zachová
+  reg.slots[slot.id].owner = null;
+  reg.slots[slot.id].email = '';
+  reg.guest = slot.id;
+  reg.active = slot.id;
+  if (wsSaveRegistry(reg)) wsRegistry = reg;
 }
 
-/* Payload = celý stav okrem rozpracovaného tréningu/aktivity + manifest médií. */
-async function cloudBuildPayload() {
-  const snap = Object.assign({}, state);
-  delete snap.activeSession;
-  delete snap.activeActivity;
-  snap.media = await cloudBuildMediaManifest();
-  return snap;
+/* ---------- Nastavenia zariadenia (spoločné pre všetky priestory) ---------- */
+let deviceSettingsCache = null;
+function deviceSettingsApply(s) {
+  let dev = null;
+  try { dev = JSON.parse(localStorage.getItem(DEVICE_SETTINGS_KEY) || 'null'); } catch (e) {}
+  if (!dev || typeof dev !== 'object' || !s || !s.settings) return;
+  for (const k of DEVICE_SETTING_KEYS) if (Object.prototype.hasOwnProperty.call(dev, k)) s.settings[k] = dev[k];
+}
+function deviceSettingsSave() {
+  if (!state || !state.settings) return;
+  const dev = {};
+  for (const k of DEVICE_SETTING_KEYS) dev[k] = state.settings[k];
+  const raw = JSON.stringify(dev);
+  if (raw === deviceSettingsCache) return;
+  try { localStorage.setItem(DEVICE_SETTINGS_KEY, raw); deviceSettingsCache = raw; } catch (e) {}
 }
 
+/* ---------- Metadáta synchronizácie priestoru (malé, v localStorage) ---------- */
+function syncMetaDefault(owner) {
+  return { v: 1, owner: owner || null, rev: null, hash: null, seq: 0, syncedSeq: 0, published: {},
+    mediaFailed: [], mediaSkipped: [], missingInCloud: [], conflict: null, disabled: false,
+    lastSyncAt: 0, cloudMeaningful: false };
+}
+function syncMetaRead(slot) {
+  slot = slot || wsSlot;
+  let m = null;
+  try { m = JSON.parse(localStorage.getItem(SYNC_META_PREFIX + slot.id) || 'null'); } catch (e) {}
+  return Object.assign(syncMetaDefault(slot.owner), m || {});
+}
+function syncMetaWrite(m, slot) {
+  try { localStorage.setItem(SYNC_META_PREFIX + (slot || wsSlot).id, JSON.stringify(m)); return true; }
+  catch (e) { return false; }
+}
+function syncMetaUpdate(fn) { const m = syncMetaRead(); fn(m); syncMetaWrite(m); return m; }
+function syncIsDirty(m) { return (m.seq || 0) > (m.syncedSeq || 0) || (m.mediaFailed || []).length > 0; }
+
+/* ---------- IndexedDB priestoru: kópie na obnovu + žurnál aplikovania ---------- */
+const syncDbHandles = {};
+function syncOpenDb(name, readOnlyProbe) {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') { reject(new Error('no-idb')); return; }
+    const req = indexedDB.open(name);
+    req.onupgradeneeded = () => {
+      if (readOnlyProbe) { try { req.transaction.abort(); } catch (e) {} return; }   // neexistuje → nevytvárať
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => (readOnlyProbe ? resolve(null) : reject(req.error || new Error('idb-open')));
+  });
+}
+function syncCountStores(db, names) {
+  return new Promise((resolve) => {
+    const present = names.filter((n) => db.objectStoreNames.contains(n));
+    if (!present.length) { resolve(0); return; }
+    let total = 0, left = present.length;
+    const tx = db.transaction(present, 'readonly');
+    present.forEach((n) => { const r = tx.objectStore(n).count(); r.onsuccess = () => { total += r.result; if (--left === 0) resolve(total); }; });
+    tx.onerror = () => resolve(total);
+  });
+}
+function syncDb() {
+  const name = SYNC_DB_PREFIX + wsSlot.id;
+  if (syncDbHandles[name]) return Promise.resolve(syncDbHandles[name]);
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') { reject(new Error('no-idb')); return; }
+    const req = indexedDB.open(name, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('recovery')) db.createObjectStore('recovery', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv', { keyPath: 'k' });
+    };
+    req.onsuccess = () => { syncDbHandles[name] = req.result; resolve(req.result); };
+    req.onerror = () => reject(req.error || new Error('idb-open'));
+  });
+}
+async function syncDbWrite(ops) {   // ops: [{ store, put } | { store, del }] v JEDNEJ transakcii
+  const db = await syncDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(['recovery', 'kv'], 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    for (const op of ops) {
+      if (op.put) tx.objectStore(op.store).put(op.put);
+      else tx.objectStore(op.store).delete(op.del);
+    }
+  });
+}
+async function syncDbGet(store, key) {
+  const db = await syncDb();
+  return idbReq(db.transaction(store, 'readonly').objectStore(store).get(key));
+}
+async function syncDbAll(store) {
+  const db = await syncDb();
+  return idbReq(db.transaction(store, 'readonly').objectStore(store).getAll());
+}
+
+/* ---------- Pomocné funkcie médií ---------- */
 async function idbGetAll(storeName) {
-  const db = await openMediaDb();
+  const db = mediaDb || (mediaDb = await openMediaDb());
   return await new Promise((res, rej) => {
     const tx = db.transaction(storeName, 'readonly');
     const rq = tx.objectStore(storeName).getAll();
@@ -15832,7 +16513,7 @@ async function idbGetAll(storeName) {
   });
 }
 async function idbGetOne(storeName, id) {
-  const db = await openMediaDb();
+  const db = mediaDb || (mediaDb = await openMediaDb());
   return await new Promise((res, rej) => {
     const tx = db.transaction(storeName, 'readonly');
     const rq = tx.objectStore(storeName).get(id);
@@ -15840,7 +16521,6 @@ async function idbGetOne(storeName, id) {
     rq.onerror = () => rej(rq.error);
   });
 }
-
 /* SHA-256 obsahu – dedup a content-addressed cesty médií. */
 async function cloudSha256(blob) {
   try {
@@ -15849,306 +16529,1016 @@ async function cloudSha256(blob) {
     return Array.prototype.map.call(new Uint8Array(d), (x) => x.toString(16).padStart(2, '0')).join('');
   } catch (e) { return null; }
 }
-
-/* Manifest médií (verzia 2): každá položka nesie PRESNÚ, content-addressed cestu
-   objektu (<id>/<hash>), takže staršie verzie si vždy vedia obnoviť svoje médium.
-   Chýbajúce a príliš veľké binárky sa zapíšu do `skipped` (stav to povie). */
-async function cloudBuildMediaManifest() {
+async function syncLocalMediaCount() {
+  try {
+    if (!mediaDb) mediaDb = await openMediaDb();
+    return await syncCountStores(mediaDb, [PROGRESS_META_STORE, MEDIA_META_STORE]);
+  } catch (e) { return 0; }
+}
+/* Hash lokálneho média sa počíta raz za načítanie stránky; každý zápis ho zneplatní. */
+const syncHashCache = new Map();
+async function syncLocalHash(kind, id) {
+  const key = kind + ':' + id;
+  if (syncHashCache.has(key)) return syncHashCache.get(key);
+  const rec = kind === 'p' ? await idbGetProgress(id) : await idbGetBlob(id);
+  if (!rec || !rec.blob) return null;
+  const extra = kind === 'p' ? rec.thumb : rec.posterBlob;
+  const h = { hash: await cloudSha256(rec.blob), extraHash: extra ? await cloudSha256(extra) : null, size: rec.blob.size };
+  if (h.hash) syncHashCache.set(key, h);
+  return h;
+}
+/* Manifest lokálnych médií (bez blobov). Príliš veľké/chýbajúce sa vypíšu do `skipped`. */
+async function syncLocalManifest() {
   const out = { version: 2, progress: [], personal: [], skipped: [] };
-  try {
-    const pmeta = await idbGetAll('progressMeta');
-    for (const m of pmeta) {
-      const rec = await idbGetProgress(m.id);
-      if (!rec || !rec.blob) { out.skipped.push({ id: m.id, reason: 'missing' }); continue; }
-      if (rec.blob.size > CLOUD_MEDIA_MAX_BYTES) { out.skipped.push({ id: m.id, reason: 'oversized' }); continue; }
-      const hash = await cloudSha256(rec.blob);
-      if (!hash) { out.skipped.push({ id: m.id, reason: 'unreadable' }); continue; }
-      const ent = { id: m.id, date: m.date, note: m.note, view: m.view, seq: m.seq, w: m.w, h: m.h, mime: m.mime || rec.blob.type, size: m.size, addedAt: m.addedAt, hash, ref: 'media/' + m.id + '/' + hash };
-      if (rec.thumb) { const th = await cloudSha256(rec.thumb); if (th) { ent.thumbHash = th; ent.thumbRef = 'media/' + m.id + '/' + th + '_thumb'; } }
-      out.progress.push(ent);
-    }
-  } catch (e) {}
-  try {
-    const meta = await idbGetAll('meta');
-    for (const m of meta) {
-      const rec = await idbGetBlob(m.id);
-      if (!rec || !rec.blob) { out.skipped.push({ id: m.id, reason: 'missing' }); continue; }
-      if (rec.blob.size > CLOUD_MEDIA_MAX_BYTES) { out.skipped.push({ id: m.id, reason: 'oversized' }); continue; }
-      const hash = await cloudSha256(rec.blob);
-      if (!hash) { out.skipped.push({ id: m.id, reason: 'unreadable' }); continue; }
-      const ent = { id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name, type: m.type, size: m.size, seq: m.seq, hash, ref: 'media/' + m.id + '/' + hash };
-      if (rec.posterBlob) { const ph = await cloudSha256(rec.posterBlob); if (ph) { ent.posterHash = ph; ent.posterRef = 'media/' + m.id + '/' + ph + '_poster'; } }
-      out.personal.push(ent);
-    }
-  } catch (e) {}
-  out.skippedVideos = out.skipped.filter((s) => s.reason === 'oversized').length;
+  if (!mediaDb) { try { mediaDb = await openMediaDb(); } catch (e) { return out; } }
+  for (const m of await idbGetAll(PROGRESS_META_STORE)) {
+    const h = await syncLocalHash('p', m.id);
+    if (!h || !h.hash) { out.skipped.push({ key: 'p:' + m.id, reason: 'missing' }); continue; }
+    if (h.size > CLOUD_MEDIA_MAX_BYTES) { out.skipped.push({ key: 'p:' + m.id, reason: 'oversized' }); continue; }
+    const ent = { id: m.id, date: m.date, note: m.note || '', view: m.view || null, seq: m.seq || 0, w: m.w || 0, h: m.h || 0,
+      mime: m.mime || 'image/jpeg', size: m.size || 0, addedAt: m.addedAt || 0, hash: h.hash, ref: 'media/' + m.id + '/' + h.hash };
+    if (h.extraHash) { ent.thumbHash = h.extraHash; ent.thumbRef = 'media/' + m.id + '/' + h.extraHash + '_thumb'; }
+    out.progress.push(ent);
+  }
+  for (const m of await idbGetAll(MEDIA_META_STORE)) {
+    const h = await syncLocalHash('m', m.id);
+    if (!h || !h.hash) { out.skipped.push({ key: 'm:' + m.id, reason: 'missing' }); continue; }
+    if (h.size > CLOUD_MEDIA_MAX_BYTES) { out.skipped.push({ key: 'm:' + m.id, reason: 'oversized' }); continue; }
+    const ent = { id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name || '', type: m.type || '', size: m.size || 0,
+      seq: m.seq || 0, hash: h.hash, ref: 'media/' + m.id + '/' + h.hash };
+    if (h.extraHash) { ent.posterHash = h.extraHash; ent.posterRef = 'media/' + m.id + '/' + h.extraHash + '_poster'; }
+    out.personal.push(ent);
+  }
   return out;
 }
-
-/* Lokálny index obsahu médií (id → hash), aby sa NEZMENENÉ médiá nenahrávali
-   znova. Keďže cesta obsahuje hash, zmena obsahu vytvorí NOVÝ objekt a starý
-   zostane pre staršie verzie. */
-function cloudMediaIndexKey(uid) { return CLOUD_MEDIA_INDEX_PREFIX + uid; }
-function cloudMediaIndexGet(uid) {
-  try { const raw = localStorage.getItem(cloudMediaIndexKey(uid)); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+/* Má priestor médiá, ktoré v účte ešte nie sú (v aktuálnej podobe)? Médiá, ktoré už
+   účet má, nie sú „lokálne dáta“ – napr. po resete dát zariadenia. */
+async function syncHasUnpublishedMedia(meta) {
+  if ((await syncLocalMediaCount()) === 0) return false;
+  const published = (meta && meta.published) || {};
+  for (const m of await idbGetAll(PROGRESS_META_STORE)) { const h = await syncLocalHash('p', m.id); if (!h || h.hash !== published['p:' + m.id]) return true; }
+  for (const m of await idbGetAll(MEDIA_META_STORE)) { const h = await syncLocalHash('m', m.id); if (!h || h.hash !== published['m:' + m.id]) return true; }
+  return false;
 }
-function cloudMediaIndexSet(uid, idx) {
-  try { localStorage.setItem(cloudMediaIndexKey(uid), JSON.stringify(idx)); } catch (e) {}
-}
-
-/* Nahrá binárky médií na ich content-addressed cesty. Nezmenené (rovnaký hash)
-   sa preskočia; zlyhania sa spočítajú (nikdy ticho). */
-async function cloudUploadMedia(sb, uid, manifest) {
-  const idx = cloudMediaIndexGet(uid);
-  let uploaded = 0, failed = 0;
-  const up = async (ref, blob, mime, key) => {
-    if (!blob || !ref) return;
-    const hash = ref.split('/').pop();
-    if (key && idx[key] === hash) return;               // rovnaký obsah → nenahrávať
-    const r = await sb.storage.from('backups').upload(`${uid}/${ref}`, blob, { upsert: true, contentType: blob.type || mime || 'application/octet-stream' });
-    if (r.error) failed++; else { uploaded++; if (key) idx[key] = hash; }
-  };
-  for (const p of manifest.progress) {
-    const rec = await idbGetProgress(p.id);
-    if (rec && rec.blob) await up(p.ref, rec.blob, p.mime, 'p:' + p.id);
-    if (rec && rec.thumb && p.thumbRef) await up(p.thumbRef, rec.thumb, 'image/jpeg', 'p:' + p.id + ':t');
-  }
-  for (const m of manifest.personal) {
-    const rec = await idbGetBlob(m.id);
-    if (rec && rec.blob) await up(m.ref, rec.blob, m.type, 'm:' + m.id);
-    if (rec && rec.posterBlob && m.posterRef) await up(m.posterRef, rec.posterBlob, 'image/jpeg', 'm:' + m.id + ':p');
-  }
-  manifest.uploaded = uploaded; manifest.failedUploads = failed;
-  cloudMediaIndexSet(uid, idx);
-  return uploaded;
-}
-
-async function runCloudBackup(opts) {
-  if (!cloudEnabled()) return;
-  if (cloudInFlight) return;
-  const uid = await cloudUid();
-  if (!uid) { cloudStatus = 'signedout'; renderCloudBackupSetting(); return; }
-  const owner = cloudOwner();
-  if (owner && owner !== uid) { cloudStatus = 'blocked'; renderCloudBackupSetting(); return; }   // iné konto → nikdy
-  cloudInFlight = true;
-  cloudStatus = 'saving'; renderCloudBackupSetting();
+async function syncReloadMediaCaches() {
+  syncHashCache.clear();
   try {
-    const sb = communitySb();
-    const payload = await cloudBuildPayload();
-    const { data, error } = await sb.rpc('save_backup', {
-      p_payload: payload, p_schema: BACKUP_SCHEMA_VERSION,
-      p_base_revision: cloudRevision || 0, p_device: cloudDeviceId(),
-      p_app_version: (window.GYMQUEST_VERSION || ''),
+    if (!mediaDb) mediaDb = await openMediaDb();
+    const all = await idbGetAll(MEDIA_META_STORE);
+    personalMediaMeta.clear();
+    (all || []).forEach((m) => {
+      if (!m || !m.exerciseKey) return;
+      const arr = personalMediaMeta.get(m.exerciseKey) || [];
+      arr.push(m);
+      personalMediaMeta.set(m.exerciseKey, arr);
     });
-    if (error) throw error;
-    const row = Array.isArray(data) ? data[0] : data;
-    if (row && row.conflict) {
-      cloudRevision = Number(row.revision) || cloudRevision;
-      cloudStatus = 'conflict'; renderCloudBackupSetting();
-      return;
-    }
-    cloudRevision = row && row.revision ? Number(row.revision) : (cloudRevision || 0) + 1;
-    cloudSetOwner(uid);
-    let mediaFail = 0;
-    try { await cloudUploadMedia(sb, uid, payload.media); } catch (e) { mediaFail = 1; }
-    cloudLastAt = Date.now();
-    try { localStorage.removeItem(CLOUD_PENDING_KEY); } catch (e) {}
-    cloudRetryDelay = 5000;
-    /* Nikdy neukazuj čisté "Uložené", ak niečo chýba alebo sa nenahralo. */
-    const mediaSkipped = (payload.media && payload.media.skipped) ? payload.media.skipped.length : 0;
-    const mediaFailed = ((payload.media && payload.media.failedUploads) || 0) + mediaFail;
-    if (mediaSkipped > 0 || mediaFailed > 0) {
-      cloudStatus = 'incomplete';
-      renderCloudBackupSetting();
-      cloudSetMessage('cloud.incomplete', { n: mediaSkipped + mediaFailed });
-      return;
-    }
-    cloudStatus = 'saved';
-    renderCloudBackupSetting();
-    if (payload.media && payload.media.skippedVideos > 0) cloudSetMessage('cloud.videosSkipped', { n: payload.media.skippedVideos });
-  } catch (e) {
-    const offline = (typeof navigator !== 'undefined' && navigator.onLine === false);
-    cloudStatus = offline ? 'offline' : 'error';
-    try { localStorage.setItem(CLOUD_PENDING_KEY, JSON.stringify({ uid: uid, at: Date.now() })); } catch (e2) {}
-    renderCloudBackupSetting();
-    cloudRetryDelay = Math.min(cloudRetryDelay * 2, 300000);
-    setTimeout(() => runCloudBackup(), cloudRetryDelay);
-  } finally {
-    cloudInFlight = false;
-  }
-}
-
-async function cloudBackupNow() {
-  const uid = await cloudUid();
-  if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
-  cloudCancelPending();
-  cloudRetryDelay = 5000;
-  runCloudBackup();
-}
-
-/* Prvé prihlásenie: žiadna záloha → nahrať; iba cloud → ponúknuť obnovu;
-   obe a rozdielne → explicitná voľba (nikdy ticho neprepísať). */
-async function cloudReconcileOnSignIn() {
-  if (!cloudEnabled()) return;
-  const uid = await cloudUid();
-  if (!uid || cloudStatus === 'conflict') return;
-  /* Po reštarte aplikácie obnov čakajúcu (nedokončenú) zálohu pre tohto používateľa. */
-  try {
-    const pend = JSON.parse(localStorage.getItem(CLOUD_PENDING_KEY) || 'null');
-    if (pend && pend.uid === uid) { runCloudBackup(); return; }
+    personalMediaMeta.forEach((arr) => arr.sort((a, b) => (a.seq || 0) - (b.seq || 0)));
+    progressMeta = (await idbGetAll(PROGRESS_META_STORE)).map(cleanProgressMeta).filter(Boolean);
   } catch (e) {}
-  try {
-    const sb = communitySb();
-    const { data } = await sb.from('backups').select('revision,schema_version,payload').eq('user_id', uid).maybeSingle();
-    if (!data) { cloudRevision = 0; runCloudBackup(); return; }
-    cloudRevision = Number(data.revision) || 0;
-    const cloudCount = (data.payload && Array.isArray(data.payload.history)) ? data.payload.history.length : 0;
-    const localCount = Array.isArray(state.history) ? state.history.length : 0;
-    const owner = cloudOwner();
-    if (owner && owner !== uid) { cloudStatus = 'blocked'; renderCloudBackupSetting(); return; }
-    if (localCount === 0 && cloudCount > 0) { askCloudRestore(); return; }
-    if (localCount !== cloudCount) { askCloudChoice(cloudCount, localCount); return; }
-    runCloudBackup();
-  } catch (e) { /* offline: ponechať pending */ }
+  if (isOpen('modal-exercise')) renderExerciseSheet();
+  if (pokrokView === 'photos') renderPhotos();
 }
-
-function askCloudChoice(cloudCount, localCount) {
-  showGeneric(t('cloud.choiceTitle'),
-    t('cloud.choiceBody', { cloud: cloudCount, local: localCount }),
-    () => { askCloudRestore(); }, t('cloud.keepCloud'));
-}
-
-function askCloudRestore() {
-  showGeneric(t('cloud.restoreTitle'), t('cloud.restoreBody'),
-    () => { cloudRestore(); }, t('cloud.restore'));
-}
-
-/* Stiahne médiá do pamäte (pred akýmkoľvek zápisom). ref = nová content-addressed
-   cesta; ak chýba, použije sa stará legacy plochá cesta <id> / <id>_thumb. */
-async function cloudFetchMedia(sb, uid, manifest) {
-  const staged = { progress: [], personal: [], missing: 0 };
-  const dl = async (ref, legacy) => {
-    if (ref) { const d = await sb.storage.from('backups').download(`${uid}/${ref}`); return (d.error || !d.data) ? null : d.data; }
-    const d = await sb.storage.from('backups').download(`${uid}/media/${legacy}`); return (d.error || !d.data) ? null : d.data;
-  };
-  for (const p of manifest.progress || []) {
-    const blob = await dl(p.ref, p.id);
-    if (!blob) { staged.missing++; continue; }
-    /* Over obsah: stiahnutý blob musí zodpovedať hashu z manifestu. */
-    if (p.hash && (await cloudSha256(blob)) !== p.hash) { staged.missing++; continue; }
-    let thumb = null;
-    if (p.thumbRef) thumb = await dl(p.thumbRef, p.id + '_thumb');
-    else { const t = await sb.storage.from('backups').download(`${uid}/media/${p.id}_thumb`); if (!t.error && t.data) thumb = t.data; }
-    staged.progress.push({ meta: { id: p.id, date: p.date, note: p.note || '', view: p.view || null, seq: p.seq || 0, w: p.w || 0, h: p.h || 0, mime: p.mime || 'image/jpeg', size: p.size || 0, addedAt: p.addedAt || Date.now() }, blob: blob, thumb: thumb });
-  }
-  for (const m of manifest.personal || []) {
-    const blob = await dl(m.ref, m.id);
-    if (!blob) { staged.missing++; continue; }
-    if (m.hash && (await cloudSha256(blob)) !== m.hash) { staged.missing++; continue; }
-    let poster = null;
-    if (m.posterRef) poster = await dl(m.posterRef, m.id + '_poster');
-    else { const t = await sb.storage.from('backups').download(`${uid}/media/${m.id}_poster`); if (!t.error && t.data) poster = t.data; }
-    staged.personal.push({ meta: { id: m.id, exerciseKey: m.exerciseKey, kind: m.kind, name: m.name || '', type: m.type || '', size: m.size || 0, seq: m.seq || 0, hasPoster: !!poster }, blob: blob, poster: poster });
-  }
-  return staged;
-}
-
-/* Obnova (F): najprv STIAHNI a over VŠETKO (dáta aj médiá), ulož obnoviteľnú
-   snímku, a až potom prepíš lokálny stav. Pri zlyhaní zápisu sa vráti späť,
-   takže lokálne dáta ani médiá nikdy nezostanú napoly prepísané. */
-async function cloudRestore() {
-  const uid = await cloudUid();
-  if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
-  const sb = communitySb();
-  const stateSnapshot = JSON.stringify(Object.assign({}, state));
-  try {
-    const { data, error } = await sb.from('backups').select('schema_version,payload').eq('user_id', uid).maybeSingle();
-    if (error || !data || !data.payload) { cloudSetMessage('cloud.noBackup'); return; }
-    if (Number(data.schema_version) !== BACKUP_SCHEMA_VERSION) { cloudSetMessage('cloud.incompatible'); return; }
-
-    const incoming = data.payload;
-    const mediaManifest = incoming.media ? JSON.parse(JSON.stringify(incoming.media)) : null;
-    delete incoming.media;
-
-    // 1) Stage médií PRED akýmkoľvek lokálnym zápisom.
-    const staged = mediaManifest ? await cloudFetchMedia(sb, uid, mediaManifest) : { progress: [], personal: [], missing: 0 };
-
-    // 1b) Ak čokoľvek chýba, obnova ZLYHÁ bez toho, aby sa dotkla lokálnych dát.
-    if (staged.missing > 0) { cloudSetMessage('cloud.restoreFailed'); return; }
-
-    // 2) Obnoviteľná snímka stavu + predchádzajúcich médií (pre prípad rollbacku).
-    try { localStorage.setItem(CLOUD_SNAPSHOT_KEY, stateSnapshot); } catch (e) {}
-    const prevP = new Map(), prevM = new Map();
-    for (const it of staged.progress) { try { prevP.set(it.meta.id, { meta: await idbGetOne('progressMeta', it.meta.id), rec: await idbGetProgress(it.meta.id) }); } catch (e) {} }
-    for (const it of staged.personal) { try { prevM.set(it.meta.id, { meta: await idbGetOne('meta', it.meta.id), rec: await idbGetBlob(it.meta.id) }); } catch (e) {} }
-
-    // 3) Commit.
-    cloudRestoring = true;
-    try {
-      const migrated = incoming.version === 1 ? migrateV1toV2(incoming) : incoming;
-      state = migrateV2toV3(migrated);
-      reconcileAchievements();
-      for (const it of staged.progress) await idbWriteProgress(it.meta, { id: it.meta.id, blob: it.blob, thumb: it.thumb, origName: '' });
-      for (const it of staged.personal) await idbWriteMetaAndBlob(it.meta, { id: it.meta.id, blob: it.blob, posterBlob: it.poster });
-      saveState();
-      renderAll();
-    } catch (commitErr) {
-      // 4) Rollback: stav zo snímky + pôvodné médiá.
-      try { state = JSON.parse(stateSnapshot); } catch (e) {}
-      for (const it of staged.progress) { const p = prevP.get(it.meta.id); try { if (p && p.rec && p.meta) await idbWriteProgress(p.meta, p.rec); else await idbDeleteProgress(it.meta.id); } catch (e) {} }
-      for (const it of staged.personal) { const p = prevM.get(it.meta.id); try { if (p && p.rec && p.meta) await idbWriteMetaAndBlob(p.meta, p.rec); else await idbDeleteMetaAndBlob(it.meta.id); } catch (e) {} }
-      cloudRestoring = false;
-      renderAll();
-      cloudSetMessage('cloud.restoreFailed');
-      return;
+/* Všetky zápisy médií aplikovania v JEDNEJ transakcii (všetko alebo nič). */
+function syncMediaTx(puts, dels) {
+  return new Promise((resolve, reject) => {
+    const tx = mediaDb.transaction([MEDIA_META_STORE, MEDIA_BLOB_STORE, PROGRESS_META_STORE, PROGRESS_BLOB_STORE], 'readwrite');
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error || new Error('tx'));
+    tx.onabort = () => reject(tx.error || new Error('tx-abort'));
+    for (const p of puts) {
+      const metaStore = p.store === 'p' ? PROGRESS_META_STORE : MEDIA_META_STORE;
+      const blobStore = p.store === 'p' ? PROGRESS_BLOB_STORE : MEDIA_BLOB_STORE;
+      if (p.meta) tx.objectStore(metaStore).put(p.meta);
+      if (p.rec) tx.objectStore(blobStore).put(p.rec);
     }
-    cloudRestoring = false;
-    if (staged.missing > 0) cloudSetMessage('cloud.restoredIncomplete', { n: staged.missing });
-    else cloudSetMessage('cloud.restored');
-  } catch (e) { cloudRestoring = false; cloudSetMessage('cloud.restoreFailed'); }
+    for (const d of dels) {
+      tx.objectStore(d.store === 'p' ? PROGRESS_META_STORE : MEDIA_META_STORE).delete(d.id);
+      tx.objectStore(d.store === 'p' ? PROGRESS_BLOB_STORE : MEDIA_BLOB_STORE).delete(d.id);
+    }
+  });
 }
 
-/* Zmazanie cloudovej zálohy (NIKDY nemazá lokálne dáta). */
-async function cloudDeleteBackup() {
-  const uid = await cloudUid();
-  if (!uid) { cloudSetMessage('cloud.notSignedIn'); return; }
-  showGeneric(t('cloud.deleteTitle'), t('cloud.deleteBody'), async () => {
-    const sb = communitySb();
-    try {
-      for (const prefix of [uid, `${uid}/media`]) {
-        const list = await sb.storage.from('backups').list(prefix, { limit: 1000 });
-        const paths = (list.data || []).filter((f) => f && f.id).map((f) => `${prefix}/${f.name}`);
-        if (paths.length) await sb.storage.from('backups').remove(paths);
+/* ---------- Kanonický obsah a hashe ---------- */
+function syncStable(v) {
+  if (v === null || typeof v !== 'object') return JSON.stringify(v === undefined ? null : v);
+  if (Array.isArray(v)) return '[' + v.map((x) => (x === undefined ? 'null' : syncStable(x))).join(',') + ']';
+  const keys = Object.keys(v).filter((k) => v[k] !== undefined).sort();
+  return '{' + keys.map((k) => JSON.stringify(k) + ':' + syncStable(v[k])).join(',') + '}';
+}
+async function syncSha(str) {
+  const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.prototype.map.call(new Uint8Array(d), (x) => x.toString(16).padStart(2, '0')).join('');
+}
+/* Časť stavu, ktorá patrí účtu (bez nastavení a dát iba pre zariadenie). */
+function syncScope(s) {
+  const out = {};
+  for (const k of Object.keys(s || {})) {
+    if (k === 'media' || k === '_applyId' || DEVICE_STATE_KEYS.indexOf(k) >= 0) continue;
+    out[k] = s[k];
+  }
+  if (out.settings && typeof out.settings === 'object') {
+    const st = Object.assign({}, out.settings);
+    for (const k of DEVICE_SETTING_KEYS) delete st[k];
+    out.settings = st;
+  }
+  return out;
+}
+function syncManifestCanon(m, forCompare) {
+  const P = ['id', 'hash', 'thumbHash', 'date', 'note', 'view', 'seq'];
+  const M = ['id', 'hash', 'posterHash', 'exerciseKey', 'kind', 'name', 'seq'];
+  const pick = (arr, fields) => (Array.isArray(arr) ? arr : []).map((e) => {
+    if (!forCompare) return e;
+    const c = {}; for (const f of fields) if (e[f] !== undefined && e[f] !== null && e[f] !== '') c[f] = e[f]; return c;
+  }).sort((a, b) => (String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0));
+  return { p: pick(m && m.progress, P), m: pick(m && m.personal, M) };
+}
+/* Hash surového obsahu účtu (zmena v cloude / od poslednej synchronizácie). */
+function syncRawHash(payload) { return syncSha(syncStable({ s: syncScope(payload), m: syncManifestCanon(payload && payload.media, false) })); }
+/* Hash obsahu, ktorý by toto zariadenie práve nahralo (rovnaká konštrukcia ako upload). */
+async function syncLocalPayloadHash() {
+  const snap = JSON.parse(JSON.stringify(syncScope(state)));
+  const lm = await syncLocalManifest();
+  return syncRawHash(Object.assign(snap, { media: { version: 2, progress: lm.progress, personal: lm.personal } }));
+}
+/* Normalizácia mimo globálneho stavu (migrácie pracujú nad `state`). */
+function syncNormalize(obj) {
+  const saved = state;
+  try {
+    const c = JSON.parse(JSON.stringify(obj || {}));
+    delete c.media;
+    const v = c.version === 1 ? migrateV1toV2(c) : c;
+    const out = migrateV2toV3(v);
+    reconcileAchievements();
+    return out;
+  } finally { state = saved; }
+}
+/* Obsahová zhoda dvoch strán (po rovnakej normalizácii). */
+function syncContentHash(stateLike, manifest) {
+  return syncSha(syncStable({ s: syncScope(syncNormalize(stateLike)), m: syncManifestCanon(manifest, true) }));
+}
+
+/* Má priestor zmysluplné dáta? Automaticky odvodené hodnoty (cieľ týždňa,
+   predvolené plány, nastavenia) a ukážkové dáta sa nepočítajú. */
+let syncDefaultPlansSig = null;
+function stateMeaningful(s) {
+  if (!s) return false;
+  const n = syncNormalize(s);   // rovnaká normalizácia ako pri porovnaní strán
+  const demo = n.demo === true;
+  if (!demo && n.history.length) return true;
+  if (n.activities.length || n.excusedWeeks.length) return true;
+  if (n.measurements.length || n.foods.length || Object.keys(n.foodLog || {}).length) return true;
+  const pr = n.profile || {};
+  if (pr.heightCm || pr.ageYears || pr.sex) return true;
+  if (syncDefaultPlansSig === null) {
+    const d = syncNormalize(defaultState());
+    syncDefaultPlansSig = syncStable({ p: d.plans, o: d.planOrder });
+  }
+  if (syncStable({ p: n.plans, o: n.planOrder }) !== syncDefaultPlansSig) return true;
+  if (demo) return false;
+  /* Úspechy odvodené z predvolených plánov má aj úplne nové zariadenie – rátajú sa len
+     tie, ktoré sa zo súčasného stavu odvodiť nedajú (napr. získané pred zmazaním dát). */
+  const saved = state;
+  let derived = {};
+  try { state = n; derived = evaluateAchievements(); } finally { state = saved; }
+  return Object.keys(n.achievements || {}).some((k) => !derived[k]);
+}
+
+/* ---------- Fronta úloh: všetka sieťová a aplikačná práca ide postupne ---------- */
+class SyncAbort extends Error { constructor(reason) { super('sync-abort:' + reason); this.reason = reason; } }
+let syncChain = Promise.resolve();
+let syncStopping = false;
+let syncRunning = null;          // názov bežiacej úlohy
+let syncDebounceTimer = null;
+let syncMaxTimer = null;
+let syncRetryTimer = null;
+let syncRetryDelay = 5000;
+let syncLastError = null;        // null | 'offline' | 'network' | 'signedout' | 'other' | 'hash' | 'local' | 'schema'
+let syncLoading = false;         // prvé načítanie účtu
+let syncNotice = '';             // jednorazová správa pre používateľa
+let syncConflictShown = false;
+let syncLastTrigger = 0;
+let localSavedAt = 0;
+let localSaveFailed = false;
+
+function syncCheckpoint() { if (syncStopping) throw new SyncAbort('stopping'); }
+function syncEnqueue(name, fn) {
+  const run = async () => {
+    if (syncStopping) return;
+    syncRunning = name; syncRender();
+    try { await fn(); }
+    catch (e) {
+      if (!(e instanceof SyncAbort)) { console.warn('GymQuest sync:', name, e); if (!syncLastError) syncLastError = 'network'; syncScheduleRetry(); }
+    } finally { syncRunning = null; syncLoading = false; syncRender(); }
+  };
+  syncChain = syncChain.then(run, run);
+  return syncChain;
+}
+async function syncQuiesce() {
+  syncStopping = true;
+  syncClearTimers();
+  try { await syncChain; } catch (e) {}
+}
+function syncResume() { syncStopping = false; syncQueued = false; }
+function syncClearTimers() {
+  if (syncDebounceTimer) { clearTimeout(syncDebounceTimer); syncDebounceTimer = null; }
+  if (syncMaxTimer) { clearTimeout(syncMaxTimer); syncMaxTimer = null; }
+  if (syncRetryTimer) { clearTimeout(syncRetryTimer); syncRetryTimer = null; }
+}
+function syncScheduleRetry() {
+  if (syncRetryTimer || syncStopping) return;
+  syncRetryTimer = setTimeout(() => { syncRetryTimer = null; syncKick('retry'); }, syncRetryDelay);
+  syncRetryDelay = Math.min(syncRetryDelay * 2, 300000);
+}
+function syncSetError(kind) { syncLastError = kind; syncRender(); }
+
+/* Lokálna zmena (volá saveState a zápisy médií): uloženie na zariadení už prebehlo. */
+function syncNoteLocalChange() {
+  if (!wsSlot || appYielded) return;
+  syncMetaUpdate((m) => { m.seq = (m.seq || 0) + 1; });
+  scheduleSync();
+}
+function syncNoteMediaChange(kind, id) {
+  syncHashCache.delete(kind + ':' + id);
+  syncNoteLocalChange();
+}
+function scheduleSync() {
+  syncRender();
+  if (!wsSlot || !wsSlot.owner || syncStopping) return;
+  if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
+  syncDebounceTimer = setTimeout(() => { syncDebounceTimer = null; syncKick('change'); }, SYNC_DEBOUNCE_MS);
+  if (!syncMaxTimer) syncMaxTimer = setTimeout(() => { syncMaxTimer = null; syncKick('change'); }, SYNC_MAXLATENCY_MS);
+}
+/* Spustí jedno vyrovnanie (ak už jedno čaká vo fronte, ďalšie sa nepridáva). */
+let syncQueued = false;
+function syncKick(reason) {
+  if (!wsSlot || !wsSlot.owner || syncStopping || syncQueued) return syncChain;
+  syncQueued = true;
+  return syncEnqueue('sync', async () => { syncQueued = false; await syncRun(reason); });
+}
+/* Spúšťače pri návrate do popredia / obnovení pripojenia (obmedzené na 1× za 10 s). */
+function syncTrigger(reason) {
+  if (typeof document !== 'undefined' && document.hidden) return;
+  if (wsFollowRegistry()) return;
+  const now = Date.now();
+  if (reason !== 'online' && now - syncLastTrigger < SYNC_TRIGGER_THROTTLE_MS) return;
+  syncLastTrigger = now;
+  if (reason === 'online') { syncRetryDelay = 5000; if (syncLastError === 'offline') syncLastError = null; }
+  if (wsSlot && wsSlot.owner && !syncRunning) syncKick(reason);
+}
+/* Iná karta zmenila aktívny priestor (odhlásenie/prihlásenie) → nasleduj ju. */
+function wsFollowRegistry() {
+  let reg = null;
+  try { reg = JSON.parse(localStorage.getItem(WS_REGISTRY_KEY) || 'null'); } catch (e) {}
+  if (!reg || !reg.active || reg.active === wsSlot.id || !reg.slots || !reg.slots[reg.active]) return false;
+  if (isBusy()) return false;
+  syncQuiesce().then(() => { persistState(); location.reload(); });
+  return true;
+}
+
+async function syncSessionUser() {
+  const sb = communitySb();
+  if (!sb) return null;
+  try {
+    const r = await sb.auth.getSession();
+    const s = r && r.data ? r.data.session : null;
+    return s && s.user ? { id: s.user.id, email: s.user.email || '' } : null;
+  } catch (e) { return null; }
+}
+function syncOffline() { return typeof navigator !== 'undefined' && navigator.onLine === false; }
+async function syncFetchRow(sb, uid, cols) {
+  const r = await sb.from('backups').select(cols || 'revision,schema_version,payload').eq('user_id', uid).maybeSingle();
+  if (r.error) throw r.error;
+  return r.data || null;
+}
+
+/* Hlavné vyrovnanie priestoru s účtom. */
+async function syncRun(reason) {
+  const slot = wsSlot;
+  if (!slot || !slot.owner) return;
+  let meta = syncMetaRead();
+  if (meta.disabled) { syncLastError = null; return; }
+  if (!communityConfigured() || !communitySb()) return;
+  if (syncOffline()) { syncLastError = 'offline'; return; }
+  const user = await syncSessionUser();
+  if (!user) { syncLastError = 'signedout'; return; }
+  if (user.id !== slot.owner) { syncLastError = 'other'; return; }
+  syncCheckpoint();
+  await gqHook('sync:start', { reason });
+  const sb = communitySb();
+  const probe = await syncFetchRow(sb, user.id, 'revision');
+  syncCheckpoint();
+  syncLastError = null;
+  syncRetryDelay = 5000;
+  meta = syncMetaRead();
+  const cloudRev = probe ? Number(probe.revision) || 0 : 0;
+
+  if (meta.conflict) {
+    /* Nevyriešený konflikt blokuje upload aj načítanie, kým používateľ nevyberie. */
+    if (probe && cloudRev !== meta.conflict.rev) {
+      const row = await syncFetchRow(sb, user.id);
+      syncCheckpoint();
+      if (row) { const h = await syncRawHash(row.payload); syncMetaUpdate((m) => { if (m.conflict) { m.conflict.rev = Number(row.revision) || 0; m.conflict.hash = h; m.conflict.cloudCount = ((row.payload || {}).history || []).length; } }); }
+    }
+    syncOpenConflictDialog(false);
+    return;
+  }
+  if (meta.rev !== null && probe && cloudRev === meta.rev) {
+    if (syncIsDirty(meta)) await syncUpload(user, cloudRev);
+    else syncMetaUpdate((m) => { m.lastSyncAt = Date.now(); });
+    return;
+  }
+  if (meta.rev === null) syncLoading = true;
+  const row = probe ? await syncFetchRow(sb, user.id) : null;
+  syncCheckpoint();
+  const localHas = stateMeaningful(state) || (await syncHasUnpublishedMedia(meta));
+
+  if (!row) {
+    /* V účte nič nie je: nahraj, len ak tu niečo je (prázdny stav sa nenahráva). */
+    if (localHas || syncIsDirty(meta)) await syncUpload(user, 0);
+    else syncMetaUpdate((m) => { m.rev = 0; m.hash = null; m.syncedSeq = m.seq; m.cloudMeaningful = false; m.lastSyncAt = Date.now(); });
+    return;
+  }
+  if (Number(row.schema_version) !== BACKUP_SCHEMA_VERSION) { syncLastError = 'schema'; return; }
+  const rawHash = await syncRawHash(row.payload);
+  const rowRev = Number(row.revision) || 0;
+  if (meta.rev !== null && rawHash === meta.hash) {
+    /* Revízia sa zmenila, obsah nie (napr. prázdny upload iného zariadenia). */
+    syncMetaUpdate((m) => { m.rev = rowRev; });
+    if (syncIsDirty(syncMetaRead())) await syncUpload(user, rowRev);
+    return;
+  }
+  let dirty = syncIsDirty(meta);
+  if (dirty && meta.rev !== null && !(meta.mediaFailed || []).length && (meta.localHash || meta.hash)) {
+    /* Uložené boli len dáta zariadenia (napr. rozbehnutý tréning) – obsah účtu sa nezmenil. */
+    const seqNow = meta.seq;
+    const lh = await syncLocalPayloadHash();
+    if (lh === meta.localHash || lh === meta.hash) { syncMetaUpdate((m) => { m.syncedSeq = Math.max(m.syncedSeq || 0, seqNow); }); dirty = syncMetaRead().seq !== seqNow; }
+  }
+  if ((meta.rev === null && !localHas) || (meta.rev !== null && !dirty)) {
+    /* Prázdny priestor, alebo toto zariadenie nemá nesynchronizované zmeny → načítaj účet. */
+    await syncApply(row.payload, { mode: 'pull', rev: rowRev, rawHash, seqAtDecision: meta.seq, recoveryKind: 'before-pull' });
+    return;
+  }
+  /* Obe strany sa mohli zmeniť: ak je obsah rovnaký, len si zapamätaj revíziu. */
+  const local = await syncLocalManifest();
+  syncCheckpoint();
+  if (await syncContentHash(state, local) === await syncContentHash(row.payload, row.payload.media)) {
+    syncMetaUpdate((m) => { m.rev = rowRev; m.hash = rawHash; m.cloudMeaningful = stateMeaningful(row.payload); m.lastSyncAt = Date.now(); });
+    if (syncIsDirty(syncMetaRead())) await syncUpload(user, rowRev);
+    return;
+  }
+  syncEnterConflict(row, rawHash, meta.rev === null ? 'first' : 'diverged');
+}
+
+function syncEnterConflict(row, rawHash, reason) {
+  const payload = (row && row.payload) || {};
+  syncMetaUpdate((m) => {
+    m.conflict = { rev: row ? Number(row.revision) || 0 : 0, hash: rawHash || null, at: Date.now(), reason,
+      cloudCount: (payload.history || []).length, localCount: (state.history || []).length };
+  });
+  syncConflictShown = false;
+  syncOpenConflictDialog(true);
+}
+
+/* Upload: najprv médiá, až potom riadok zálohy, ktorý na ne odkazuje. */
+async function syncUpload(user, baseRev, opts) {
+  opts = opts || {};
+  const sb = communitySb();
+  let meta = syncMetaRead();
+  const seqAtCapture = meta.seq;
+  const snap = JSON.parse(JSON.stringify(syncScope(state)));   // synchrónny snímok práve teraz
+  const localHas = stateMeaningful(snap) || (await syncLocalMediaCount()) > 0;
+  if (!localHas && meta.cloudMeaningful && !opts.force) {
+    /* Nikdy neprepíš naplnený účet prázdnym stavom – rozhodne používateľ. */
+    const row = await syncFetchRow(sb, user.id);
+    if (row && stateMeaningful(row.payload)) { syncEnterConflict(row, await syncRawHash(row.payload), 'empty-local'); return; }
+  }
+  const local = await syncLocalManifest();
+  syncCheckpoint();
+  let lastManifest = null;
+  try { const kv = await syncDbGet('kv', 'manifest'); lastManifest = kv ? kv.value : null; } catch (e) {}
+  const prevEntry = (kind, id) => {
+    const arr = lastManifest ? (kind === 'p' ? lastManifest.progress : lastManifest.personal) : null;
+    return (arr || []).find((e) => e.id === id) || null;
+  };
+  const published = Object.assign({}, meta.published || {});
+  const failed = [];
+  const manifest = { version: 2, progress: [], personal: [], skipped: local.skipped.map((s) => ({ id: s.key, reason: s.reason })) };
+  const putObj = async (ref, blob, mime) => {
+    await gqHook('upload:object', { ref });
+    syncCheckpoint();
+    const r = await sb.storage.from('backups').upload(`${user.id}/${ref}`, blob, { upsert: true, contentType: blob.type || mime || 'application/octet-stream' });
+    if (r.error) throw r.error;
+  };
+  for (const kind of ['p', 'm']) {
+    for (const ent of (kind === 'p' ? local.progress : local.personal)) {
+      syncCheckpoint();
+      const key = kind + ':' + ent.id;
+      const xKey = key + (kind === 'p' ? ':t' : ':p');
+      const xHash = kind === 'p' ? ent.thumbHash : ent.posterHash;
+      const xRef = kind === 'p' ? ent.thumbRef : ent.posterRef;
+      try {
+        if (published[key] !== ent.hash || (xHash && published[xKey] !== xHash)) {
+          const rec = kind === 'p' ? await idbGetProgress(ent.id) : await idbGetBlob(ent.id);
+          if (!rec || !rec.blob) throw new Error('blob-missing');
+          const extra = kind === 'p' ? rec.thumb : rec.posterBlob;
+          /* Medzitým zmenené médium sa pod starým hashom nikdy nenahrá (cesta = obsah). */
+          if ((await cloudSha256(rec.blob)) !== ent.hash || (xHash && (!extra || (await cloudSha256(extra)) !== xHash))) throw new Error('changed');
+          if (published[key] !== ent.hash) { await putObj(ent.ref, rec.blob, kind === 'p' ? ent.mime : ent.type); published[key] = ent.hash; }
+          if (xHash && published[xKey] !== xHash) { await putObj(xRef, extra, 'image/jpeg'); published[xKey] = xHash; }
+        }
+        (kind === 'p' ? manifest.progress : manifest.personal).push(ent);
+      } catch (e) {
+        if (e instanceof SyncAbort) throw e;
+        failed.push(key);
+        /* Nová verzia sa nenahrala → riadok odkazuje na predošlú (ak existuje), nikdy na chýbajúci objekt. */
+        const prev = prevEntry(kind, ent.id);
+        if (prev && published[kind + ':' + ent.id] === prev.hash) (kind === 'p' ? manifest.progress : manifest.personal).push(prev);
       }
-      await sb.from('backups').delete().eq('user_id', uid);
-      cloudRevision = 0;
-      cloudSetOwner(null);
-      try { localStorage.removeItem(cloudMediaIndexKey(uid)); } catch (e) {}
-      cloudStatus = 'idle';
-      renderCloudBackupSetting();
-      cloudSetMessage('cloud.deleted');
-    } catch (e) { cloudSetMessage('cloud.deleteFailed'); }
-  }, t('cloud.delete'));
+    }
+  }
+  const payload = Object.assign(snap, { media: manifest });
+  const rawHash = await syncRawHash(payload);
+  meta = syncMetaRead();
+  if (meta.rev !== null && meta.rev === baseRev && (rawHash === meta.hash || rawHash === meta.localHash) && !opts.force) {
+    /* Obsah sa nezmenil (napr. len rozbehnutý tréning) – nič sa nenahráva. */
+    syncMetaUpdate((m) => {
+      m.published = published; m.mediaFailed = failed; m.mediaSkipped = local.skipped.map((s) => s.key);
+      if (!failed.length) m.syncedSeq = Math.max(m.syncedSeq || 0, seqAtCapture);
+      m.lastSyncAt = Date.now();
+    });
+    return;
+  }
+  syncCheckpoint();
+  const now = await syncSessionUser();
+  if (!now || now.id !== user.id || now.id !== wsSlot.owner) throw new SyncAbort('account-changed');
+  await gqHook('upload:beforeRpc', { baseRev });
+  syncCheckpoint();
+  const { data, error } = await sb.rpc('save_backup', {
+    p_payload: payload, p_schema: BACKUP_SCHEMA_VERSION,
+    p_base_revision: baseRev || 0, p_device: cloudDeviceId(),
+    p_app_version: (window.GYMQUEST_VERSION || ''),
+  });
+  if (error) { syncMetaUpdate((m) => { m.published = published; }); throw error; }
+  const row = Array.isArray(data) ? data[0] : data;
+  if (row && row.conflict) {
+    syncMetaUpdate((m) => { m.published = published; });
+    if (opts.retried) { const cur = await syncFetchRow(sb, user.id); if (cur) syncEnterConflict(cur, await syncRawHash(cur.payload), 'diverged'); return; }
+    /* Cloud sa medzitým zmenil → nové vyrovnanie (načítanie / zhoda / konflikt). */
+    const cur = await syncFetchRow(sb, user.id);
+    syncCheckpoint();
+    if (!cur) return;
+    const curHash = await syncRawHash(cur.payload);
+    if (curHash === syncMetaRead().hash) { syncMetaUpdate((m) => { m.rev = Number(cur.revision) || 0; }); await syncUpload(user, Number(cur.revision) || 0, { retried: true, force: opts.force }); return; }
+    if (opts.force) { syncEnterConflict(cur, curHash, 'diverged'); return; }
+    syncKickAfter();
+    return;
+  }
+  const newRev = row && row.revision ? Number(row.revision) : (baseRev || 0) + 1;
+  syncMetaUpdate((m) => {
+    m.rev = newRev; m.hash = rawHash; m.localHash = rawHash; m.published = published;
+    m.mediaFailed = failed; m.mediaSkipped = local.skipped.map((s) => s.key); m.missingInCloud = [];
+    m.syncedSeq = Math.max(m.syncedSeq || 0, seqAtCapture);   // novšie lokálne zmeny zostávajú čakať
+    m.cloudMeaningful = stateMeaningful(payload) || manifest.progress.length + manifest.personal.length > 0;
+    m.lastSyncAt = Date.now();
+  });
+  try { await syncDbWrite([{ store: 'kv', put: { k: 'manifest', value: manifest } }]); } catch (e) {}
+  try { localStorage.removeItem(CLOUD_PENDING_KEY); } catch (e) {}
+  const after = syncMetaRead();
+  if (failed.length) syncScheduleRetry();
+  else if (syncIsDirty(after)) scheduleSync();
+}
+function syncKickAfter() { setTimeout(() => syncKick('after-conflict-rpc'), 0); }
+
+/* Stiahnutie objektu: 404 = chýba; sieťová chyba = prerušiť (skúsi sa znova). */
+async function syncDownload(sb, uid, ref, legacyPath) {
+  await gqHook('apply:download', { ref: ref || legacyPath });
+  syncCheckpoint();
+  const path = ref ? `${uid}/${ref}` : `${uid}/media/${legacyPath}`;
+  const d = await sb.storage.from('backups').download(path);
+  syncCheckpoint();
+  if (!d.error && d.data) return d.data;
+  const e = d.error || {};
+  const status = Number(e.status || e.statusCode || 0);
+  if (status === 400 || status === 404 || /not.?found|object not found/i.test(String(e.message || ''))) return null;
+  throw e;
 }
 
-function cloudSetMessage(key, vars) {
-  cloudStatus = cloudStatus; // no-op guard
-  const el = document.getElementById('cloud-status');
-  if (el) { el.textContent = t(key, vars); el.hidden = false; }
+/* Aplikovanie obsahu účtu na tento priestor (načítanie / voľba „ponechať účet“ /
+   obnova kópie). Postup: stiahnuť a overiť všetko → žurnál + kópia na obnovu
+   (jedna IDB transakcia) → médiá (jedna IDB transakcia) → stav (localStorage)
+   → metadáta → zmazanie žurnálu. Pád kedykoľvek po žurnáli sa pri ďalšom štarte
+   dokončí alebo vráti späť (pozri syncRecoverJournal). */
+/* Žurnály, ktorých stav je už dávno na disku (zapísaný a odvtedy uplynulo 10 min),
+   sa uprace aj počas relácie, aby kópie médií zbytočne nerástli. */
+async function syncPruneJournals() {
+  let all = [];
+  try { all = (await syncDbAll('kv')).filter((x) => String(x.k).indexOf('journal:') === 0).sort((a, b) => a.at - b.at); } catch (e) { return; }
+  if (!all.length) return;
+  const latest = all[all.length - 1];
+  if (state._applyId !== latest.id || Date.now() - latest.at < 10 * 60 * 1000) return;
+  const ops = [];
+  for (const j of all) {
+    ops.push({ store: 'kv', del: 'journal:' + j.id });
+    let rec = null; try { rec = await syncDbGet('recovery', j.id); } catch (e) {}
+    if (rec && !rec.keep) ops.push({ store: 'recovery', del: j.id });
+  }
+  try { await syncDbWrite(ops); } catch (e) {}
+}
+async function syncApply(payload, o) {
+  await syncPruneJournals();
+  const sb = communitySb();
+  const uid = wsSlot.owner;
+  const incoming = JSON.parse(JSON.stringify(payload || {}));
+  const manifest = incoming.media || null;
+  delete incoming.media;
+  const next = syncNormalize(incoming);
+  for (const k of DEVICE_STATE_KEYS) next[k] = state[k];
+  for (const k of DEVICE_SETTING_KEYS) next.settings[k] = state.settings[k];
+  delete next._applyId;
+
+  const meta = syncMetaRead();
+  if (!mediaDb) mediaDb = await openMediaDb();
+  const localP = new Map((await idbGetAll(PROGRESS_META_STORE)).map((m) => [m.id, m]));
+  const localM = new Map((await idbGetAll(MEDIA_META_STORE)).map((m) => [m.id, m]));
+  const puts = [], dels = [], missing = [], published = {};
+  const want = { p: new Set(), m: new Set() };
+  const addOnly = o.mode === 'additive';
+  for (const kind of ['p', 'm']) {
+    const list = (manifest && (kind === 'p' ? manifest.progress : manifest.personal)) || [];
+    const localMap = kind === 'p' ? localP : localM;
+    for (const e of list) {
+      syncCheckpoint();
+      if (!e || !e.id) continue;
+      want[kind].add(e.id);
+      const key = kind + ':' + e.id;
+      const loc = localMap.get(e.id);
+      const metaRec = kind === 'p'
+        ? { id: e.id, date: e.date, note: e.note || '', view: e.view || null, seq: e.seq || 0, w: e.w || 0, h: e.h || 0, mime: e.mime || 'image/jpeg', size: e.size || 0, addedAt: e.addedAt || 0 }
+        : { id: e.id, exerciseKey: e.exerciseKey, kind: e.kind, name: e.name || '', type: e.type || '', size: e.size || 0, seq: e.seq || 0, hasPoster: !!(e.posterRef || e.posterHash) };
+      const xHash = kind === 'p' ? e.thumbHash : e.posterHash;
+      let lh = null;
+      if (loc) lh = await syncLocalHash(kind, e.id);
+      if (o.mode === 'pull' && loc && lh && lh.hash !== e.hash && lh.hash !== meta.published[key]) {
+        throw new SyncAbort('local-media-changed');   // lokálne zmenené/nenahraté médium sa nikdy ticho neprepíše
+      }
+      const same = !!(loc && lh && e.hash && lh.hash === e.hash && (!xHash || lh.extraHash === xHash));
+      if (same) {
+        const cleanLoc = kind === 'p' ? cleanProgressMeta(loc) : loc;
+        const cleanNew = kind === 'p' ? cleanProgressMeta(metaRec) : Object.assign({}, loc, metaRec);
+        if (syncStable(cleanLoc) !== syncStable(cleanNew)) puts.push({ store: kind, id: e.id, meta: kind === 'p' ? Object.assign({}, loc, metaRec) : cleanNew });
+      } else if (loc && addOnly) {
+        continue;   // obnova kópie nikdy neprepisuje súčasné médiá
+      } else {
+        const blob = await syncDownload(sb, uid, e.ref, e.id);
+        if (!blob) { missing.push(key); continue; }   // chýba v účte → lokálna verzia (ak je) ostáva
+        const wHash = await cloudSha256(blob);
+        if (e.hash && wHash !== e.hash) throw new SyncAbort('hash');
+        let extra = null;
+        const xRef = kind === 'p' ? e.thumbRef : e.posterRef;
+        if (xRef || !e.ref) extra = await syncDownload(sb, uid, xRef, e.id + (kind === 'p' ? '_thumb' : '_poster'));
+        if (extra && xHash && (await cloudSha256(extra)) !== xHash) throw new SyncAbort('hash');
+        if (kind === 'm') metaRec.hasPoster = !!extra;
+        puts.push({ store: kind, id: e.id, hash: wHash, meta: metaRec, rec: kind === 'p' ? { id: e.id, blob, thumb: extra, origName: '' } : { id: e.id, blob, posterBlob: extra } });
+      }
+      if (e.hash) published[key] = e.hash;
+      if (xHash) published[key + (kind === 'p' ? ':t' : ':p')] = xHash;
+    }
+    if (!addOnly) {
+      for (const id of localMap.keys()) {
+        if (want[kind].has(id)) continue;
+        /* Pri načítaní sa zmaže len to, čo už bolo synchronizované (zmazané inde);
+           nikdy nenahraté médium (napr. príliš veľké video) zostáva chránené. */
+        if (o.mode === 'replace' || meta.published[kind + ':' + id]) dels.push({ store: kind, id });
+      }
+    }
+  }
+  syncCheckpoint();
+  if (o.seqAtDecision !== undefined && syncMetaRead().seq !== o.seqAtDecision) throw new SyncAbort('local-changed');
+
+  /* Žurnál + kópia predošlého stavu a dotknutých médií – jedna transakcia. */
+  const rid = 'r-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const prior = [];
+  for (const p of puts) {
+    const map = p.store === 'p' ? localP : localM;
+    if (!map.has(p.id)) continue;
+    const rec = p.rec ? (p.store === 'p' ? await idbGetProgress(p.id) : await idbGetBlob(p.id)) : null;
+    prior.push({ store: p.store, id: p.id, meta: map.get(p.id), rec: rec || null });
+  }
+  for (const d of dels) {
+    const map = d.store === 'p' ? localP : localM;
+    const rec = d.store === 'p' ? await idbGetProgress(d.id) : await idbGetBlob(d.id);
+    prior.push({ store: d.store, id: d.id, meta: map.get(d.id), rec: rec || null });
+  }
+  const created = puts.filter((p) => !(p.store === 'p' ? localP : localM).has(p.id)).map((p) => ({ store: p.store, id: p.id }));
+  const recovery = { id: rid, at: Date.now(), kind: o.recoveryKind || 'before-pull', keep: !!o.keepRecovery,
+    state: JSON.stringify(state), prior, created,
+    counts: { history: (state.history || []).length, media: localP.size + localM.size } };
+  const target = { rev: o.rev, hash: o.rawHash, published, missing, seq: o.seqAtDecision,
+    cloudMeaningful: stateMeaningful(next) || want.p.size + want.m.size > 0 };
+  syncCheckpoint();
+  await syncDbWrite([{ store: 'recovery', put: recovery }, { store: 'kv', put: { k: 'journal:' + rid, id: rid, at: Date.now(), target, keepMeta: !!o.keepMeta } }]);
+  await gqHook('apply:journaled', { rid });
+
+  const prevState = state;
+  let swapped = false;
+  try {
+    await gqHook('apply:mediaTx');
+    await syncMediaTx(puts, dels);
+    await gqHook('apply:mediaCommitted', { rid });
+    /* Používateľ medzitým niečo zmenil → nič neprepisuj, vráť médiá späť. */
+    if (o.seqAtDecision !== undefined && syncMetaRead().seq !== o.seqAtDecision) throw new SyncAbort('local-changed');
+    next._applyId = rid;
+    state = next; swapped = true;            // výmena + zápis bez prerušenia (synchrónne)
+    if (!persistState()) throw new SyncAbort('local-write');
+    await gqHook('apply:statePersisted', { rid });
+    syncFinishMeta(target, !!o.keepMeta, rid);
+  } catch (err) {
+    if (swapped) { state = prevState; persistState(); }
+    try { await syncGuardedRollback(prior, puts, dels, created); } catch (e) { console.error('GymQuest: rollback médií zlyhal', e); }
+    try { await syncDbWrite([{ store: 'kv', del: 'journal:' + rid }].concat(o.keepRecovery ? [] : [{ store: 'recovery', del: rid }])); } catch (e) {}
+    await syncReloadMediaCaches();
+    renderAll();
+    if (err instanceof SyncAbort && err.reason === 'local-media-changed') {
+      /* Lokálne médium sa líši od synchronizovaného → zariadenie má vlastné zmeny
+         (ďalšie vyrovnanie ich porovná s účtom – zhoda alebo výslovná voľba). */
+      syncMetaUpdate((m) => { m.seq = (m.seq || 0) + 1; });
+    }
+    if (err instanceof SyncAbort && (err.reason === 'local-changed' || err.reason === 'local-media-changed')) { syncKickAfter(); throw err; }
+    if (err instanceof SyncAbort && err.reason === 'hash') { syncLastError = 'hash'; throw err; }
+    syncLastError = 'local';
+    throw err;
+  }
+  /* Žurnál sa NEMAŽE hneď: prehliadač zapisuje localStorage na disk s oneskorením.
+     Uprace sa až pri ďalšom štarte, keď je isté, či sa nový stav naozaj uložil. */
+  try { await syncDbWrite([{ store: 'kv', put: { k: 'manifest', value: manifest || { version: 2, progress: [], personal: [] } } }]); } catch (e) {}
+  await syncReloadMediaCaches();
+  renderAll();
+  if (!o.keepMeta) {
+    /* Hash lokálnej podoby práve načítaného obsahu – zabráni zbytočnému re-uploadu. */
+    try {
+      const lh = await syncLocalPayloadHash();
+      syncMetaUpdate((m) => { if (m.rev === o.rev) m.localHash = lh; });
+    } catch (e) {}
+  }
+  if (missing.length) syncNotice = t('sync.missingMedia', { n: missing.length });
+  return true;
+}
+/* Rollback médií, ktorý NIKDY neprepíše novšiu zmenu používateľa: obnoví sa len
+   položka, ktorá je stále presne v stave, aký sme zapísali. */
+async function syncGuardedRollback(prior, puts, dels, created) {
+  const priorBy = new Map(prior.map((p) => [p.store + ':' + p.id, p]));
+  const restore = [], remove = [];
+  for (const p of puts) {
+    const key = p.store + ':' + p.id;
+    const curMeta = await idbGetOne(p.store === 'p' ? PROGRESS_META_STORE : MEDIA_META_STORE, p.id);
+    if (!curMeta) continue;
+    let ours;
+    if (p.rec) {
+      const cur = p.store === 'p' ? await idbGetProgress(p.id) : await idbGetBlob(p.id);
+      ours = !!(cur && cur.blob && (await cloudSha256(cur.blob)) === p.hash);
+    } else {
+      ours = syncStable(curMeta) === syncStable(p.meta);
+    }
+    if (!ours) continue;
+    const pr = priorBy.get(key);
+    if (pr) restore.push({ store: pr.store, meta: pr.meta, rec: p.rec ? pr.rec : null });
+    else if (created.some((c) => c.store === p.store && c.id === p.id)) remove.push({ store: p.store, id: p.id });
+  }
+  for (const d of dels) {
+    const curMeta = await idbGetOne(d.store === 'p' ? PROGRESS_META_STORE : MEDIA_META_STORE, d.id);
+    const pr = priorBy.get(d.store + ':' + d.id);
+    if (!curMeta && pr) restore.push({ store: pr.store, meta: pr.meta, rec: pr.rec });
+  }
+  if (restore.length || remove.length) await syncMediaTx(restore, remove);
+}
+function syncFinishMeta(target, keepMeta, appliedId) {
+  syncMetaUpdate((m) => {
+    if (appliedId) m.appliedId = appliedId;
+    if (!keepMeta) {
+      m.rev = target.rev; m.hash = target.hash; m.cloudMeaningful = target.cloudMeaningful;
+      /* Synchronizované sú len zmeny do okamihu rozhodnutia; novšie ostávajú čakať. */
+      m.syncedSeq = Math.max(m.syncedSeq || 0, target.seq !== undefined && target.seq !== null ? target.seq : m.seq);
+      m.missingInCloud = target.missing || [];
+      m.conflict = null;
+    }
+    m.published = Object.assign({}, m.published || {}, target.published || {});
+    m.lastSyncAt = Date.now();
+  });
 }
 
-function renderCloudBackupSetting() {
+/* Štart: žurnály aplikovaní z minulej relácie. Stav uložený na disku (jeho _applyId)
+   rozhodne, ktoré aplikovanie sa naozaj uložilo: tie sa dokončia, novšie (ktorých
+   stav sa pred pádom nestihol zapísať) sa v opačnom poradí vrátia späť. */
+async function syncRecoverJournal() {
+  let all = [];
+  try { all = (await syncDbAll('kv')).filter((x) => String(x.k).indexOf('journal:') === 0).sort((a, b) => a.at - b.at); }
+  catch (e) { return; }
+  if (!all.length) { if (state && state._applyId) { delete state._applyId; persistState(); } return; }
+  const idx = all.findIndex((j) => state && state._applyId === j.id);
+  const recs = {};
+  for (const j of all) { try { recs[j.id] = await syncDbGet('recovery', j.id); } catch (e) {} }
+  try {
+    if (!mediaDb) mediaDb = await openMediaDb();
+    for (let i = all.length - 1; i > idx; i--) {
+      const rec = recs[all[i].id];
+      if (rec) await syncMediaTx(rec.prior.map((p) => ({ store: p.store, meta: p.meta, rec: p.rec })), rec.created || []);
+      syncNotice = t('sync.rolledBack');
+    }
+  } catch (e) { console.error('GymQuest: obnova po prerušení zlyhala', e); syncLastError = 'local'; return; }
+  const meta = syncMetaRead();
+  if (idx >= 0) {
+    if (meta.appliedId !== all[idx].id) syncFinishMeta(all[idx].target, !!all[idx].keepMeta, all[idx].id);
+  } else if (all.some((j) => j.id === meta.appliedId)) {
+    /* Metadáta patria k vrátenému aplikovaniu → stav voči účtu je neznámy, znovu sa porovná. */
+    syncMetaUpdate((m) => { if (m.rev !== null) m.rev = -1; m.hash = null; m.localHash = null; m.appliedId = null; });
+  }
+  const ops = [];
+  for (const j of all) {
+    ops.push({ store: 'kv', del: 'journal:' + j.id });
+    if (recs[j.id] && !recs[j.id].keep) ops.push({ store: 'recovery', del: j.id });
+  }
+  try { await syncDbWrite(ops); } catch (e) {}
+  if (state && state._applyId) { delete state._applyId; persistState(); }
+  await syncReloadMediaCaches();
+  renderAll();
+}
+/* v42 nechávala v localStorage plnú snímku stavu pred obnovou. Presunie sa do
+   IndexedDB ako kópia na obnovu; z localStorage zmizne až po overenom zápise. */
+async function syncMigrateLegacySnapshot() {
+  if (wsSlot.id !== 'legacy') return;
+  let raw = null;
+  try { raw = localStorage.getItem(CLOUD_SNAPSHOT_KEY); } catch (e) {}
+  if (!raw) return;
+  try {
+    await gqHook('migrate:snapshot');
+    await syncDbWrite([{ store: 'recovery', put: { id: 'legacy-restore-snapshot', at: Date.now(), kind: 'legacy-snapshot', keep: true, state: raw, prior: [], created: [], counts: { history: ((JSON.parse(raw) || {}).history || []).length, media: 0 } } }]);
+    const back = await syncDbGet('recovery', 'legacy-restore-snapshot');
+    if (back && back.state === raw) localStorage.removeItem(CLOUD_SNAPSHOT_KEY);
+  } catch (e) { /* zostáva v localStorage, skúsi sa pri ďalšom štarte */ }
+}
+
+/* ---------- Voľby používateľa ---------- */
+function syncResolveConflict(choice) {
+  closeSyncModal();
+  return syncEnqueue('resolve', async () => {
+    const user = await syncSessionUser();
+    if (!user || user.id !== wsSlot.owner) { syncLastError = user ? 'other' : 'signedout'; return; }
+    const sb = communitySb();
+    const row = await syncFetchRow(sb, user.id);
+    syncCheckpoint();
+    const meta = syncMetaRead();
+    const rawHash = row ? await syncRawHash(row.payload) : null;
+    /* Pred akoukoľvek voľbou sa uložia kópie OBOCH strán. Pri „ponechať účet“ kópiu
+       zariadenia (stav + všetky dotknuté médiá) zapíše syncApply v jednej transakcii. */
+    const ops = [];
+    if (choice !== 'cloud') ops.push({ store: 'recovery', put: { id: 'd-' + Date.now().toString(36), at: Date.now(), kind: 'device-copy', keep: true, state: JSON.stringify(state), prior: [], created: [], counts: { history: (state.history || []).length, media: await syncLocalMediaCount() } } });
+    if (row) ops.push({ store: 'recovery', put: { id: 'c-' + Date.now().toString(36), at: Date.now(), kind: 'cloud-copy', keep: true, payload: row.payload, rev: Number(row.revision) || 0, counts: { history: ((row.payload || {}).history || []).length, media: (((row.payload || {}).media || {}).progress || []).length + (((row.payload || {}).media || {}).personal || []).length } } });
+    if (ops.length) await syncDbWrite(ops);
+    await gqHook('resolve:copiesSaved', { choice });
+    syncCheckpoint();
+    if (choice === 'cloud') {
+      if (!row) { syncMetaUpdate((m) => { m.conflict = null; }); return; }
+      await syncApply(row.payload, { mode: 'replace', rev: Number(row.revision) || 0, rawHash, seqAtDecision: meta.seq, recoveryKind: 'device-copy', keepRecovery: true });
+      syncNotice = t('sync.keptCloud');
+    } else {
+      syncMetaUpdate((m) => { m.conflict = null; m.seq = (m.seq || 0) + 1; });
+      await syncUpload(user, row ? Number(row.revision) || 0 : 0, { force: true });
+      if (!syncMetaRead().conflict) syncNotice = t('sync.keptDevice');
+    }
+  });
+}
+function syncLoadFromAccount() {
+  closeSyncModal();
+  syncEnqueue('load', async () => {
+    const user = await syncSessionUser();
+    if (!user || user.id !== wsSlot.owner) { syncLastError = user ? 'other' : 'signedout'; return; }
+    const row = await syncFetchRow(communitySb(), user.id);
+    syncCheckpoint();
+    if (!row) { syncNotice = t('cloud.noBackup'); return; }
+    if (Number(row.schema_version) !== BACKUP_SCHEMA_VERSION) { syncLastError = 'schema'; return; }
+    await syncApply(row.payload, { mode: 'replace', rev: Number(row.revision) || 0, rawHash: await syncRawHash(row.payload), seqAtDecision: syncMetaRead().seq, recoveryKind: 'device-copy', keepRecovery: true });
+    syncNotice = t('cloud.restored');
+  });
+}
+async function syncRestoreRecovery(id) {
+  closeSyncModal();
+  syncEnqueue('recover', async () => {
+    const rec = await syncDbGet('recovery', id);
+    if (!rec) return;
+    const meta = syncMetaRead();
+    if (rec.kind === 'cloud-copy') {
+      if (!wsSlot.owner) return;
+      await syncApply(rec.payload, { mode: 'replace', rev: meta.rev, rawHash: meta.hash, keepMeta: true, seqAtDecision: meta.seq, recoveryKind: 'device-copy', keepRecovery: true });
+    } else {
+      let saved = null;
+      try { saved = JSON.parse(rec.state); } catch (e) {}
+      if (!saved) return;
+      /* Zariadenie: stav z kópie + späť vložené médiá z kópie; súčasné médiá sa nemažú. */
+      const payload = Object.assign({}, saved);
+      payload.media = { version: 2, progress: [], personal: [] };
+      await syncApply(payload, { mode: 'additive', rev: meta.rev, rawHash: meta.hash, keepMeta: true, seqAtDecision: meta.seq, recoveryKind: 'device-copy', keepRecovery: true });
+      const back = (rec.prior || []).filter((p) => p.meta && p.rec);
+      if (back.length) {
+        const existing = new Set((await idbGetAll(PROGRESS_META_STORE)).map((m) => 'p:' + m.id).concat((await idbGetAll(MEDIA_META_STORE)).map((m) => 'm:' + m.id)));
+        const add = back.filter((p) => !existing.has(p.store + ':' + p.id));
+        if (add.length) { await syncMediaTx(add.map((p) => ({ store: p.store, meta: p.meta, rec: p.rec })), []); await syncReloadMediaCaches(); }
+      }
+    }
+    syncMetaUpdate((m) => { m.seq = (m.seq || 0) + 1; });   // obnovená kópia je nová lokálna zmena
+    syncNotice = t('sync.recovered');
+    scheduleSync();
+  });
+}
+async function syncDeleteRecovery(id) {
+  try { await syncDbWrite([{ store: 'recovery', del: id }]); } catch (e) {}
+  syncOpenRecoveryList();
+}
+function cloudDeviceId() {
+  try { let d = localStorage.getItem(CLOUD_DEVICE_KEY); if (!d) { d = 'dev-' + Math.random().toString(36).slice(2, 10); localStorage.setItem(CLOUD_DEVICE_KEY, d); } return d; }
+  catch (e) { return 'dev-unknown'; }
+}
+/* Zmazanie cloudovej zálohy (NIKDY nemaže lokálne dáta). Synchronizácia sa vypne,
+   aby sa záloha hneď znovu nevytvorila. */
+async function cloudDeleteBackup() {
+  const user = await syncSessionUser();
+  if (!user || !wsSlot.owner || user.id !== wsSlot.owner) { syncSetMessage(t('cloud.notSignedIn')); return; }
+  showGeneric(t('cloud.deleteTitle'), t('cloud.delete'), () => {
+    syncEnqueue('delete', async () => {
+      const sb = communitySb();
+      try {
+        const paths = [];
+        const walk = async (prefix, depth) => {
+          const list = await sb.storage.from('backups').list(prefix, { limit: 1000 });
+          if (list.error) throw list.error;
+          for (const f of list.data || []) {
+            if (!f || !f.name) continue;
+            if (f.id) paths.push(`${prefix}/${f.name}`);
+            else if (depth < 3) await walk(`${prefix}/${f.name}`, depth + 1);
+          }
+        };
+        await walk(user.id, 0);
+        for (let i = 0; i < paths.length; i += 100) {
+          const r = await sb.storage.from('backups').remove(paths.slice(i, i + 100));
+          if (r.error) throw r.error;
+        }
+        const d1 = await sb.from('backups').delete().eq('user_id', user.id);
+        if (d1.error) throw d1.error;
+        await sb.from('backup_versions').delete().eq('user_id', user.id);
+        syncMetaUpdate((m) => { Object.assign(m, { rev: null, hash: null, published: {}, mediaFailed: [], missingInCloud: [], conflict: null, disabled: true, cloudMeaningful: false }); });
+        try { localStorage.removeItem(CLOUD_MEDIA_INDEX_PREFIX + user.id); } catch (e) {}
+        try { await syncDbWrite([{ store: 'kv', del: 'manifest' }]); } catch (e) {}
+        syncNotice = t('sync.deleted');
+      } catch (e) { syncNotice = t('cloud.deleteFailed'); }
+    });
+  }, esc(t('sync.deleteBody')));
+}
+
+/* ---------- Dialógy ---------- */
+function closeSyncModal() { const m = document.getElementById('modal-sync'); if (m) m.hidden = true; refreshUpdateBanner(); }
+function openSyncModal(title, html) {
+  const m = document.getElementById('modal-sync');
+  if (!m) return;
+  document.getElementById('sync-modal-title').textContent = title;
+  document.getElementById('sync-modal-body').innerHTML = html;
+  m.hidden = false;
+}
+function syncBtn(action, key, primary, extra) {
+  return '<button type="button" class="btn ' + (primary ? 'btn-primary' : 'btn-secondary') + '" data-sync-action="' + action + '"' + (extra || '') + '>' + esc(t(key)) + '</button>';
+}
+function syncOpenConflictDialog(force) {
+  const meta = syncMetaRead();
+  if (!meta.conflict) return;
+  if (syncConflictShown && !force) return;
+  if (isOpen('modal-sync') || isOpen('modal-generic')) return;
+  syncConflictShown = true;
+  const c = meta.conflict;
+  const body = '<p class="card-note">' + esc(t(c.reason === 'empty-local' ? 'sync.conflictEmptyBody' : 'sync.conflictBody', { cloud: c.cloudCount, local: (state.history || []).length })) + '</p>'
+    + '<p class="card-note">' + esc(t('sync.conflictCopies')) + '</p>'
+    + '<div class="modal-actions">' + syncBtn('keep-device', 'sync.keepDevice', false) + syncBtn('keep-cloud', 'sync.keepCloud', true) + '</div>'
+    + '<div class="modal-actions">' + syncBtn('later', 'sync.decideLater', false) + '</div>';
+  openSyncModal(t('sync.conflictTitle'), body);
+}
+function syncOpenLinkDialog() {
+  if (!wsLinkUser) return;
+  const body = '<p class="card-note">' + esc(t('sync.linkBody', { email: wsLinkUser.email || '' })) + '</p>'
+    + '<p class="card-note">' + esc(t('sync.linkSeparateHint')) + '</p>'
+    + '<div class="modal-actions">' + syncBtn('link-separate', 'sync.linkSeparate', false) + syncBtn('link-yes', 'sync.linkYes', true) + '</div>'
+    + '<div class="modal-actions">' + syncBtn('later', 'sync.decideLater', false) + '</div>';
+  openSyncModal(t('sync.linkTitle'), body);
+}
+async function syncOpenRecoveryList() {
+  let list = [];
+  try { list = (await syncDbAll('recovery')).filter((r) => r.keep); } catch (e) {}
+  list.sort((a, b) => b.at - a.at);
+  const label = (r) => t(r.kind === 'cloud-copy' ? 'sync.copyCloud' : r.kind === 'legacy-snapshot' ? 'sync.copyLegacy' : 'sync.copyDevice', { n: (r.counts && r.counts.history) || 0 });
+  const rows = list.map((r) => '<div class="community-card"><p class="community-caption">' + esc(new Date(r.at).toLocaleString()) + ' — ' + esc(label(r)) + '</p>'
+    + '<div class="plan-actions">' + syncBtn('recover', 'sync.restoreCopy', false, ' data-id="' + escAttr(r.id) + '"')
+    + syncBtn('recover-delete', 'sync.deleteCopy', false, ' data-id="' + escAttr(r.id) + '"') + '</div></div>').join('');
+  openSyncModal(t('sync.recoveryTitle'), '<p class="card-note">' + esc(t('sync.recoveryHint')) + '</p>'
+    + (rows || '<p class="empty-state">' + esc(t('sync.recoveryEmpty')) + '</p>')
+    + '<div class="modal-actions">' + syncBtn('later', 'common.close', false) + '</div>');
+}
+function syncModalAction(e) {
+  const b = e.target.closest ? e.target.closest('[data-sync-action]') : null;
+  if (!b) return;
+  const a = b.dataset.syncAction;
+  if (a === 'later') { closeSyncModal(); syncRender(); return; }
+  if (a === 'keep-cloud') { syncResolveConflict('cloud'); return; }
+  if (a === 'keep-device') { syncResolveConflict('device'); return; }
+  if (a === 'link-yes') { closeSyncModal(); wsResolveLink('link'); return; }
+  if (a === 'link-separate') { closeSyncModal(); wsResolveLink('separate'); return; }
+  if (a === 'recover') { const id = b.dataset.id; showGeneric(t('sync.restoreCopyTitle'), t('sync.restoreCopy'), () => syncRestoreRecovery(id), esc(t('sync.restoreCopyBody'))); return; }
+  if (a === 'recover-delete') { const id = b.dataset.id; showGeneric(t('sync.deleteCopyTitle'), t('sync.deleteCopy'), () => syncDeleteRecovery(id), ''); }
+}
+
+/* ---------- Stav pre používateľa: lokálne uloženie oddelene od synchronizácie ---------- */
+function syncStatusKey() {
+  if (!wsSlot) return 'sync.st.guest';
+  if (wsLinkUser) return 'sync.st.link';
+  if (!wsSlot.owner) return 'sync.st.guest';
+  const m = syncMetaRead();
+  if (m.disabled) return 'sync.st.off';
+  if (!communityConfigured()) return 'sync.st.unavailable';
+  if (m.conflict) return 'sync.st.conflict';
+  if (syncRunning && syncLoading) return 'sync.st.loading';
+  if (syncRunning) return 'sync.st.syncing';
+  if (syncLastError === 'offline' || syncOffline()) return syncIsDirty(m) ? 'sync.st.offlinePending' : 'sync.st.offline';
+  if (syncLastError === 'signedout') return 'sync.st.signedout';
+  if (syncLastError === 'other') return 'sync.st.other';
+  if (syncLastError === 'hash') return 'sync.st.hash';
+  if (syncLastError === 'schema') return 'cloud.incompatible';
+  if (syncLastError === 'local') return 'sync.st.local';
+  if (syncLastError) return 'sync.st.error';
+  if (syncIsDirty(m) || m.rev === null) return 'sync.st.pending';
+  if ((m.mediaSkipped || []).length || (m.missingInCloud || []).length) return 'sync.st.incomplete';
+  return 'sync.st.synced';
+}
+function syncRender() {
+  const m = wsSlot ? syncMetaRead() : syncMetaDefault(null);
+  const key = syncStatusKey();
+  const n = (m.mediaSkipped || []).length + (m.mediaFailed || []).length + (m.missingInCloud || []).length;
+  const when = m.lastSyncAt ? new Date(m.lastSyncAt).toLocaleString() : '';
+  const cloudText = t(key, { n, when });
   const sw = document.getElementById('btn-cloud-backup');
   const stEl = document.getElementById('cloud-state');
-  const status = document.getElementById('cloud-status-line');
-  const on = !!(state && state.settings && state.settings.cloudBackup === true);
-  if (sw) { sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on ? 'true' : 'false'); }
-  if (stEl) stEl.textContent = on ? t('settings.on') : t('settings.off');
-  if (status) {
-    let line = t(cloudStatusKey());
-    if (cloudStatus === 'saved' && cloudLastAt) line = t('cloud.savedAt', { when: new Date(cloudLastAt).toLocaleString() });
-    status.textContent = line;
+  const enabled = !!(wsSlot && wsSlot.owner && !m.disabled);
+  if (sw) { sw.classList.toggle('on', enabled); sw.setAttribute('aria-checked', enabled ? 'true' : 'false'); sw.disabled = !(wsSlot && wsSlot.owner); }
+  if (stEl) stEl.textContent = enabled ? t('settings.on') : t('settings.off');
+  const acc = document.getElementById('sync-account-line');
+  if (acc) acc.textContent = wsSlot && wsSlot.owner ? t('sync.accountLine', { email: wsSlot.email || '' }) : t('sync.guestLine');
+  const loc = document.getElementById('sync-local-line');
+  if (loc) loc.textContent = localSaveFailed ? t('sync.local.failed') : t('sync.local.saved', { when: localSavedAt ? new Date(localSavedAt).toLocaleTimeString() : '' });
+  const cl = document.getElementById('sync-cloud-line');
+  if (cl) cl.textContent = cloudText;
+  const msg = document.getElementById('cloud-status');
+  if (msg) { msg.textContent = syncNotice; msg.hidden = !syncNotice; }
+  const show = (id, on) => { const el = document.getElementById(id); if (el) el.hidden = !on; };
+  const signedSlot = !!(wsSlot && wsSlot.owner);
+  show('btn-sync-resolve', !!m.conflict);
+  show('btn-sync-link', !!wsLinkUser);
+  show('btn-cloud-backup-now', signedSlot && !m.disabled);
+  show('btn-cloud-restore', signedSlot);
+  show('btn-cloud-delete', signedSlot);
+  const chip = document.getElementById('btn-sync-chip');
+  if (chip) {
+    chip.hidden = !(signedSlot || wsLinkUser);
+    const icon = key === 'sync.st.synced' ? '☁️' : (key === 'sync.st.syncing' || key === 'sync.st.loading' || key === 'sync.st.pending') ? '🔄'
+      : (key.indexOf('offline') >= 0 || key === 'sync.st.off' || key === 'sync.st.signedout') ? '📴' : '⚠️';
+    chip.textContent = icon;
+    chip.title = cloudText;
+    chip.setAttribute('aria-label', cloudText);
   }
+}
+/* Spätná kompatibilita názvu: volá sa z applyStaticI18n a openSettings. */
+function renderCloudBackupSetting() { syncRender(); }
+function syncSetMessage(text) { syncNotice = text || ''; syncRender(); }
+
+/* ---------- Štart synchronizácie ---------- */
+async function syncStartup() {
+  try {
+    const raw = sessionStorage.getItem('gq_auth_state');
+    if (raw) { sessionStorage.removeItem('gq_auth_state'); authCallbackState = JSON.parse(raw); authOpen(); }
+  } catch (e) {}
+  await syncRecoverJournal();
+  /* Minulá relácia nevedela uložiť stav na zariadenie (napr. plné úložisko): uložená
+     kópia môže byť staršia než účet → nepovažuj ju za synchronizovanú (načíta sa z účtu,
+     alebo pri lokálnych zmenách nastane výslovná voľba – nikdy tiché prepísanie účtu). */
+  if (wsSlot && wsSlot.owner && syncMetaRead().localStale && !localSaveFailed) {
+    syncMetaUpdate((m) => { if (m.rev !== null) m.rev = -1; m.hash = null; m.localHash = null; m.localStale = false; });
+  }
+  await syncMigrateLegacySnapshot();
+  if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => syncTrigger('online'));
+    window.addEventListener('offline', () => { syncLastError = 'offline'; syncRender(); });
+    window.addEventListener('focus', () => syncTrigger('focus'));
+    window.addEventListener('pageshow', (e) => { if (e.persisted) syncTrigger('pageshow'); });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) syncTrigger('visible'); });
+    window.addEventListener('storage', (e) => { if (e.key === WS_REGISTRY_KEY) wsFollowRegistry(); });
+    setInterval(() => { if (!document.hidden) syncTrigger('poll'); }, SYNC_POLL_MS);
+  }
+  if (communityConfigured()) await wsBindSession(true);
+  syncRender();
 }
 
 function setupEvents() {
@@ -16324,18 +17714,23 @@ function setupEvents() {
   });
   on('btn-backup-save', saveBackupNow);
   on('btn-backup-now', saveBackupNow);
-  /* Súkromná cloudová záloha (nezávislá od Community). */
+  /* Synchronizácia účtu: zapnutá predvolene, prepínač platí pre tento účet na tomto zariadení. */
   on('btn-cloud-backup', () => {
-    const on = state.settings.cloudBackup !== true;
-    state.settings.cloudBackup = on;
-    if (!on) { cloudCancelPending(); cloudStatus = 'idle'; }
-    saveState();
-    renderCloudBackupSetting();
-    if (on) cloudReconcileOnSignIn();
+    if (!wsSlot || !wsSlot.owner) return;
+    const m = syncMetaUpdate((x) => { x.disabled = !x.disabled; });
+    if (m.disabled) syncClearTimers(); else { syncNotice = ''; syncKick('enable'); }
+    syncRender();
   });
-  on('btn-cloud-backup-now', cloudBackupNow);
-  on('btn-cloud-restore', () => { askCloudRestore(); });
+  on('btn-cloud-backup-now', () => { syncRetryDelay = 5000; syncLastError = null; syncNotice = ''; syncKick('manual'); });
+  on('btn-cloud-restore', () => {
+    showGeneric(t('sync.loadTitle'), t('sync.loadConfirm'), syncLoadFromAccount, esc(t('sync.loadBody')));
+  });
   on('btn-cloud-delete', cloudDeleteBackup);
+  on('btn-sync-resolve', () => { syncConflictShown = false; syncOpenConflictDialog(true); });
+  on('btn-sync-link', syncOpenLinkDialog);
+  on('btn-sync-recovery', syncOpenRecoveryList);
+  on('btn-sync-chip', openSettings);
+  on('modal-sync', syncModalAction);
   on('backup-dismiss', () => {
     backupDismissed = true;      // len do konca tejto relácie
     hideBackupStrip();
@@ -16667,7 +18062,7 @@ function isBusy() {
   const forms = ['modal-confirm', 'modal-history-edit', 'modal-settings', 'modal-setup', 'modal-generic',
     'modal-planchoice', 'modal-fullbody', 'modal-lang', 'modal-measure', 'modal-food',
     'modal-library', 'modal-exercise', 'modal-photo-add', 'modal-photo', 'modal-photo-compare',
-    'modal-community', 'modal-community-caption', 'modal-auth'];
+    'modal-community', 'modal-community-caption', 'modal-auth', 'modal-sync'];
   for (const id of forms) {
     const el = document.getElementById(id);
     if (el && !el.hidden) return true;                   // otvorený formulár / dialóg
@@ -16741,34 +18136,110 @@ function registerServiceWorker() {
   });
 }
 
-/* ---------- Štart ---------- */
+/* ---------- Jedna aktívna karta ----------
+   Každá karta drží vlastný stav v pamäti a vlastnú frontu synchronizácie, takže dve
+   súčasne aktívne karty by si navzájom prepisovali uložené dáta. Preto aplikácia
+   beží naraz len v JEDNEJ karte (Web Locks). Ďalšia karta je zablokovaná a ponúkne
+   „Použiť tu“: aktívna karta dokončí bežiacu synchronizáciu, uloží stav, uvoľní
+   zámok a sama sa zablokuje. Bez Web Locks (staré prehliadače) koordinácia chýba. */
+const APP_LOCK = 'gymquest-app';
+let appLockRelease = null;
+let appYielded = false;
+let appChannel = null;
+let syncStartupPromise = null;
 
-loadState();
-if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
-/* Obnovený rozbehnutý tréning: previažeme ho na jeho plán a dáme používateľovi vedieť. */
-const restoredSession = getSession();
-if (restoredSession && getPlan(restoredSession.planId)) {
-  selectedPlan = restoredSession.planId;
+function tabText(key) {
+  let lang = DEFAULT_LANG;
+  try { const dev = JSON.parse(localStorage.getItem(DEVICE_SETTINGS_KEY) || 'null'); if (dev && dev.lang) lang = normalizeLang(dev.lang); } catch (e) {}
+  return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
 }
-setupEvents();
-applyStaticI18n();
-verifyI18n();
-switchTab('dnes');
-renderAll();
-/* Vlastné médiá cvikov (IndexedDB) sa načítajú neblokujúco po prvom vykreslení. */
-initPersonalMedia();
-/* Fotky progresu (IndexedDB) – tiež neblokujúco. */
-initProgressPhotos();
-/* E-mailové odkazy (potvrdenie / obnova hesla) – fungujú aj pred zapnutím Community. */
-initAuthCallback();
-/* Súkromná cloudová záloha: po štarte vyrovnaj lokálne a cloudové dáta. */
-cloudReconcileOnSignIn();
-startDayWatcher();
-startDurationTicker();
-if (restoredSession) setSessionNote('trening.sessionRestored', 10000);
-restoreRestTimer();          // obnoví bežiaci (alebo už dobehnutý) odpočet z absolútneho konca
-refreshBackupOffer();        // a vyhodnotí, či od minule "dozrela" záloha
-registerServiceWorker();
-if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
-  openSetup();
+function appShowBlocked() {
+  let el = document.getElementById('app-tab-block');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'app-tab-block';
+    el.className = 'modal-backdrop';
+    el.style.zIndex = '10000';
+    el.style.background = 'var(--bg, #0f1115)';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = '<div class="modal"><h3>' + esc(tabText('sync.tabTitle')) + '</h3>'
+    + '<p class="card-note">' + esc(tabText('sync.tabBody')) + '</p>'
+    + '<div class="modal-actions"><button type="button" class="btn btn-primary" id="btn-tab-take">' + esc(tabText('sync.tabUseHere')) + '</button></div></div>';
+  el.hidden = false;
+  document.getElementById('btn-tab-take').addEventListener('click', appTakeOver);
 }
+/* „Použiť tu“: zaradí sa do fronty na zámok a požiada aktívnu kartu, aby ho uvoľnila. */
+function appTakeOver() {
+  const btn = document.getElementById('btn-tab-take');
+  if (btn) { btn.disabled = true; btn.textContent = tabText('sync.tabWaiting'); }
+  navigator.locks.request(APP_LOCK, () => new Promise((release) => {
+    appLockRelease = release;
+    const el = document.getElementById('app-tab-block');
+    if (el) el.remove();
+    appStart();
+  }));
+  try { appChannel.postMessage({ type: 'yield' }); } catch (e) {}
+}
+/* Táto karta odovzdáva aplikáciu inej: dokončí synchronizáciu, uloží a viac nezapisuje. */
+async function appYield() {
+  if (appYielded || !appLockRelease) return;
+  await gqHook('tab:yield');
+  await syncQuiesce();
+  persistState();
+  appYielded = true;                 // od tejto chvíle žiadne zápisy z tejto karty
+  const release = appLockRelease;
+  appLockRelease = null;
+  release();
+  location.reload();                 // znovu načítaná karta sa zobrazí ako zablokovaná
+}
+function appBoot() {
+  try {
+    appChannel = new BroadcastChannel('gymquest-tabs');
+    appChannel.onmessage = (e) => { if (e.data && e.data.type === 'yield') appYield(); };
+  } catch (e) { appChannel = null; }
+  if (typeof navigator === 'undefined' || !navigator.locks || typeof navigator.locks.request !== 'function') { appStart(); return; }
+  navigator.locks.request(APP_LOCK, { ifAvailable: true }, (lock) => {
+    if (!lock) { appShowBlocked(); return undefined; }
+    return new Promise((release) => { appLockRelease = release; appStart(); });
+  });
+}
+
+/* ---------- Štart ---------- */
+function appStart() {
+  wsInit();        // aktívny pracovný priestor (účet / hosť) → jeho úložiská
+  loadState();
+  if (!getPlan(selectedPlan)) selectedPlan = activePlanIds()[0] || null;
+  /* Obnovený rozbehnutý tréning: previažeme ho na jeho plán a dáme používateľovi vedieť. */
+  const restoredSession = getSession();
+  if (restoredSession && getPlan(restoredSession.planId)) {
+    selectedPlan = restoredSession.planId;
+  }
+  setupEvents();
+  applyStaticI18n();
+  verifyI18n();
+  switchTab('dnes');
+  renderAll();
+  /* Vlastné médiá cvikov (IndexedDB) sa načítajú neblokujúco po prvom vykreslení. */
+  initPersonalMedia();
+  /* Fotky progresu (IndexedDB) – tiež neblokujúco. */
+  initProgressPhotos();
+  /* E-mailové odkazy (potvrdenie / obnova hesla) – fungujú aj pred zapnutím Community.
+     Potom: obnova po prerušení, priradenie účtu a synchronizácia (spúšťače: štart,
+     prihlásenie, lokálna zmena, online, návrat do popredia, každých 5 min). */
+  syncStartupPromise = initAuthCallback().catch(() => {}).then(syncStartup);
+  try {
+    const notice = sessionStorage.getItem('gq_notice');
+    if (notice) { sessionStorage.removeItem('gq_notice'); syncNotice = t(notice); }
+  } catch (e) {}
+  startDayWatcher();
+  startDurationTicker();
+  if (restoredSession) setSessionNote('trening.sessionRestored', 10000);
+  restoreRestTimer();          // obnoví bežiaci (alebo už dobehnutý) odpočet z absolútneho konca
+  refreshBackupOffer();        // a vyhodnotí, či od minule "dozrela" záloha
+  registerServiceWorker();
+  if (state.history.length === 0 && !localStorage.getItem(STORAGE_KEY + '_seeded')) {
+    openSetup();
+  }
+}
+appBoot();

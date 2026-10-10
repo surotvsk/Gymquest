@@ -11,13 +11,14 @@
   <title>GymQuest</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=46">
+  <link rel="stylesheet" href="style.css?v=47">
 </head>
 <body>
 
   <header class="app-header">
     <h1 class="app-title">GymQuest</h1>
     <div class="header-actions">
+      <button class="btn-icon" id="btn-sync-chip" type="button" hidden>☁️</button>
       <button class="btn-icon" id="btn-community" data-i18n-title="community.open" data-i18n-aria="community.open">🌐</button>
       <button class="btn-icon" id="btn-settings" data-i18n-title="header.settingsTitle">⚙️</button>
       <div class="header-level" id="header-level" data-i18n-title="header.levelTitle">Úr. 0</div>
@@ -557,26 +558,32 @@
       <p class="card-note" id="auto-backup-last"></p>
       <button class="btn btn-secondary btn-block" id="btn-backup-now" data-i18n="backup.saveNow">Uložiť zálohu teraz</button>
 
-      <!-- Súkromné cloudové zálohovanie (voliteľné, len pre prihlásených) -->
+      <!-- Účet a synchronizácia: lokálne uloženie je vždy oddelené od synchronizácie -->
       <div class="setting-row">
         <div class="setting-main">
-          <span class="card-title" data-i18n="cloud.title">Súkromná cloudová záloha</span>
-          <span class="card-sub" data-i18n="cloud.hint">Po prihlásení sa tvoje tréningy a fotky zálohujú do tvojho účtu. Nikdy sa nezverejňujú.</span>
+          <span class="card-title" data-i18n="sync.title">Synchronizácia účtu</span>
+          <span class="card-sub" id="sync-account-line"></span>
         </div>
         <div class="setting-control">
           <span class="setting-state" id="cloud-state">Vypnuté</span>
           <button type="button" class="switch" id="btn-cloud-backup" role="switch" aria-checked="false"
-                  data-i18n-title="cloud.title" data-i18n-aria="cloud.title">
+                  data-i18n-title="sync.toggle" data-i18n-aria="sync.toggle">
             <span class="switch-knob" aria-hidden="true"></span>
           </button>
         </div>
       </div>
-      <p class="card-note" id="cloud-status-line" hidden></p>
+      <p class="card-note" id="sync-local-line"></p>
+      <p class="card-note" id="sync-cloud-line" role="status"></p>
       <p class="card-note" id="cloud-status" role="status" hidden></p>
-      <p class="card-note" data-i18n="cloud.privacyNote">Záloha je súkromná — vidíš ju len ty vo svojom účte. Moderátori Community k nej nemajú prístup. Toto nie je automatická synchronizácia medzi zariadeniami.</p>
+      <p class="card-note" data-i18n="sync.privacyNote">Synchronizácia je súkromná — dáta vidíš len ty vo svojom účte.</p>
       <div class="modal-actions">
-        <button class="btn btn-secondary" id="btn-cloud-backup-now" data-i18n="cloud.now">Zálohovať teraz</button>
-        <button class="btn btn-secondary" id="btn-cloud-restore" data-i18n="cloud.restore">Obnoviť…</button>
+        <button class="btn btn-secondary" id="btn-cloud-backup-now" data-i18n="sync.now">Synchronizovať teraz</button>
+        <button class="btn btn-primary" id="btn-sync-resolve" data-i18n="sync.resolve" hidden>Vyriešiť konflikt…</button>
+        <button class="btn btn-primary" id="btn-sync-link" data-i18n="sync.linkOpen" hidden>Dáta zariadenia…</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-cloud-restore" data-i18n="sync.loadOpen">Načítať z účtu…</button>
+        <button class="btn btn-secondary" id="btn-sync-recovery" data-i18n="sync.recoveryOpen">Kópie na obnovu…</button>
       </div>
       <div class="modal-actions">
         <button class="btn btn-secondary" id="btn-cloud-delete" data-i18n="cloud.delete">Zmazať cloudovú zálohu</button>
@@ -682,6 +689,14 @@
         <button type="button" class="btn-icon" id="btn-exercise-close" data-i18n-title="library.close" data-i18n-aria="library.close">✕</button>
       </div>
       <div class="sheet-scroll" id="exercise-body"></div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: synchronizácia (konflikt, priradenie dát, kópie na obnovu) ============ -->
+  <div class="modal-backdrop" id="modal-sync" hidden>
+    <div class="modal">
+      <h3 id="sync-modal-title"></h3>
+      <div id="sync-modal-body"></div>
     </div>
   </div>
 
@@ -902,8 +917,8 @@
     </div>
   </div>
 
-  <script src="community-config.js?v=46"></script>
-  <script src="vendor/supabase-js.js?v=46"></script>
-  <script src="script.js?v=46"></script>
+  <script src="community-config.js?v=47"></script>
+  <script src="vendor/supabase-js.js?v=47"></script>
+  <script src="script.js?v=47"></script>
 </body>
 </html>

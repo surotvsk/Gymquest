@@ -976,14 +976,50 @@ cache and never committed to the repository.
 
 ## Data storage and privacy
 
-Everything is stored in your browser's `localStorage` under the key `gymquest`, and survives page
-refreshes and browser restarts.
+Everything is saved on your device first — in `localStorage` (state) and IndexedDB (photos and your
+own exercise media) — and survives page refreshes and browser restarts. There are **no analytics and
+no tracking**.
 
-- **There is no backend, no database, no account system, no analytics and no tracking.**
-- Your workouts, plans, XP, streaks and settings **never leave your device** — nothing is uploaded
-  anywhere, because there is no server to receive it.
+- **Without an account** nothing leaves your device.
+- **With an account** (signed in via Community), your data is also synchronized privately to your own
+  account — see *Account sync* below. Nobody else can read it; Community moderators cannot either.
 - When several people use the same link, **each person's data is private to their own browser.**
-  Nobody can see anybody else's workouts.
+
+### Account sync (offline-first)
+
+- **Local first.** Every change is saved on the device immediately, online or offline, and also when
+  sync is off or the session has expired. Settings show **two separate lines**: *Saved on this device*
+  and the account sync status (synced / pending / offline / conflict / incomplete).
+- **Automatic.** Sync is on by default for signed-in users (⚙️ Settings → *Account sync*, per account
+  on each device). It runs on start, after sign-in, a few seconds after each change, when the device
+  comes back online, when the app returns to the foreground, and every 5 minutes while open. There is
+  no live push: other devices see changes at those moments.
+- **New device.** Sign in and your calendar, workouts, plans and custom exercises, motivation,
+  measurements, food, photos and exercise media load automatically.
+- **Never silent.** If this device and the account both changed, sync pauses with an explicit choice
+  (*Keep this device* / *Keep account* / *Decide later*). Before applying a choice, a recovery copy of
+  **both** versions is kept (⚙️ Settings → *Recovery copies*). An empty device never overwrites a
+  populated account, and *Reset data* re-loads the account instead of uploading empty data.
+- **Separate workspaces.** Each account has its own storage on the device; signed out you use a
+  separate guest workspace. Signing out or switching accounts never shows or uploads one account's
+  data as another's, and pending changes stay with their account until it signs in again.
+  Data from before this version stays where it was: it is linked to an account automatically only if
+  this device had already backed it up to that account; otherwise you are asked.
+- **One tab at a time.** GymQuest runs in a single browser tab per device; another tab shows
+  *GymQuest is open in another tab* with **Use here**, which first lets the active tab finish its
+  sync and save, then hands over. (Browsers without the Web Locks API are not coordinated.)
+- **Expired session.** Saving on the device continues; changes wait and are uploaded after you sign
+  in again to the same account. Signing in to a different account never receives them.
+- **Device-only settings** (never uploaded, never overwritten by the account): language, rest-timer
+  sound and length, the custom rest time, JSON auto-backup settings, the Community switch, the
+  running workout/activity and the running rest timer. Everything else belongs to the account.
+- **Media.** Files are uploaded before the backup that references them; a file that failed to upload
+  stays marked as unsynced and is never replaced by account data. Videos over 50 MB stay on the device
+  (shown as "synced with a warning").
+- **Interrupted loads.** Loading account data is journaled; if the app or browser is killed midway, the
+  next start finishes it or rolls it back. The browser may write the most recent seconds of
+  `localStorage` changes to disk with a short delay, so a crash immediately after a change can lose
+  that last change on the device (it is still in the account if it was already synced).
 - On first launch, after confirming your weekly goal, **no demo data is created** — you start with a
   clean history (0 workouts, 0 XP, no achievements). You can load demo data at any time from
   ⚙️ Settings with **Load demo data**, and remove it with **Remove demo data**.
