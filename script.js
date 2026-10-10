@@ -7045,6 +7045,112 @@ const SYNC_I18N = {
   },
 };
 for (const lang of Object.keys(SYNC_I18N)) Object.assign(I18N[lang] || (I18N[lang] = {}), SYNC_I18N[lang]);
+/* Preklady e-mailov účtu (potvrdenie, opätovné poslanie, obnova hesla) – všetkých 6 jazykov. */
+const AUTH_MAIL_I18N = {
+  sk: {
+    'auth.waitButton': 'Znova o {n} s',
+    'auth.errRateLimit': 'Príliš veľa požiadaviek. Počkaj chvíľu a skús to znova.',
+    'auth.errRateLimitWait': 'Ďalší e-mail sa dá poslať o {n} s.',
+    'auth.errWeakPassword': 'Heslo musí mať aspoň {n} znakov.',
+    'auth.errSamePassword': 'Nové heslo musí byť iné ako to súčasné.',
+    'auth.errInvalidEmail': 'Zadaj platnú e-mailovú adresu.',
+    'auth.errSignupDisabled': 'Registrácia je momentálne vypnutá.',
+    'auth.errEmailNotSent': 'E-mail sa teraz nepodarilo odoslať. Skús to neskôr.',
+    'auth.errNetwork': 'Bez pripojenia k internetu. Skús to znova, keď budeš online.',
+    'auth.signUpRequested': 'Hotovo. Ak sa tento e-mail dá zaregistrovať, posielame naň potvrdzujúci odkaz. Pozri schránku aj spam – môže to trvať pár minút. Účet už máš? Prihlás sa alebo si obnov heslo.',
+    'auth.resendRequested': 'Ak k tomuto e-mailu existuje nepotvrdený účet, poslali sme nový potvrdzujúci odkaz. Staršie odkazy prestali platiť. Pozri aj spam.',
+    'auth.resendConfirmation': 'Poslať potvrdenie znova',
+    'auth.confirmNote': 'Po registrácii ti pošleme potvrdzujúci odkaz. Ak nepríde do pár minút, pozri spam alebo ho pošli znova.',
+    'auth.expiredLinkBoth': 'Tento odkaz je neplatný, už bol použitý alebo vypršal. Nič sa nezmenilo. Zadaj e-mail a pošli si nový odkaz.',
+    'auth.resetRequested': 'Ak k tomuto e-mailu existuje účet, posielame odkaz na obnovenie hesla. Pozri schránku aj spam – môže to trvať pár minút.',
+  },
+  en: {
+    'auth.waitButton': 'Again in {n} s',
+    'auth.errRateLimit': 'Too many requests. Wait a moment and try again.',
+    'auth.errRateLimitWait': 'You can send another email in {n} s.',
+    'auth.errWeakPassword': 'The password must be at least {n} characters.',
+    'auth.errSamePassword': 'The new password must be different from the current one.',
+    'auth.errInvalidEmail': 'Enter a valid email address.',
+    'auth.errSignupDisabled': 'Sign-up is currently disabled.',
+    'auth.errEmailNotSent': 'The email could not be sent right now. Please try again later.',
+    'auth.errNetwork': 'No internet connection. Try again when you are online.',
+    'auth.signUpRequested': 'Done. If this email can be registered, a confirmation link is on its way. Check your inbox and spam folder – it can take a few minutes. Already have an account? Sign in or reset your password.',
+    'auth.resendRequested': 'If an unconfirmed account exists for this email, we sent a new confirmation link. Earlier links no longer work. Check your spam folder too.',
+    'auth.resendConfirmation': 'Resend confirmation email',
+    'auth.confirmNote': 'After signing up we email you a confirmation link. If it does not arrive within a few minutes, check spam or resend it.',
+    'auth.expiredLinkBoth': 'This link is invalid, already used or expired. Nothing was changed. Enter your email to get a new link.',
+    'auth.resetRequested': 'If an account exists for this email, a password reset link is on its way. Check your inbox and spam folder – it can take a few minutes.',
+  },
+  es: {
+    'auth.waitButton': 'De nuevo en {n} s',
+    'auth.errRateLimit': 'Demasiadas solicitudes. Espera un momento e inténtalo de nuevo.',
+    'auth.errRateLimitWait': 'Podrás enviar otro correo en {n} s.',
+    'auth.errWeakPassword': 'La contraseña debe tener al menos {n} caracteres.',
+    'auth.errSamePassword': 'La nueva contraseña debe ser distinta de la actual.',
+    'auth.errInvalidEmail': 'Escribe un correo electrónico válido.',
+    'auth.errSignupDisabled': 'El registro está desactivado por ahora.',
+    'auth.errEmailNotSent': 'No se pudo enviar el correo ahora. Inténtalo más tarde.',
+    'auth.errNetwork': 'Sin conexión a internet. Inténtalo de nuevo cuando estés en línea.',
+    'auth.signUpRequested': 'Listo. Si este correo se puede registrar, te enviamos un enlace de confirmación. Revisa la bandeja de entrada y el spam; puede tardar unos minutos. ¿Ya tienes cuenta? Inicia sesión o restablece la contraseña.',
+    'auth.resendRequested': 'Si existe una cuenta sin confirmar con este correo, enviamos un nuevo enlace de confirmación. Los enlaces anteriores ya no sirven. Revisa también el spam.',
+    'auth.resendConfirmation': 'Reenviar correo de confirmación',
+    'auth.confirmNote': 'Tras registrarte te enviamos un enlace de confirmación. Si no llega en unos minutos, revisa el spam o reenvíalo.',
+    'auth.expiredLinkBoth': 'Este enlace no es válido, ya se usó o ha caducado. No se cambió nada. Escribe tu correo para recibir un enlace nuevo.',
+    'auth.resetRequested': 'Si existe una cuenta con este correo, te enviamos un enlace para restablecer la contraseña. Revisa la bandeja de entrada y el spam; puede tardar unos minutos.',
+  },
+  'pt-BR': {
+    'auth.waitButton': 'De novo em {n} s',
+    'auth.errRateLimit': 'Muitas solicitações. Aguarde um pouco e tente novamente.',
+    'auth.errRateLimitWait': 'Você poderá enviar outro e-mail em {n} s.',
+    'auth.errWeakPassword': 'A senha deve ter pelo menos {n} caracteres.',
+    'auth.errSamePassword': 'A nova senha deve ser diferente da atual.',
+    'auth.errInvalidEmail': 'Digite um e-mail válido.',
+    'auth.errSignupDisabled': 'O cadastro está desativado no momento.',
+    'auth.errEmailNotSent': 'Não foi possível enviar o e-mail agora. Tente mais tarde.',
+    'auth.errNetwork': 'Sem conexão com a internet. Tente de novo quando estiver online.',
+    'auth.signUpRequested': 'Pronto. Se este e-mail puder ser cadastrado, enviamos um link de confirmação. Confira a caixa de entrada e o spam – pode levar alguns minutos. Já tem conta? Entre ou redefina a senha.',
+    'auth.resendRequested': 'Se existir uma conta não confirmada com este e-mail, enviamos um novo link de confirmação. Links anteriores deixaram de valer. Confira também o spam.',
+    'auth.resendConfirmation': 'Reenviar e-mail de confirmação',
+    'auth.confirmNote': 'Após o cadastro enviamos um link de confirmação. Se não chegar em alguns minutos, confira o spam ou reenvie.',
+    'auth.expiredLinkBoth': 'Este link é inválido, já foi usado ou expirou. Nada foi alterado. Digite seu e-mail para receber um novo link.',
+    'auth.resetRequested': 'Se existir uma conta com este e-mail, enviamos um link para redefinir a senha. Confira a caixa de entrada e o spam – pode levar alguns minutos.',
+  },
+  fr: {
+    'auth.waitButton': 'De nouveau dans {n} s',
+    'auth.errRateLimit': 'Trop de demandes. Patiente un moment puis réessaie.',
+    'auth.errRateLimitWait': 'Tu pourras envoyer un autre e-mail dans {n} s.',
+    'auth.errWeakPassword': 'Le mot de passe doit contenir au moins {n} caractères.',
+    'auth.errSamePassword': 'Le nouveau mot de passe doit être différent de l’actuel.',
+    'auth.errInvalidEmail': 'Saisis une adresse e-mail valide.',
+    'auth.errSignupDisabled': 'L’inscription est désactivée pour le moment.',
+    'auth.errEmailNotSent': 'L’e-mail n’a pas pu être envoyé pour l’instant. Réessaie plus tard.',
+    'auth.errNetwork': 'Pas de connexion internet. Réessaie une fois en ligne.',
+    'auth.signUpRequested': 'C’est fait. Si cet e-mail peut être inscrit, un lien de confirmation est en route. Vérifie ta boîte de réception et les spams – cela peut prendre quelques minutes. Déjà un compte ? Connecte-toi ou réinitialise ton mot de passe.',
+    'auth.resendRequested': 'S’il existe un compte non confirmé pour cet e-mail, nous avons envoyé un nouveau lien de confirmation. Les liens précédents ne fonctionnent plus. Vérifie aussi les spams.',
+    'auth.resendConfirmation': 'Renvoyer l’e-mail de confirmation',
+    'auth.confirmNote': 'Après l’inscription, nous t’envoyons un lien de confirmation. S’il n’arrive pas en quelques minutes, vérifie les spams ou renvoie-le.',
+    'auth.expiredLinkBoth': 'Ce lien est invalide, déjà utilisé ou expiré. Rien n’a été modifié. Saisis ton e-mail pour recevoir un nouveau lien.',
+    'auth.resetRequested': 'S’il existe un compte pour cet e-mail, un lien de réinitialisation est en route. Vérifie ta boîte de réception et les spams – cela peut prendre quelques minutes.',
+  },
+  ar: {
+    'auth.waitButton': 'مرة أخرى بعد {n} ث',
+    'auth.errRateLimit': 'طلبات كثيرة جدًا. انتظر قليلًا ثم حاول مرة أخرى.',
+    'auth.errRateLimitWait': 'يمكنك إرسال بريد آخر بعد {n} ث.',
+    'auth.errWeakPassword': 'يجب أن تتكون كلمة المرور من {n} أحرف على الأقل.',
+    'auth.errSamePassword': 'يجب أن تختلف كلمة المرور الجديدة عن الحالية.',
+    'auth.errInvalidEmail': 'أدخل بريدًا إلكترونيًا صالحًا.',
+    'auth.errSignupDisabled': 'التسجيل متوقف حاليًا.',
+    'auth.errEmailNotSent': 'تعذّر إرسال البريد الآن. حاول لاحقًا.',
+    'auth.errNetwork': 'لا يوجد اتصال بالإنترنت. حاول مرة أخرى عند الاتصال.',
+    'auth.signUpRequested': 'تم. إذا كان من الممكن تسجيل هذا البريد، فإن رابط التأكيد في طريقه إليك. تحقّق من صندوق الوارد ومجلد الرسائل غير المرغوب فيها – قد يستغرق ذلك بضع دقائق. لديك حساب بالفعل؟ سجّل الدخول أو أعد تعيين كلمة المرور.',
+    'auth.resendRequested': 'إذا كان هناك حساب غير مؤكد بهذا البريد، فقد أرسلنا رابط تأكيد جديدًا. لم تعد الروابط السابقة صالحة. تحقّق أيضًا من الرسائل غير المرغوب فيها.',
+    'auth.resendConfirmation': 'إعادة إرسال بريد التأكيد',
+    'auth.confirmNote': 'بعد التسجيل نرسل إليك رابط تأكيد. إذا لم يصل خلال بضع دقائق، تحقّق من الرسائل غير المرغوب فيها أو أعد إرساله.',
+    'auth.expiredLinkBoth': 'هذا الرابط غير صالح أو استُخدم من قبل أو انتهت صلاحيته. لم يتغيّر شيء. أدخل بريدك للحصول على رابط جديد.',
+    'auth.resetRequested': 'إذا كان هناك حساب بهذا البريد، فإن رابط إعادة تعيين كلمة المرور في طريقه إليك. تحقّق من صندوق الوارد والرسائل غير المرغوب فيها – قد يستغرق ذلك بضع دقائق.',
+  },
+};
+for (const lang of Object.keys(AUTH_MAIL_I18N)) Object.assign(I18N[lang] || (I18N[lang] = {}), AUTH_MAIL_I18N[lang]);
 
 function t(key, vars) {
   const dict = I18N[activeLang()] || I18N.en;
@@ -12211,7 +12317,7 @@ function communityIntroHtml() {
 function communityAuthHtml() {
   return '<div class="card"><h3 class="card-title">' + esc(t('community.signInTitle')) + '</h3>'
     + '<label class="modal-label" for="community-email">' + esc(t('community.email')) + '</label>'
-    + '<input type="email" class="modal-input" id="community-email" autocomplete="email">'
+    + '<input type="email" class="modal-input" id="community-email" autocomplete="email" value="' + escAttr(authLastEmail) + '">'
     + '<label class="modal-label" for="community-password">' + esc(t('community.password')) + '</label>'
     + '<input type="password" class="modal-input" id="community-password" autocomplete="current-password">'
     + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
@@ -12220,7 +12326,8 @@ function communityAuthHtml() {
     + '<button type="button" class="btn btn-secondary" data-community-action="signup">' + esc(t('community.signUp')) + '</button>'
     + '<button type="button" class="btn btn-secondary" data-community-action="forgot">' + esc(t('auth.forgotPassword')) + '</button>'
     + '</div>'
-    + '<p class="card-note">' + esc(t('community.emailConfirmNote')) + '</p>'
+    + '<div class="plan-actions">' + authMailButton('confirm', 'auth.resendConfirmation', 'data-community-action="resend-confirm"') + '</div>'
+    + '<p class="card-note">' + esc(t('auth.confirmNote')) + '</p>'
     + '<p class="card-note">' + esc(t('community.offlineNote')) + '</p>'
     + '<div class="plan-actions"><button type="button" class="btn btn-secondary" data-community-action="close">' + esc(t('common.close')) + '</button></div></div>';
 }
@@ -12383,17 +12490,107 @@ async function communitySignIn() {
   renderCommunity();
   await wsBindSession(true);   // vlastný priestor účtu + automatické načítanie
 }
+/* ---------- E-maily účtu: potvrdenie registrácie, opätovné poslanie, obnova hesla ----------
+   Správy sú pravdivé: „odoslané“ znamená len to, že server požiadavku prijal (doručenie do
+   schránky sa overiť nedá), a nikdy neprezradia, či e-mail už má účet. Opakované posielanie
+   má odpočet (server povolí ďalší e-mail na tú istú adresu až po 60 s). */
+const AUTH_MAIL_COOLDOWN_S = 60;
+const AUTH_MIN_PASSWORD = 6;
+let authLastEmail = '';
+let authCooldownTimer = null;
+function authEmailValid(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email || '')); }
+function authCooldownLeft(kind) {
+  try {
+    const m = JSON.parse(localStorage.getItem('gymquest_mail_cooldown') || '{}');
+    return Math.max(0, Math.ceil(((Number(m[kind]) || 0) - Date.now()) / 1000));
+  } catch (e) { return 0; }
+}
+function authStartCooldown(kind, seconds) {
+  try {
+    const m = JSON.parse(localStorage.getItem('gymquest_mail_cooldown') || '{}');
+    m[kind] = Date.now() + (seconds || AUTH_MAIL_COOLDOWN_S) * 1000;
+    localStorage.setItem('gymquest_mail_cooldown', JSON.stringify(m));
+  } catch (e) {}
+  authTickCooldowns();
+}
+/* Tlačidlá posielania e-mailov ukazujú zostávajúci čas a počas odpočtu sú neaktívne. */
+function authTickCooldowns() {
+  let active = false;
+  document.querySelectorAll('[data-mail-kind]').forEach((b) => {
+    const left = authCooldownLeft(b.dataset.mailKind);
+    b.disabled = left > 0;
+    b.textContent = left > 0 ? t('auth.waitButton', { n: left }) : t(b.dataset.mailLabel);
+    if (left > 0) active = true;
+  });
+  if (authCooldownTimer) { clearTimeout(authCooldownTimer); authCooldownTimer = null; }
+  if (active) authCooldownTimer = setTimeout(authTickCooldowns, 1000);
+}
+/* Chyba zo Supabase Auth → zrozumiteľná a pravdivá správa (nikdy „odoslané“). */
+function authErrorText(error, fallbackKey) {
+  const code = String((error && (error.code || error.error_code)) || '');
+  const status = Number(error && error.status) || 0;
+  const msg = String((error && error.message) || '');
+  const wait = /after (\d+) seconds?/i.exec(msg);
+  if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' || status === 429 || /rate limit|security purposes/i.test(msg)) {
+    return wait ? t('auth.errRateLimitWait', { n: wait[1] }) : t('auth.errRateLimit');
+  }
+  if (code === 'weak_password' || /password should|at least \d+ char/i.test(msg)) return t('auth.errWeakPassword', { n: AUTH_MIN_PASSWORD });
+  if (code === 'same_password') return t('auth.errSamePassword');
+  if (code === 'email_address_invalid' || code === 'validation_failed' || /unable to validate email|invalid.*email/i.test(msg)) return t('auth.errInvalidEmail');
+  if (code === 'signup_disabled' || code === 'email_provider_disabled') return t('auth.errSignupDisabled');
+  if (/error sending|sending (confirmation|recovery|magic link)/i.test(msg)) return t('auth.errEmailNotSent');
+  if (!status || /fetch|network/i.test(msg) || (typeof navigator !== 'undefined' && navigator.onLine === false)) return t('auth.errNetwork');
+  return t(fallbackKey);
+}
+function communitySetMessageText(text) { communityMessage = text || ''; }
+/* Tlačidlo, ktoré posiela e-mail: štítok a dostupnosť podľa odpočtu. */
+function authMailButton(kind, labelKey, attrs) {
+  const left = authCooldownLeft(kind);
+  setTimeout(authTickCooldowns, 0);
+  return '<button type="button" class="btn btn-secondary" data-mail-kind="' + kind + '" data-mail-label="' + labelKey + '" ' + attrs
+    + (left > 0 ? ' disabled' : '') + '>' + esc(left > 0 ? t('auth.waitButton', { n: left }) : t(labelKey)) + '</button>';
+}
 async function communitySignUp() {
   const sb = communityClient(); if (!sb) return;
   const c = communityCredentials();
+  authLastEmail = c.email;
   communitySetMessage('');
+  if (!authEmailValid(c.email)) { communitySetMessageText(t('auth.errInvalidEmail')); renderCommunity(); return; }
+  if (c.password.length < AUTH_MIN_PASSWORD) { communitySetMessageText(t('auth.errWeakPassword', { n: AUTH_MIN_PASSWORD })); renderCommunity(); return; }
   await syncQuiesce();
-  const { error } = await sb.auth.signUp({ email: c.email, password: c.password, options: { emailRedirectTo: authRedirectUrl() } });
+  let res;
+  try { res = await sb.auth.signUp({ email: c.email, password: c.password, options: { emailRedirectTo: authRedirectUrl() } }); }
+  catch (e) { res = { error: e }; }
   syncResume();
-  if (error) { communitySetMessage('community.errSignUp'); renderCommunity(); return; }
-  communitySetMessage('community.signUpDone');
+  if (res.error) { communitySetMessageText(authErrorText(res.error, 'community.errSignUp')); renderCommunity(); return; }
+  if (res.data && res.data.session) {   // potvrdenie vypnuté na serveri: už prihlásený
+    renderCommunity();
+    await wsBindSession(true);
+    return;
+  }
+  /* Rovnaká správa pre nový aj existujúci e-mail – neprezradí, či účet existuje. */
+  authStartCooldown('confirm');
+  communitySetMessageText(t('auth.signUpRequested'));
   renderCommunity();
-  await wsBindSession(true);   // ak je potvrdenie vypnuté a session už existuje
+}
+/* Opätovné poslanie potvrdzujúceho e-mailu (predošlé odkazy tým prestanú platiť). */
+async function authResendConfirmation(email, onDone) {
+  const sb = communitySb(); if (!sb) return;
+  const done = (text) => { if (onDone) onDone(text); };
+  authLastEmail = email;
+  if (!authEmailValid(email)) { done(t('auth.errInvalidEmail')); return; }
+  const left = authCooldownLeft('confirm');
+  if (left > 0) { done(t('auth.errRateLimitWait', { n: left })); return; }
+  let res;
+  try { res = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: authRedirectUrl() } }); }
+  catch (e) { res = { error: e }; }
+  if (res.error) { done(authErrorText(res.error, 'auth.errorGeneric')); return; }
+  authStartCooldown('confirm');
+  done(t('auth.resendRequested'));
+}
+async function communityResendConfirmation() {
+  const c = communityCredentials();
+  await authResendConfirmation(c.email, (text) => { communitySetMessageText(text); renderCommunity(); });
 }
 /* Odhlásenie: čakajúce zmeny zostávajú v priestore účtu (synchronizujú sa po
    ďalšom prihlásení); zariadenie sa prepne do hosťovského priestoru. Odhlasuje
@@ -12627,9 +12824,16 @@ function renderAuthModal() {
   if (v === 'confirmed') {
     body.innerHTML = '<p class="card-note">' + esc(t(authCallbackState.signedIn ? 'auth.confirmSignedIn' : 'auth.confirmSuccess')) + '</p>' + authPrimaryOnly('common.close', 'close');
   } else if (v === 'expired') {
-    body.innerHTML = '<p class="card-note">' + esc(t('auth.expiredLink')) + '</p>' + authEmailField('') + authStatusHtml() + authPrimary('auth.sendResetEmail', 'send-reset');
+    /* Neplatný/použitý odkaz: z adresy sa nedá spoľahlivo zistiť, či išlo o potvrdenie alebo
+       obnovu hesla – ponúknu sa obe možnosti a nič sa nehlási ako úspech. */
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.expiredLinkBoth')) + '</p>' + authEmailField(authCallbackState.email || authLastEmail) + authStatusHtml()
+      + '<div class="modal-actions">' + authMailButton('reset', 'auth.sendResetEmail', 'data-auth-action="send-reset"')
+      + authMailButton('confirm', 'auth.resendConfirmation', 'data-auth-action="resend-confirm"') + '</div>'
+      + authPrimaryOnly('common.close', 'close');
   } else if (v === 'reset-request') {
-    body.innerHTML = '<p class="card-note">' + esc(t('auth.forgotHint')) + '</p>' + authEmailField(authCallbackState.email) + authStatusHtml() + authPrimary('auth.sendResetEmail', 'send-reset');
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.forgotHint')) + '</p>' + authEmailField(authCallbackState.email) + authStatusHtml()
+      + '<div class="modal-actions"><button type="button" class="btn btn-secondary" data-auth-action="close">' + esc(t('common.close')) + '</button>'
+      + authMailButton('reset', 'auth.sendResetEmail', 'data-auth-action="send-reset"').replace('btn btn-secondary', 'btn btn-primary') + '</div>';
   } else if (v === 'recovery') {
     body.innerHTML = '<p class="card-note">' + esc(t('auth.recoveryTitle')) + '</p>'
       + '<label class="modal-label" for="auth-newpass">' + esc(t('auth.newPassword')) + '</label>'
@@ -12643,7 +12847,7 @@ function renderAuthModal() {
   } else if (v === 'updated') {
     body.innerHTML = '<p class="card-note">' + esc(t('auth.passwordUpdated')) + '</p>' + authPrimaryOnly('common.close', 'close');
   } else if (v === 'sent') {
-    body.innerHTML = '<p class="card-note">' + esc(t('auth.resetSent')) + '</p>' + authPrimaryOnly('common.close', 'close');
+    body.innerHTML = '<p class="card-note">' + esc(t('auth.resetRequested')) + '</p>' + authPrimaryOnly('common.close', 'close');
   } else if (v === 'error') {
     body.innerHTML = '<p class="card-note">' + esc(t('auth.errorGeneric')) + '</p>' + authPrimaryOnly('common.close', 'close');
   } else {
@@ -12655,29 +12859,54 @@ function renderAuthModal() {
   }
   refreshUpdateBanner();
 }
+function authStatusText(text) { const s = document.getElementById('auth-status'); if (s) { s.textContent = text; s.hidden = false; } }
 async function authSendReset() {
   const el = document.getElementById('auth-email');
   const email = el ? el.value.trim() : '';
-  const setMsg = (key) => { const s = document.getElementById('auth-status'); if (s) { s.textContent = t(key); s.hidden = false; } };
-  if (!email) { setMsg('auth.resetNeedEmail'); return; }
+  if (!email) { authStatusText(t('auth.resetNeedEmail')); return; }
+  if (!authEmailValid(email)) { authStatusText(t('auth.errInvalidEmail')); return; }
+  authLastEmail = email;
+  const left = authCooldownLeft('reset');
+  if (left > 0) { authStatusText(t('auth.errRateLimitWait', { n: left })); return; }
   const sb = communitySb();
-  if (!sb) { setMsg('auth.errorGeneric'); return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() });
-  if (error) { setMsg('auth.resetFailed'); return; }
+  if (!sb) { authStatusText(t('auth.errorGeneric')); return; }
+  let res;
+  try { res = await sb.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() }); }
+  catch (e) { res = { error: e }; }
+  if (res.error) { authStatusText(authErrorText(res.error, 'auth.resetFailed')); return; }
+  /* Server odpovedá rovnako pre existujúci aj neexistujúci e-mail – správa tiež. */
+  authStartCooldown('reset');
   authCallbackState = { view: 'sent', message: '', email: '' };
   renderAuthModal();
+}
+async function authResendFromModal() {
+  const el = document.getElementById('auth-email');
+  await authResendConfirmation(el ? el.value.trim() : '', authStatusText);
 }
 async function authSetNewPassword() {
   const p1 = document.getElementById('auth-newpass');
   const p2 = document.getElementById('auth-newpass2');
   const v1 = p1 ? p1.value : '';
   const v2 = p2 ? p2.value : '';
+  authCallbackState.message = '';
   if (v1.length < 6) { authCallbackState.message = t('auth.passwordTooShort'); renderAuthModal(); return; }
   if (v1 !== v2) { authCallbackState.message = t('auth.passwordMismatch'); renderAuthModal(); return; }
   const sb = communitySb();
   if (!sb) { authCallbackState.message = t('auth.errorGeneric'); renderAuthModal(); return; }
-  const { error } = await sb.auth.updateUser({ password: v1 });
-  if (error) { authCallbackState.message = t('auth.errorGeneric'); renderAuthModal(); return; }
+  let res;
+  try { res = await sb.auth.updateUser({ password: v1 }); }
+  catch (e) { res = { error: e }; }
+  if (res.error) {
+    const e = res.error;
+    /* Relácia z odkazu chýba alebo vypršala → odkaz už neplatí, nič sa nezmenilo. */
+    if ((e.name === 'AuthSessionMissingError') || Number(e.status) === 401 || Number(e.status) === 403) {
+      authCallbackState = { view: 'expired', message: '', email: '' };
+    } else {
+      authCallbackState.message = authErrorText(e, 'auth.errorGeneric');
+    }
+    renderAuthModal();
+    return;
+  }
   authCallbackState = { view: 'updated', message: '', email: '' };
   renderAuthModal();
 }
@@ -17849,6 +18078,7 @@ function setupEvents() {
     else if (act === 'leave') communityLeaveCommunity();
     else if (act === 'delete-account') communityDeleteAccount();
     else if (act === 'forgot') { const em = document.getElementById('community-email'); authAskReset(em ? em.value.trim() : ''); }
+    else if (act === 'resend-confirm') communityResendConfirmation();
   });
   on('community-body', (e) => {
     if (e.target && e.target.id === 'community-avatar' && e.target.files && e.target.files[0]) {
@@ -17867,6 +18097,7 @@ function setupEvents() {
     if (act === 'close') authClose();
     else if (act === 'set-password') authSetNewPassword();
     else if (act === 'send-reset') authSendReset();
+    else if (act === 'resend-confirm') authResendFromModal();
   });
 
   on('pokrok-subtabs', (e) => {

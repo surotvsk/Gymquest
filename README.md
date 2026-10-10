@@ -1024,6 +1024,21 @@ no tracking**.
   clean history (0 workouts, 0 XP, no achievements). You can load demo data at any time from
   ⚙️ Settings with **Load demo data**, and remove it with **Remove demo data**.
 
+### Account emails (confirmation and password reset)
+
+- **Sign-up** sends a confirmation link; the account works after the link is opened. The message is
+  the same whether or not the email already has an account, so nobody can probe which emails are
+  registered. The email stays in the form.
+- **Resend confirmation email** (on the sign-in form and on the expired-link page) sends a new link;
+  earlier links stop working. Each email address can get one email per 60 seconds — the button shows
+  the countdown.
+- **Forgot password** sends a reset link that opens GymQuest's *set a new password* form. Each link
+  works once; a used, expired or altered link shows *invalid or expired — nothing was changed* with
+  buttons to request a new reset or confirmation link.
+- Rate limits, sending failures and no connection are shown as such; the app never says an email was
+  sent when the request failed. Emails can take a few minutes and may land in spam.
+- Verification: `tests/auth/README.md`.
+
 ### How much room there is
 
 The whole app lives in a single `localStorage` value, and browsers allow roughly **5 MB per origin**
