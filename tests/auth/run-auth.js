@@ -355,6 +355,59 @@ scenario('L: a double-click sends exactly one request; the button is disabled me
   check('no page exceptions', p.errors.length === 0 && d2.p.errors.length === 0, p.errors.concat(d2.p.errors));
 });
 
+scenario('M: a Sign up double-click sends exactly one signup request; the button is restored after success, failure, timeout or re-render', async (ctx) => {
+  const before = userStatus(ctx.A.id);
+  const { p } = await device('m');
+  await openSignInForm(p);
+  const SU = '[data-community-action="signup"]';
+  const pw = 'Different-' + Math.random().toString(36).slice(2, 10);
+  /* Success path, real server: the existing confirmed test account — Supabase sends no email for it. */
+  await fill(p, ctx.A.email, pw);
+  let ic = await intercept(p, '*auth/v1/signup*', () => ({ delay: 1500, pass: true }), ['POST']);
+  await dblclick(p, SU);
+  await wait(300);
+  check('signup: button disabled while the request runs', (await btnState(p, SU)).disabled === true);
+  await waitFor(() => communityMsg(p).then((m) => m.length > 0), 30000, 'signup message');
+  await wait(1500);
+  let b = await btnState(p, SU);
+  check('signup: double-click sent exactly one request', ic.hits.length === 1, ic.hits.length);
+  check('signup: neutral success message, button enabled again', (await communityMsg(p)) === (await T(p, 'auth.signUpRequested')) && !b.disabled, b);
+  await ic.stop();
+  const after = userStatus(ctx.A.id);
+  check('signup: existing account got no email and kept its password', after.confirmation_sent_at === before.confirmation_sent_at
+    && (await new Observer(ctx.cfg, ctx.A).login().then(() => true).catch(() => false)));
+  /* Failure, simultaneous calls, timeout and re-render: substituted responses, nothing reaches Supabase. */
+  const email = 'gq-dbl-signup@gymquest-tests.com';
+  await fill(p, email, pw);
+  ic = await intercept(p, '*auth/v1/signup*', () => Object.assign({ delay: 800 }, SEND_FAIL));
+  await dblclick(p, SU);
+  await wait(2000);
+  b = await btnState(p, SU);
+  check('signup failure: one request, error shown, button enabled again', ic.hits.length === 1 && (await communityMsg(p)) === (await T(p, 'auth.errEmailNotSent')) && !b.disabled, { hits: ic.hits.length, b });
+  await ic.stop();
+  await fill(p, email, pw);
+  ic = await intercept(p, '*auth/v1/signup*', () => Object.assign({ delay: 800 }, SEND_FAIL));
+  await p.eval('(communitySignUp(), communitySignUp(), true)');
+  await wait(2000);
+  check('signup: two calls in the same instant send one request', ic.hits.length === 1, ic.hits.length);
+  await ic.stop();
+  await fill(p, email, pw);
+  await p.eval('(AUTH_REQUEST_TIMEOUT_MS = 1500, true)');
+  ic = await intercept(p, '*auth/v1/signup*', () => ({ hold: true }));
+  await dblclick(p, SU);
+  await wait(500);
+  const during = await btnState(p, SU);
+  await p.eval('(renderCommunity(), true)');
+  const rerendered = await btnState(p, SU);
+  await wait(2000);
+  b = await btnState(p, SU);
+  check('signup timeout: disabled while waiting (also after a re-render), enabled again after the timeout', during.disabled && rerendered.disabled && !b.disabled && ic.hits.length === 1, { during, rerendered, b, hits: ic.hits.length });
+  await ic.stop();
+  await wait(800);
+  await p.eval('(AUTH_REQUEST_TIMEOUT_MS = 30000, true)');
+  check('signup: not left busy, no page exceptions', !(await p.eval(`authIsBusy('signup')`)) && p.errors.length === 0, p.errors);
+});
+
 (async () => {
   fs.mkdirSync(PROFILES, { recursive: true });
   const server = process.env.GQ_BASE ? null : await startServer(PORT, { new: REPO });

@@ -12323,7 +12323,7 @@ function communityAuthHtml() {
     + '<p class="media-status" id="community-status" role="status" ' + (communityMessage ? '' : 'hidden') + '>' + esc(communityMessage) + '</p>'
     + '<div class="plan-actions">'
     + '<button type="button" class="btn btn-primary" data-community-action="signin">' + esc(t('community.signIn')) + '</button>'
-    + '<button type="button" class="btn btn-secondary" data-community-action="signup">' + esc(t('community.signUp')) + '</button>'
+    + '<button type="button" class="btn btn-secondary" data-community-action="signup" data-busy-kind="signup"' + (authIsBusy('signup') ? ' disabled' : '') + '>' + esc(t('community.signUp')) + '</button>'
     + '<button type="button" class="btn btn-secondary" data-community-action="forgot">' + esc(t('auth.forgotPassword')) + '</button>'
     + '</div>'
     + '<div class="plan-actions">' + authMailButton('confirm', 'auth.resendConfirmation', 'data-community-action="resend-confirm"') + '</div>'
@@ -12513,7 +12513,7 @@ function authStartCooldown(kind, seconds) {
   } catch (e) {}
   authTickCooldowns();
 }
-/* Prebiehajúce požiadavky (poslať potvrdenie / obnovu hesla, uložiť nové heslo): kým beží,
+/* Prebiehajúce požiadavky (registrácia, poslať potvrdenie / obnovu hesla, uložiť nové heslo): kým beží,
    jej tlačidlo je neaktívne a druhé kliknutie nič nepošle. Po dokončení, chybe alebo
    vypršaní času (bez odpovede) sa tlačidlo vráti do správneho stavu. */
 let AUTH_REQUEST_TIMEOUT_MS = 30000;
@@ -12566,7 +12566,8 @@ function authMailButton(kind, labelKey, attrs) {
   return '<button type="button" class="btn btn-secondary" data-mail-kind="' + kind + '" data-mail-label="' + labelKey + '" ' + attrs
     + (left > 0 || authIsBusy(kind) ? ' disabled' : '') + '>' + esc(left > 0 ? t('auth.waitButton', { n: left }) : t(labelKey)) + '</button>';
 }
-async function communitySignUp() {
+function communitySignUp() { return authOnce('signup', communitySignUpNow); }
+async function communitySignUpNow() {
   const sb = communityClient(); if (!sb) return;
   const c = communityCredentials();
   authLastEmail = c.email;
